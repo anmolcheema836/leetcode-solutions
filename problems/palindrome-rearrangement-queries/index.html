@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Rearrangement Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Palindrome Rearrangement Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/palindrome-rearrangement-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-longest-special-substring-that-occurs-thrice-ii/" class="btn">← Previous</a>
+            <span>Problem 2983 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-peak-calling-hours-for-each-city/" class="btn">Next →</a>
+        </div>
+        <h1>2983. Palindrome Rearrangement Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Palindrome Rearrangement Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;bool&gt; canMakePalindromeQueries(string s,
+                                        vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const int n = s.length();
+    // mirroredDiffs[i] := the number of different letters between the first i
+    // letters of s[0..n / 2) and the first i letters of s[n / 2..n)[::-1]
+    const vector&lt;int&gt; mirroredDiffs = getMirroredDiffs(s);
+    // counts[i] := the count of s[0..i)
+    const vector&lt;vector&lt;int&gt;&gt; counts = getCounts(s);
+    vector&lt;bool&gt; ans;
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      // Use left-closed, right-open intervals to facilitate the calculation.
+      //   ...... [a, b) ...|... [rb, ra) ......
+      //   .... [rd, rc) .....|..... [c, d) ....
+      const int a = query[0];
+      const int b = query[1] + 1;
+      const int c = query[2];
+      const int d = query[3] + 1;
+      const int ra = n - a;  // the reflected index of a in s[n / 2..n)
+      const int rb = n - b;  // the reflected index of b in s[n / 2..n)
+      const int rc = n - c;  // the reflected index of c in s[n / 2..n)
+      const int rd = n - d;  // the reflected index of d in s[n / 2..n)
+      // No difference is allowed outside the query ranges.
+      if (min(a, rd) &gt; 0 &amp;&amp; mirroredDiffs[min(a, rd)] &gt; 0 ||
+          n / 2 &gt; max(b, rc) &amp;&amp;
+              mirroredDiffs[n / 2] - mirroredDiffs[max(b, rc)] &gt; 0 ||
+          rd &gt; b &amp;&amp; mirroredDiffs[rd] - mirroredDiffs[b] &gt; 0 ||
+          a &gt; rc &amp;&amp; mirroredDiffs[a] - mirroredDiffs[rc] &gt; 0) {
+        ans.push_back(false);
+      } else {
+        // The `count` map of the intersection of [a, b) and [rd, rc) in
+        // s[0..n / 2) must equate to the `count` map of the intersection of
+        // [c, d) and [rb, ra) in s[n / 2..n).
+        vector&lt;int&gt; leftRangeCount = subtractArrays(counts[b], counts[a]);
+        vector&lt;int&gt; rightRangeCount = subtractArrays(counts[d], counts[c]);
+        if (a &gt; rd)
+          rightRangeCount = subtractArrays(
+              rightRangeCount, subtractArrays(counts[min(a, rc)], counts[rd]));
+        if (rc &gt; b)
+          rightRangeCount = subtractArrays(
+              rightRangeCount, subtractArrays(counts[rc], counts[max(b, rd)]));
+        if (c &gt; rb)
+          leftRangeCount = subtractArrays(
+              leftRangeCount, subtractArrays(counts[min(c, ra)], counts[rb]));
+        if (ra &gt; d)
+          leftRangeCount = subtractArrays(
+              leftRangeCount, subtractArrays(counts[ra], counts[max(d, rb)]));
+        ans.push_back(ranges::all_of(leftRangeCount, [](int freq) {
+          return freq &gt;= 0;
+        }) &amp;&amp; ranges::all_of(rightRangeCount, [](int freq) {
+          return freq &gt;= 0;
+        }) &amp;&amp; leftRangeCount == rightRangeCount);
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; getMirroredDiffs(const string&amp; s) {
+    vector&lt;int&gt; diffs(1);
+    for (int i = 0, j = s.length() - 1; i &lt; j; ++i, --j)
+      diffs.push_back(diffs.back() + (s[i] != s[j] ? 1 : 0));
+    return diffs;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; getCounts(const string&amp; s) {
+    vector&lt;int&gt; count(26);
+    vector&lt;vector&lt;int&gt;&gt; counts{count};
+    for (const char c : s) {
+      ++count[c - &#x27;a&#x27;];
+      counts.push_back(count);
+    }
+    return counts;
+  }
+
+  vector&lt;int&gt; subtractArrays(const vector&lt;int&gt;&amp; a, const vector&lt;int&gt;&amp; b) {
+    vector&lt;int&gt; res;
+    for (int i = 0; i &lt; a.size(); ++i)
+      res.push_back(a[i] - b[i]);
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean[] canMakePalindromeQueries(String s, int[][] queries) {
+    final int n = s.length();
+    // mirroredDiffs[i] := the number of different letters between the first i
+    // letters of s[0..n / 2) and the first i letters of s[n / 2..n)[::-1]
+    final int[] mirroredDiffs = getMirroredDiffs(s);
+    // counts[i] := the count of s[0..i)
+    final int[][] counts = getCounts(s);
+    boolean[] ans = new boolean[queries.length];
+
+    for (int i = 0; i &lt; queries.length; i++) {
+      // Use left-closed, right-open intervals to facilitate the calculation.
+      //   ...... [a, b) ...|... [rb, ra) ......
+      //   .... [rd, rc) .....|..... [c, d) ....
+      int[] query = queries[i];
+      final int a = query[0];
+      final int b = query[1] + 1;
+      final int c = query[2];
+      final int d = query[3] + 1;
+      final int ra = n - a; // the reflected index of a in s[n / 2..n)
+      final int rb = n - b; // the reflected index of b in s[n / 2..n)
+      final int rc = n - c; // the reflected index of c in s[n / 2..n)
+      final int rd = n - d; // the reflected index of d in s[n / 2..n)
+      // No difference is allowed outside the query ranges.
+      if ((Math.min(a, rd) &gt; 0 &amp;&amp; mirroredDiffs[Math.min(a, rd)] &gt; 0) ||
+          (n / 2 &gt; Math.max(b, rc) &amp;&amp; mirroredDiffs[n / 2] - mirroredDiffs[Math.max(b, rc)] &gt; 0) ||
+          (rd &gt; b &amp;&amp; mirroredDiffs[rd] - mirroredDiffs[b] &gt; 0) ||
+          (a &gt; rc &amp;&amp; mirroredDiffs[a] - mirroredDiffs[rc] &gt; 0)) {
+        ans[i] = false;
+      } else {
+        // The `count` map of the intersection of [a, b) and [rd, rc) in
+        // s[0..n / 2) must equate to the `count` map of the intersection of
+        // [c, d) and [rb, ra) in s[n / 2..n).
+        int[] leftRangeCount = subtractArrays(counts[b], counts[a]);
+        int[] rightRangeCount = subtractArrays(counts[d], counts[c]);
+        if (a &gt; rd)
+          rightRangeCount =
+              subtractArrays(rightRangeCount, subtractArrays(counts[Math.min(a, rc)], counts[rd]));
+        if (rc &gt; b)
+          rightRangeCount =
+              subtractArrays(rightRangeCount, subtractArrays(counts[rc], counts[Math.max(b, rd)]));
+        if (c &gt; rb)
+          leftRangeCount =
+              subtractArrays(leftRangeCount, subtractArrays(counts[Math.min(c, ra)], counts[rb]));
+        if (ra &gt; d)
+          leftRangeCount =
+              subtractArrays(leftRangeCount, subtractArrays(counts[ra], counts[Math.max(d, rb)]));
+        ans[i] = Arrays.stream(leftRangeCount).allMatch(freq -&gt; freq &gt;= 0) &amp;&amp;
+                 Arrays.stream(rightRangeCount).allMatch(freq -&gt; freq &gt;= 0) &amp;&amp;
+                 Arrays.equals(leftRangeCount, rightRangeCount);
+      }
+    }
+
+    return ans;
+  }
+
+  private int[] getMirroredDiffs(final String s) {
+    int[] diffs = new int[s.length() / 2 + 1];
+    for (int i = 0, j = s.length() - 1; i &lt; j; i++, j--) {
+      diffs[i + 1] = diffs[i] + (s.charAt(i) != s.charAt(j) ? 1 : 0);
+    }
+    return diffs;
+  }
+
+  private int[][] getCounts(final String s) {
+    int[][] counts = new int[s.length() + 1][26];
+    int[] count = new int[26];
+    for (int i = 0; i &lt; s.length(); ++i) {
+      ++count[s.charAt(i) - &#x27;a&#x27;];
+      System.arraycopy(count, 0, counts[i + 1], 0, 26);
+    }
+    return counts;
+  }
+
+  private int[] subtractArrays(int[] a, int[] b) {
+    int[] res = new int[a.length];
+    for (int i = 0; i &lt; a.length; ++i)
+      res[i] = a[i] - b[i];
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def canMakePalindromeQueries(
+      self,
+      s: str,
+      queries: list[list[int]],
+  ) -&gt; list[bool]:
+    n = len(s)
+    # mirroredDiffs[i] := the number of different letters between the first i
+    # letters of s[0..n / 2) and the first i letters of s[n / 2..n)[::-1]
+    mirroredDiffs = self._getMirroredDiffs(s)
+    # counts[i] := the count of s[0..i)
+    counts = self._getCounts(s)
+    ans = []
+
+    def subtractArrays(a: list[int], b: list[int]):
+      return [x - y for x, y in zip(a, b)]
+
+    for a, b, c, d in queries:
+      # Use left-closed, right-open intervals to facilitate the calculation.
+      #   ...... [a, b) ...|... [rb, ra) ......
+      #   .... [rd, rc) .....|..... [c, d) ....
+      b += 1
+      d += 1
+      ra = n - a  # the reflected index of a in s[n / 2..n)
+      rb = n - b  # the reflected index of b in s[n / 2..n)
+      rc = n - c  # the reflected index of c in s[n / 2..n)
+      rd = n - d  # the reflected index of d in s[n / 2..n)
+      # No difference is allowed outside the query ranges.
+      if ((min(a, rd) &gt; 0 and mirroredDiffs[min(a, rd)] &gt; 0) or
+         (n // 2 &gt; max(b, rc) and
+          mirroredDiffs[n // 2] - mirroredDiffs[max(b, rc)] &gt; 0) or
+         (rd &gt; b and mirroredDiffs[rd] - mirroredDiffs[b] &gt; 0) or
+         (a &gt; rc and mirroredDiffs[a] - mirroredDiffs[rc] &gt; 0)):
+        ans.append(False)
+      else:
+        # The `count` map of the intersection of [a, b) and [rd, rc) in
+        # s[0..n / 2) must equate to the `count` map of the intersection of
+        # [c, d) and [rb, ra) in s[n / 2..n).
+        leftRangeCount = subtractArrays(counts[b], counts[a])
+        rightRangeCount = subtractArrays(counts[d], counts[c])
+        if a &gt; rd:
+          rightRangeCount = subtractArrays(
+              rightRangeCount, subtractArrays(counts[min(a, rc)], counts[rd]))
+        if rc &gt; b:
+          rightRangeCount = subtractArrays(
+              rightRangeCount, subtractArrays(counts[rc], counts[max(b, rd)]))
+        if c &gt; rb:
+          leftRangeCount = subtractArrays(
+              leftRangeCount, subtractArrays(counts[min(c, ra)], counts[rb]))
+        if ra &gt; d:
+          leftRangeCount = subtractArrays(
+              leftRangeCount, subtractArrays(counts[ra], counts[max(d, rb)]))
+        ans.append(min(leftRangeCount) &gt;= 0
+                   and min(rightRangeCount) &gt;= 0
+                   and leftRangeCount == rightRangeCount)
+
+    return ans
+
+  def _getMirroredDiffs(self, s: str) -&gt; list[int]:
+    diffs = [0]
+    for i, j in zip(range(len(s)), reversed(range(len(s)))):
+      if i &gt;= j:
+        break
+      diffs.append(diffs[-1] + (s[i] != s[j]))
+    return diffs
+
+  def _getCounts(self, s: str) -&gt; list[list[int]]:
+    count = [0] * 26
+    counts = [count.copy()]
+    for c in s:
+      count[ord(c) - ord(&#x27;a&#x27;)] += 1
+      counts.append(count.copy())
+    return counts</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Collisions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Robot Collisions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/robot-collisions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/ways-to-split-array-into-good-subarrays/" class="btn">← Previous</a>
+            <span>Problem 2751 of 3563</span>
+            <a href="/leetcode-solutions/problems/customers-with-maximum-number-of-transactions-on-consecutive-days/" class="btn">Next →</a>
+        </div>
+        <h1>2751. Robot Collisions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Robot Collisions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Robot {
+  int index;
+  int position;
+  int health;
+  char direction;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; survivedRobotsHealths(vector&lt;int&gt;&amp; positions,
+                                    vector&lt;int&gt;&amp; healths, string directions) {
+    vector&lt;int&gt; ans;
+    vector&lt;Robot&gt; robots;
+    vector&lt;Robot&gt; stack;  // the runnnig robots
+
+    for (int i = 0; i &lt; positions.size(); ++i)
+      robots.push_back(Robot{i, positions[i], healths[i], directions[i]});
+
+    ranges::sort(robots, ranges::less{},
+                 [](const Robot&amp; robot) { return robot.position; });
+
+    for (Robot&amp; robot : robots) {
+      if (robot.direction == &#x27;R&#x27;) {
+        stack.push_back(robot);
+        continue;
+      }
+      // Collide with robots going right if any.
+      while (!stack.empty() &amp;&amp; stack.back().direction == &#x27;R&#x27; &amp;&amp;
+             robot.health &gt; 0) {
+        if (stack.back().health == robot.health) {
+          stack.pop_back();
+          robot.health = 0;
+        } else if (stack.back().health &lt; robot.health) {
+          stack.pop_back();
+          robot.health -= 1;
+        } else {  // stack.back().health &gt; robot.health
+          stack.back().health -= 1;
+          robot.health = 0;
+        }
+      }
+      if (robot.health &gt; 0)
+        stack.push_back(robot);
+    }
+
+    ranges::sort(stack, ranges::less{},
+                 [](const Robot&amp; robot) { return robot.index; });
+
+    for (const Robot&amp; robot : stack)
+      ans.push_back(robot.health);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Robot {
+  public int index;
+  public int position;
+  public int health;
+  public char direction;
+  public Robot(int index, int position, int health, char direction) {
+    this.index = index;
+    this.position = position;
+    this.health = health;
+    this.direction = direction;
+  }
+}
+
+class Solution {
+  public List&lt;Integer&gt; survivedRobotsHealths(int[] positions, int[] healths, String directions) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    Robot[] robots = new Robot[positions.length];
+    List&lt;Robot&gt; stack = new ArrayList&lt;&gt;(); // running robots
+
+    for (int i = 0; i &lt; positions.length; ++i)
+      robots[i] = new Robot(i, positions[i], healths[i], directions.charAt(i));
+
+    Arrays.sort(robots, Comparator.comparingInt((Robot robot) -&gt; robot.position));
+
+    for (Robot robot : robots) {
+      if (robot.direction == &#x27;R&#x27;) {
+        stack.add(robot);
+        continue;
+      }
+      // Collide with robots going right if any.
+      while (!stack.isEmpty() &amp;&amp; stack.get(stack.size() - 1).direction == &#x27;R&#x27; &amp;&amp; robot.health &gt; 0) {
+        if (stack.get(stack.size() - 1).health == robot.health) {
+          stack.remove(stack.size() - 1);
+          robot.health = 0;
+        } else if (stack.get(stack.size() - 1).health &lt; robot.health) {
+          stack.remove(stack.size() - 1);
+          robot.health -= 1;
+        } else { // stack[-1].health &gt; robot.health
+          stack.get(stack.size() - 1).health -= 1;
+          robot.health = 0;
+        }
+      }
+      if (robot.health &gt; 0)
+        stack.add(robot);
+    }
+
+    stack.sort(Comparator.comparingInt((Robot robot) -&gt; robot.index));
+
+    for (Robot robot : stack)
+      ans.add(robot.health);
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Robot:
+  index: int
+  position: int
+  health: int
+  direction: str
+
+
+class Solution:
+  def survivedRobotsHealths(
+      self,
+      positions: list[int],
+      healths: list[int],
+      directions: str,
+  ) -&gt; list[int]:
+    robots = sorted([Robot(index, position, health, direction)
+                     for index, (position, health, direction) in
+                     enumerate(zip(positions, healths, directions))],
+                    key=lambda x: x.position)
+    stack: list[Robot] = []  # running robots
+
+    for robot in robots:
+      if robot.direction == &#x27;R&#x27;:
+        stack.append(robot)
+        continue
+      # Collide with robots going right if any.
+      while stack and stack[-1].direction == &#x27;R&#x27; and robot.health &gt; 0:
+        if stack[-1].health == robot.health:
+          stack.pop()
+          robot.health = 0
+        elif stack[-1].health &lt; robot.health:
+          stack.pop()
+          robot.health -= 1
+        else:  # stack[-1].health &gt; robot.health
+          stack[-1].health -= 1
+          robot.health = 0
+      if robot.health &gt; 0:
+        stack.append(robot)
+
+    stack.sort(key=lambda robot: robot.index)
+    return [robot.health for robot in stack]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

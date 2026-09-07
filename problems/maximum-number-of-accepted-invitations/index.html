@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Accepted Invitations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Accepted Invitations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-accepted-invitations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-different-subsequences-gcds/" class="btn">← Previous</a>
+            <span>Problem 1820 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-customers-with-positive-revenue-this-year/" class="btn">Next →</a>
+        </div>
+        <h1>1820. Maximum Number of Accepted Invitations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Accepted Invitations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximumInvitations(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    int ans = 0;
+    vector&lt;int&gt; mates(n, -1);  // mates[i] := the i-th girl&#x27;s mate
+
+    for (int i = 0; i &lt; m; ++i)
+      if (canInvite(grid, i, vector&lt;bool&gt;(n), mates))
+        ++ans;
+
+    return ans;
+  }
+
+ private:
+  // Returns true if the i-th boy can make an invitation.
+  bool canInvite(const vector&lt;vector&lt;int&gt;&gt;&amp; grid, int i, vector&lt;bool&gt;&amp;&amp; seen,
+                 vector&lt;int&gt;&amp; mates) {
+    // The i-th boy asks each girl.
+    for (int j = 0; j &lt; seen.size(); ++j) {
+      if (!grid[i][j] || seen[j])
+        continue;
+      seen[j] = true;
+      if (mates[j] == -1 || canInvite(grid, mates[j], std::move(seen), mates)) {
+        mates[j] = i;  // Match the j-th girl with i-th boy.
+        return true;
+      }
+    }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximumInvitations(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    int ans = 0;
+    int[] mates = new int[n]; // mates[i] := the i-th girl&#x27;s mate
+
+    Arrays.fill(mates, -1);
+
+    for (int i = 0; i &lt; m; ++i)
+      if (canInvite(grid, i, new boolean[n], mates))
+        ++ans;
+
+    return ans;
+  }
+
+  // Returns true if the i-th boy can make an invitation.
+  private boolean canInvite(int[][] grid, int i, boolean[] seen, int[] mates) {
+    // The i-th boy asks each girl.
+    for (int j = 0; j &lt; seen.length; ++j) {
+      if (grid[i][j] == 0 || seen[j])
+        continue;
+      seen[j] = true;
+      if (mates[j] == -1 || canInvite(grid, mates[j], seen, mates)) {
+        mates[j] = i; // Match the j-th girl with i-th boy.
+        return true;
+      }
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumInvitations(self, grid: list[list[int]]) -&gt; int:
+    m = len(grid)
+    n = len(grid[0])
+    ans = 0
+    mates = [-1] * n  # mates[i] := the i-th girl&#x27;s mate
+
+    def canInvite(i: int, seen: list[bool]) -&gt; bool:
+      &quot;&quot;&quot;Returns True if the i-th boy can make an invitation.&quot;&quot;&quot;
+      # The i-th boy asks each girl.
+      for j in range(n):
+        if not grid[i][j] or seen[j]:
+          continue
+        seen[j] = True
+        if mates[j] == -1 or canInvite(mates[j], seen):
+          mates[j] = i  # Match the j-th girl with i-th boy.
+          return True
+      return False
+
+    for i in range(m):
+      seen = [False] * n
+      if canInvite(i, seen):
+        ans += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

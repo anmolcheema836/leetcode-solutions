@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Similarity II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sentence Similarity II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sentence-similarity-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/parse-lisp-expression/" class="btn">← Previous</a>
+            <span>Problem 737 of 3563</span>
+            <a href="/leetcode-solutions/problems/monotone-increasing-digits/" class="btn">Next →</a>
+        </div>
+        <h1>737. Sentence Similarity II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sentence Similarity II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool areSentencesSimilarTwo(vector&lt;string&gt;&amp; words1, vector&lt;string&gt;&amp; words2,
+                              vector&lt;vector&lt;string&gt;&gt;&amp; pairs) {
+    if (words1.size() != words2.size())
+      return false;
+
+    // graph[key] := all the similar words of key
+    unordered_map&lt;string, unordered_set&lt;string&gt;&gt; graph;
+
+    for (const vector&lt;string&gt;&amp; pair : pairs) {
+      graph[pair[1]].insert(pair[0]);
+      graph[pair[0]].insert(pair[1]);
+    }
+
+    for (int i = 0; i &lt; words1.size(); ++i) {
+      if (words1[i] == words2[i])
+        continue;
+      if (!graph.contains(words1[i]))
+        return false;
+      if (!dfs(graph, words1[i], words2[i], {}))
+        return false;
+    }
+
+    return true;
+  }
+
+ private:
+  bool dfs(const unordered_map&lt;string, unordered_set&lt;string&gt;&gt;&amp; graph,
+           const string&amp; source, const string&amp; target,
+           unordered_set&lt;string&gt;&amp;&amp; seen) {
+    if (graph.at(source).contains(target))
+      return true;
+
+    seen.insert(source);
+
+    for (const string&amp; child : graph.at(source)) {
+      if (seen.contains(child))
+        continue;
+      if (dfs(graph, child, target, std::move(seen)))
+        return true;
+    }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean areSentencesSimilarTwo(String[] words1, String[] words2,
+                                        List&lt;List&lt;String&gt;&gt; pairs) {
+    if (words1.length != words2.length)
+      return false;
+
+    // graph[key] := all the similar words of key
+    Map&lt;String, Set&lt;String&gt;&gt; graph = new HashMap&lt;&gt;();
+
+    for (List&lt;String&gt; pair : pairs) {
+      graph.putIfAbsent(pair.get(0), new HashSet&lt;&gt;());
+      graph.putIfAbsent(pair.get(1), new HashSet&lt;&gt;());
+      graph.get(pair.get(1)).add(pair.get(0));
+      graph.get(pair.get(0)).add(pair.get(1));
+    }
+
+    for (int i = 0; i &lt; words1.length; ++i) {
+      if (words1[i].equals(words2[i]))
+        continue;
+      if (!graph.containsKey(words1[i]))
+        return false;
+      if (!dfs(graph, words1[i], words2[i], new HashSet&lt;&gt;()))
+        return false;
+    }
+
+    return true;
+  }
+
+  private boolean dfs(Map&lt;String, Set&lt;String&gt;&gt; graph, final String source, final String target,
+                      Set&lt;String&gt; seen) {
+    if (graph.get(source).contains(target))
+      return true;
+
+    seen.add(source);
+
+    for (final String child : graph.get(source)) {
+      if (seen.contains(child))
+        continue;
+      if (dfs(graph, child, target, seen))
+        return true;
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def areSentencesSimilarTwo(
+      self,
+      words1: list[str],
+      words2: list[str],
+      pairs: list[list[str]],
+  ) -&gt; bool:
+    if len(words1) != len(words2):
+      return False
+
+    # graph[key] := all the similar words of key
+    graph = collections.defaultdict(set)
+
+    for a, b in pairs:
+      graph[a].add(b)
+      graph[b].add(a)
+
+    def dfs(word1: str, word2: str, seen: set) -&gt; bool:
+      if word1 in graph[word2]:
+        return True
+
+      seen.add(word1)
+
+      for child in graph[word1]:
+        if child in seen:
+          continue
+        if dfs(child, word2, seen):
+          return True
+
+      return False
+
+    for word1, word2 in zip(words1, words2):
+      if word1 == word2:
+        continue
+      if word1 not in graph:
+        return False
+      if not dfs(word1, word2, set()):
+        return False
+
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree of Coprimes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Tree of Coprimes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/tree-of-coprimes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/map-of-highest-peak/" class="btn">← Previous</a>
+            <span>Problem 1766 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-subtasks-that-did-not-execute/" class="btn">Next →</a>
+        </div>
+        <h1>1766. Tree of Coprimes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Tree of Coprimes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; getCoprimes(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;int&gt; ans(nums.size(), -1);
+    vector&lt;vector&lt;int&gt;&gt; tree(nums.size());
+    // stacks[i] := (node, depth)s of nodes with value i
+    vector&lt;stack&lt;pair&lt;int, int&gt;&gt;&gt; stacks(kMax + 1);
+
+    for (const vector&lt;int&gt; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      tree[u].push_back(v);
+      tree[v].push_back(u);
+    }
+
+    dfs(tree, 0, /*prev=*/-1, /*depth=*/0, nums, stacks, ans);
+    return ans;
+  }
+
+ private:
+  static constexpr int kMax = 50;
+
+  void dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev, int depth,
+           const vector&lt;int&gt;&amp; nums, vector&lt;stack&lt;pair&lt;int, int&gt;&gt;&gt;&amp; stacks,
+           vector&lt;int&gt;&amp; ans) {
+    ans[u] = getAncestor(u, stacks, nums);
+    stacks[nums[u]].push({u, depth});
+
+    for (const int v : tree[u])
+      if (v != prev)
+        dfs(tree, v, u, depth + 1, nums, stacks, ans);
+
+    stacks[nums[u]].pop();
+  }
+
+  int getAncestor(int u, const vector&lt;stack&lt;pair&lt;int, int&gt;&gt;&gt;&amp; stacks,
+                  const vector&lt;int&gt;&amp; nums) {
+    int maxNode = -1;
+    int maxDepth = -1;
+    for (int i = 1; i &lt;= kMax; ++i)
+      if (!stacks[i].empty() &amp;&amp; stacks[i].top().second &gt; maxDepth &amp;&amp;
+          __gcd(nums[u], i) == 1) {
+        maxNode = stacks[i].top().first;
+        maxDepth = stacks[i].top().second;
+      }
+    return maxNode;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] getCoprimes(int[] nums, int[][] edges) {
+    int[] ans = new int[nums.length];
+    Arrays.fill(ans, -1);
+    List&lt;Integer&gt;[] tree = new List[nums.length];
+    // stacks[i] := (node, depth)s of nodes with value i
+    Deque&lt;Pair&lt;Integer, Integer&gt;&gt;[] stacks = new Deque[MAX + 1];
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 1; i &lt;= MAX; ++i)
+      stacks[i] = new ArrayDeque&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      tree[u].add(v);
+      tree[v].add(u);
+    }
+
+    dfs(tree, 0, /*prev=*/-1, /*depth=*/0, nums, stacks, ans);
+    return ans;
+  }
+
+  private static final int MAX = 50;
+
+  private void dfs(List&lt;Integer&gt;[] tree, int u, int prev, int depth, int[] nums,
+                   Deque&lt;Pair&lt;Integer, Integer&gt;&gt;[] stacks, int[] ans) {
+    ans[u] = getAncestor(u, stacks, nums);
+    stacks[nums[u]].push(new Pair&lt;&gt;(u, depth));
+
+    for (final int v : tree[u])
+      if (v != prev)
+        dfs(tree, v, u, depth + 1, nums, stacks, ans);
+
+    stacks[nums[u]].pop();
+  }
+
+  private int getAncestor(int u, Deque&lt;Pair&lt;Integer, Integer&gt;&gt;[] stacks, int[] nums) {
+    int maxNode = -1;
+    int maxDepth = -1;
+    for (int i = 1; i &lt;= MAX; ++i)
+      if (!stacks[i].isEmpty() &amp;&amp; stacks[i].peek().getValue() &gt; maxDepth &amp;&amp; gcd(nums[u], i) == 1) {
+        maxNode = stacks[i].peek().getKey();
+        maxDepth = stacks[i].peek().getValue();
+      }
+    return maxNode;
+  }
+
+  private int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getCoprimes(self, nums: list[int], edges: list[list[int]]) -&gt; list[int]:
+    MAX = 50
+    ans = [-1] * len(nums)
+    tree = [[] for _ in range(len(nums))]
+    # stacks[i] := (node, depth)s of nodes with value i
+    stacks = [[] for _ in range(MAX + 1)]
+
+    for u, v in edges:
+      tree[u].append(v)
+      tree[v].append(u)
+
+    def getAncestor(u: int) -&gt; int:
+      maxNode = -1
+      maxDepth = -1
+      for i, stack in enumerate(stacks):
+        if stack and stack[-1][1] &gt; maxDepth and math.gcd(nums[u], i) == 1:
+          maxNode, maxDepth = stack[-1]
+      return maxNode
+
+    def dfs(u: int, prev: int, depth: int) -&gt; int:
+      ans[u] = getAncestor(u)
+      stacks[nums[u]].append((u, depth))
+
+      for v in tree[u]:
+        if v != prev:
+          dfs(v, u, depth + 1)
+
+      stacks[nums[u]].pop()
+
+    dfs(0, -1, 0)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Paths with Max Score - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Paths with Max Score written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-paths-with-max-score/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-mutated-array-closest-to-target/" class="btn">← Previous</a>
+            <span>Problem 1301 of 3563</span>
+            <a href="/leetcode-solutions/problems/deepest-leaves-sum/" class="btn">Next →</a>
+        </div>
+        <h1>1301. Number of Paths with Max Score</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Paths with Max Score efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; pathsWithMaxScore(vector&lt;string&gt;&amp; board) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    constexpr int kDirs[3][2] = {{0, 1}, {1, 0}, {1, 1}};
+    const int n = board.size();
+    // dp[i][j] := the maximum sum from (n - 1, n - 1) to (i, j)
+    vector&lt;vector&lt;int&gt;&gt; dp(n + 1, vector&lt;int&gt;(n + 1, -1));
+    // count[i][j] := the number of paths to get dp[i][j] from (n - 1, n - 1) to
+    // (i, j)
+    vector&lt;vector&lt;int&gt;&gt; count(n + 1, vector&lt;int&gt;(n + 1));
+
+    dp[0][0] = 0;
+    dp[n - 1][n - 1] = 0;
+    count[n - 1][n - 1] = 1;
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      for (int j = n - 1; j &gt;= 0; --j) {
+        if (board[i][j] == &#x27;S&#x27; || board[i][j] == &#x27;X&#x27;)
+          continue;
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (dp[i][j] &lt; dp[x][y]) {
+            dp[i][j] = dp[x][y];
+            count[i][j] = count[x][y];
+          } else if (dp[i][j] == dp[x][y]) {
+            count[i][j] += count[x][y];
+            count[i][j] %= kMod;
+          }
+        }
+        // If there&#x27;s path(s) from &#x27;S&#x27; to (i, j) and the cell is not &#x27;E&#x27;.
+        if (dp[i][j] != -1 &amp;&amp; board[i][j] != &#x27;E&#x27;) {
+          dp[i][j] += board[i][j] - &#x27;0&#x27;;
+          dp[i][j] %= kMod;
+        }
+      }
+
+    return {dp[0][0], count[0][0]};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] pathsWithMaxScore(List&lt;String&gt; board) {
+    final int MOD = 1_000_000_007;
+    final int[][] DIRS = {{0, 1}, {1, 0}, {1, 1}};
+    final int n = board.size();
+    // dp[i][j] := the maximum sum from (n - 1, n - 1) to (i, j)
+    int[][] dp = new int[n + 1][n + 1];
+    Arrays.stream(dp).forEach(A -&gt; Arrays.fill(A, -1));
+    // count[i][j] := the number of paths to get dp[i][j] from (n - 1, n - 1) to (i, j)
+    int[][] count = new int[n + 1][n + 1];
+
+    dp[0][0] = 0;
+    dp[n - 1][n - 1] = 0;
+    count[n - 1][n - 1] = 1;
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      for (int j = n - 1; j &gt;= 0; --j) {
+        if (board.get(i).charAt(j) == &#x27;S&#x27; || board.get(i).charAt(j) == &#x27;X&#x27;)
+          continue;
+        for (int[] dir : DIRS) {
+          final int x = i + dir[0];
+          final int y = j + dir[1];
+          if (dp[i][j] &lt; dp[x][y]) {
+            dp[i][j] = dp[x][y];
+            count[i][j] = count[x][y];
+          } else if (dp[i][j] == dp[x][y]) {
+            count[i][j] += count[x][y];
+            count[i][j] %= MOD;
+          }
+        }
+        // If there&#x27;s path(s) from &#x27;S&#x27; to (i, j) and the cell is not &#x27;E&#x27;.
+        if (dp[i][j] != -1 &amp;&amp; board.get(i).charAt(j) != &#x27;E&#x27;) {
+          dp[i][j] += board.get(i).charAt(j) - &#x27;0&#x27;;
+          dp[i][j] %= MOD;
+        }
+      }
+
+    return new int[] {dp[0][0], count[0][0]};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def pathsWithMaxScore(self, board: list[str]) -&gt; list[int]:
+    MOD = 1_000_000_007
+    DIRS = ((0, 1), (1, 0), (1, 1))
+    n = len(board)
+    # dp[i][j] := the maximum sum from (n - 1, n - 1) to (i, j)
+    dp = [[-1] * (n + 1) for _ in range(n + 1)]
+    # count[i][j] := the number of paths to get dp[i][j] from (n - 1, n - 1) to
+    # (i, j)
+    count = [[0] * (n + 1) for _ in range(n + 1)]
+
+    dp[0][0] = 0
+    dp[n - 1][n - 1] = 0
+    count[n - 1][n - 1] = 1
+
+    for i in reversed(range(n)):
+      for j in reversed(range(n)):
+        if board[i][j] == &#x27;S&#x27; or board[i][j] == &#x27;X&#x27;:
+          continue
+        for dx, dy in DIRS:
+          x = i + dx
+          y = j + dy
+          if dp[i][j] &lt; dp[x][y]:
+            dp[i][j] = dp[x][y]
+            count[i][j] = count[x][y]
+          elif dp[i][j] == dp[x][y]:
+            count[i][j] += count[x][y]
+            count[i][j] %= MOD
+
+        # If there&#x27;s path(s) from &#x27;S&#x27; to (i, j) and the cell is not &#x27;E&#x27;.
+        if dp[i][j] != -1 and board[i][j] != &#x27;E&#x27;:
+          dp[i][j] += int(board[i][j])
+          dp[i][j] %= MOD
+
+    return [dp[0][0], count[0][0]]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

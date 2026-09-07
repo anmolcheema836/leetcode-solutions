@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost to Reach Destination in Time - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost to Reach Destination in Time written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-to-reach-destination-in-time/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-game/" class="btn">← Previous</a>
+            <span>Problem 1928 of 3563</span>
+            <a href="/leetcode-solutions/problems/concatenation-of-array/" class="btn">Next →</a>
+        </div>
+        <h1>1928. Minimum Cost to Reach Destination in Time</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost to Reach Destination in Time efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minCost(int maxTime, vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+              vector&lt;int&gt;&amp; passingFees) {
+    const int n = passingFees.size();
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int w = edge[2];
+      graph[u].emplace_back(v, w);
+      graph[v].emplace_back(u, w);
+    }
+
+    return dijkstra(graph, 0, n - 1, maxTime, passingFees);
+  }
+
+ private:
+  int dijkstra(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int src, int dst,
+               int maxTime, const vector&lt;int&gt;&amp; passingFees) {
+    // cost[i] := the minimum cost to reach the i-th city
+    vector&lt;int&gt; cost(graph.size(), INT_MAX);
+    // dist[i] := the minimum time to reach the i-th city
+    vector&lt;int&gt; dist(graph.size(), maxTime + 1);
+
+    cost[src] = passingFees[src];
+    dist[src] = 0;
+    using T = tuple&lt;int, int, int&gt;;  // (cost[u], dist[u], u)
+    priority_queue&lt;T, vector&lt;T&gt;, greater&lt;&gt;&gt; minHeap;
+    minHeap.emplace(cost[src], dist[src], src);
+
+    while (!minHeap.empty()) {
+      const auto [currCost, d, u] = minHeap.top();
+      minHeap.pop();
+      if (u == dst)
+        return cost[dst];
+      if (d &gt; dist[u] &amp;&amp; currCost &gt; cost[u])
+        continue;
+      for (const auto&amp; [v, w] : graph[u]) {
+        if (d + w &gt; maxTime)
+          continue;
+        // Go from u -&gt; v.
+        if (currCost + passingFees[v] &lt; cost[v]) {
+          cost[v] = currCost + passingFees[v];
+          dist[v] = d + w;
+          minHeap.emplace(cost[v], dist[v], v);
+        } else if (d + w &lt; dist[v]) {
+          dist[v] = d + w;
+          minHeap.emplace(currCost + passingFees[v], dist[v], v);
+        }
+      }
+    }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minCost(int maxTime, int[][] edges, int[] passingFees) {
+    final int n = passingFees.length;
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      final int t = edge[2];
+      graph[u].add(new Pair&lt;&gt;(v, t));
+      graph[v].add(new Pair&lt;&gt;(u, t));
+    }
+
+    return dijkstra(graph, 0, n - 1, maxTime, passingFees);
+  }
+
+  private int dijkstra(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int src, int dst, int maxTime,
+                       int[] passingFees) {
+    int[] cost = new int[graph.length]; // cost[i] := the minimum cost to reach the i-th city
+    int[] dist = new int[graph.length]; // dist[i] := the minimum distance to reach the i-th city
+    Arrays.fill(cost, Integer.MAX_VALUE);
+    Arrays.fill(dist, maxTime + 1);
+
+    cost[0] = passingFees[0];
+    dist[0] = 0;
+    Queue&lt;int[]&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; a[0])) {
+      { offer(new int[] {cost[src], dist[src], src}); } // (cost[u], dist[u], u)
+    };
+
+    while (!minHeap.isEmpty()) {
+      final int currCost = minHeap.peek()[0];
+      final int d = minHeap.peek()[1];
+      final int u = minHeap.poll()[2];
+      if (u == dst)
+        return cost[dst];
+      if (d &gt; dist[u] &amp;&amp; currCost &gt; cost[u])
+        continue;
+      for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+        final int v = pair.getKey();
+        final int w = pair.getValue();
+        if (d + w &gt; maxTime)
+          continue;
+        // Go from x -&gt; y
+        if (currCost + passingFees[v] &lt; cost[v]) {
+          cost[v] = currCost + passingFees[v];
+          dist[v] = d + w;
+          minHeap.offer(new int[] {cost[v], dist[v], v});
+        } else if (d + w &lt; dist[v]) {
+          dist[v] = d + w;
+          minHeap.offer(new int[] {currCost + passingFees[v], dist[v], v});
+        }
+      }
+    }
+
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minCost(
+      self,
+      maxTime: int,
+      edges: list[list[int]],
+      passingFees: list[int],
+  ) -&gt; int:
+    n = len(passingFees)
+    graph = [[] for _ in range(n)]
+
+    for u, v, w in edges:
+      graph[u].append((v, w))
+      graph[v].append((u, w))
+
+    return self._dijkstra(graph, 0, n - 1, maxTime, passingFees)
+
+  def _dijkstra(
+      self,
+      graph: list[list[tuple[int, int]]],
+      src: int,
+      dst: int,
+      maxTime: int,
+      passingFees: list[int],
+  ) -&gt; int:
+    # cost[i] := the minimum cost to reach the i-th city
+    cost = [math.inf] * len(graph)
+    # dist[i] := the minimum time to reach the i-th city
+    dist = [maxTime + 1] * len(graph)
+
+    cost[src] = passingFees[src]
+    dist[src] = 0
+    minHeap = [(cost[src], dist[src], src)]  # (cost[u], dist[u], u)
+
+    while minHeap:
+      currCost, d, u = heapq.heappop(minHeap)
+      if u == dst:
+        return cost[dst]
+      if d &gt; dist[u] and currCost &gt; cost[u]:
+        continue
+      for v, w in graph[u]:
+        if d + w &gt; maxTime:
+          continue
+        # Go from u -&gt; v.
+        if currCost + passingFees[v] &lt; cost[v]:
+          cost[v] = currCost + passingFees[v]
+          dist[v] = d + w
+          heapq.heappush(minHeap, (cost[v], dist[v], v))
+        elif d + w &lt; dist[v]:
+          dist[v] = d + w
+          heapq.heappush(minHeap, (currCost + passingFees[v], dist[v], v))
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

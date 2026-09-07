@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Number of Beautiful Subsets - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Number of Beautiful Subsets written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-number-of-beautiful-subsets/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-knight-tour-configuration/" class="btn">← Previous</a>
+            <span>Problem 2597 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-missing-non-negative-integer-after-operations/" class="btn">Next →</a>
+        </div>
+        <h1>2597. The Number of Beautiful Subsets</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Number of Beautiful Subsets efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">// e.g. nums = [2, 3, 4, 4], k = 2
+//
+// subset[0] = [2, 4, 4&#x27;]
+// subset[1] = [1]
+// count = {2: 1, 4: 2, 1: 1}
+//
+// Initially, skip = len([]) = 0, pick = len([]) = 0
+//
+// * For values in subset[0]:
+//   After 2:
+//     skip = skip + pick = len([]) = 0
+//     pick = (2^count[2] - 1) * (1 + skip + pick)
+//          = len([[2]]) * len([[]])
+//          = len([[2]]) = 1
+//   After 4:
+//     skip = skip + pick = len([[2]]) = 1
+//     pick = (2^count[4] - 1) * (1 + skip)
+//          = len([[4], [4&#x27;], [4, 4&#x27;]]) * len([[]])
+//          = len([[4], [4&#x27;], [4, 4&#x27;]]) = 3
+//
+// * For values in subset[1]:
+//   After 1:
+//     skip = skip + pick
+//          = len([[2], [4], [4&#x27;], [4, 4&#x27;]]) = 4
+//     pick = (2^count[1] - 1) * (1 + skip + pick)
+//          = len([[1]]) * len([[], [2], [4], [4&#x27;], [4, 4&#x27;]])
+//          = len([[1], [1, 2], [1, 4], [1, 4&#x27;], [1, 4, 4&#x27;]]) = 5
+//
+// So, ans = skip + pick = 9
+
+class Solution {
+ public:
+  int beautifulSubsets(vector&lt;int&gt;&amp; nums, int k) {
+    constexpr int kMax = 1000;
+    vector&lt;int&gt; count(kMax + 1);
+    unordered_map&lt;int, set&lt;int&gt;&gt; modToSubset;
+
+    for (const int num : nums) {
+      ++count[num];
+      modToSubset[num % k].insert(num);
+    }
+
+    int prevNum = -k;
+    int skip = 0;
+    int pick = 0;
+
+    for (const auto&amp; [_, subset] : modToSubset)
+      for (const int num : subset) {
+        const int nonEmptyCount = pow(2, count[num]) - 1;
+        const int cacheSkip = skip;
+        skip += pick;
+        pick =
+            nonEmptyCount * (1 + cacheSkip + (num - prevNum == k ? 0 : pick));
+        prevNum = num;
+      }
+
+    return skip + pick;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">// e.g. nums = [2, 3, 4, 4], k = 2
+//
+// subset[0] = [2, 4, 4&#x27;]
+// subset[1] = [1]
+// count = {2: 1, 4: 2, 1: 1}
+//
+// Initially, skip = len([]) = 0, pick = len([]) = 0
+//
+// * For values in subset[0]:
+//   After 2:
+//     skip = skip + pick = len([]) = 0
+//     pick = (2^count[2] - 1) * (1 + skip + pick)
+//          = len([[2]]) * len([[]])
+//          = len([[2]]) = 1
+//   After 4:
+//     skip = skip + pick = len([[2]]) = 1
+//     pick = (2^count[4] - 1) * (1 + skip)
+//          = len([[4], [4&#x27;], [4, 4&#x27;]]) * len([[]])
+//          = len([[4], [4&#x27;], [4, 4&#x27;]]) = 3
+//
+// * For values in subset[1]:
+//   After 1:
+//     skip = skip + pick
+//          = len([[2], [4], [4&#x27;], [4, 4&#x27;]]) = 4
+//     pick = (2^count[1] - 1) * (1 + skip + pick)
+//          = len([[1]]) * len([[], [2], [4], [4&#x27;], [4, 4&#x27;]])
+//          = len([[1], [1, 2], [1, 4], [1, 4&#x27;], [1, 4, 4&#x27;]]) = 5
+//
+// So, ans = skip + pick = 9
+
+class Solution {
+  public int beautifulSubsets(int[] nums, int k) {
+    final int MAX = 1000;
+    int[] count = new int[MAX + 1];
+    Map&lt;Integer, Set&lt;Integer&gt;&gt; modToSubset = new HashMap&lt;&gt;();
+
+    for (final int num : nums) {
+      ++count[num];
+      modToSubset.putIfAbsent(num % k, new TreeSet&lt;&gt;());
+      modToSubset.get(num % k).add(num);
+    }
+
+    int prevNum = -k;
+    int skip = 0;
+    int pick = 0;
+
+    for (Set&lt;Integer&gt; subset : modToSubset.values())
+      for (final int num : subset) {
+        final int nonEmptyCount = (int) Math.pow(2, count[num]) - 1;
+        final int cacheSkip = skip;
+        skip += pick;
+        pick = nonEmptyCount * (1 + cacheSkip + (num - prevNum == k ? 0 : pick));
+        prevNum = num;
+      }
+
+    return skip + pick;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python"># e.g. nums = [2, 3, 4, 4], k = 2
+#
+# subset[0] = [2, 4, 4&#x27;]
+# subset[1] = [1]
+# count = {2: 1, 4: 2, 1: 1}
+#
+# Initially, skip = len([]) = 0, pick = len([]) = 0
+#
+# * For values in subset[0]:
+#   After 2:
+#     skip = skip + pick = len([]) = 0
+#     pick = (2^count[2] - 1) * (1 + skip + pick)
+#          = len([[2]]) * len([[]])
+#          = len([[2]]) = 1
+#   After 4:
+#     skip = skip + pick = len([[2]]) = 1
+#     pick = (2^count[4] - 1) * (1 + skip)
+#          = len([[4], [4&#x27;], [4, 4&#x27;]]) * len([[]])
+#          = len([[4], [4&#x27;], [4, 4&#x27;]]) = 3
+#
+# * For values in subset[1]:
+#   After 1:
+#     skip = skip + pick
+#          = len([[2], [4], [4&#x27;], [4, 4&#x27;]]) = 4
+#     pick = (2^count[1] - 1) * (1 + skip + pick)
+#          = len([[1]]) * len([[], [2], [4], [4&#x27;], [4, 4&#x27;]])
+#          = len([[1], [1, 2], [1, 4], [1, 4&#x27;], [1, 4, 4&#x27;]]) = 5
+#
+# So, ans = skip + pick = 9
+
+class Solution:
+  def beautifulSubsets(self, nums: list[int], k: int) -&gt; int:
+    count = collections.Counter(nums)
+    modToSubset = collections.defaultdict(set)
+
+    for num in nums:
+      modToSubset[num % k].add(num)
+
+    prevNum = -k
+    skip = 0
+    pick = 0
+
+    for subset in modToSubset.values():
+      for num in sorted(subset):
+        nonEmptyCount = 2**count[num] - 1
+        skip, pick = (skip + pick,
+                      nonEmptyCount *
+                      (1 + skip + (0 if num - prevNum == k else pick)))
+        prevNum = num
+
+    return skip + pick</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

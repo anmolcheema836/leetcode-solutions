@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize the Number of Target Nodes After Connecting Trees II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize the Number of Target Nodes After Connecting Trees II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-the-number-of-target-nodes-after-connecting-trees-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximize-the-number-of-target-nodes-after-connecting-trees-i/" class="btn">← Previous</a>
+            <span>Problem 3373 of 3563</span>
+            <a href="/leetcode-solutions/problems/first-letter-capitalization-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3373. Maximize the Number of Target Nodes After Connecting Trees II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize the Number of Target Nodes After Connecting Trees II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; maxTargetNodes(vector&lt;vector&lt;int&gt;&gt;&amp; edges1,
+                             vector&lt;vector&lt;int&gt;&gt;&amp; edges2) {
+    const int n = edges1.size() + 1;
+    const int m = edges2.size() + 1;
+    vector&lt;int&gt; ans;
+    const vector&lt;vector&lt;int&gt;&gt; graph1 = buildGraph(edges1);
+    const vector&lt;vector&lt;int&gt;&gt; graph2 = buildGraph(edges2);
+    vector&lt;bool&gt; parity1(n);
+    vector&lt;bool&gt; parity2(m);  // placeholder (parity2 is not used)
+    const int even1 = dfs(graph1, 0, -1, parity1, /*isEven=*/true);
+    const int even2 = dfs(graph2, 0, -1, parity2, /*isEven=*/true);
+    const int odd1 = n - even1;
+    const int odd2 = m - even2;
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int tree1 = parity1[i] ? even1 : odd1;
+      // Can connect the current node in tree1 to either an even node or an odd
+      // node in tree2.
+      const int tree2 = max(even2, odd2);
+      ans.push_back(tree1 + tree2);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the number of nodes that can be reached from u with even steps.
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, int prev,
+          vector&lt;bool&gt;&amp; parity, bool isEven) {
+    int res = isEven ? 1 : 0;
+    parity[u] = isEven;
+    for (const int v : graph[u])
+      if (v != prev)
+        res += dfs(graph, v, u, parity, !isEven);
+    return res;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; buildGraph(const vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;vector&lt;int&gt;&gt; graph(edges.size() + 1);
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+    return graph;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maxTargetNodes(int[][] edges1, int[][] edges2) {
+    final int n = edges1.length + 1;
+    final int m = edges2.length + 1;
+    List&lt;Integer&gt;[] graph1 = buildGraph(edges1, n);
+    List&lt;Integer&gt;[] graph2 = buildGraph(edges2, m);
+    boolean[] parity1 = new boolean[n];
+    boolean[] parity2 = new boolean[m]; // Placeholder (not used)
+    final int even1 = dfs(graph1, 0, -1, parity1, true);
+    final int even2 = dfs(graph2, 0, -1, parity2, true);
+    final int odd1 = n - even1;
+    final int odd2 = m - even2;
+    int[] ans = new int[n];
+
+    for (int i = 0; i &lt; n; i++) {
+      final int tree1 = parity1[i] ? even1 : odd1;
+      // Can connect the current node in tree1 to either an even or an odd node
+      // in tree2.
+      final int tree2 = Math.max(even2, odd2);
+      ans[i] = tree1 + tree2;
+    }
+
+    return ans;
+  }
+
+  // Returns the number of nodes that can be reached from u with even steps.
+  private int dfs(List&lt;Integer&gt;[] graph, int u, int prev, boolean[] parity, boolean isEven) {
+    int res = isEven ? 1 : 0;
+    parity[u] = isEven;
+    for (final int v : graph[u])
+      if (v != prev)
+        res += dfs(graph, v, u, parity, !isEven);
+    return res;
+  }
+
+  private List&lt;Integer&gt;[] buildGraph(int[][] edges, int n) {
+    List&lt;Integer&gt;[] graph = new ArrayList[n];
+    for (int i = 0; i &lt; n; i++)
+      graph[i] = new ArrayList&lt;&gt;();
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+    return graph;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxTargetNodes(
+      self,
+      edges1: list[list[int]],
+      edges2: list[list[int]]
+  ) -&gt; list[int]:
+    n = len(edges1) + 1
+    m = len(edges2) + 1
+    graph1 = self._buildGraph(edges1)
+    graph2 = self._buildGraph(edges2)
+    parity1 = [False] * n
+    parity2 = [False] * m  # placeholder (parity2 is not used)
+    even1 = self._dfs(graph1, 0, -1, parity1, True)
+    even2 = self._dfs(graph2, 0, -1, parity2, True)
+    odd1 = n - even1
+    odd2 = m - even2
+
+    # Can connect the current node in tree1 to either an even node or an odd
+    # node in tree2.
+    return [(even1 if parity1[i] else odd1) + max(even2, odd2)
+            for i in range(n)]
+
+  def _dfs(
+      self,
+      graph: list[list[int]],
+      u: int,
+      prev: int,
+      parity: list[bool],
+      isEven: bool
+  ) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the number of nodes that can be reached from u with even steps.
+    &quot;&quot;&quot;
+    res = 1 if isEven else 0
+    parity[u] = isEven
+    for v in graph[u]:
+      if v != prev:
+        res += self._dfs(graph, v, u, parity, not isEven)
+    return res
+
+  def _buildGraph(self, edges: list[list[int]]) -&gt; list[list[int]]:
+    graph = [[] for _ in range(len(edges) + 1)]
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+    return graph</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Taken to Mark All Nodes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Time Taken to Mark All Nodes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/time-taken-to-mark-all-nodes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-flips-to-make-binary-grid-palindromic-ii/" class="btn">← Previous</a>
+            <span>Problem 3241 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-neighbor-sum-service/" class="btn">Next →</a>
+        </div>
+        <h1>3241. Time Taken to Mark All Nodes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Time Taken to Mark All Nodes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Node {
+  int node = 0;  // the node number
+  int time = 0;  // the time taken to mark the entire subtree rooted at the node
+};
+
+struct Top2 {
+  // the direct child node, where the time taken to mark the entire subtree
+  // rooted at the node is the maximum
+  Node top1;
+  // the direct child node, where the time taken to mark the entire subtree
+  // rooted at the node is the second maximum
+  Node top2;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; timeTaken(vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    const int n = edges.size() + 1;
+    vector&lt;int&gt; ans(n);
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+    // dp[i] := the top two direct child nodes for subtree rooted at node i,
+    // where each node contains the time taken to mark the entire subtree rooted
+    // at the node itself
+    vector&lt;Top2&gt; dp(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      tree[u].push_back(v);
+      tree[v].push_back(u);
+    }
+
+    dfs(tree, 0, /*prev=*/-1, dp);
+    reroot(tree, 0, /*prev=*/-1, /*maxTime=*/0, dp, ans);
+    return ans;
+  }
+
+ private:
+  // Return the time taken to mark node u.
+  int getTime(int u) {
+    return u % 2 == 0 ? 2 : 1;
+  }
+
+  // Performs a DFS traversal of the subtree rooted at node `u`, computes the
+  // time taken to mark all nodes in the subtree, records the top two direct
+  // child nodes, where the time taken to mark the subtree rooted at each of the
+  // child nodes is maximized, and returns the top child node.
+  //
+  // These values are used later in the rerooting process.
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev, vector&lt;Top2&gt;&amp; dp) {
+    Node top1;
+    Node top2;
+    for (const int v : tree[u]) {
+      if (v == prev)
+        continue;
+      const int time = dfs(tree, v, u, dp) + getTime(v);
+      if (time &gt;= top1.time) {
+        top2 = top1;
+        top1 = Node(v, time);
+      } else if (time &gt; top2.time) {
+        top2 = Node(v, time);
+      }
+    }
+    dp[u] = Top2(top1, top2);
+    return top1.time;
+  }
+
+  // Reroots the tree at node `u` and updates the answer array, where `maxTime`
+  // is the longest path that doesn&#x27;t go through `u`&#x27;s subtree.
+  void reroot(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev, int maxTime,
+              const vector&lt;Top2&gt;&amp; dp, vector&lt;int&gt;&amp; ans) {
+    ans[u] = max(maxTime, dp[u].top1.time);
+    for (const int v : tree[u]) {
+      if (v == prev)
+        continue;
+      const int newMaxTime =
+          getTime(u) + max(maxTime, dp[u].top1.node == v ? dp[u].top2.time
+                                                         : dp[u].top1.time);
+      reroot(tree, v, u, newMaxTime, dp, ans);
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] timeTaken(int[][] edges) {
+    final int n = edges.length + 1;
+    int[] ans = new int[n];
+    List&lt;Integer&gt;[] tree = new List[n];
+    // dp[i] := the top two direct child nodes for subtree rooted at node i,
+    // where each node contains the time taken to mark the entire subtree rooted
+    // at the node itself
+    Top2[] dp = new Top2[n];
+
+    for (int i = 0; i &lt; n; ++i) {
+      tree[i] = new ArrayList&lt;&gt;();
+      dp[i] = new Top2();
+    }
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      tree[u].add(v);
+      tree[v].add(u);
+    }
+
+    dfs(tree, 0, /*prev=*/-1, dp);
+    reroot(tree, 0, /*prev=*/-1, /*maxTime=*/0, dp, ans);
+    return ans;
+  }
+
+  private record Node(int node, int time) {
+    Node() {
+      this(0, 0);
+    }
+  }
+
+  private record Top2(Node max1, Node max2) {
+    Top2() {
+      this(new Node(), new Node());
+    }
+  }
+
+  // Return the time taken to mark node u.
+  private int getTime(int u) {
+    return u % 2 == 0 ? 2 : 1;
+  }
+
+  // Performs a DFS traversal of the subtree rooted at node `u`, computes the
+  // time taken to mark all nodes in the subtree, records the top two direct
+  // child nodes, where the time taken to mark the subtree rooted at each of the
+  // child nodes is maximized, and returns the top child node.
+  //
+  // These values are used later in the rerooting process.
+  private int dfs(List&lt;Integer&gt;[] tree, int u, int prev, Top2[] dp) {
+    Node max1 = new Node();
+    Node max2 = new Node();
+    for (final int v : tree[u]) {
+      if (v == prev)
+        continue;
+      final int time = dfs(tree, v, u, dp) + getTime(v);
+      if (time &gt;= max1.time()) {
+        max2 = max1;
+        max1 = new Node(v, time);
+      } else if (time &gt; max2.time()) {
+        max2 = new Node(v, time);
+      }
+    }
+    dp[u] = new Top2(max1, max2);
+    return max1.time();
+  }
+
+  // Reroots the tree at node `u` and updates the answer array, where `maxTime`
+  // is the longest path that doesn&#x27;t go through `u`&#x27;s subtree.
+  private void reroot(List&lt;Integer&gt;[] tree, int u, int prev, int maxTime, Top2[] dp, int[] ans) {
+    ans[u] = Math.max(maxTime, dp[u].max1().time());
+    for (final int v : tree[u]) {
+      if (v == prev)
+        continue;
+      final int newMaxTime =
+          getTime(u) +
+          Math.max(maxTime, dp[u].max1().node() == v ? dp[u].max2().time() : dp[u].max1().time());
+      reroot(tree, v, u, newMaxTime, dp, ans);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Node:
+  node: int = 0  # the node number
+  time: int = 0  # the time taken to mark the entire subtree rooted at the node
+
+
+class Top2:
+  def __init__(self, top1: Node = Node(), top2: Node = Node()):
+    # the direct child node, where the time taken to mark the entire subtree
+    # rooted at the node is the maximum
+    self.top1 = top1
+    # the direct child node, where the time taken to mark the entire subtree
+    # rooted at the node is the second maximum
+    self.top2 = top2
+
+
+class Solution:
+  def timeTaken(self, edges: list[list[int]]) -&gt; list[int]:
+    n = len(edges) + 1
+    ans = [0] * n
+    tree = [[] for _ in range(n)]
+    # dp[i] := the top two direct child nodes for subtree rooted at node i,
+    # where each node contains the time taken to mark the entire subtree rooted
+    # at the node itself
+    dp = [Top2()] * n
+
+    for u, v in edges:
+      tree[u].append(v)
+      tree[v].append(u)
+
+    self._dfs(tree, 0, -1, dp)
+    self._reroot(tree, 0, -1, 0, dp, ans)
+    return ans
+
+  def _getTime(self, u: int) -&gt; int:
+    &quot;&quot;&quot;Returns the time taken to mark node u.&quot;&quot;&quot;
+    return 2 if u % 2 == 0 else 1
+
+  def _dfs(
+      self,
+      tree: list[list[int]],
+      u: int,
+      prev: int,
+      dp: list[Top2]
+  ) -&gt; int:
+    &quot;&quot;&quot;
+    Performs a DFS traversal of the subtree rooted at node `u`, computes the
+    time taken to mark all nodes in the subtree, records the top two direct
+    child nodes, where the time taken to mark the subtree rooted at each of the
+    child nodes is maximized, and returns the top child node.
+
+    These values are used later in the rerooting process.
+    &quot;&quot;&quot;
+    top1 = Node()
+    top2 = Node()
+    for v in tree[u]:
+      if v == prev:
+        continue
+      time = self._dfs(tree, v, u, dp) + self._getTime(v)
+      if time &gt;= top1.time:
+        top2 = top1
+        top1 = Node(v, time)
+      elif time &gt; top2.time:
+        top2 = Node(v, time)
+    dp[u] = Top2(top1, top2)
+    return top1.time
+
+  def _reroot(
+      self,
+      tree: list[list[int]],
+      u: int,
+      prev: int,
+      maxTime: int,
+      dp: list[Top2],
+      ans: list[int]
+  ) -&gt; None:
+    &quot;&quot;&quot;
+    Reroots the tree at node `u` and updates the answer array, where `maxTime`
+    is the longest path that doesn&#x27;t go through `u`&#x27;s subtree.
+    &quot;&quot;&quot;
+    ans[u] = max(maxTime, dp[u].top1.time)
+
+    for v in tree[u]:
+      if v == prev:
+        continue
+      newMaxTime = self._getTime(u) + max(
+          maxTime,
+          dp[u].top2.time if dp[u].top1.node == v else dp[u].top1.time
+      )
+      self._reroot(tree, v, u, newMaxTime, dp, ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

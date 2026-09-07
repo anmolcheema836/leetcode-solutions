@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying an Alien Dictionary - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Verifying an Alien Dictionary written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/verifying-an-alien-dictionary/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-component-size-by-common-factor/" class="btn">← Previous</a>
+            <span>Problem 953 of 3563</span>
+            <a href="/leetcode-solutions/problems/array-of-doubled-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>953. Verifying an Alien Dictionary</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Verifying an Alien Dictionary efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isAlienSorted(vector&lt;string&gt;&amp; words, const string&amp; order) {
+    vector&lt;char&gt; map(26);  // e.g. order = &quot;bca&quot; -&gt; map = [&#x27;c&#x27;, &#x27;a&#x27;, &#x27;b&#x27;]
+
+    for (int i = 0; i &lt; 26; ++i)
+      map[order[i] - &#x27;a&#x27;] = i + &#x27;a&#x27;;
+
+    for (string&amp; word : words)
+      for (char&amp; c : word)
+        c = map[c - &#x27;a&#x27;];
+
+    return is_sorted(words.begin(), words.end());
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isAlienSorted(String[] words, String order) {
+    char[] map = new char[26]; // e.g. order = &quot;bca&quot; -&gt; map = [&#x27;c&#x27;, &#x27;a&#x27;, &#x27;b&#x27;]
+
+    for (int i = 0; i &lt; 26; ++i)
+      map[order.charAt(i) - &#x27;a&#x27;] = (char) (i + &#x27;a&#x27;);
+
+    for (int i = 0; i + 1 &lt; words.length; ++i)
+      if (bigger(words[i], words[i + 1], map))
+        return false;
+
+    return true;
+  }
+
+  private boolean bigger(final String s1, final String s2, final char[] map) {
+    for (int i = 0; i &lt; s1.length() &amp;&amp; i &lt; s2.length(); ++i)
+      if (s1.charAt(i) != s2.charAt(i))
+        return map[s1.charAt(i) - &#x27;a&#x27;] &gt; map[s2.charAt(i) - &#x27;a&#x27;];
+    return s1.length() &gt; s2.length();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isAlienSorted(self, words: list[str], order: str) -&gt; bool:
+    dict = {c: i for i, c in enumerate(order)}
+    words = [[dict[c] for c in word] for word in words]
+    return all(w1 &lt;= w2 for w1, w2 in zip(words, words[1:]))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

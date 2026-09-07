@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Sum Obtained of Any Permutation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Sum Obtained of Any Permutation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-sum-obtained-of-any-permutation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-all-odd-length-subarrays/" class="btn">← Previous</a>
+            <span>Problem 1589 of 3563</span>
+            <a href="/leetcode-solutions/problems/make-sum-divisible-by-p/" class="btn">Next →</a>
+        </div>
+        <h1>1589. Maximum Sum Obtained of Any Permutation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Sum Obtained of Any Permutation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxSumRangeQuery(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; requests) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    long ans = 0;
+    // count[i] := the number of times nums[i] has been requested
+    vector&lt;int&gt; count(nums.size());
+
+    for (const vector&lt;int&gt;&amp; request : requests) {
+      const int start = request[0];
+      const int end = request[1];
+      ++count[start];
+      if (end + 1 &lt; nums.size())
+        --count[end + 1];
+    }
+
+    for (int i = 1; i &lt; nums.size(); ++i)
+      count[i] += count[i - 1];
+
+    ranges::sort(count);
+    ranges::sort(nums);
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      ans += static_cast&lt;long&gt;(nums[i]) * count[i];
+      ans %= kMod;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxSumRangeQuery(int[] nums, int[][] requests) {
+    final int MOD = 1_000_000_007;
+    long ans = 0;
+    // count[i] := the number of times nums[i] has been requested
+    int[] count = new int[nums.length];
+
+    for (int[] request : requests) {
+      final int start = request[0];
+      final int end = request[1];
+      ++count[start];
+      if (end + 1 &lt; nums.length)
+        --count[end + 1];
+    }
+
+    for (int i = 1; i &lt; nums.length; ++i)
+      count[i] += count[i - 1];
+
+    Arrays.sort(count);
+    Arrays.sort(nums);
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      ans += (long) nums[i] * count[i];
+      ans %= MOD;
+    }
+
+    return (int) ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxSumRangeQuery(self, nums: list[int], requests: list[list[int]]) -&gt; int:
+    MOD = 1_000_000_007
+    ans = 0
+    # count[i] := the number of times nums[i] has been requested
+    count = [0] * len(nums)
+
+    for start, end in requests:
+      count[start] += 1
+      if end + 1 &lt; len(nums):
+        count[end + 1] -= 1
+
+    for i in range(1, len(nums)):
+      count[i] += count[i - 1]
+
+    for num, c in zip(sorted(nums), sorted(count)):
+      ans += num * c
+      ans %= MOD
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

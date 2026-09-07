@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Restaurants by Vegan-Friendly, Price and Distance - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Filter Restaurants by Vegan-Friendly, Price and Distance written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/filter-restaurants-by-vegan-friendly-price-and-distance/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/remove-palindromic-subsequences/" class="btn">← Previous</a>
+            <span>Problem 1333 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/" class="btn">Next →</a>
+        </div>
+        <h1>1333. Filter Restaurants by Vegan-Friendly, Price and Distance</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Filter Restaurants by Vegan-Friendly, Price and Distance efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; filterRestaurants(vector&lt;vector&lt;int&gt;&gt;&amp; restaurants,
+                                int veganFriendly, int maxPrice,
+                                int maxDistance) {
+    vector&lt;int&gt; ans;
+    vector&lt;vector&lt;int&gt;&gt; filteredRestaurants;
+
+    for (const vector&lt;int&gt;&amp; restaurant : restaurants)
+      if (restaurant[2] &gt;= veganFriendly &amp;&amp; restaurant[3] &lt;= maxPrice &amp;&amp;
+          restaurant[4] &lt;= maxDistance)
+        filteredRestaurants.push_back(restaurant);
+
+    ranges::sort(filteredRestaurants, ranges::less{},
+                 [](const vector&lt;int&gt;&amp; restaurant) {
+      const int rating = restaurant[1];
+      const int id = restaurant[0];
+      return pair&lt;int, int&gt;{-rating, -id};
+    });
+
+    for (const vector&lt;int&gt;&amp; restaurant : filteredRestaurants)
+      ans.push_back(restaurant[0]);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; filterRestaurants(int[][] restaurants, int veganFriendly, int maxPrice,
+                                         int maxDistance) {
+    return Arrays.stream(restaurants)
+        .filter(r -&gt; r[2] &gt;= veganFriendly &amp;&amp; r[3] &lt;= maxPrice &amp;&amp; r[4] &lt;= maxDistance)
+        .sorted(Comparator.comparingInt((int[] r) -&gt; - r[1]).thenComparingInt((int[] r) -&gt; - r[0]))
+        .map(r -&gt; r[0])
+        .collect(Collectors.toList());
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def filterRestaurants(
+      self,
+      restaurants: list[list[int]],
+      veganFriendly: int,
+      maxPrice: int,
+      maxDistance: int,
+  ) -&gt; list[int]:
+    restaurants.sort(key=lambda x: (-x[1], -x[0]))
+    return [i for i, _, v, p, d in restaurants
+            if v &gt;= veganFriendly and p &lt;= maxPrice and d &lt;= maxDistance]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

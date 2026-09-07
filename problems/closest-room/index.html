@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closest Room - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Closest Room written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/closest-room/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-element-after-decreasing-and-rearranging/" class="btn">← Previous</a>
+            <span>Problem 1847 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-distance-to-the-target-element/" class="btn">Next →</a>
+        </div>
+        <h1>1847. Closest Room</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Closest Room efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; closestRoom(vector&lt;vector&lt;int&gt;&gt;&amp; rooms,
+                          vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;int&gt; ans(queries.size());
+    set&lt;int&gt; roomIds;
+
+    for (int i = 0; i &lt; queries.size(); ++i)
+      queries[i].push_back(i);
+
+    ranges::sort(rooms, ranges::greater{},
+                 [](const vector&lt;int&gt;&amp; room) { return room[1]; });
+    ranges::sort(queries, ranges::greater{},
+                 [](const vector&lt;int&gt;&amp; query) { return query[1]; });
+
+    int i = 0;  // rooms&#x27; index
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      while (i &lt; rooms.size() &amp;&amp; rooms[i][1] &gt;= query[1])
+        roomIds.insert(rooms[i++][0]);
+      ans[query[2]] = searchClosestRoomId(roomIds, query[0]);
+    }
+
+    return ans;
+  }
+
+ private:
+  int searchClosestRoomId(set&lt;int&gt;&amp; roomIds, int preferred) {
+    const auto it = roomIds.lower_bound(preferred);
+    const int id1 = it == roomIds.cbegin() ? -1 : *(prev(it));
+    const int id2 = it == roomIds.cend() ? -1 : *it;
+    if (id1 == -1)
+      return id2;
+    if (id2 == -1)
+      return id1;
+    if (abs(preferred - id1) &lt;= abs(preferred - id2))
+      return id1;
+    return id2;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] closestRoom(int[][] rooms, int[][] queries) {
+    int[] ans = new int[queries.length];
+    Integer[] indices = new Integer[queries.length];
+    TreeSet&lt;Integer&gt; roomIds = new TreeSet&lt;&gt;();
+
+    for (int i = 0; i &lt; queries.length; ++i)
+      indices[i] = i;
+
+    Arrays.sort(rooms, Comparator.comparingInt(room -&gt; - room[1]));
+    Arrays.sort(indices, Comparator.comparingInt(index -&gt; - queries[index][1]));
+
+    int i = 0; // rooms&#x27; index
+    for (final int index : indices) {
+      while (i &lt; rooms.length &amp;&amp; rooms[i][1] &gt;= queries[index][1])
+        roomIds.add(rooms[i++][0]);
+      ans[index] = searchClosestRoomId(roomIds, queries[index][0]);
+    }
+
+    return ans;
+  }
+
+  private int searchClosestRoomId(TreeSet&lt;Integer&gt; roomIds, int preferred) {
+    Integer floor = roomIds.floor(preferred);
+    Integer ceiling = roomIds.ceiling(preferred);
+    final int id1 = floor == null ? -1 : floor;
+    final int id2 = ceiling == null ? -1 : ceiling;
+    if (id1 == -1)
+      return id2;
+    if (id2 == -1)
+      return id1;
+    if (Math.abs(preferred - id1) &lt;= Math.abs(preferred - id2))
+      return id1;
+    return id2;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class Solution:
+  def closestRoom(
+      self,
+      rooms: list[list[int]],
+      queries: list[list[int]],
+  ) -&gt; list[int]:
+    ans = [0] * len(queries)
+    qs = [[*q, i] for i, q in enumerate(queries)]
+    roomIds = SortedList()
+
+    rooms.sort(key=lambda x: -x[1])
+    qs.sort(key=lambda x: -x[1])
+
+    def searchClosestRoomId(roomIds: SortedList, preferred: int):
+      if not roomIds:
+        return -1
+
+      candIds = []
+      i = roomIds.bisect_right(preferred)
+      if i &gt; 0:
+        candIds.append(roomIds[i - 1])
+      if i &lt; len(roomIds):
+        candIds.append(roomIds[i])
+      return min(candIds, key=lambda x: abs(x - preferred))
+
+    i = 0  # rooms&#x27; index
+    for preferred, minSize, index in qs:
+      while i &lt; len(rooms) and rooms[i][1] &gt;= minSize:
+        roomIds.add(rooms[i][0])
+        i += 1
+      ans[index] = searchClosestRoomId(roomIds, preferred)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

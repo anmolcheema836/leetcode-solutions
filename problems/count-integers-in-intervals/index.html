@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Integers in Intervals - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Integers in Intervals written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-integers-in-intervals/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-combination-with-bitwise-and-greater-than-zero/" class="btn">← Previous</a>
+            <span>Problem 2276 of 3563</span>
+            <a href="/leetcode-solutions/problems/closest-node-to-path-in-tree/" class="btn">Next →</a>
+        </div>
+        <h1>2276. Count Integers in Intervals</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Integers in Intervals efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class CountIntervals {
+ public:
+  void add(int left, int right) {
+    while (isOverlapped(left, right)) {
+      auto it = prev(intervals.upper_bound(right));
+      const int l = it-&gt;first;
+      const int r = it-&gt;second;
+      left = min(left, l);
+      right = max(right, r);
+      intervals.erase(l);
+      cnt -= r - l + 1;
+    }
+
+    intervals[left] = right;
+    cnt += right - left + 1;
+  }
+
+  int count() {
+    return cnt;
+  }
+
+ private:
+  map&lt;int, int&gt; intervals;
+  int cnt = 0;
+
+  bool isOverlapped(int left, int right) {
+    auto it = intervals.upper_bound(right);
+    return it != intervals.begin() &amp;&amp; prev(it)-&gt;second &gt;= left;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class CountIntervals {
+  public void add(int left, int right) {
+    while (isOverlapped(left, right)) {
+      final int l = intervals.floorKey(right);
+      final int r = intervals.get(l);
+      left = Math.min(left, l);
+      right = Math.max(right, r);
+      intervals.remove(l);
+      count -= r - l + 1;
+    }
+
+    intervals.put(left, right);
+    count += right - left + 1;
+  }
+
+  public int count() {
+    return count;
+  }
+
+  private TreeMap&lt;Integer, Integer&gt; intervals = new TreeMap&lt;&gt;();
+  private int count = 0;
+
+  private boolean isOverlapped(int left, int right) {
+    // L := the maximum number &lt;= end
+    Integer l = intervals.floorKey(right);
+    return l != null &amp;&amp; intervals.get(l) &gt;= left;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedDict
+
+
+class CountIntervals:
+  def __init__(self):
+    self.intervals = SortedDict()
+    self.cnt = 0
+
+  def add(self, left: int, right: int) -&gt; None:
+    while self._isOverlapped(left, right):
+      i = self.intervals.bisect_right(right) - 1
+      l, r = self.intervals.popitem(i)
+      left = min(left, l)
+      right = max(right, r)
+      self.cnt -= r - l + 1
+
+    self.intervals[left] = right
+    self.cnt += right - left + 1
+
+  def count(self) -&gt; int:
+    return self.cnt
+
+  def _isOverlapped(self, left: int, right: int) -&gt; bool:
+    i = self.intervals.bisect_right(right)
+    return i &gt; 0 and self.intervals.peekitem(i - 1)[1] &gt;= left</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

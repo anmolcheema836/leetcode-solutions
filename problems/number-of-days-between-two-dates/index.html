@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Days Between Two Dates - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Days Between Two Dates written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-days-between-two-dates/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-all-valid-pickup-and-delivery-options/" class="btn">← Previous</a>
+            <span>Problem 1360 of 3563</span>
+            <a href="/leetcode-solutions/problems/validate-binary-tree-nodes/" class="btn">Next →</a>
+        </div>
+        <h1>1360. Number of Days Between Two Dates</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Days Between Two Dates efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int daysBetweenDates(string date1, string date2) {
+    return abs(daysFrom1971(date1) - daysFrom1971(date2));
+  }
+
+ private:
+  const vector&lt;int&gt; days{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+  int daysFrom1971(const string&amp; date) {
+    const int year = stoi(date1.substr(0, 4));
+    const int month = stoi(date1.substr(5, 2));
+    const int day = stoi(date1.substr(8, 2));
+    int res = 0;
+    for (int i = 1971; i &lt; year; ++i)
+      res += isLeapYear(i) ? 366 : 365;
+    for (int i = 0; i &lt; month; ++i)
+      res += days[i];
+    if (month &gt; 2 &amp;&amp; isLeapYear(year))
+      ++res;
+    res += day;
+    return res;
+  }
+
+  bool isLeapYear(int year) {
+    return year % 4 == 0 &amp;&amp; year % 100 != 0 || year % 400 == 0;
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int daysBetweenDates(String date1, String date2) {
+    return Math.abs(daysFrom1971(date1) - daysFrom1971(date2));
+  }
+
+  private static final int[] days = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+  private int daysFrom1971(final String date) {
+    final int year = Integer.valueOf(date.substring(0, 4));
+    final int month = Integer.valueOf(date.substring(5, 7));
+    final int day = Integer.valueOf(date.substring(8));
+    int res = 0;
+    for (int i = 1971; i &lt; year; ++i)
+      res += isLeapYear(i) ? 366 : 365;
+    for (int i = 0; i &lt; month; ++i)
+      res += days[i];
+    if (month &gt; 2 &amp;&amp; isLeapYear(year))
+      ++res;
+    return res + day;
+  }
+
+  private boolean isLeapYear(int year) {
+    return year % 4 == 0 &amp;&amp; year % 100 != 0 || year % 400 == 0;
+  };
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def daysBetweenDates(self, date1: str, date2: str) -&gt; int:
+    days = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+    def isLeapYear(year: int) -&gt; bool:
+      return year % 4 == 0 and year % 100 != 0 or year % 400 == 0
+
+    def daysFrom1971(date: str) -&gt; int:
+      year, month, day = map(int, date.split(&#x27;-&#x27;))
+      return (365 * (year - 1971) + sum(map(isLeapYear, range(1971, year))) +
+              sum(days[:month]) + day + (month &gt; 2 and isLeapYear(year)))
+
+    return abs(daysFrom1971(date1) - daysFrom1971(date2))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

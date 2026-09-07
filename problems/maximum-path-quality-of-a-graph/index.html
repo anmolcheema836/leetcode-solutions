@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Path Quality of a Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Path Quality of a Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-path-quality-of-a-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimized-maximum-of-products-distributed-to-any-store/" class="btn">← Previous</a>
+            <span>Problem 2065 of 3563</span>
+            <a href="/leetcode-solutions/problems/account-balance/" class="btn">Next →</a>
+        </div>
+        <h1>2065. Maximum Path Quality of a Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Path Quality of a Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximalPathQuality(vector&lt;int&gt;&amp; values, vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                         int maxTime) {
+    const int n = values.size();
+    int ans = 0;
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+    vector&lt;int&gt; seen(n);
+    seen[0] = 1;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int time = edge[2];
+      graph[u].emplace_back(v, time);
+      graph[v].emplace_back(u, time);
+    }
+
+    dfs(graph, values, 0, values[0], maxTime, seen, ans);
+    return ans;
+  }
+
+ private:
+  void dfs(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph,
+           const vector&lt;int&gt;&amp; values, int u, int quality, int remainingTime,
+           vector&lt;int&gt;&amp; seen, int&amp; ans) {
+    if (u == 0)
+      ans = max(ans, quality);
+    for (const auto&amp; [v, time] : graph[u]) {
+      if (time &gt; remainingTime)
+        continue;
+      const int newQuality = quality + values[v] * (seen[v] == 0);
+      ++seen[v];
+      dfs(graph, values, v, newQuality, remainingTime - time, seen, ans);
+      --seen[v];
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximalPathQuality(int[] values, int[][] edges, int maxTime) {
+    final int n = values.length;
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    int[] seen = new int[n];
+    seen[0] = 1;
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      final int time = edge[2];
+      graph[u].add(new Pair&lt;&gt;(v, time));
+      graph[v].add(new Pair&lt;&gt;(u, time));
+    }
+
+    dfs(graph, values, 0, values[0], maxTime, seen);
+    return ans;
+  }
+
+  private int ans = 0;
+
+  private void dfs(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int[] values, int u, int quality,
+                   int remainingTime, int[] seen) {
+    if (u == 0)
+      ans = Math.max(ans, quality);
+    for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final int time = pair.getValue();
+      if (time &gt; remainingTime)
+        continue;
+      final int newQuality = quality + values[v] * (seen[v] == 0 ? 1 : 0);
+      ++seen[v];
+      dfs(graph, values, v, newQuality, remainingTime - time, seen);
+      --seen[v];
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximalPathQuality(
+      self,
+      values: list[int],
+      edges: list[list[int]],
+      maxTime: int,
+  ) -&gt; int:
+    ans = 0
+    graph = [[] for _ in range(len(values))]
+    # (node, quality, remainingTime, seen)
+    q = collections.deque([(0, values[0], maxTime, {0})])
+
+    for u, v, time in edges:
+      graph[u].append((v, time))
+      graph[v].append((u, time))
+
+    while q:
+      u, quality, remainingTime, seen = q.popleft()
+      if u == 0:
+        ans = max(ans, quality)
+      for v, time in graph[u]:
+        if time &lt;= remainingTime:
+          q.append(
+              (v, quality + values[v] * (v not in seen),
+               remainingTime - time, seen | set([v])))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

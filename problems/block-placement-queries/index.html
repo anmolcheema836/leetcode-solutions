@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Placement Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Block Placement Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/block-placement-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-number-of-distinct-colors-among-the-balls/" class="btn">← Previous</a>
+            <span>Problem 3161 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-number-of-good-pairs-i/" class="btn">Next →</a>
+        </div>
+        <h1>3161. Block Placement Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Block Placement Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FenwickTree {
+ public:
+  FenwickTree(int n) : vals(n + 1) {}
+
+  void maximize(int i, int val) {
+    while (i &lt; vals.size()) {
+      vals[i] = max(vals[i], val);
+      i += lowbit(i);
+    }
+  }
+
+  int get(int i) const {
+    int res = 0;
+    while (i &gt; 0) {
+      res = max(res, vals[i]);
+      i -= lowbit(i);
+    }
+    return res;
+  }
+
+ private:
+  vector&lt;int&gt; vals;
+
+  static int lowbit(int i) {
+    return i &amp; -i;
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;bool&gt; getResults(vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const int n = min(50000, static_cast&lt;int&gt;(queries.size()) * 3);
+    vector&lt;bool&gt; ans;
+    FenwickTree tree(n + 1);
+    set&lt;int&gt; obstacles{0, n};  // sentinel values
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int type = query[0];
+      if (type == 1) {
+        const int x = query[1];
+        obstacles.insert(x);
+      }
+    }
+
+    for (auto it = obstacles.begin(); std::next(it) != obstacles.end(); ++it) {
+      const int x1 = *it;
+      const int x2 = *std::next(it);
+      tree.maximize(x2, x2 - x1);
+    }
+
+    for (int i = queries.size() - 1; i &gt;= 0; --i) {
+      const int type = queries[i][0];
+      const int x = queries[i][1];
+      if (type == 1) {
+        const auto it = obstacles.find(x);
+        if (next(it) != obstacles.end())  // x is not the last element.
+          tree.maximize(*next(it), *next(it) - *prev(it));
+        obstacles.erase(it);
+      } else {
+        const int sz = queries[i][2];
+        const auto it = obstacles.upper_bound(x);
+        const int prev = *std::prev(it);
+        ans.push_back(tree.get(prev) &gt;= sz || x - prev &gt;= sz);
+      }
+    }
+
+    ranges::reverse(ans);
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FenwickTree {
+  public FenwickTree(int n) {
+    vals = new int[n + 1];
+  }
+
+  public void add(int i, int val) {
+    while (i &lt; vals.length) {
+      vals[i] = Math.max(vals[i], val);
+      i += lowbit(i);
+    }
+  }
+
+  public int get(int i) {
+    int res = 0;
+    while (i &gt; 0) {
+      res = Math.max(res, vals[i]);
+      i -= lowbit(i);
+    }
+    return res;
+  }
+
+  private int[] vals;
+
+  private static int lowbit(int i) {
+    return i &amp; -i;
+  }
+}
+
+class Solution {
+  public List&lt;Boolean&gt; getResults(int[][] queries) {
+    final int n = Math.min(50000, queries.length * 3);
+    List&lt;Boolean&gt; ans = new ArrayList&lt;&gt;();
+    FenwickTree tree = new FenwickTree(n + 1);
+    TreeSet&lt;Integer&gt; obstacles = new TreeSet&lt;&gt;(Arrays.asList(0, n)); // sentinel values
+
+    for (int[] query : queries) {
+      final int type = query[0];
+      if (type == 1) {
+        final int x = query[1];
+        obstacles.add(x);
+      }
+    }
+
+    Iterator&lt;Integer&gt; it = obstacles.iterator();
+    int x1 = it.next();
+    while (it.hasNext()) {
+      final int x2 = it.next();
+      tree.add(x2, x2 - x1);
+      x1 = x2;
+    }
+
+    for (int i = queries.length - 1; i &gt;= 0; --i) {
+      final int type = queries[i][0];
+      final int x = queries[i][1];
+      if (type == 1) {
+        final Integer next = obstacles.higher(x);
+        final Integer prev = obstacles.lower(x);
+        if (next != null)
+          tree.add(next, next - prev);
+        obstacles.remove(x);
+      } else {
+        final int sz = queries[i][2];
+        final int prev = obstacles.floor(x);
+        ans.add(tree.get(prev) &gt;= sz || x - prev &gt;= sz);
+      }
+    }
+
+    Collections.reverse(ans);
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class FenwickTree:
+  def __init__(self, n: int):
+    self.vals = [0] * (n + 1)
+
+  def maximize(self, i: int, val: int) -&gt; None:
+    while i &lt; len(self.vals):
+      self.vals[i] = max(self.vals[i], val)
+      i += FenwickTree.lowtree(i)
+
+  def get(self, i: int) -&gt; int:
+    res = 0
+    while i &gt; 0:
+      res = max(res, self.vals[i])
+      i -= FenwickTree.lowtree(i)
+    return res
+
+  @staticmethod
+  def lowtree(i: int) -&gt; int:
+    return i &amp; -i
+
+
+class Solution:
+  def getResults(self, queries: list[list[int]]) -&gt; list[bool]:
+    n = min(50000, len(queries) * 3)
+    ans = []
+    tree = FenwickTree(n + 1)
+    obstacles = SortedList([0, n])  # sentinel values
+
+    for query in queries:
+      type = query[0]
+      if type == 1:
+        x = query[1]
+        obstacles.add(x)
+
+    for x1, x2 in itertools.pairwise(obstacles):
+      tree.maximize(x2, x2 - x1)
+
+    for query in reversed(queries):
+      type = query[0]
+      x = query[1]
+      if type == 1:
+        i = obstacles.index(x)
+        next = obstacles[i + 1]
+        prev = obstacles[i - 1]
+        obstacles.remove(x)
+        tree.maximize(next, next - prev)
+      else:
+        sz = query[2]
+        i = obstacles.bisect_right(x)
+        prev = obstacles[i - 1]
+        ans.append(tree.get(prev) &gt;= sz or x - prev &gt;= sz)
+
+    return ans[::-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

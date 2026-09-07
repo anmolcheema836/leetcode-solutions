@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequentially Ordinal Rank Tracker - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sequentially Ordinal Rank Tracker written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sequentially-ordinal-rank-tracker/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/detonate-the-maximum-bombs/" class="btn">← Previous</a>
+            <span>Problem 2102 of 3563</span>
+            <a href="/leetcode-solutions/problems/rings-and-rods/" class="btn">Next →</a>
+        </div>
+        <h1>2102. Sequentially Ordinal Rank Tracker</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sequentially Ordinal Rank Tracker efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Location {
+  string name;
+  int score;
+  Location(const string&amp; name, int score)
+      : name(std::move(name)), score(score) {}
+};
+
+class SORTracker {
+ public:
+  void add(const string&amp; name, int score) {
+    l.emplace(name, score);
+    if (l.size() &gt; k + 1) {
+      const Location location = l.top();
+      l.pop();
+      r.emplace(location.name, location.score);
+    }
+  }
+
+  string get() {
+    const string name = l.top().name;
+    if (!r.empty()) {
+      const Location location = r.top();
+      r.pop();
+      l.emplace(location.name, location.score);
+    }
+    ++k;
+    return name;
+  }
+
+ private:
+  struct CompareLeftMinHeap {
+    bool operator()(const Location&amp; a, const Location&amp; b) {
+      return a.score == b.score ? a.name &lt; b.name : a.score &gt; b.score;
+    }
+  };
+
+  struct CompareRightMaxHeap {
+    bool operator()(const Location&amp; a, const Location&amp; b) {
+      return a.score == b.score ? a.name &gt; b.name : a.score &lt; b.score;
+    }
+  };
+
+  priority_queue&lt;Location, vector&lt;Location&gt;, CompareLeftMinHeap&gt; l;
+  priority_queue&lt;Location, vector&lt;Location&gt;, CompareRightMaxHeap&gt; r;
+  int k = 0;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class SORTracker {
+  public void add(String name, int score) {
+    l.offer(new Location(name, score));
+    if (l.size() &gt; k + 1)
+      r.offer(l.poll());
+  }
+
+  public String get() {
+    final String name = l.peek().name;
+    if (!r.isEmpty())
+      l.offer(r.poll());
+    ++k;
+    return name;
+  }
+
+  private record Location(String name, int score) {}
+
+  private Queue&lt;Location&gt; l =
+      new PriorityQueue&lt;&gt;(Comparator.comparingInt(Location::score)
+                              .thenComparing(Location::name, Comparator.reverseOrder()));
+  private Queue&lt;Location&gt; r =
+      new PriorityQueue&lt;&gt;(Comparator.comparingInt(Location::score, Comparator.reverseOrder())
+                              .thenComparing(Location::name));
+  private int k;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Location:
+  def __init__(self, name: str, score: int):
+    self.name = name
+    self.score = score
+
+  def __lt__(self, location):
+    if self.score == location.score:
+      return self.name &gt; location.name
+    return self.score &lt; location.score
+
+
+class SORTracker:
+  def __init__(self):
+    self.l = []
+    self.r = []
+    self.k = 0  the number of times get() called
+
+  def add(self, name: str, score: int) -&gt; None:
+    heapq.heappush(self.l, Location(name, score))
+    if len(self.l) &gt; self.k + 1:
+      location = heapq.heappop(self.l)
+      heapq.heappush(self.r, (-location.score, location.name))
+
+  def get(self) -&gt; str:
+    name = self.l[0].name
+    if self.r:
+      topScore, topName = heapq.heappop(self.r)
+      heapq.heappush(self.l, Location(topName, -topScore))
+    self.k += 1
+    return name</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

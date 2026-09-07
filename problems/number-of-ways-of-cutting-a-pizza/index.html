@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Ways of Cutting a Pizza - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Ways of Cutting a Pizza written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-ways-of-cutting-a-pizza/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-time-to-collect-all-apples-in-a-tree/" class="btn">← Previous</a>
+            <span>Problem 1444 of 3563</span>
+            <a href="/leetcode-solutions/problems/apples-oranges/" class="btn">Next →</a>
+        </div>
+        <h1>1444. Number of Ways of Cutting a Pizza</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Ways of Cutting a Pizza efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int ways(vector&lt;string&gt;&amp; pizza, int k) {
+    const int M = pizza.size();
+    const int N = pizza[0].size();
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; mem(M,
+                                    vector&lt;vector&lt;int&gt;&gt;(N, vector&lt;int&gt;(k, -1)));
+    vector&lt;vector&lt;int&gt;&gt; prefix(M + 1, vector&lt;int&gt;(N + 1));
+
+    for (int i = 0; i &lt; M; ++i)
+      for (int j = 0; j &lt; N; ++j)
+        prefix[i + 1][j + 1] = (pizza[i][j] == &#x27;A&#x27;) + prefix[i][j + 1] +
+                               prefix[i + 1][j] - prefix[i][j];
+
+    return ways(0, 0, k - 1, M, N, prefix, mem);
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  // Returns the number of ways to cut pizza[m..M)[n..N) with k cuts.
+  int ways(int m, int n, int k, const int M, const int N,
+           const vector&lt;vector&lt;int&gt;&gt;&amp; prefix,
+           vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&amp; mem) {
+    if (k == 0)
+      return hasApple(prefix, m, M, n, N) ? 1 : 0;
+    if (mem[m][n][k] != -1)
+      return mem[m][n][k];
+
+    mem[m][n][k] = 0;
+
+    for (int i = m + 1; i &lt; M; ++i)  // Cut horizontally.
+      if (hasApple(prefix, m, i, n, N) &amp;&amp; hasApple(prefix, i, M, n, N)) {
+        mem[m][n][k] += ways(i, n, k - 1, M, N, prefix, mem);
+        mem[m][n][k] %= kMod;
+      }
+
+    for (int j = n + 1; j &lt; N; ++j)  // Cut vertically.
+      if (hasApple(prefix, m, M, n, j) &amp;&amp; hasApple(prefix, m, M, j, N)) {
+        mem[m][n][k] += ways(m, j, k - 1, M, N, prefix, mem);
+        mem[m][n][k] %= kMod;
+      }
+
+    return mem[m][n][k];
+  }
+
+  // Returns true if pizza[row1..row2)[col1..col2) has apple.
+  bool hasApple(const vector&lt;vector&lt;int&gt;&gt;&amp; prefix, int row1, int row2, int col1,
+                int col2) {
+    return (prefix[row2][col2] - prefix[row1][col2] -  //
+            prefix[row2][col1] + prefix[row1][col1]) &gt; 0;
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int ways(String[] pizza, int k) {
+    final int M = pizza.length;
+    final int N = pizza[0].length();
+    int[][][] mem = new int[M][N][k];
+    int[][] prefix = new int[M + 1][N + 1];
+
+    Arrays.stream(mem).forEach(A -&gt; Arrays.stream(A).forEach(B -&gt; Arrays.fill(B, -1)));
+
+    for (int i = 0; i &lt; M; ++i)
+      for (int j = 0; j &lt; N; ++j)
+        prefix[i + 1][j + 1] = (pizza[i].charAt(j) == &#x27;A&#x27; ? 1 : 0) + prefix[i][j + 1] +
+                               prefix[i + 1][j] - prefix[i][j];
+
+    return ways(0, 0, k - 1, M, N, prefix, mem);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  // Returns the number of ways to cut pizza[m..M)[n..N) with k cuts.
+  private int ways(int m, int n, int k, int M, int N, int[][] prefix, int[][][] mem) {
+    if (k == 0)
+      return hasApple(prefix, m, M, n, N) ? 1 : 0;
+    if (mem[m][n][k] != -1)
+      return mem[m][n][k];
+
+    mem[m][n][k] = 0;
+
+    for (int i = m + 1; i &lt; M; ++i) // Cut horizontally.
+      if (hasApple(prefix, m, i, n, N) &amp;&amp; hasApple(prefix, i, M, n, N)) {
+        mem[m][n][k] += ways(i, n, k - 1, M, N, prefix, mem);
+        mem[m][n][k] %= MOD;
+      }
+
+    for (int j = n + 1; j &lt; N; ++j) // Cut vertically.
+      if (hasApple(prefix, m, M, n, j) &amp;&amp; hasApple(prefix, m, M, j, N)) {
+        mem[m][n][k] += ways(m, j, k - 1, M, N, prefix, mem);
+        mem[m][n][k] %= MOD;
+      }
+
+    return mem[m][n][k];
+  }
+
+  // Returns true if pizza[row1..row2)[col1..col2) has apple.
+  private boolean hasApple(int[][] prefix, int row1, int row2, int col1, int col2) {
+    return (prefix[row2][col2] - prefix[row1][col2] - //
+            prefix[row2][col1] + prefix[row1][col1]) &gt; 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def ways(self, pizza: list[str], k: int) -&gt; int:
+    MOD = 1_000_000_007
+    M = len(pizza)
+    N = len(pizza[0])
+    prefix = [[0] * (N + 1) for _ in range(M + 1)]
+
+    for i in range(M):
+      for j in range(N):
+        prefix[i + 1][j + 1] = ((pizza[i][j] == &#x27;A&#x27;) + prefix[i][j + 1] +
+                                prefix[i + 1][j] - prefix[i][j])
+
+    def hasApple(row1: int, row2: int, col1: int, col2: int) -&gt; bool:
+      &quot;&quot;&quot;Returns True if pizza[row1..row2)[col1..col2) has apple.&quot;&quot;&quot;
+      return (prefix[row2][col2] - prefix[row1][col2] -
+              prefix[row2][col1] + prefix[row1][col1]) &gt; 0
+
+    @functools.lru_cache(None)
+    def dp(m: int, n: int, k: int) -&gt; int:
+      &quot;&quot;&quot;Returns the number of ways to cut pizza[m..M)[n..N) with k cuts.&quot;&quot;&quot;
+      if k == 0:
+        return 1 if hasApple(m, M, n, N) else 0
+
+      res = 0
+
+      for i in range(m + 1, M):  # Cut horizontally.
+        if hasApple(m, i, n, N) and hasApple(i, M, n, N):
+          res += dp(i, n, k - 1)
+
+      for j in range(n + 1, N):  # Cut vertically.
+        if hasApple(m, M, n, j) and hasApple(m, M, j, N):
+          res += dp(m, j, k - 1)
+
+      return res % MOD
+
+    return dp(0, 0, k - 1)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

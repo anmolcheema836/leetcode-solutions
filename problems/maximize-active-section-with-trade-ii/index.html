@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Active Section with Trade II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize Active Section with Trade II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-active-section-with-trade-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-to-divide-array-into-subarrays/" class="btn">← Previous</a>
+            <span>Problem 3501 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-to-reach-every-position/" class="btn">Next →</a>
+        </div>
+        <h1>3501. Maximize Active Section with Trade II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize Active Section with Trade II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">#include &lt;ranges&gt;
+
+struct Group {
+  int start;
+  int length;
+};
+
+class SparseTable {
+ public:
+  SparseTable(const vector&lt;int&gt;&amp; nums)
+      : n(nums.size()), st(std::bit_width(n) + 1, vector&lt;int&gt;(n + 1)) {
+    copy(nums.begin(), nums.end(), st[0].begin());
+    for (int i = 1; i &lt;= bit_width(n); ++i)
+      for (int j = 0; j + (1 &lt;&lt; i) &lt;= n; ++j)
+        st[i][j] = max(st[i - 1][j], st[i - 1][j + (1 &lt;&lt; (i - 1))]);
+  }
+
+  // Returns max(nums[l..r]).
+  int query(unsigned l, unsigned r) const {
+    const int i = bit_width(r - l + 1) - 1;
+    return max(st[i][l], st[i][r - (1 &lt;&lt; i) + 1]);
+  }
+
+ private:
+  const unsigned n;
+  vector&lt;vector&lt;int&gt;&gt; st;  // st[i][j] := max(nums[j..j + 2^i - 1])
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; maxActiveSectionsAfterTrade(string s,
+                                          vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const int n = s.length();
+    const int ones = ranges::count(s, &#x27;1&#x27;);
+    const auto [zeroGroups, zeroGroupIndex] = getZeroGroups(s);
+    if (zeroGroups.empty())
+      return vector&lt;int&gt;(queries.size(), ones);
+
+    const SparseTable st(getZeroMergeLengths(zeroGroups));
+    vector&lt;int&gt; ans;
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int l = query[0];
+      const int r = query[1];
+      const int left = zeroGroupIndex[l] == -1
+                           ? -1
+                           : (zeroGroups[zeroGroupIndex[l]].length -
+                              (l - zeroGroups[zeroGroupIndex[l]].start));
+      const int right = zeroGroupIndex[r] == -1
+                            ? -1
+                            : (r - zeroGroups[zeroGroupIndex[r]].start + 1);
+      const auto [startAdjacentGroupIndex, endAdjacentGroupIndex] =
+          mapToAdjacentGroupIndices(
+              zeroGroupIndex[l] + 1,
+              s[r] == &#x27;1&#x27; ? zeroGroupIndex[r] : zeroGroupIndex[r] - 1);
+      int activeSections = ones;
+      if (s[l] == &#x27;0&#x27; &amp;&amp; s[r] == &#x27;0&#x27; &amp;&amp;
+          zeroGroupIndex[l] + 1 == zeroGroupIndex[r])
+        activeSections = max(activeSections, ones + left + right);
+      else if (startAdjacentGroupIndex &lt;= endAdjacentGroupIndex)
+        activeSections = max(
+            activeSections,
+            ones + st.query(startAdjacentGroupIndex, endAdjacentGroupIndex));
+      if (s[l] == &#x27;0&#x27; &amp;&amp;
+          zeroGroupIndex[l] + 1 &lt;=
+              (s[r] == &#x27;1&#x27; ? zeroGroupIndex[r] : zeroGroupIndex[r] - 1))
+        activeSections =
+            max(activeSections,
+                ones + left + zeroGroups[zeroGroupIndex[l] + 1].length);
+      if (s[r] == &#x27;0&#x27; &amp;&amp; zeroGroupIndex[l] &lt; zeroGroupIndex[r] - 1)
+        activeSections =
+            max(activeSections,
+                ones + right + zeroGroups[zeroGroupIndex[r] - 1].length);
+      ans.push_back(activeSections);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the zero groups and the index of the zero group that contains the
+  // i-th character.
+  pair&lt;vector&lt;Group&gt;, vector&lt;int&gt;&gt; getZeroGroups(const string&amp; s) {
+    vector&lt;Group&gt; zeroGroups;
+    vector&lt;int&gt; zeroGroupIndex;
+    for (int i = 0; i &lt; s.length(); i++) {
+      if (s[i] == &#x27;0&#x27;) {
+        if (i &gt; 0 &amp;&amp; s[i - 1] == &#x27;0&#x27;)
+          ++zeroGroups.back().length;
+        else
+          zeroGroups.push_back({i, 1});
+      }
+      zeroGroupIndex.push_back(zeroGroups.size() - 1);
+    }
+    return {zeroGroups, zeroGroupIndex};
+  }
+
+  // Returns the sums of the lengths of the adjacent groups.
+  vector&lt;int&gt; getZeroMergeLengths(const vector&lt;Group&gt;&amp; zeroGroups) {
+    vector&lt;int&gt; zeroMergeLengths;
+    for (const auto&amp; [a, b] : zeroGroups | views::pairwise)
+      zeroMergeLengths.push_back(a.length + b.length);
+    return zeroMergeLengths;
+  }
+
+  // Returns the indices of the adjacent groups that contain l and r completely.
+  //
+  // e.g.    groupIndices = [0, 1, 2, 3]
+  // adjacentGroupIndices = [0 (0, 1), 1 (1, 2), 2 (2, 3)]
+  // map(startGroupIndex = 1, endGroupIndex = 3) -&gt; (1, 2)
+  pair&lt;int, int&gt; mapToAdjacentGroupIndices(int startGroupIndex,
+                                           int endGroupIndex) {
+    return {startGroupIndex, endGroupIndex - 1};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Group {
+  public int start;
+  public int length;
+  public Group(int start, int length) {
+    this.start = start;
+    this.length = length;
+  }
+}
+
+class SparseTable {
+  public SparseTable(int[] nums) {
+    n = nums.length;
+    st = new int[bitLength(n) + 1][n + 1];
+    System.arraycopy(nums, 0, st[0], 0, n);
+    for (int i = 1; i &lt;= st.length; ++i)
+      for (int j = 0; j + (1 &lt;&lt; i) &lt;= n; ++j)
+        st[i][j] = Math.max(st[i - 1][j], st[i - 1][j + (1 &lt;&lt; (i - 1))]);
+  }
+
+  // Returns max(nums[l..r])
+  public int query(int l, int r) {
+    final int i = bitLength(r - l + 1) - 1;
+    return Math.max(st[i][l], st[i][r - (1 &lt;&lt; i) + 1]);
+  }
+
+  private final int n;
+  private final int[][] st; // st[i][j] := max(nums[j..j + 2^i - 1])
+
+  private int bitLength(int n) {
+    return Integer.SIZE - Integer.numberOfLeadingZeros(n);
+  }
+}
+
+class Solution {
+  public List&lt;Integer&gt; maxActiveSectionsAfterTrade(String s, int[][] queries) {
+    final int n = s.length();
+    final int ones = (int) s.chars().filter(c -&gt; c == &#x27;1&#x27;).count();
+    final Pair&lt;List&lt;Group&gt;, int[]&gt; zeroGroupsInfo = getZeroGroups(s);
+    final List&lt;Group&gt; zeroGroups = zeroGroupsInfo.getKey();
+    final int[] zeroGroupIndex = zeroGroupsInfo.getValue();
+
+    if (zeroGroups.isEmpty())
+      return Collections.nCopies(queries.length, ones);
+
+    final SparseTable st = new SparseTable(getZeroMergeLengths(zeroGroups));
+    final List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+
+    for (int[] query : queries) {
+      final int l = query[0];
+      final int r = query[1];
+      final int left = zeroGroupIndex[l] == -1 ? -1
+                                               : (zeroGroups.get(zeroGroupIndex[l]).length -
+                                                  (l - zeroGroups.get(zeroGroupIndex[l]).start));
+      final int right =
+          zeroGroupIndex[r] == -1 ? -1 : (r - zeroGroups.get(zeroGroupIndex[r]).start + 1);
+      final Pair&lt;Integer, Integer&gt; adjacentIndices = mapToAdjacentGroupIndices(
+          zeroGroupIndex[l] + 1, s.charAt(r) == &#x27;1&#x27; ? zeroGroupIndex[r] : zeroGroupIndex[r] - 1);
+      final int startAdjacentGroupIndex = adjacentIndices.getKey();
+      final int endAdjacentGroupIndex = adjacentIndices.getValue();
+
+      int activeSections = ones;
+      if (s.charAt(l) == &#x27;0&#x27; &amp;&amp; s.charAt(r) == &#x27;0&#x27; &amp;&amp; zeroGroupIndex[l] + 1 == zeroGroupIndex[r])
+        activeSections = Math.max(activeSections, ones + left + right);
+      else if (startAdjacentGroupIndex &lt;= endAdjacentGroupIndex)
+        activeSections = Math.max(activeSections,
+                                  ones + st.query(startAdjacentGroupIndex, endAdjacentGroupIndex));
+      if (s.charAt(l) == &#x27;0&#x27; &amp;&amp;
+          zeroGroupIndex[l] + 1 &lt;= (s.charAt(r) == &#x27;1&#x27; ? zeroGroupIndex[r] : zeroGroupIndex[r] - 1))
+        activeSections =
+            Math.max(activeSections, ones + left + zeroGroups.get(zeroGroupIndex[l] + 1).length);
+      if (s.charAt(r) == &#x27;0&#x27; &amp;&amp; zeroGroupIndex[l] &lt; zeroGroupIndex[r] - 1)
+        activeSections =
+            Math.max(activeSections, ones + right + zeroGroups.get(zeroGroupIndex[r] - 1).length);
+      ans.add(activeSections);
+    }
+
+    return ans;
+  }
+
+  // Returns the zero groups and the index of the zero group that contains the i-th character
+  private Pair&lt;List&lt;Group&gt;, int[]&gt; getZeroGroups(String s) {
+    final List&lt;Group&gt; zeroGroups = new ArrayList&lt;&gt;();
+    final int[] zeroGroupIndex = new int[s.length()];
+
+    for (int i = 0; i &lt; s.length(); i++) {
+      if (s.charAt(i) == &#x27;0&#x27;) {
+        if (i &gt; 0 &amp;&amp; s.charAt(i - 1) == &#x27;0&#x27;)
+          zeroGroups.get(zeroGroups.size() - 1).length++;
+        else
+          zeroGroups.add(new Group(i, 1));
+      }
+      zeroGroupIndex[i] = zeroGroups.size() - 1;
+    }
+
+    return new Pair&lt;&gt;(zeroGroups, zeroGroupIndex);
+  }
+
+  // Returns the sums of the lengths of the adjacent groups
+  private int[] getZeroMergeLengths(List&lt;Group&gt; zeroGroups) {
+    final int[] zeroMergeLengths = new int[zeroGroups.size() - 1];
+    for (int i = 0; i &lt; zeroGroups.size() - 1; ++i)
+      zeroMergeLengths[i] = zeroGroups.get(i).length + zeroGroups.get(i + 1).length;
+    return zeroMergeLengths;
+  }
+
+  // Returns the indices of the adjacent groups that contain l and r completely
+  private Pair&lt;Integer, Integer&gt; mapToAdjacentGroupIndices(int startGroupIndex, int endGroupIndex) {
+    return new Pair&lt;&gt;(startGroupIndex, endGroupIndex - 1);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Group:
+  start: int
+  length: int
+
+
+class SparseTable:
+  def __init__(self, nums: list[int]):
+    self.n = len(nums)
+    # st[i][j] := max(nums[j..j + 2^i - 1])
+    self.st = [[0] * (self.n + 1) for _ in range(self.n.bit_length() + 1)]
+    self.st[0] = nums.copy()
+    for i in range(1, self.n.bit_length() + 1):
+      for j in range(self.n - (1 &lt;&lt; i) + 1):
+        self.st[i][j] = max(
+            self.st[i - 1][j],
+            self.st[i - 1][j + (1 &lt;&lt; (i - 1))])
+
+  def query(self, l: int, r: int) -&gt; int:
+    &quot;&quot;&quot;Returns max(nums[l..r]).&quot;&quot;&quot;
+    i = (r - l + 1).bit_length() - 1
+    return max(self.st[i][l], self.st[i][r - (1 &lt;&lt; i) + 1])
+
+
+class Solution:
+  def maxActiveSectionsAfterTrade(
+      self,
+      s: str,
+      queries: list[list[int]]
+  ) -&gt; list[int]:
+    ones = s.count(&#x27;1&#x27;)
+    zeroGroups, zeroGroupIndex = self._getZeroGroups(s)
+    if not zeroGroups:
+      return [ones] * len(queries)
+
+    st = SparseTable(self._getZeroMergeLengths(zeroGroups))
+
+    def getMaxActiveSections(l: int, r: int) -&gt; int:
+      left = (-1 if zeroGroupIndex[l] == -1
+              else (zeroGroups[zeroGroupIndex[l]].length -
+                    (l - zeroGroups[zeroGroupIndex[l]].start)))
+      right = (-1 if zeroGroupIndex[r] == -1
+               else (r - zeroGroups[zeroGroupIndex[r]].start + 1))
+      startAdjacentGroupIndex, endAdjacentGroupIndex = self._mapToAdjacentGroupIndices(
+          zeroGroupIndex[l] + 1, zeroGroupIndex[r] if s[r] == &#x27;1&#x27; else zeroGroupIndex[r] - 1)
+      activeSections = ones
+      if (s[l] == &#x27;0&#x27; and s[r] == &#x27;0&#x27; and
+              zeroGroupIndex[l] + 1 == zeroGroupIndex[r]):
+        activeSections = max(activeSections, ones + left + right)
+      elif startAdjacentGroupIndex &lt;= endAdjacentGroupIndex:
+        activeSections = max(
+            activeSections,
+            ones + st.query(startAdjacentGroupIndex, endAdjacentGroupIndex))
+      if (s[l] == &#x27;0&#x27; and
+          zeroGroupIndex[l] + 1 &lt;= (zeroGroupIndex[r]
+                                    if s[r] == &#x27;1&#x27; else zeroGroupIndex[r] - 1)):
+        activeSections = max(activeSections, ones + left +
+                             zeroGroups[zeroGroupIndex[l] + 1].length)
+      if (s[r] == &#x27;0&#x27; and zeroGroupIndex[l] &lt; zeroGroupIndex[r] - 1):
+        activeSections = max(activeSections, ones + right +
+                             zeroGroups[zeroGroupIndex[r] - 1].length)
+      return activeSections
+
+    return [getMaxActiveSections(l, r) for l, r in queries]
+
+  def _getZeroGroups(self, s: str) -&gt; tuple[list[Group], list[int]]:
+    &quot;&quot;&quot;
+    Returns the zero groups and the index of the zero group that contains the
+    i-th character.
+    &quot;&quot;&quot;
+    zeroGroups = []
+    zeroGroupIndex = []
+    for i in range(len(s)):
+      if s[i] == &#x27;0&#x27;:
+        if i &gt; 0 and s[i - 1] == &#x27;0&#x27;:
+          zeroGroups[-1].length += 1
+        else:
+          zeroGroups.append(Group(i, 1))
+      zeroGroupIndex.append(len(zeroGroups) - 1)
+    return zeroGroups, zeroGroupIndex
+
+  def _getZeroMergeLengths(self, zeroGroups: list[Group]) -&gt; list[int]:
+    &quot;&quot;&quot;Returns the sums of the lengths of the adjacent groups.&quot;&quot;&quot;
+    return [a.length + b.length for a, b in itertools.pairwise(zeroGroups)]
+
+  def _mapToAdjacentGroupIndices(
+      self,
+      startGroupIndex: int,
+      endGroupIndex: int
+  ) -&gt; tuple[int, int]:
+    &quot;&quot;&quot;
+    Returns the indices of the adjacent groups that contain l and r completely.
+
+    e.g.    groupIndices = [0, 1, 2, 3]
+    adjacentGroupIndices = [0 (0, 1), 1 (1, 2), 2 (2, 3)]
+    map(startGroupIndex = 1, endGroupIndex = 3) -&gt; (1, 2)
+    &quot;&quot;&quot;
+    return startGroupIndex, endGroupIndex - 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

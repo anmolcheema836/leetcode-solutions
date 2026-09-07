@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum GCD-Sum of a Subarray - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum GCD-Sum of a Subarray written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-gcd-sum-of-a-subarray/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-building-where-alice-and-bob-can-meet/" class="btn">← Previous</a>
+            <span>Problem 2941 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-words-containing-character/" class="btn">Next →</a>
+        </div>
+        <h1>2941. Maximum GCD-Sum of a Subarray</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum GCD-Sum of a Subarray efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxGcdSum(vector&lt;int&gt;&amp; nums, int k) {
+    long long ans = 0;
+    // [(startIndex, gcd of subarray starting at startIndex)]
+    vector&lt;pair&lt;int, int&gt;&gt; startIndexAndGcds;
+    vector&lt;long long&gt; prefix = {0};
+
+    for (const int num : nums)
+      prefix.push_back(prefix.back() + num);
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      vector&lt;pair&lt;int, int&gt;&gt; nextStartIndexAndGcds;
+      for (const auto&amp; [startIndex, gcd] : startIndexAndGcds) {
+        const int nextGcd = __gcd(gcd, nums[i]);
+        if (nextStartIndexAndGcds.empty() ||
+            nextStartIndexAndGcds.back().second != nextGcd)  // Skip duplicates.
+          nextStartIndexAndGcds.emplace_back(startIndex, nextGcd);
+      }
+      startIndexAndGcds = std::move(nextStartIndexAndGcds);
+      startIndexAndGcds.emplace_back(i, nums[i]);
+      for (const auto&amp; [startIndex, gcd] : startIndexAndGcds)
+        if (i - startIndex + 1 &gt;= k)
+          ans = max(ans, (prefix[i + 1] - prefix[startIndex]) * gcd);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxGcdSum(int[] nums, int k) {
+    long ans = 0;
+    // [(startIndex, gcd of subarray starting at startIndex)]
+    List&lt;Pair&lt;Integer, Integer&gt;&gt; startIndexAndGcds = new ArrayList&lt;&gt;();
+    long[] prefix = new long[nums.length + 1];
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      prefix[i + 1] = (long) nums[i] + prefix[i];
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      List&lt;Pair&lt;Integer, Integer&gt;&gt; nextStartIndexAndGcds = new ArrayList&lt;&gt;();
+      for (Pair&lt;Integer, Integer&gt; pair : startIndexAndGcds) {
+        final int startIndex = pair.getKey();
+        final int gcd = pair.getValue();
+        final int nextGcd = gcd(gcd, nums[i]);
+        if (nextStartIndexAndGcds.isEmpty() ||
+            !nextStartIndexAndGcds.get(nextStartIndexAndGcds.size() - 1)
+                 .getValue()
+                 .equals(nextGcd)) // Skip duplicates.
+          nextStartIndexAndGcds.add(new Pair&lt;&gt;(startIndex, nextGcd));
+      }
+      startIndexAndGcds = new ArrayList&lt;&gt;(nextStartIndexAndGcds);
+      startIndexAndGcds.add(new Pair&lt;&gt;(i, nums[i]));
+      for (Pair&lt;Integer, Integer&gt; pair : startIndexAndGcds) {
+        final int startIndex = pair.getKey();
+        final int gcd = pair.getValue();
+        if (i - startIndex + 1 &gt;= k)
+          ans = Math.max(ans, (prefix[i + 1] - prefix[startIndex]) * gcd);
+      }
+    }
+
+    return ans;
+  }
+
+  private int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxGcdSum(self, nums: list[int], k: int) -&gt; int:
+    ans = 0
+    # [(startIndex, gcd of subarray starting at startIndex)]
+    startIndexAndGcds = []
+    prefix = list(itertools.accumulate(nums, initial=0))
+
+    for i, num in enumerate(nums):
+      nextStartIndexAndGcds = []
+      for startIndex, gcd in startIndexAndGcds:
+        nextGcd = math.gcd(gcd, nums[i])
+        if (not nextStartIndexAndGcds or
+                nextStartIndexAndGcds[-1][1] != nextGcd):  # Skip duplicates.
+          nextStartIndexAndGcds.append((startIndex, nextGcd))
+      startIndexAndGcds = nextStartIndexAndGcds
+      startIndexAndGcds.append((i, nums[i]))
+      for startIndex, gcd in startIndexAndGcds:
+        if i - startIndex + 1 &gt;= k:
+          ans = max(ans, (prefix[i + 1] - prefix[startIndex]) * gcd)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

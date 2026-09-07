@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synonymous Sentences - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Synonymous Sentences written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/synonymous-sentences/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/smallest-common-region/" class="btn">← Previous</a>
+            <span>Problem 1258 of 3563</span>
+            <a href="/leetcode-solutions/problems/handshakes-that-don-t-cross/" class="btn">Next →</a>
+        </div>
+        <h1>1258. Synonymous Sentences</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Synonymous Sentences efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; generateSentences(vector&lt;vector&lt;string&gt;&gt;&amp; synonyms,
+                                   string text) {
+    set&lt;string&gt; ans;
+    unordered_map&lt;string, vector&lt;string&gt;&gt; graph;
+    queue&lt;string&gt; q{{text}};
+
+    for (const vector&lt;string&gt;&amp; synonym : synonyms) {
+      const string&amp; s = synonym[0];
+      const string&amp; t = synonym[1];
+      graph[s].push_back(t);
+      graph[t].push_back(s);
+    }
+
+    while (!q.empty()) {
+      const string u = q.front();
+      q.pop();
+      ans.insert(u);
+      vector&lt;string&gt; words = split(u);
+      for (string&amp; word : words) {
+        const auto it = graph.find(word);
+        if (it == graph.cend())
+          continue;
+        for (const string&amp; synonym : it-&gt;second) {
+          // Replace words[i] with its synonym.
+          word = synonym;
+          const string newText = join(words, &#x27; &#x27;);
+          if (!ans.contains(newText))
+            q.push(newText);
+        }
+      }
+    }
+
+    return {ans.begin(), ans.end()};
+  }
+
+ private:
+  vector&lt;string&gt; split(const string&amp; s) {
+    vector&lt;string&gt; words;
+    istringstream iss(s);
+    for (string token; iss &gt;&gt; token;)
+      words.push_back(token);
+    return words;
+  }
+
+  string join(const vector&lt;string&gt;&amp; words, char c) {
+    string joined;
+    for (int i = 0; i &lt; words.size(); ++i) {
+      joined += words[i];
+      if (i != words.size() - 1)
+        joined += c;
+    }
+    return joined;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; generateSentences(List&lt;List&lt;String&gt;&gt; synonyms, String text) {
+    Set&lt;String&gt; ans = new TreeSet&lt;&gt;();
+    Map&lt;String, List&lt;String&gt;&gt; graph = new HashMap&lt;&gt;();
+    Queue&lt;String&gt; q = new ArrayDeque&lt;&gt;(List.of(text));
+
+    for (List&lt;String&gt; synonym : synonyms) {
+      final String s = synonym.get(0);
+      final String t = synonym.get(1);
+      graph.putIfAbsent(s, new ArrayList&lt;&gt;());
+      graph.putIfAbsent(t, new ArrayList&lt;&gt;());
+      graph.get(s).add(t);
+      graph.get(t).add(s);
+    }
+
+    while (!q.isEmpty()) {
+      final String u = q.poll();
+      ans.add(u);
+      String[] words = u.split(&quot;\\s&quot;);
+      for (int i = 0; i &lt; words.length; ++i)
+        for (final String synonym : graph.getOrDefault(words[i], new ArrayList&lt;&gt;())) {
+          // Replace words[i] with its synonym.
+          words[i] = synonym;
+          final String newText = String.join(&quot; &quot;, words);
+          if (!ans.contains(newText))
+            q.offer(newText);
+        }
+    }
+
+    return new ArrayList&lt;&gt;(ans);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedSet
+
+
+class Solution:
+  def generateSentences(
+      self,
+      synonyms: list[list[str]],
+      text: str,
+  ) -&gt; list[str]:
+    ans = SortedSet()
+    graph = collections.defaultdict(list)
+    q = collections.deque([text])
+
+    for s, t in synonyms:
+      graph[s].append(t)
+      graph[t].append(s)
+
+    while q:
+      u = q.popleft()
+      ans.add(u)
+      words = u.split()
+      for i, word in enumerate(words):
+        for synonym in graph[word]:
+          # Replace words[i] with its synonym.
+          words[i] = synonym
+          newText = &#x27; &#x27;.join(words)
+          if newText not in ans:
+            q.append(newText)
+
+    return list(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

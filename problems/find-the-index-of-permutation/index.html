@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Index of Permutation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Index of Permutation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-index-of-permutation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-walk-in-weighted-graph/" class="btn">← Previous</a>
+            <span>Problem 3109 of 3563</span>
+            <a href="/leetcode-solutions/problems/score-of-a-string/" class="btn">Next →</a>
+        </div>
+        <h1>3109. Find the Index of Permutation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Index of Permutation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FenwickTree {
+ public:
+  FenwickTree(int n) : sums(n + 1) {}
+
+  void add(int i, int delta) {
+    while (i &lt; sums.size()) {
+      sums[i] += delta;
+      i += lowbit(i);
+    }
+  }
+
+  int get(int i) const {
+    int sum = 0;
+    while (i &gt; 0) {
+      sum += sums[i];
+      i -= lowbit(i);
+    }
+    return sum;
+  }
+
+ private:
+  vector&lt;int&gt; sums;
+
+  static inline int lowbit(int i) {
+    return i &amp; -i;
+  }
+};
+
+class Solution {
+ public:
+  int getPermutationIndex(vector&lt;int&gt;&amp; perm) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int n = perm.size();
+    int ans = 0;
+    FenwickTree tree(n);
+    vector&lt;int&gt; fact(n + 1, 1);  // fact[i] := i!
+
+    for (int i = 2; i &lt;= n; ++i)
+      fact[i] = (fact[i - 1] * static_cast&lt;long&gt;(i)) % kMod;
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int num = perm[i];
+      // the number of unused numbers less than `num`
+      const int unusedNums = num - 1 - tree.get(num - 1);
+      const int suffixLength = fact[n - 1 - i];
+      ans = (ans + unusedNums * static_cast&lt;long&gt;(suffixLength)) % kMod;
+      tree.add(num, 1);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FenwickTree {
+  public FenwickTree(int n) {
+    sums = new int[n + 1];
+  }
+
+  public void add(int i, int delta) {
+    while (i &lt; sums.length) {
+      sums[i] += delta;
+      i += lowbit(i);
+    }
+  }
+
+  public int get(int i) {
+    int sum = 0;
+    while (i &gt; 0) {
+      sum += sums[i];
+      i -= lowbit(i);
+    }
+    return sum;
+  }
+
+  private int[] sums;
+
+  private static int lowbit(int i) {
+    return i &amp; -i;
+  }
+}
+
+class Solution {
+  public int getPermutationIndex(int[] perm) {
+    final int MOD = 1_000_000_007;
+    final int n = perm.length;
+    int ans = 0;
+    FenwickTree tree = new FenwickTree(n);
+    int[] fact = new int[n + 1]; // fact[i] := i!
+    Arrays.fill(fact, 1);
+
+    for (int i = 2; i &lt;= n; ++i)
+      fact[i] = (int) ((fact[i - 1] * (long) i) % MOD);
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int num = perm[i];
+      // the number of unused numbers less than `num`
+      final int unusedNums = num - 1 - tree.get(num - 1);
+      final int suffixLength = fact[n - 1 - i];
+      ans = (int) ((ans + unusedNums * (long) suffixLength) % MOD);
+      tree.add(num, 1);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class FenwickTree:
+  def __init__(self, n: int):
+    self.sums = [0] * (n + 1)
+
+  def add(self, i: int, delta: int) -&gt; None:
+    while i &lt; len(self.sums):
+      self.sums[i] += delta
+      i += FenwickTree.lowbit(i)
+
+  def get(self, i: int) -&gt; int:
+    summ = 0
+    while i &gt; 0:
+      summ += self.sums[i]
+      i -= FenwickTree.lowbit(i)
+    return summ
+
+  @staticmethod
+  def lowbit(i: int) -&gt; int:
+    return i &amp; -i
+
+
+class Solution:
+  def getPermutationIndex(self, perm: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+    n = len(perm)
+    ans = 0
+    tree = FenwickTree(n)
+    fact = [1] * (n + 1)  # fact[i] := i!
+
+    for i in range(2, n + 1):
+      fact[i] = (fact[i - 1] * i) % MOD
+
+    for i, num in enumerate(perm):
+      # the number of unused numbers less than `num`
+      unusedNums = num - 1 - tree.get(num - 1)
+      suffixLength = fact[n - 1 - i]
+      ans += unusedNums * suffixLength
+      ans %= MOD
+      tree.add(num, 1)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

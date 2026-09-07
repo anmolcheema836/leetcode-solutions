@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check if Move is Legal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check if Move is Legal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-move-is-legal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/delete-characters-to-make-fancy-string/" class="btn">← Previous</a>
+            <span>Problem 1958 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-total-space-wasted-with-k-resizing-operations/" class="btn">Next →</a>
+        </div>
+        <h1>1958. Check if Move is Legal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check if Move is Legal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool checkMove(vector&lt;vector&lt;char&gt;&gt;&amp; board, int rMove, int cMove,
+                 char color) {
+    constexpr int kDirs[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1},
+                                 {0, 1},   {1, -1}, {1, 0},  {1, 1}};
+
+    for (const auto&amp; [dx, dy] : kDirs) {
+      int cellsCount = 2;
+      int i = rMove + dx;
+      int j = cMove + dy;
+      while (0 &lt;= i &amp;&amp; i &lt; 8 &amp;&amp; 0 &lt;= j &amp;&amp; j &lt; 8) {
+        // There are no free cells in between.
+        if (board[i][j] == &#x27;.&#x27;)
+          break;
+        // Need &gt;= 3 cells.
+        if (cellsCount == 2 &amp;&amp; board[i][j] == color)
+          break;
+        // &gt;= 3 cells.
+        if (board[i][j] == color)
+          return true;
+        i += dx;
+        j += dy;
+        ++cellsCount;
+      }
+    }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean checkMove(char[][] board, int rMove, int cMove, char color) {
+    final int[][] DIRS = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+
+    for (int k = 0; k &lt; 8; ++k) {
+      final int dx = dir[0][0];
+      final int dy = dir[0][1];
+      int cellsCount = 2;
+      int i = rMove + dx;
+      int j = cMove + dy;
+      while (0 &lt;= i &amp;&amp; i &lt; 8 &amp;&amp; 0 &lt;= j &amp;&amp; j &lt; 8) {
+        // There are no free cells in between.
+        if (board[i][j] == &#x27;.&#x27;)
+          break;
+        // Need &gt;= 3 cells.
+        if (cellsCount == 2 &amp;&amp; board[i][j] == color)
+          break;
+        // &gt;= 3 cells.
+        if (board[i][j] == color)
+          return true;
+        i += dx;
+        j += dy;
+        ++cellsCount;
+      }
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def checkMove(
+      self,
+      board: list[list[str]],
+      rMove: int,
+      cMove: int,
+      color: str,
+  ) -&gt; bool:
+    DIRS = ((-1, -1), (-1, 0), (-1, 1), (0, -1),
+            (0, 1), (1, -1), (1, 0), (1, 1))
+
+    for dx, dy in DIRS:
+      cellsCount = 2
+      i = rMove + dx
+      j = cMove + dy
+      while 0 &lt;= i &lt; 8 and 0 &lt;= j &lt; 8:
+        # There are no free cells in between.
+        if board[i][j] == &#x27;.&#x27;:
+          break
+        # Need &gt;= 3 cells.
+        if cellsCount == 2 and board[i][j] == color:
+          break
+        # &gt;= 3 cells.
+        if board[i][j] == color:
+          return True
+        i += dx
+        j += dy
+        cellsCount += 1
+
+    return False</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

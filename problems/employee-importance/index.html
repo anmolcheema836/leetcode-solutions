@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Importance - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Employee Importance written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/employee-importance/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-sum-of-3-non-overlapping-subarrays/" class="btn">← Previous</a>
+            <span>Problem 690 of 3563</span>
+            <a href="/leetcode-solutions/problems/stickers-to-spell-word/" class="btn">Next →</a>
+        </div>
+        <h1>690. Employee Importance</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Employee Importance efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int getImportance(vector&lt;Employee*&gt; employees, int id) {
+    unordered_map&lt;int, Employee*&gt; idToEmployee;
+
+    for (Employee* employee : employees)
+      idToEmployee[employee-&gt;id] = employee;
+
+    return dfs(id, idToEmployee);
+  }
+
+ private:
+  int dfs(int id, const unordered_map&lt;int, Employee*&gt;&amp; idToEmployee) {
+    int values = 0;
+
+    for (const int subId : idToEmployee.at(id)-&gt;subordinates)
+      values += dfs(subId, idToEmployee);
+
+    return idToEmployee.at(id)-&gt;importance + values;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int getImportance(List&lt;Employee&gt; employees, int id) {
+    Map&lt;Integer, Employee&gt; idToEmployee = new HashMap&lt;&gt;();
+
+    for (Employee employee : employees)
+      idToEmployee.put(employee.id, employee);
+
+    return dfs(id, idToEmployee);
+  }
+
+  private int dfs(int id, Map&lt;Integer, Employee&gt; idToEmployee) {
+    int values = 0;
+
+    for (final int subId : idToEmployee.get(id).subordinates)
+      values += dfs(subId, idToEmployee);
+
+    return idToEmployee.get(id).importance + values;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getImportance(self, employees: list[&#x27;Employee&#x27;], id: int) -&gt; int:
+    idToEmployee = {employee.id: employee for employee in employees}
+
+    def dfs(id: int) -&gt; int:
+      values = idToEmployee[id].importance
+      for subId in idToEmployee[id].subordinates:
+        values += dfs(subId)
+      return values
+
+    return dfs(id)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Difference in Sums After Removal of Elements - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Difference in Sums After Removal of Elements written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-difference-in-sums-after-removal-of-elements/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-to-set-cooking-time/" class="btn">← Previous</a>
+            <span>Problem 2163 of 3563</span>
+            <a href="/leetcode-solutions/problems/sort-even-and-odd-indices-independently/" class="btn">Next →</a>
+        </div>
+        <h1>2163. Minimum Difference in Sums After Removal of Elements</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Difference in Sums After Removal of Elements efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minimumDifference(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size() / 3;
+    long ans = LONG_MAX;
+    long leftSum = 0;
+    long rightSum = 0;
+    // The left part should be as small as possible.
+    priority_queue&lt;int&gt; maxHeap;
+    // The right part should be as big as possible.
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;&gt;&gt; minHeap;
+    // minLeftSum[i] := the minimum of the sum of n nums in nums[0..i)
+    vector&lt;long&gt; minLeftSum(nums.size());
+
+    for (int i = 0; i &lt; 2 * n; ++i) {
+      maxHeap.push(nums[i]);
+      leftSum += nums[i];
+      if (maxHeap.size() == n + 1)
+        leftSum -= maxHeap.top(), maxHeap.pop();
+      if (maxHeap.size() == n)
+        minLeftSum[i] = leftSum;
+    }
+
+    for (int i = nums.size() - 1; i &gt;= n; --i) {
+      minHeap.push(nums[i]);
+      rightSum += nums[i];
+      if (minHeap.size() == n + 1)
+        rightSum -= minHeap.top(), minHeap.pop();
+      if (minHeap.size() == n)
+        ans = min(ans, minLeftSum[i - 1] - rightSum);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minimumDifference(int[] nums) {
+    final int n = nums.length / 3;
+    long ans = Long.MAX_VALUE;
+    long leftSum = 0;
+    long rightSum = 0;
+    // The left part should be as small as possible.
+    Queue&lt;Integer&gt; maxHeap = new PriorityQueue&lt;&gt;(Collections.reverseOrder());
+    // The right part should be as big as possible.
+    Queue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();
+    // minLeftSum[i] := the minimum of the sum of n nums in nums[0..i)
+    long[] minLeftSum = new long[nums.length];
+
+    for (int i = 0; i &lt; 2 * n; ++i) {
+      maxHeap.offer(nums[i]);
+      leftSum += nums[i];
+      if (maxHeap.size() == n + 1)
+        leftSum -= maxHeap.poll();
+      if (maxHeap.size() == n)
+        minLeftSum[i] = leftSum;
+    }
+
+    for (int i = nums.length - 1; i &gt;= n; --i) {
+      minHeap.offer(nums[i]);
+      rightSum += nums[i];
+      if (minHeap.size() == n + 1)
+        rightSum -= minHeap.poll();
+      if (minHeap.size() == n)
+        ans = Math.min(ans, minLeftSum[i - 1] - rightSum);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumDifference(self, nums: list[int]) -&gt; int:
+    n = len(nums) // 3
+    ans = math.inf
+    leftSum = 0
+    rightSum = 0
+    maxHeap = []  # Left part, as small as possible
+    minHeap = []  # Right part, as big as possible
+    # minLeftSum[i] := the minimum of the sum of n nums in nums[0..i)
+    minLeftSum = [0] * len(nums)
+
+    for i in range(2 * n):
+      heapq.heappush(maxHeap, -nums[i])
+      leftSum += nums[i]
+      if len(maxHeap) == n + 1:
+        leftSum += heapq.heappop(maxHeap)
+      if len(maxHeap) == n:
+        minLeftSum[i] = leftSum
+
+    for i in range(len(nums) - 1, n - 1, -1):
+      heapq.heappush(minHeap, nums[i])
+      rightSum += nums[i]
+      if len(minHeap) == n + 1:
+        rightSum -= heapq.heappop(minHeap)
+      if len(minHeap) == n:
+        ans = min(ans, minLeftSum[i - 1] - rightSum)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

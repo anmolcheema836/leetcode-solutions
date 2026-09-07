@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Subtree Sizes After Changes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Subtree Sizes After Changes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-subtree-sizes-after-changes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-original-typed-string-i/" class="btn">← Previous</a>
+            <span>Problem 3331 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-points-tourist-can-earn/" class="btn">Next →</a>
+        </div>
+        <h1>3331. Find Subtree Sizes After Changes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Subtree Sizes After Changes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; findSubtreeSizes(vector&lt;int&gt;&amp; parent, string s) {
+    const int n = parent.size();
+    vector&lt;int&gt; ans(n);
+    vector&lt;int&gt; newParent = parent;
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+
+    for (int i = 1; i &lt; n; ++i) {
+      const int closest = findClosestAncestor(i, parent, s);
+      if (closest != -1)
+        newParent[i] = closest;
+    }
+
+    for (int i = 1; i &lt; n; ++i)
+      tree[newParent[i]].push_back(i);
+
+    dfs(tree, 0, ans);
+    return ans;
+  }
+
+ private:
+  // Returns the closest ancestor of node `u` that has the same value as `u`.
+  int findClosestAncestor(int u, const vector&lt;int&gt;&amp; parent, const string&amp; s) {
+    for (int curr = parent[u]; curr != -1; curr = parent[curr])
+      if (s[curr] == s[u])
+        return curr;
+    return -1;
+  }
+
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, vector&lt;int&gt;&amp; ans) {
+    int sz = 1;
+    for (const int v : tree[u])
+      sz += dfs(tree, v, ans);
+    return ans[u] = sz;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] findSubtreeSizes(int[] parent, String s) {
+    final int n = parent.length;
+    int[] ans = new int[n];
+    int[] newParent = parent.clone();
+    List&lt;Integer&gt;[] tree = new ArrayList[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 1; i &lt; n; ++i) {
+      final int closest = findClosestAncestor(i, parent, s);
+      if (closest != -1)
+        newParent[i] = closest;
+    }
+
+    for (int i = 1; i &lt; n; ++i)
+      tree[newParent[i]].add(i);
+
+    dfs(tree, 0, ans);
+    return ans;
+  }
+
+  // Returns the closest ancestor of node `u` that has the same value as `u`.
+  private int findClosestAncestor(int u, int[] parent, String s) {
+    for (int curr = parent[u]; curr != -1; curr = parent[curr])
+      if (s.charAt(curr) == s.charAt(u))
+        return curr;
+    return -1;
+  }
+
+  private int dfs(List&lt;Integer&gt;[] tree, int u, int[] ans) {
+    int sz = 1;
+    for (final int v : tree[u])
+      sz += dfs(tree, v, ans);
+    return ans[u] = sz;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findSubtreeSizes(self, parent: list[int], s: str) -&gt; list[int]:
+    n = len(parent)
+    ans = [0] * n
+    newParent = parent.copy()
+    tree = [[] for _ in range(n)]
+
+    for i in range(1, n):
+      closest = self._findClosestAncestor(i, parent, s)
+      if closest != -1:
+        newParent[i] = closest
+
+    for i in range(1, n):
+      tree[newParent[i]].append(i)
+
+    self._dfs(tree, 0, ans)
+    return ans
+
+  def _findClosestAncestor(self, u: int, parent: list[int], s: str) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the closest ancestor of node `u` that has the same value as `u`.
+    &quot;&quot;&quot;
+    curr = parent[u]
+    while curr != -1:
+      if s[curr] == s[u]:
+        return curr
+      curr = parent[curr]
+    return -1
+
+  def _dfs(self, tree: list[list[int]], u: int, ans: list[int]) -&gt; int:
+    sz = 1
+    for v in tree[u]:
+      sz += self._dfs(tree, v, ans)
+    ans[u] = sz
+    return sz</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

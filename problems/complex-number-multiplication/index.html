@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Number Multiplication - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Complex Number Multiplication written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/complex-number-multiplication/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/construct-binary-tree-from-string/" class="btn">← Previous</a>
+            <span>Problem 537 of 3563</span>
+            <a href="/leetcode-solutions/problems/convert-bst-to-greater-tree/" class="btn">Next →</a>
+        </div>
+        <h1>537. Complex Number Multiplication</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Complex Number Multiplication efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string complexNumberMultiply(string num1, string num2) {
+    const auto&amp; [a0, a1] = getReala0ndImag(num1);
+    const auto&amp; [b0, b1] = getReala0ndImag(num2);
+    return to_string(a0 * b0 - a1 * b1) + &quot;+&quot; + to_string(a0 * b1 + a1 * b0) +
+           &quot;i&quot;;
+  }
+
+ private:
+  pair&lt;int, int&gt; getReala0ndImag(const string&amp; s) {
+    const string&amp; real = s.substr(0, s.find_first_of(&#x27;+&#x27;));
+    const string&amp; imag = s.substr(s.find_first_of(&#x27;+&#x27;) + 1);
+    return {stoi(real), stoi(imag)};
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String complexNumberMultiply(String num1, String num2) {
+    int[] a = getRealAndImag(num1);
+    int[] b = getRealAndImag(num2);
+    return String.valueOf(a[0] * b[0] - a[1] * b[1]) + &quot;+&quot; +
+        String.valueOf(a[0] * b[1] + a[1] * b[0]) + &quot;i&quot;;
+  }
+
+  private int[] getRealAndImag(final String s) {
+    final String real = s.substring(0, s.indexOf(&#x27;+&#x27;));
+    final String imag = s.substring(s.indexOf(&#x27;+&#x27;) + 1, s.length() - 1);
+    return new int[] {Integer.valueOf(real), Integer.valueOf(imag)};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def complexNumberMultiply(self, num1: str, num2: str) -&gt; str:
+    a0, a1 = self._getReala0ndImag(num1)
+    b0, b1 = self._getReala0ndImag(num2)
+    return str(a0 * b0 - a1 * b1) + &#x27;+&#x27; + str(a0 * b1 + a1 * b0) + &#x27;i&#x27;
+
+  def _getReala0ndImag(self, s: str) -&gt; tuple:
+    return int(s[:s.index(&#x27;+&#x27;)]), int(s[s.index(&#x27;+&#x27;) + 1:-1])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

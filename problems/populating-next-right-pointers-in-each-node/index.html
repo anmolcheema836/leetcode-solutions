@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Populating Next Right Pointers in Each Node - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Populating Next Right Pointers in Each Node written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/populating-next-right-pointers-in-each-node/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/distinct-subsequences/" class="btn">← Previous</a>
+            <span>Problem 116 of 3563</span>
+            <a href="/leetcode-solutions/problems/populating-next-right-pointers-in-each-node-ii/" class="btn">Next →</a>
+        </div>
+        <h1>116. Populating Next Right Pointers in Each Node</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Populating Next Right Pointers in Each Node efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  Node* connect(Node* root) {
+    Node* node = root;  // the node that is above the current needling
+
+    while (node &amp;&amp; node-&gt;left) {
+      Node dummy(0);  // the dummy node before needling
+      // Needle the children of the node.
+      for (Node* needle = &amp;dummy; node; node = node-&gt;next) {
+        needle-&gt;next = node-&gt;left;
+        needle = needle-&gt;next;
+        needle-&gt;next = node-&gt;right;
+        needle = needle-&gt;next;
+      }
+      node = dummy.next;  // Move the node to the next level.
+    }
+
+    return root;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public Node connect(Node root) {
+    Node node = root; // the node that is above the current needling
+
+    while (node != null &amp;&amp; node.left != null) {
+      Node dummy = new Node(); // a dummy node before needling
+      // Needle the children of the node.
+      for (Node needle = dummy; node != null; node = node.next) {
+        needle.next = node.left;
+        needle = needle.next;
+        needle.next = node.right;
+        needle = needle.next;
+      }
+      node = dummy.next; // Move the node to the next level.
+    }
+
+    return root;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def connect(self, root: &#x27;Node&#x27;) -&gt; &#x27;Node&#x27;:
+    node = root  # the node that is above the current needling
+
+    while node and node.left:
+      dummy = Node(0)  # a dummy node before needling
+      # Needle the children of the node.
+      needle = dummy
+      while node:
+        needle.next = node.left
+        needle = needle.next
+        needle.next = node.right
+        needle = needle.next
+        node = node.next
+      node = dummy.next  # Move the node to the next level.
+
+    return root</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

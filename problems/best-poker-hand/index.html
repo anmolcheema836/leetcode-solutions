@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Poker Hand - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Best Poker Hand written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/best-poker-hand/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/compute-the-rank-as-a-percentage/" class="btn">← Previous</a>
+            <span>Problem 2347 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-zero-filled-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>2347. Best Poker Hand</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Best Poker Hand efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string bestHand(vector&lt;int&gt;&amp; ranks, vector&lt;char&gt;&amp; suits) {
+    if (ranges::all_of(suits,
+                       [&amp;suits](const char suit) { return suit == suits[0]; }))
+      return &quot;Flush&quot;;
+
+    constexpr int kMax = 13;
+    vector&lt;int&gt; count(kMax + 1);
+
+    for (const int rank : ranks)
+      ++count[rank];
+
+    const int mx = ranges::max(count);
+    if (mx &gt; 2)
+      return &quot;Three of a Kind&quot;;
+    if (mx == 2)
+      return &quot;Pair&quot;;
+    return &quot;High Card&quot;;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String bestHand(int[] ranks, char[] suits) {
+    if (new String(suits).chars().allMatch(s -&gt; s == suits[0]))
+      return &quot;Flush&quot;;
+
+    final int MAX = 13;
+    int[] count = new int[MAX + 1];
+
+    for (final int rank : ranks)
+      ++count[rank];
+
+    final int mx = Arrays.stream(count).max().getAsInt();
+    if (mx &gt; 2)
+      return &quot;Three of a Kind&quot;;
+    if (mx == 2)
+      return &quot;Pair&quot;;
+    return &quot;High Card&quot;;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def bestHand(self, ranks: list[int], suits: list[str]) -&gt; str:
+    if all(suit == suits[0] for suit in suits):
+      return &#x27;Flush&#x27;
+
+    match max(Counter(ranks).values()):
+      case 5 | 4 | 3:
+        return &#x27;Three of a Kind&#x27;
+      case 2:
+        return &#x27;Pair&#x27;
+      case _:
+        return &#x27;High Card&#x27;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

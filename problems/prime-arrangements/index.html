@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Arrangements - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Prime Arrangements written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/prime-arrangements/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/immediate-food-delivery-ii/" class="btn">← Previous</a>
+            <span>Problem 1175 of 3563</span>
+            <a href="/leetcode-solutions/problems/diet-plan-performance/" class="btn">Next →</a>
+        </div>
+        <h1>1175. Prime Arrangements</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Prime Arrangements efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numPrimeArrangements(int n) {
+    const int count = countPrimes(n);
+    return factorial(count) * factorial(n - count) % kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  int countPrimes(int n) {
+    vector&lt;bool&gt; prime(n + 1, true);
+    prime[0] = false;
+    prime[1] = false;
+    for (int i = 0; i &lt;= sqrt(n); ++i)
+      if (prime[i])
+        for (int j = i * i; j &lt;= n; j += i)
+          prime[j] = false;
+    return ranges::count(prime, true);
+  }
+
+  long factorial(int n) {
+    long res = 1;
+    for (int i = 2; i &lt;= n; ++i)
+      res = res * i % kMod;
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numPrimeArrangements(int n) {
+    final int count = countPrimes(n);
+    return (int) (factorial(count) * factorial(n - count) % MOD);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private int countPrimes(int n) {
+    boolean[] prime = new boolean[n + 1];
+    Arrays.fill(prime, 2, n + 1, true);
+
+    for (int i = 0; i * i &lt;= n; ++i)
+      if (prime[i])
+        for (int j = i * i; j &lt;= n; j += i)
+          prime[j] = false;
+
+    int count = 0;
+
+    for (boolean p : prime)
+      if (p)
+        ++count;
+
+    return count;
+  }
+
+  private long factorial(int n) {
+    long res = 1;
+    for (int i = 2; i &lt;= n; ++i)
+      res = res * i % MOD;
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numPrimeArrangements(self, n: int) -&gt; int:
+    MOD = 1_000_000_007
+
+    def factorial(n: int) -&gt; int:
+      fact = 1
+      for i in range(2, n + 1):
+        fact = fact * i % MOD
+      return fact
+
+    count = self._countPrimes(n)
+    return factorial(count) * factorial(n - count) % MOD
+
+  def _countPrimes(self, n: int) -&gt; int:
+    isPrime = [False] * 2 + [True] * (n - 1)
+    for i in range(2, int(n**0.5) + 1):
+      if isPrime[i]:
+        for j in range(i * i, n + 1, i):
+          isPrime[j] = False
+    return sum(isPrime)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

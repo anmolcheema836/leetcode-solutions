@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Pairs - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Beautiful Pairs written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/beautiful-pairs/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-reverse-operations/" class="btn">← Previous</a>
+            <span>Problem 2613 of 3563</span>
+            <a href="/leetcode-solutions/problems/prime-in-diagonal/" class="btn">Next →</a>
+        </div>
+        <h1>2613. Beautiful Pairs</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Beautiful Pairs efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class SegmentTree {
+ public:
+  explicit SegmentTree(const vector&lt;int&gt;&amp; nums)
+      : maxNum(nums.size()), nums(std::move(nums)), tree(4 * maxNum, -1) {}
+
+  // Updates the value of the node to be the index of the smaller number between
+  // the old value stored at the node and the new value `index`, where `i` is
+  // the index of the element in the `nums` array.
+  void update(int i, int numIndex) {
+    update(0, 0, maxNum, i, numIndex);
+  }
+
+  // Returns the index k s.t. `nums[k]` is maximum number in the range [i, j].
+  int query(int i, int j) const {
+    return query(0, 0, maxNum, i, j);
+  }
+
+ private:
+  // default node value for non-overlapping queries
+  static constexpr int kDefaultValue = -1;
+  const int maxNum;
+  const vector&lt;int&gt; nums;  // nums2 + nums1 or nums2 - nums1
+  vector&lt;int&gt; tree;        // tree[i] := the minimum index stored in this node
+
+  void update(int treeIndex, int lo, int hi, int i, int numIndex) {
+    if (lo == hi) {
+      tree[treeIndex] = merge(tree[treeIndex], numIndex);
+      return;
+    }
+    const int mid = (lo + hi) / 2;
+    if (i &lt;= mid)
+      update(2 * treeIndex + 1, lo, mid, i, numIndex);
+    else
+      update(2 * treeIndex + 2, mid + 1, hi, i, numIndex);
+    tree[treeIndex] = merge(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+  }
+
+  int query(int treeIndex, int lo, int hi, int i, int j) const {
+    if (i &lt;= lo &amp;&amp; hi &lt;= j)  // [lo, hi] lies completely inside [i, j].
+      return tree[treeIndex];
+    if (j &lt; lo || hi &lt; i)  // [lo, hi] lies completely outside [i, j].
+      return kDefaultValue;
+    const int mid = (lo + hi) / 2;
+    return merge(query(2 * treeIndex + 1, lo, mid, i, j),
+                 query(2 * treeIndex + 2, mid + 1, hi, i, j));
+  }
+
+  // Returns the better index. Index i is better than index j if
+  // (nums[i] &gt; nums[j]) or (nums[i] == nums[j] &amp;&amp; i &lt; j).
+  int merge(const int&amp; i, const int&amp; j) const {
+    if (i == -1)
+      return j;
+    if (j == -1)
+      return i;
+    if (nums[i] &gt; nums[j])
+      return i;
+    if (nums[j] &gt; nums[i])
+      return j;
+    return min(i, j);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; beautifulPair(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    // The goal is to find the lexicographically smallest beautiful pair (i, j)
+    // s.t. |nums1[i] - nums1[j]| + |nums2[i] - nums2[j]| is the smallest.
+    //
+    // Sort `nums2` and store the order in `indices`.
+    // To minimize |nums1[i] - nums1[j]| + |nums2[i] - nums2[j]|, since we
+    // already have sorted `nums2`, we can always have nums2[i] &gt; nums2[j] while
+    // iterating the array. So we only need to consider the following 2 cases:
+    //
+    // * nums1[i] &gt;= nums1[j]:
+    //   The value will be nums1[i] - nums1[j] + nums2[i] - nums2[j]
+    //                   = (nums2[i] + nums1[i]) - (nums2[j] + nums1[j])
+    //   Just find max (nums2[j] + nums1[j]) s.t. 0 &lt;= nums1[j] &lt;= nums1[i].
+    //
+    // * nums1[i] &lt;= nums1[j]:
+    //   The value will be nums1[j] - nums1[i] + nums2[i] - nums2[j]
+    //                   = (nums2[i] - nums1[i]) - (nums2[j] - nums1[j])
+    //   Just find max (nums2[j] - nums1[j]) s.t. nums1[i] &lt;= nums1[j] &lt;= n.
+    constexpr int kInf = 1&#x27;000&#x27;000&#x27;000;
+    const int n = nums1.size();
+    vector&lt;int&gt; ans(2, n);
+    vector&lt;int&gt; nums2PlusNums1;
+    vector&lt;int&gt; nums2MinusNums1;
+    vector&lt;int&gt; indices;
+    int minBeauty = INT_MAX;
+
+    for (int i = 0; i &lt; n; ++i) {
+      nums2PlusNums1.push_back(nums2[i] + nums1[i]);
+      nums2MinusNums1.push_back(nums2[i] - nums1[i]);
+      indices.push_back(i);
+    }
+
+    ranges::sort(indices,
+                 [&amp;nums2](int i, int j) { return nums2[i] &lt; nums2[j]; });
+
+    SegmentTree tree1(nums2PlusNums1);
+    SegmentTree tree2(nums2MinusNums1);
+
+    for (const int i : indices) {
+      const int num = nums1[i];
+      // For case nums1[i] &gt;= nums1[j], find index j s.t. (nums2[j] + nums1[j])
+      // is the maximum in the range [0, nums1[i]].
+      int j = tree1.query(0, num);
+      if (j &gt;= 0)
+        updateAns(nums2PlusNums1, i, j, minBeauty, ans);
+      tree1.update(num, i);
+      // For case nums1[i] &lt;= nums1[j], find index j s.t. (nums2[j] - nums1[j])
+      // is the maximum in the range [nums1[i], n].
+      j = tree2.query(num, n);
+      if (j &gt;= 0)
+        updateAns(nums2MinusNums1, i, j, minBeauty, ans);
+      tree2.update(num, i);
+    }
+
+    return ans;
+  }
+
+ private:
+  void updateAns(const vector&lt;int&gt;&amp; nums, int i, int j, int&amp; minBeauty,
+                 vector&lt;int&gt;&amp; ans) {
+    // beauty := |nums1[i] - nums1[j]| + |nums2[i] - nums2[j]|
+    const int beauty = nums[i] - nums[j];
+    const vector&lt;int&gt; nextAns = {min(i, j), max(i, j)};
+    if (beauty &lt; minBeauty) {
+      minBeauty = beauty;
+      ans = nextAns;
+    } else if (beauty == minBeauty) {
+      ans = min(ans, nextAns);
+    }
+  }
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Edge Weight Equilibrium Queries in a Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Edge Weight Equilibrium Queries in a Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-of-interesting-subarrays/" class="btn">← Previous</a>
+            <span>Problem 2846 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-number-with-given-digit-product/" class="btn">Next →</a>
+        </div>
+        <h1>2846. Minimum Edge Weight Equilibrium Queries in a Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Edge Weight Equilibrium Queries in a Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; minOperationsQueries(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                                   vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    constexpr int kMax = 26;
+    const int m = ceil(log2(n));
+    vector&lt;int&gt; ans;
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+    // jump[i][j] := the 2^j-th ancestor of i
+    vector&lt;vector&lt;int&gt;&gt; jump(n, vector&lt;int&gt;(m));
+    // depth[i] := the depth of i
+    vector&lt;int&gt; depth(n);
+    // count[i][j] := the count of j from root to i, where 1 &lt;= j &lt;= 26
+    vector&lt;vector&lt;int&gt;&gt; count(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int w = edge[2];
+      graph[u].emplace_back(v, w);
+      graph[v].emplace_back(u, w);
+    }
+
+    count[0] = vector&lt;int&gt;(kMax + 1);
+    dfs(graph, 0, /*prev=*/-1, jump, depth, count);
+
+    for (int j = 1; j &lt; m; ++j)
+      for (int i = 0; i &lt; n; ++i)
+        jump[i][j] = jump[jump[i][j - 1]][j - 1];
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int u = query[0];
+      const int v = query[1];
+      const int lca = getLCA(u, v, jump, depth);
+      // the number of edges between (u, v).
+      const int numEdges = depth[u] + depth[v] - 2 * depth[lca];
+      // the maximum frequency of edges between (u, v)
+      int maxFreq = 0;
+      for (int j = 1; j &lt;= kMax; ++j)
+        maxFreq = max(maxFreq, count[u][j] + count[v][j] - 2 * count[lca][j]);
+      ans.push_back(numEdges - maxFreq);
+    }
+
+    return ans;
+  }
+
+ private:
+  void dfs(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int u, int prev,
+           vector&lt;vector&lt;int&gt;&gt;&amp; jump, vector&lt;int&gt;&amp; depth,
+           vector&lt;vector&lt;int&gt;&gt;&amp; count) {
+    for (const auto&amp; [v, w] : graph[u]) {
+      if (v == prev)
+        continue;
+      jump[v][0] = u;
+      depth[v] = depth[u] + 1;
+      count[v] = count[u];
+      ++count[v][w];
+      dfs(graph, v, u, jump, depth, count);
+    }
+  }
+
+  // Returns the lca(u, v) by binary jump.
+  int getLCA(int u, int v, const vector&lt;vector&lt;int&gt;&gt;&amp; jump,
+             const vector&lt;int&gt;&amp; depth) {
+    // v is always deeper than u.
+    if (depth[u] &gt; depth[v])
+      return getLCA(v, u, jump, depth);
+    // Jump v to the same height of u.
+    for (int j = 0; j &lt; jump[0].size(); ++j)
+      if (depth[v] - depth[u] &gt;&gt; j &amp; 1)
+        v = jump[v][j];
+    if (u == v)
+      return u;
+    // Jump u and v to the node right below the lca.
+    for (int j = jump[0].size() - 1; j &gt;= 0; --j)
+      if (jump[u][j] != jump[v][j]) {
+        u = jump[u][j];
+        v = jump[v][j];
+      }
+    return jump[v][0];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] minOperationsQueries(int n, int[][] edges, int[][] queries) {
+    final int MAX = 26;
+    final int m = (int) Math.ceil(Math.log(n) / Math.log(2));
+    int[] ans = new int[queries.length];
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    // jump[i][j] := the 2^j-th ancestor of i
+    int[][] jump = new int[n][m];
+    // depth[i] := the depth of i
+    int[] depth = new int[n];
+    // count[i][j] := the count of j from root to i, where 1 &lt;= j &lt;= 26
+    int[][] count = new int[n][MAX + 1];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      final int w = edge[2];
+      graph[u].add(new Pair&lt;&gt;(v, w));
+      graph[v].add(new Pair&lt;&gt;(u, w));
+    }
+
+    count[0] = new int[MAX + 1];
+    dfs(graph, 0, /*prev=*/-1, jump, depth, count);
+
+    for (int j = 1; j &lt; m; ++j)
+      for (int i = 0; i &lt; n; ++i)
+        jump[i][j] = jump[jump[i][j - 1]][j - 1];
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int u = queries[i][0];
+      final int v = queries[i][1];
+      final int lca = getLCA(u, v, jump, depth);
+      // the number of edges between (u, v).
+      final int numEdges = depth[u] + depth[v] - 2 * depth[lca];
+      // the maximum frequency of edges between (u, v)
+      int maxFreq = 0;
+      for (int j = 1; j &lt;= MAX; ++j)
+        maxFreq = Math.max(maxFreq, count[u][j] + count[v][j] - 2 * count[lca][j]);
+      ans[i] = numEdges - maxFreq;
+    }
+
+    return ans;
+  }
+
+  private void dfs(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int u, int prev, int[][] jump, int[] depth,
+                   int[][] count) {
+    for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final int w = pair.getValue();
+      if (v == prev)
+        continue;
+      jump[v][0] = u;
+      depth[v] = depth[u] + 1;
+      count[v] = count[u].clone();
+      ++count[v][w];
+      dfs(graph, v, u, jump, depth, count);
+    }
+  }
+
+  // Returns the lca(u, v) by binary jump.
+  private int getLCA(int u, int v, int[][] jump, int[] depth) {
+    // v is always deeper than u.
+    if (depth[u] &gt; depth[v])
+      return getLCA(v, u, jump, depth);
+    // Jump v to the same height of u.
+    for (int j = 0; j &lt; jump[0].length; ++j)
+      if ((depth[v] - depth[u] &gt;&gt; j &amp; 1) == 1)
+        v = jump[v][j];
+    if (u == v)
+      return u;
+    // Jump u and v to the node right below the lca.
+    for (int j = jump[0].length - 1; j &gt;= 0; --j)
+      if (jump[u][j] != jump[v][j]) {
+        u = jump[u][j];
+        v = jump[v][j];
+      }
+    return jump[v][0];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minOperationsQueries(
+      self,
+      n: int,
+      edges: list[list[int]],
+      queries: list[list[int]],
+  ) -&gt; list[int]:
+    MAX = 26
+    m = math.ceil(math.log2(n))
+    graph = [[] for _ in range(n)]
+    # jump[i][j] := the 2^j-th ancestor of i
+    jump = [[0] * m for _ in range(n)]
+    # depth[i] := the depth of i
+    depth = [0] * n
+    # count[i][j] := the count of j from root to i, where 1 &lt;= j &lt;= 26
+    count = [[] for _ in range(n)]
+
+    for u, v, w in edges:
+      graph[u].append((v, w))
+      graph[v].append((u, w))
+
+    count[0] = [0] * (MAX + 1)
+    self._dfs(graph, 0, -1, jump, depth, count)
+
+    for j in range(1, m):
+      for i in range(n):
+        jump[i][j] = jump[jump[i][j - 1]][j - 1]
+
+    def getMinOperations(u: int, v: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the minimum number of operations to make the edge weight
+      equilibrium between (u, v).
+      &quot;&quot;&quot;
+      lca = self._getLCA(u, v, jump, depth)
+      # the number of edges between (u, v).
+      numEdges = depth[u] + depth[v] - 2 * depth[lca]
+      # the maximum frequency of edges between (u, v)
+      maxFreq = max(count[u][j] + count[v][j] - 2 * count[lca][j]
+                    for j in range(1, MAX + 1))
+      return numEdges - maxFreq
+
+    return [getMinOperations(u, v) for u, v in queries]
+
+  def _dfs(
+      self,
+      graph: list[list[tuple[int, int]]],
+      u: int,
+      prev: int,
+      jump: list[list[int]],
+      depth: list[int],
+      count: list[list[int]]
+  ) -&gt; None:
+    for v, w in graph[u]:
+      if v == prev:
+        continue
+      jump[v][0] = u
+      depth[v] = depth[u] + 1
+      count[v] = count[u][:]
+      count[v][w] += 1
+      self._dfs(graph, v, u, jump, depth, count)
+
+  def _getLCA(
+      self,
+      u: int,
+      v: int,
+      jump: list[list[int]],
+      depth: list[int]
+  ) -&gt; int:
+    &quot;&quot;&quot;Returns the lca(u, v) by binary jump.&quot;&quot;&quot;
+    # v is always deeper than u.
+    if depth[u] &gt; depth[v]:
+      return self._getLCA(v, u, jump, depth)
+    # Jump v to the same height of u.
+    for j in range(len(jump[0])):
+      if depth[v] - depth[u] &gt;&gt; j &amp; 1:
+        v = jump[v][j]
+    if u == v:
+      return u
+    # Jump u and v to the node right below the lca.
+    for j in range(len(jump[0]) - 1, -1, -1):
+      if jump[u][j] != jump[v][j]:
+        u = jump[u][j]
+        v = jump[v][j]
+    return jump[u][0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

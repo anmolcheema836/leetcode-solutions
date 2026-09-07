@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect Squares - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Detect Squares written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/detect-squares/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-beauty-in-the-array/" class="btn">← Previous</a>
+            <span>Problem 2013 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-subsequence-repeated-k-times/" class="btn">Next →</a>
+        </div>
+        <h1>2013. Detect Squares</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Detect Squares efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class DetectSquares {
+ public:
+  void add(vector&lt;int&gt; point) {
+    ++pointCount[getHash(point[0], point[1])];
+  }
+
+  int count(vector&lt;int&gt; point) {
+    const int x1 = point[0];
+    const int y1 = point[1];
+    int ans = 0;
+
+    for (const auto&amp; [hash, count] : pointCount) {
+      const int x3 = hash &gt;&gt; 10;
+      const int y3 = hash &amp; 1023;
+      if (x1 != x3 &amp;&amp; abs(x1 - x3) == abs(y1 - y3)) {
+        const int p = getHash(x1, y3);
+        const int q = getHash(x3, y1);
+        if (pointCount.contains(p) &amp;&amp; pointCount.contains(q))
+          ans += count * pointCount[p] * pointCount[q];
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  unordered_map&lt;int, int&gt; pointCount;
+
+  int getHash(int i, int j) {
+    return i &lt;&lt; 10 | j;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class DetectSquares {
+  public void add(int[] point) {
+    pointCount.merge(getHash(point[0], point[1]), 1, Integer::sum);
+  }
+
+  public int count(int[] point) {
+    final int x1 = point[0];
+    final int y1 = point[1];
+    int ans = 0;
+
+    for (final int hash : pointCount.keySet()) {
+      final int count = pointCount.get(hash);
+      final int x3 = hash &gt;&gt; 10;
+      final int y3 = hash &amp; 1023;
+      if (x1 != x3 &amp;&amp; Math.abs(x1 - x3) == Math.abs(y1 - y3)) {
+        final int p = getHash(x1, y3);
+        final int q = getHash(x3, y1);
+        if (pointCount.containsKey(p) &amp;&amp; pointCount.containsKey(q))
+          ans += count * pointCount.get(p) * pointCount.get(q);
+      }
+    }
+
+    return ans;
+  }
+
+  private Map&lt;Integer, Integer&gt; pointCount = new HashMap&lt;&gt;();
+
+  private int getHash(int i, int j) {
+    return i &lt;&lt; 10 | j;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class DetectSquares:
+  def __init__(self):
+    self.pointCount = collections.Counter()
+
+  def add(self, point: list[int]) -&gt; None:
+    self.pointCount[tuple(point)] += 1
+
+  def count(self, point: list[int]) -&gt; int:
+    x1, y1 = point
+    ans = 0
+    for (x3, y3), c in self.pointCount.items():
+      if x1 != x3 and abs(x1 - x3) == abs(y1 - y3):
+        ans += c * self.pointCount[(x1, y3)] * self.pointCount[(x3, y1)]
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Concert Tickets in Groups - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Booking Concert Tickets in Groups written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/booking-concert-tickets-in-groups/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-total-importance-of-roads/" class="btn">← Previous</a>
+            <span>Problem 2286 of 3563</span>
+            <a href="/leetcode-solutions/problems/rearrange-characters-to-make-target-string/" class="btn">Next →</a>
+        </div>
+        <h1>2286. Booking Concert Tickets in Groups</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Booking Concert Tickets in Groups efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct SegmentTreeNode {
+  int lo;
+  int hi;
+  std::unique_ptr&lt;SegmentTreeNode&gt; left;
+  std::unique_ptr&lt;SegmentTreeNode&gt; right;
+  int mx;
+  long sum;
+  SegmentTreeNode(int lo, int hi, std::unique_ptr&lt;SegmentTreeNode&gt;&amp;&amp; left,
+                  std::unique_ptr&lt;SegmentTreeNode&gt;&amp;&amp; right, int mx, long sum)
+      : lo(lo),
+        hi(hi),
+        left(std::move(left)),
+        right(std::move(right)),
+        mx(mx),
+        sum(sum) {}
+};
+
+class SegmentTree {
+ public:
+  explicit SegmentTree(int n, int m) : m(m), root(std::move(build(0, n - 1))) {}
+
+  vector&lt;int&gt; maxRange(int k, int maxRow) {
+    return maxRange(root, k, maxRow);
+  }
+
+  long sumRange(int maxRow) {
+    return sumRange(root, 0, maxRow);
+  }
+
+  // Substracts k from the seats row.
+  void substract(int row, int k) {
+    substract(root, row, k);
+  }
+
+ private:
+  const int m;
+  std::unique_ptr&lt;SegmentTreeNode&gt; root;
+
+  std::unique_ptr&lt;SegmentTreeNode&gt; build(int l, int r) {
+    if (l == r)
+      return make_unique&lt;SegmentTreeNode&gt;(l, r, nullptr, nullptr, m, m);
+    const int mid = (l + r) / 2;
+    std::unique_ptr&lt;SegmentTreeNode&gt; left = build(l, mid);
+    std::unique_ptr&lt;SegmentTreeNode&gt; right = build(mid + 1, r);
+    return make_unique&lt;SegmentTreeNode&gt;(l, r, std::move(left), std::move(right),
+                                        max(left-&gt;mx, right-&gt;mx),
+                                        left-&gt;sum + right-&gt;sum);
+  }
+
+  vector&lt;int&gt; maxRange(std::unique_ptr&lt;SegmentTreeNode&gt;&amp; root, int k,
+                       int maxRow) {
+    if (root-&gt;lo == root-&gt;hi) {
+      if (root-&gt;sum &lt; k || root-&gt;lo &gt; maxRow)
+        return {};
+      return {root-&gt;lo, m - static_cast&lt;int&gt;(root-&gt;sum)};  // {row, col}
+    }
+    // Greedily search the left subtree
+    if (root-&gt;left-&gt;mx &gt;= k)
+      return maxRange(root-&gt;left, k, maxRow);
+    return maxRange(root-&gt;right, k, maxRow);
+  }
+
+  long sumRange(std::unique_ptr&lt;SegmentTreeNode&gt;&amp; root, int i, int j) {
+    if (root-&gt;lo == i &amp;&amp; root-&gt;hi == j)
+      return root-&gt;sum;
+    const int mid = (root-&gt;lo + root-&gt;hi) / 2;
+    if (j &lt;= mid)
+      return sumRange(root-&gt;left, i, j);
+    if (i &gt; mid)
+      return sumRange(root-&gt;right, i, j);
+    return sumRange(root-&gt;left, i, mid) + sumRange(root-&gt;right, mid + 1, j);
+  }
+
+  void substract(std::unique_ptr&lt;SegmentTreeNode&gt;&amp; root, int row, int k) {
+    if (root == nullptr)
+      return;
+    if (root-&gt;lo == root-&gt;hi &amp;&amp; root-&gt;hi == row) {
+      root-&gt;mx -= k;
+      root-&gt;sum -= k;
+      return;
+    }
+    const int mid = (root-&gt;lo + root-&gt;hi) / 2;
+    if (row &lt;= mid)
+      substract(root-&gt;left, row, k);
+    else
+      substract(root-&gt;right, row, k);
+    root-&gt;mx = max(root-&gt;left-&gt;mx, root-&gt;right-&gt;mx);
+    root-&gt;sum = root-&gt;left-&gt;sum + root-&gt;right-&gt;sum;
+  }
+};
+
+class BookMyShow {
+ public:
+  BookMyShow(int n, int m) : tree(n, m), seats(n, m) {}
+
+  vector&lt;int&gt; gather(int k, int maxRow) {
+    const vector&lt;int&gt; res = tree.maxRange(k, maxRow);
+    if (res.size() == 2) {
+      const int row = res[0];
+      tree.substract(row, k);
+      seats[row] -= k;
+    }
+    return res;
+  }
+
+  bool scatter(int k, int maxRow) {
+    if (tree.sumRange(maxRow) &lt; k)
+      return false;
+
+    while (k &gt; 0)
+      if (seats[minVacantRow] &gt;= k) {
+        tree.substract(minVacantRow, k);
+        seats[minVacantRow] -= k;
+        k = 0;
+      } else {
+        tree.substract(minVacantRow, seats[minVacantRow]);
+        k -= seats[minVacantRow];
+        seats[minVacantRow] = 0;
+        ++minVacantRow;
+      }
+
+    return true;
+  }
+
+ private:
+  SegmentTree tree;
+  vector&lt;int&gt; seats;  // the remaining seats at each row
+  int minVacantRow = 0;
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

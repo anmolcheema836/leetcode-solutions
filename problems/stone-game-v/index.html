@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Game V - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Stone Game V written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/stone-game-v/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-latest-group-of-size-m/" class="btn">← Previous</a>
+            <span>Problem 1563 of 3563</span>
+            <a href="/leetcode-solutions/problems/put-boxes-into-the-warehouse-i/" class="btn">Next →</a>
+        </div>
+        <h1>1563. Stone Game V</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Stone Game V efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int stoneGameV(vector&lt;int&gt;&amp; stoneValue) {
+    const int n = stoneValue.size();
+    vector&lt;vector&lt;int&gt;&gt; mem(n, vector&lt;int&gt;(n, INT_MIN));
+    vector&lt;int&gt; prefix(n + 1);
+    partial_sum(stoneValue.begin(), stoneValue.end(), prefix.begin() + 1);
+    return stoneGameV(stoneValue, 0, n - 1, prefix, mem);
+  }
+
+ private:
+  // Returns the maximum score that Alice can obtain from stoneValue[i..j].
+  int stoneGameV(const vector&lt;int&gt;&amp; stoneValue, int i, int j,
+                 const vector&lt;int&gt;&amp; prefix, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i == j)
+      return 0;
+    if (mem[i][j] &gt; 0)
+      return mem[i][j];
+
+    // Try all the possible partitions.
+    for (int p = i; p &lt; j; ++p) {
+      // sum(stoneValue[i..p])
+      const int leftSum = prefix[p + 1] - prefix[i];
+      const int throwRight =
+          leftSum + stoneGameV(stoneValue, i, p, prefix, mem);
+      // sum(stoneValue[p + 1..j])
+      const int rightSum = prefix[j + 1] - prefix[p + 1];
+      const int throwLeft =
+          rightSum + stoneGameV(stoneValue, p + 1, j, prefix, mem);
+      if (leftSum &lt; rightSum)  // Bob throws the right row.
+        mem[i][j] = max(mem[i][j], throwRight);
+      else if (leftSum &gt; rightSum)  // Bob throws the left row.
+        mem[i][j] = max(mem[i][j], throwLeft);
+      else  // Alice decides which row to throw.
+        mem[i][j] = max({mem[i][j], throwLeft, throwRight});
+    }
+
+    return mem[i][j];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int stoneGameV(int[] stoneValue) {
+    final int n = stoneValue.length;
+    int[][] mem = new int[n][n];
+    int[] prefix = new int[n + 1];
+    Arrays.stream(mem).forEach(A -&gt; Arrays.fill(A, Integer.MIN_VALUE));
+    for (int i = 0; i &lt; n; ++i)
+      prefix[i + 1] = prefix[i] + stoneValue[i];
+    return stoneGameV(stoneValue, 0, n - 1, prefix, mem);
+  }
+
+  // Returns the maximum score that Alice can obtain from stoneValue[i..j].
+  private int stoneGameV(int[] stoneValue, int i, int j, int[] prefix, int[][] mem) {
+    if (i == j)
+      return 0;
+    if (mem[i][j] != Integer.MIN_VALUE)
+      return mem[i][j];
+
+    // Try all the possible partitions.
+    for (int p = i; p &lt; j; ++p) {
+      // sum(stoneValue[i..p])
+      final int leftSum = prefix[p + 1] - prefix[i];
+      final int throwRight = leftSum + stoneGameV(stoneValue, i, p, prefix, mem);
+      // sum(stoneValue[p + 1..j])
+      final int rightSum = prefix[j + 1] - prefix[p + 1];
+      final int throwLeft = rightSum + stoneGameV(stoneValue, p + 1, j, prefix, mem);
+      if (leftSum &lt; rightSum)
+        mem[i][j] = Math.max(mem[i][j], throwRight);
+      else if (leftSum &gt; rightSum)
+        mem[i][j] = Math.max(mem[i][j], throwLeft);
+      else
+        mem[i][j] = Math.max(Math.max(mem[i][j], throwLeft), throwRight);
+    }
+
+    return mem[i][j];
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

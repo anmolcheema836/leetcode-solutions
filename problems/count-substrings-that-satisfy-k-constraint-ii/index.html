@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Substrings That Satisfy K-Constraint II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Substrings That Satisfy K-Constraint II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-substrings-that-satisfy-k-constraint-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-largest-palindrome-divisible-by-k/" class="btn">← Previous</a>
+            <span>Problem 3261 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-overlapping-shifts/" class="btn">Next →</a>
+        </div>
+        <h1>3261. Count Substrings That Satisfy K-Constraint II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Substrings That Satisfy K-Constraint II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;long long&gt; countKConstraintSubstrings(string s, int k,
+                                               vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const int n = s.size();
+    vector&lt;long long&gt; ans;
+    vector&lt;int&gt; count(2);
+    // leftToRight[l] : = the maximum right index r s.t.s[l..r] is valid
+    vector&lt;int&gt; leftToRight(n);
+    // rightToLeft[r] := the minimum left index l s.t. s[l..r] is valid
+    vector&lt;int&gt; rightToLeft(n);
+    // prefix[i] := the number of valid substrings ending in [0..i - 1].
+    vector&lt;long&gt; prefix{0};
+
+    for (int l = 0, r = 0; r &lt; n; ++r) {
+      ++count[s[r] - &#x27;0&#x27;];
+      while (count[0] &gt; k &amp;&amp; count[1] &gt; k)
+        --count[s[l++] - &#x27;0&#x27;];
+      rightToLeft[r] = l;
+    }
+
+    count = vector&lt;int&gt;(2);
+
+    for (int l = n - 1, r = n - 1; l &gt;= 0; --l) {
+      ++count[s[l] - &#x27;0&#x27;];
+      while (count[0] &gt; k &amp;&amp; count[1] &gt; k)
+        --count[s[r--] - &#x27;0&#x27;];
+      leftToRight[l] = r;
+    }
+
+    for (int r = 0; r &lt; n; ++r)
+      prefix.push_back(prefix.back() + r - rightToLeft[r] + 1);
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int l = query[0];
+      const int r = query[1];
+      long numValidSubstrings = 0;
+      if (r &gt; leftToRight[l]) {
+        // If r is beyond leftToRight[l], compute the number of valid substrings
+        // from l to leftToRight[l] and add the number of valid substrings
+        // ending in [leftToRight[l] + 1..r].
+        //
+        // prefix[r + 1] := the number of valid substrings ending in [0..r].
+        // prefix[leftToRight[l] + 1] := the number of valid substrings ending
+        // in [0..leftToRight].
+        // =&gt; prefix[r + 1] - prefix[leftToRight[l] + 1] := the number of valid
+        // substrings ending in [leftToRight[l] + 1..r].
+        const int sz = leftToRight[l] - l + 1;
+        numValidSubstrings =
+            (sz * (sz + 1)) / 2 + (prefix[r + 1] - prefix[leftToRight[l] + 1]);
+      } else {
+        // If r is within the range of leftToRight[l], compute the number of
+        // valid substrings directly from l to r.
+        const int sz = r - l + 1;
+        numValidSubstrings = (sz * static_cast&lt;long&gt;(sz + 1)) / 2;
+      }
+      ans.push_back(numValidSubstrings);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long[] countKConstraintSubstrings(String s, int k, int[][] queries) {
+    final int n = s.length();
+    long[] ans = new long[queries.length];
+    int[] count = new int[2];
+    // leftToRight[l] : = the maximum right index r s.t.s[l..r] is valid
+    int[] leftToRight = new int[n];
+    // rightToLeft[r] := the minimum left index l s.t. s[l..r] is valid
+    int[] rightToLeft = new int[n];
+    // prefix[i] := the number of valid substrings ending in [0..i - 1].
+    long[] prefix = new long[n + 1];
+
+    for (int l = 0, r = 0; r &lt; n; ++r) {
+      ++count[s.charAt(r) - &#x27;0&#x27;];
+      while (count[0] &gt; k &amp;&amp; count[1] &gt; k)
+        --count[s.charAt(l++) - &#x27;0&#x27;];
+      rightToLeft[r] = l;
+    }
+
+    Arrays.fill(count, 0);
+
+    for (int l = n - 1, r = n - 1; l &gt;= 0; --l) {
+      ++count[s.charAt(l) - &#x27;0&#x27;];
+      while (count[0] &gt; k &amp;&amp; count[1] &gt; k)
+        --count[s.charAt(r--) - &#x27;0&#x27;];
+      leftToRight[l] = r;
+    }
+
+    for (int r = 0; r &lt; n; ++r)
+      prefix[r + 1] = prefix[r] + r - rightToLeft[r] + 1;
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int l = queries[i][0];
+      final int r = queries[i][1];
+      long numValidSubstrings = 0;
+      if (r &gt; leftToRight[l]) {
+        // If r is beyond leftToRight[l], compute the number of valid substrings
+        // from l to leftToRight[l] and add the number of valid substrings
+        // ending in [leftToRight[l] + 1..r].
+        //
+        // prefix[r + 1] := the number of valid substrings ending in [0..r].
+        // prefix[leftToRight[l] + 1] := the number of valid substrings ending
+        // in [0..leftToRight].
+        // =&gt; prefix[r + 1] - prefix[leftToRight[l] + 1] := the number of valid
+        // substrings ending in [leftToRight[l] + 1..r].
+        final int sz = leftToRight[l] - l + 1;
+        numValidSubstrings = (sz * (sz + 1)) / 2 + (prefix[r + 1] - prefix[leftToRight[l] + 1]);
+      } else {
+        final int sz = r - l + 1;
+        numValidSubstrings = (sz * (long) (sz + 1)) / 2;
+      }
+      ans[i] = numValidSubstrings;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countKConstraintSubstrings(
+      self,
+      s: str,
+      k: int,
+      queries: list[list[int]]
+  ) -&gt; list[int]:
+    n = len(s)
+    ans = []
+    count = [0, 0]
+    # leftToRight[l] := the maximum right index r s.t. s[l..r] is valid
+    leftToRight = [0] * n
+    # rightToLeft[r] := the minimum left index l s.t. s[l..r] is valid
+    rightToLeft = [0] * n
+
+    l = 0
+    for r in range(n):
+      count[int(s[r])] += 1
+      while min(count) &gt; k:
+        count[int(s[l])] -= 1
+        l += 1
+      rightToLeft[r] = l
+
+    count = [0, 0]
+    r = n - 1
+    for l in reversed(range(n)):
+      count[int(s[l])] += 1
+      while min(count) &gt; k:
+        count[int(s[r])] -= 1
+        r -= 1
+      leftToRight[l] = r
+
+    # prefix[i] := the number of valid substrings ending in [0..i - 1].
+    prefix = list(itertools.accumulate((r - l + 1
+                                       for r, l in enumerate(rightToLeft)),
+                                       initial=0))
+
+    for l, r in queries:
+      if r &gt; leftToRight[l]:
+        # If r is beyond leftToRight[l], compute the number of valid substrings
+        # from l to leftToRight[l] and add the number of valid substrings
+        # ending in [leftToRight[l] + 1..r].
+        #
+        # prefix[r + 1] := the number of valid substrings ending in [0..r].
+        # prefix[leftToRight[l] + 1] := the number of valid substrings ending
+        # in [0..leftToRight].
+        # =&gt; prefix[r + 1] - prefix[leftToRight[l] + 1] := the number of valid
+        # substrings ending in [leftToRight[l] + 1..r].
+        sz = leftToRight[l] - l + 1
+        numValidSubstrings = sz * (sz + 1) // 2 + (
+            prefix[r + 1] - prefix[leftToRight[l] + 1])
+      else:
+        # If r is within the range of leftToRight[l], compute the number of
+        # valid substrings directly from l to r.
+        sz = r - l + 1
+        numValidSubstrings = sz * (sz + 1) // 2
+      ans.append(numValidSubstrings)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

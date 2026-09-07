@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheapest Flights Within K Stops - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Cheapest Flights Within K Stops written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/cheapest-flights-within-k-stops/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/k-th-smallest-prime-fraction/" class="btn">← Previous</a>
+            <span>Problem 787 of 3563</span>
+            <a href="/leetcode-solutions/problems/rotated-digits/" class="btn">Next →</a>
+        </div>
+        <h1>787. Cheapest Flights Within K Stops</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Cheapest Flights Within K Stops efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findCheapestPrice(int n, vector&lt;vector&lt;int&gt;&gt;&amp; flights, int src, int dst,
+                        int k) {
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; flight : flights) {
+      const int u = flight[0];
+      const int v = flight[1];
+      const int w = flight[2];
+      graph[u].emplace_back(v, w);
+    }
+
+    return dijkstra(graph, src, dst, k);
+  }
+
+ private:
+  int dijkstra(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int src, int dst,
+               int k) {
+    vector&lt;vector&lt;int&gt;&gt; dist(graph.size(), vector&lt;int&gt;(k + 2, INT_MAX));
+
+    dist[src][k + 1] = 0;
+    using T = tuple&lt;int, int, int&gt;;  // (d, u, stops)
+    priority_queue&lt;T, vector&lt;T&gt;, greater&lt;&gt;&gt; minHeap;
+    minHeap.emplace(dist[src][k + 1], src, k + 1);
+
+    while (!minHeap.empty()) {
+      const auto [d, u, stops] = minHeap.top();
+      minHeap.pop();
+      if (u == dst)
+        return d;
+      if (stops == 0 || d &gt; dist[u][stops])
+        continue;
+      for (const auto&amp; [v, w] : graph[u])
+        if (d + w &lt; dist[v][stops - 1]) {
+          dist[v][stops - 1] = d + w;
+          minHeap.emplace(dist[v][stops - 1], v, stops - 1);
+        }
+    }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+
+    for (int i = 0; i &lt; n; i++)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] flight : flights) {
+      final int u = flight[0];
+      final int v = flight[1];
+      final int w = flight[2];
+      graph[u].add(new Pair&lt;&gt;(v, w));
+    }
+
+    return dijkstra(graph, src, dst, k);
+  }
+
+  private int dijkstra(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int src, int dst, int k) {
+    int[][] dist = new int[graph.length][k + 2];
+    Arrays.stream(dist).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE));
+
+    dist[src][k + 1] = 0;
+    Queue&lt;int[]&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; a[0])) {
+      { offer(new int[] {dist[src][k + 1], src, k + 1}); } // (d, u, stops)
+    };
+
+    while (!minHeap.isEmpty()) {
+      final int d = minHeap.peek()[0];
+      final int u = minHeap.peek()[1];
+      final int stops = minHeap.poll()[2];
+      if (u == dst)
+        return d;
+      if (stops == 0 || d &gt; dist[u][stops])
+        continue;
+      for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+        final int v = pair.getKey();
+        final int w = pair.getValue();
+        if (d + w &lt; dist[v][stops - 1]) {
+          dist[v][stops - 1] = d + w;
+          minHeap.offer(new int[] {dist[v][stops - 1], v, stops - 1});
+        }
+      }
+    }
+
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findCheapestPrice(
+      self,
+      n: int,
+      flights: list[list[int]],
+      src: int,
+      dst: int,
+      k: int,
+  ) -&gt; int:
+    graph = [[] for _ in range(n)]
+
+    for u, v, w in flights:
+      graph[u].append((v, w))
+
+    return self._dijkstra(graph, src, dst, k)
+
+  def _dijkstra(
+      self,
+      graph: list[list[tuple[int, int]]],
+      src: int,
+      dst: int,
+      k: int,
+  ) -&gt; int:
+    dist = [[math.inf] * (k + 2) for _ in range(len(graph))]
+
+    dist[src][k + 1] = 0
+    minHeap = [(dist[src][k + 1], src, k + 1)]  # (d, u, stops)
+
+    while minHeap:
+      d, u, stops = heapq.heappop(minHeap)
+      if u == dst:
+        return d
+      if stops == 0 or d &gt; dist[u][stops]:
+        continue
+      for v, w in graph[u]:
+        if d + w &lt; dist[v][stops - 1]:
+          dist[v][stops - 1] = d + w
+          heapq.heappush(minHeap, (dist[v][stops - 1], v, stops - 1))
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

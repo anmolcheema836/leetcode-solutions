@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Strength of K Disjoint Subarrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Strength of K Disjoint Subarrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-strength-of-k-disjoint-subarrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/shortest-uncommon-substring-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 3077 of 3563</span>
+            <a href="/leetcode-solutions/problems/match-alphanumerical-pattern-in-matrix-i/" class="btn">Next →</a>
+        </div>
+        <h1>3077. Maximum Strength of K Disjoint Subarrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Strength of K Disjoint Subarrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maximumStrength(vector&lt;int&gt;&amp; nums, int k) {
+    vector&lt;vector&lt;vector&lt;long&gt;&gt;&gt; mem(
+        nums.size(), vector&lt;vector&lt;long&gt;&gt;(k + 1, vector&lt;long&gt;(2, -1)));
+    return maximumStrength(nums, 0, k, /*fresh=*/true, mem);
+  }
+
+ private:
+  static constexpr long kMin = LONG_MIN / 2;
+
+  // Returns the maximum strength of nums[i..n) with k operations left, where
+  // `fresh` means we&#x27;re starting a new subarray.
+  long maximumStrength(const vector&lt;int&gt;&amp; nums, int i, int k, bool fresh,
+                       vector&lt;vector&lt;vector&lt;long&gt;&gt;&gt;&amp; mem) {
+    if (nums.size() - i &lt; k)
+      return kMin;
+    if (k == 0)
+      return 0;
+    if (i == nums.size())
+      return k == 0 ? 0 : kMin;
+    if (mem[i][k][fresh] != -1)
+      return mem[i][k][fresh];
+    // If it&#x27;s not fresh, we can&#x27;t skip the current number and consider it as a
+    // fresh start, since the case where it&#x27;s fresh is already covered by
+    // `includeAndFreshStart`.
+    const long skip = fresh ? maximumStrength(nums, i + 1, k, true, mem) : kMin;
+    const long gain = (k % 2 == 0 ? -1 : 1) * static_cast&lt;long&gt;(nums[i]) * k;
+    const long includeAndContinue =
+        maximumStrength(nums, i + 1, k, false, mem) + gain;
+    const long includeAndFreshStart =
+        maximumStrength(nums, i + 1, k - 1, true, mem) + gain;
+    return mem[i][k][fresh] =
+               max(skip, max(includeAndContinue, includeAndFreshStart));
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maximumStrength(int[] nums, int k) {
+    Long[][][] mem = new Long[nums.length][k + 1][2];
+    return maximumStrength(nums, 0, k, /*fresh=*/true, mem);
+  }
+
+  private static final long MIN = Long.MIN_VALUE / 2;
+
+  // Returns the maximum strength of nums[i..n) with k operations left, where
+  // `fresh` means we&#x27;re starting a new subarray.
+  private long maximumStrength(int[] nums, int i, int k, boolean fresh, Long[][][] mem) {
+    if (nums.length - i &lt; k)
+      return MIN;
+    if (k == 0)
+      return 0;
+    if (i == nums.length)
+      return k == 0 ? 0 : MIN;
+    if (mem[i][k][fresh ? 1 : 0] != null)
+      return mem[i][k][fresh ? 1 : 0];
+    // If it&#x27;s not fresh, we can&#x27;t skip the current number and consider it as a
+    // fresh start, since the case where it&#x27;s fresh is already covered by
+    // `includeAndFreshStart`.
+    final long skip = fresh ? maximumStrength(nums, i + 1, k, true, mem) : MIN;
+    final long gain = (k % 2 == 0 ? -1 : 1) * 1L * nums[i] * k;
+    final long includeAndContinue = maximumStrength(nums, i + 1, k, false, mem) + gain;
+    final long includeAndFreshStart = maximumStrength(nums, i + 1, k - 1, true, mem) + gain;
+    return mem[i][k][fresh ? 1 : 0] =
+               Math.max(skip, Math.max(includeAndContinue, includeAndFreshStart));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumStrength(self, nums: list[int], k: int) -&gt; int:
+
+    @functools.lru_cache(None)
+    def dp(i: int, k: int, fresh: bool) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the maximum strength of nums[i..n) with k operations left, where
+      `fresh` means we&#x27;re starting a new subarray.
+      &quot;&quot;&quot;
+      if len(nums) - i &lt; k:
+        return -math.inf
+      if k == 0:
+        return 0
+      if i == len(nums):
+        return 0 if k == 0 else -math.inf
+      # If it&#x27;s not fresh, we can&#x27;t skip the current number and consider it as a
+      # fresh start, since the case where it&#x27;s fresh is already covered by
+      # `includeAndFreshStart`.
+      skip = dp(i + 1, k, True) if fresh else -math.inf
+      gain = (-1 if k % 2 == 0 else 1) * nums[i] * k
+      includeAndContinue = dp(i + 1, k, False) + gain
+      includeAndFreshStart = dp(i + 1, k - 1, True) + gain
+      return max(skip, includeAndContinue, includeAndFreshStart)
+
+    return dp(0, k, True)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Darts Inside of a Circular Dartboard - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Darts Inside of a Circular Dartboard written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/people-whose-list-of-favorite-companies-is-not-a-subset-of-another-list/" class="btn">← Previous</a>
+            <span>Problem 1453 of 3563</span>
+            <a href="/leetcode-solutions/problems/active-users/" class="btn">Next →</a>
+        </div>
+        <h1>1453. Maximum Number of Darts Inside of a Circular Dartboard</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Darts Inside of a Circular Dartboard efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Point {
+  double x;
+  double y;
+  Point(double x, double y) : x(x), y(y) {}
+};
+
+class Solution {
+ public:
+  int numPoints(vector&lt;vector&lt;int&gt;&gt;&amp; darts, int r) {
+    int ans = 1;
+    vector&lt;Point&gt; points = convertToPoints(darts);
+
+    for (int i = 0; i &lt; points.size(); ++i)
+      for (int j = i + 1; j &lt; points.size(); ++j)
+        for (const Point&amp; c : getCircles(points[i], points[j], r)) {
+          int count = 0;
+          for (const Point&amp; point : points)
+            if (dist(c, point) - r &lt;= kErr)
+              ++count;
+          ans = max(ans, count);
+        }
+
+    return ans;
+  }
+
+ private:
+  static constexpr double kErr = 1e-6;
+
+  vector&lt;Point&gt; convertToPoints(const vector&lt;vector&lt;int&gt;&gt;&amp; darts) {
+    vector&lt;Point&gt; points;
+    for (const vector&lt;int&gt;&amp; dart : darts)
+      points.emplace_back(dart[0], dart[1]);
+    return points;
+  }
+
+  vector&lt;Point&gt; getCircles(const Point&amp; p, const Point&amp; q, int r) {
+    if (dist(p, q) - 2.0 * r &gt; kErr)
+      return {};
+    const Point m{(p.x + q.x) / 2, (p.y + q.y) / 2};
+    const double distCM = sqrt(pow(r, 2) - pow(dist(p, q) / 2, 2));
+    const double alpha = atan2(p.y - q.y, q.x - p.x);
+    return {Point{m.x - distCM * sin(alpha), m.y - distCM * cos(alpha)},
+            Point{m.x + distCM * sin(alpha), m.y + distCM * cos(alpha)}};
+  }
+
+  double dist(const Point&amp; p, const Point&amp; q) {
+    return sqrt(pow(p.x - q.x, 2) + pow(p.y - q.y, 2));
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Point {
+  public double x = 0;
+  public double y = 0;
+  public Point(double x, double y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+class Solution {
+  public int numPoints(int[][] darts, int r) {
+    int ans = 1;
+    List&lt;Point&gt; points = convertToPoints(darts);
+
+    for (int i = 0; i &lt; points.size(); ++i)
+      for (int j = i + 1; j &lt; points.size(); ++j)
+        for (Point c : getCircles(points.get(i), points.get(j), r)) {
+          int count = 0;
+          for (Point point : points)
+            if (dist(c, point) - r &lt;= ERR)
+              ++count;
+          ans = Math.max(ans, count);
+        }
+
+    return ans;
+  }
+
+  private static final double ERR = 1e-6;
+
+  private List&lt;Point&gt; convertToPoints(int[][] darts) {
+    List&lt;Point&gt; points = new ArrayList&lt;&gt;();
+    for (int[] dart : darts)
+      points.add(new Point(dart[0], dart[1]));
+    return points;
+  }
+
+  private Point[] getCircles(Point p, Point q, int r) {
+    if (dist(p, q) - 2.0 * r &gt; ERR)
+      return new Point[] {};
+    Point m = new Point((p.x + q.x) / 2, (p.y + q.y) / 2);
+    final double distCM = Math.sqrt(Math.pow(r, 2) - Math.pow(dist(p, q) / 2, 2));
+    final double alpha = Math.atan2(p.y - q.y, q.x - p.x);
+    return new Point[] {new Point(m.x - distCM * Math.sin(alpha), m.y - distCM * Math.cos(alpha)),
+                        new Point(m.x + distCM * Math.sin(alpha), m.y + distCM * Math.cos(alpha))};
+  }
+
+  private double dist(Point p, Point q) {
+    return Math.sqrt(Math.pow(p.x - q.x, 2) + Math.pow(p.y - q.y, 2));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Point:
+  def __init__(self, x: float, y: float):
+    self.x = x
+    self.y = y
+
+
+class Solution:
+  def numPoints(self, darts: list[list[int]], r: int) -&gt; int:
+    ERR = 1e-6
+    ans = 1
+    points = [Point(x, y) for x, y in darts]
+
+    def dist(p: Point, q: Point) -&gt; float:
+      return ((p.x - q.x)**2 + (p.y - q.y)**2)**0.5
+
+    def getCircles(p: Point, q: Point) -&gt; list[Point]:
+      if dist(p, q) - 2.0 * r &gt; ERR:
+        return []
+      m = Point((p.x + q.x) / 2, (p.y + q.y) / 2)
+      distCM = (r**2 - (dist(p, q) / 2)**2)**0.5
+      alpha = math.atan2(p.y - q.y, q.x - p.x)
+      return [Point(m.x - distCM * math.sin(alpha), m.y - distCM * math.cos(alpha)),
+              Point(m.x + distCM * math.sin(alpha), m.y + distCM * math.cos(alpha))]
+
+    for i, j in itertools.combinations(points, 2):
+      for c in getCircles(i, j):
+        count = 0
+        for point in points:
+          if dist(c, point) - r &lt;= ERR:
+            count += 1
+        ans = max(ans, count)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

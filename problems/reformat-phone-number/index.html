@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reformat Phone Number - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Reformat Phone Number written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/reformat-phone-number/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/daily-leads-and-partners/" class="btn">← Previous</a>
+            <span>Problem 1694 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-erasure-value/" class="btn">Next →</a>
+        </div>
+        <h1>1694. Reformat Phone Number</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Reformat Phone Number efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string reformatNumber(string number) {
+    string ans;
+
+    std::erase(number, &#x27;-&#x27;);
+    std::erase(number, &#x27; &#x27;);
+
+    int i = 0;  // number&#x27;s index
+    for (i = 0; i + 4 &lt; number.length(); i += 3)
+      ans += number.substr(i, 3) + &#x27;-&#x27;;
+
+    const int countFinalDigits = number.length() - i;
+    if (countFinalDigits &lt; 4)
+      ans += number.substr(i);
+    else  // countFinalDigits == 4
+      ans += number.substr(i, 2) + &#x27;-&#x27; + number.substr(i + 2);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String reformatNumber(String number) {
+    StringBuilder sb = new StringBuilder();
+
+    number = number.replaceAll(&quot;[-\\s]&quot;, &quot;&quot;);
+
+    int i = 0; // number&#x27;s index
+    for (i = 0; i + 4 &lt; number.length(); i += 3)
+      sb.append(number.substring(i, i + 3) + &#x27;-&#x27;);
+
+    final int countFinalDigits = number.length() - i;
+    if (countFinalDigits &lt; 4)
+      sb.append(number.substring(i));
+    else // countFinalDigits == 4
+      sb.append(number.substring(i, i + 2) + &#x27;-&#x27; + number.substring(i + 2));
+
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def reformatNumber(self, number: str) -&gt; str:
+    ans = []
+
+    number = number.replace(&quot;-&quot;, &quot;&quot;).replace(&quot; &quot;, &quot;&quot;)
+
+    i = 0  # number&#x27;s index
+    while i + 4 &lt; len(number):
+      ans.append(number[i:i + 3] + &#x27;-&#x27;)
+      i += 3
+
+    countFinalDigits = len(number) - i
+    if countFinalDigits &lt; 4:
+      ans.append(number[i:])
+    else:  # countFinalDigits == 4
+      ans.append(number[i:i + 2] + &#x27;-&#x27; + number[i + 2:])
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

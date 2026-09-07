@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sum of Consecutive Subsequences - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sum of Consecutive Subsequences written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sum-of-consecutive-subsequences/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-substrings-that-can-be-rearranged-to-contain-a-string-ii/" class="btn">← Previous</a>
+            <span>Problem 3299 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-element-after-replacement-with-digit-sum/" class="btn">Next →</a>
+        </div>
+        <h1>3299. Sum of Consecutive Subsequences</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sum of Consecutive Subsequences efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int getSum(vector&lt;int&gt;&amp; nums) {
+    const int increasingSequenceSum = getSequenceSum(nums, 1);
+    const int decreasingSequenceSum = getSequenceSum(nums, -1);
+    const int arraySum = getArraySum(nums);
+    return (increasingSequenceSum + decreasingSequenceSum -
+            static_cast&lt;long&gt;(arraySum) + kMod) %
+           kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  // Returns the sum of all sequences in the array that are in consecutive
+  // increasing order if `direction` is 1, or in consecutive decreasing order if
+  // `direction` is -1.
+  int getSequenceSum(const vector&lt;int&gt;&amp; nums, int direction) {
+    const int n = nums.size();
+    long sequenceSum = 0;
+    // {num: the number of subsequences ending in `num` so far}
+    unordered_map&lt;int, int&gt; prefixCount;
+    // {num: the number of subsequences starting from `num` so far}
+    unordered_map&lt;int, int&gt; suffixCount;
+    // prefixSubseqs[i] := the number of subsequences ending in nums[i]
+    vector&lt;int&gt; prefixSubseqs(n);
+    // suffixSubseqs[i] := the number of subsequences starting from nums[i]
+    vector&lt;int&gt; suffixSubseqs(n);
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int prevNum = nums[i] - direction;
+      const int subseqsCount =
+          (prefixCount.contains(prevNum) ? prefixCount[prevNum] : 0) + 1;
+      prefixSubseqs[i] = subseqsCount;
+      prefixCount[nums[i]] += subseqsCount;
+      prefixCount[nums[i]] %= kMod;
+    }
+
+    for (int i = n - 1; i &gt;= 0; --i) {
+      const int nextNum = nums[i] + direction;
+      const int subseqsCount =
+          (suffixCount.contains(nextNum) ? suffixCount[nextNum] : 0) + 1;
+      suffixSubseqs[i] = subseqsCount;
+      suffixCount[nums[i]] += subseqsCount;
+      suffixCount[nums[i]] %= kMod;
+    }
+
+    for (int i = 0; i &lt; n; ++i) {
+      sequenceSum += static_cast&lt;long&gt;(nums[i]) * prefixSubseqs[i] % kMod *
+                     suffixSubseqs[i];
+      sequenceSum %= kMod;
+    }
+
+    return sequenceSum;
+  }
+
+  int getArraySum(const vector&lt;int&gt;&amp; nums) {
+    int arraySum = 0;
+    for (const int num : nums)
+      arraySum = (arraySum + num) % kMod;
+    return arraySum;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int getSum(int[] nums) {
+    final long increasingSequenceSum = getSequenceSum(nums, 1);
+    final long decreasingSequenceSum = getSequenceSum(nums, -1);
+    final long arraySum = getArraySum(nums);
+    return (int) ((increasingSequenceSum + decreasingSequenceSum - arraySum + MOD) % MOD);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  // Returns the sum of all sequences in the array that are in consecutive
+  // increasing order if `direction` is 1, or in consecutive decreasing order if
+  // `direction` is -1.
+  private long getSequenceSum(int[] nums, int direction) {
+    int n = nums.length;
+    long sequenceSum = 0;
+    // {num: the number of subsequences ending in `num` so far}
+    Map&lt;Integer, Integer&gt; prefixCount = new HashMap&lt;&gt;();
+    // {num: the number of subsequences starting from `num` so far}
+    Map&lt;Integer, Integer&gt; suffixCount = new HashMap&lt;&gt;();
+    // prefixSubseqs[i] := the number of subsequences ending in nums[i]
+    int[] prefixSubseqs = new int[n];
+    // suffixSubseqs[i] := the number of subsequences starting from nums[i]
+    int[] suffixSubseqs = new int[n];
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int prevNum = nums[i] - direction;
+      final int subseqsCount = prefixCount.getOrDefault(prevNum, 0) + 1;
+      prefixSubseqs[i] = subseqsCount;
+      prefixCount.merge(nums[i], subseqsCount, Integer::sum);
+      prefixCount.put(nums[i], prefixCount.get(nums[i]) % MOD);
+    }
+
+    for (int i = n - 1; i &gt;= 0; --i) {
+      int nextNum = nums[i] + direction;
+      int subseqsCount = suffixCount.getOrDefault(nextNum, 0) + 1;
+      suffixSubseqs[i] = subseqsCount;
+      suffixCount.merge(nums[i], subseqsCount, Integer::sum);
+      suffixCount.put(nums[i], suffixCount.get(nums[i]) % MOD);
+    }
+
+    for (int i = 0; i &lt; n; ++i) {
+      sequenceSum += (long) nums[i] * prefixSubseqs[i] % MOD * suffixSubseqs[i];
+      sequenceSum %= MOD;
+    }
+
+    return sequenceSum;
+  }
+
+  private int getArraySum(int[] nums) {
+    int arraySum = 0;
+    for (int num : nums)
+      arraySum = (arraySum + num) % MOD;
+    return arraySum;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getSum(self, nums: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+    n = len(nums)
+
+    def getSequenceSum(nums: list[int], direction: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the sum of all sequences in the array that are in consecutive
+      increasing order if `direction` is 1, or in consecutive decreasing order
+      if `direction` is -1.&quot;&quot;&quot;
+      sequenceSum = 0
+      # {num: the number of subsequences ending in `num` so far}
+      prefixCount = collections.Counter()
+      # {num: the number of subsequences starting from `num` so far}
+      suffixCount = collections.Counter()
+      # prefixSubseqs[i] := the number of subsequences ending in nums[i]
+      prefixSubseqs = [0] * n
+      # suffixSubseqs[i] := the number of subsequences starting from nums[i]
+      suffixSubseqs = [0] * n
+
+      for i, num in enumerate(nums):
+        prevNum = num - direction
+        freq = prefixCount[prevNum] + 1
+        prefixSubseqs[i] = freq
+        prefixCount[num] += freq
+        prefixCount[num] %= MOD
+
+      for i, num in reversed(list(enumerate(nums))):
+        nextNum = num + direction
+        freq = suffixCount[nextNum] + 1
+        suffixSubseqs[i] = freq
+        suffixCount[num] += freq
+        suffixCount[num] %= MOD
+
+      for num, prefixSubseq, suffixSubseq in zip(
+              nums, prefixSubseqs, suffixSubseqs):
+        sequenceSum += num * prefixSubseq * suffixSubseq
+        sequenceSum %= MOD
+
+      return sequenceSum
+
+    increasingSequenceSum = getSequenceSum(nums, 1)
+    decreasingSequenceSum = getSequenceSum(nums, -1)
+    return (increasingSequenceSum + decreasingSequenceSum - sum(nums) + MOD) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

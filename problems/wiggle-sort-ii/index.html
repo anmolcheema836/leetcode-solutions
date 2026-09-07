@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiggle Sort II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Wiggle Sort II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/wiggle-sort-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-connected-components-in-an-undirected-graph/" class="btn">← Previous</a>
+            <span>Problem 324 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-size-subarray-sum-equals-k/" class="btn">Next →</a>
+        </div>
+        <h1>324. Wiggle Sort II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Wiggle Sort II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  void wiggleSort(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    const auto it = nums.begin() + n / 2;
+    nth_element(nums.begin(), it, nums.end());
+    const int median = *it;
+
+// index-rewiring
+#define A(i) nums[(1 + 2 * i) % (n | 1)]
+
+    for (int i = 0, j = 0, k = n - 1; i &lt;= k;)
+      if (A(i) &gt; median)
+        swap(A(i++), A(j++));
+      else if (A(i) &lt; median)
+        swap(A(i), A(k--));
+      else
+        ++i;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public void wiggleSort(int[] nums) {
+    final int n = nums.length;
+    final int median = findKthLargest(nums, (n + 1) / 2);
+    for (int i = 0, j = 0, k = n - 1; i &lt;= k;)
+      if (nums[A(i, n)] &gt; median)
+        swap(nums, A(i++, n), A(j++, n));
+      else if (nums[A(i, n)] &lt; median)
+        swap(nums, A(i, n), A(k--, n));
+      else
+        ++i;
+  }
+
+  private int A(int i, int n) {
+    return (1 + 2 * i) % (n | 1);
+  }
+
+  // Same as 215. Kth Largest Element in an Array
+  private int findKthLargest(int[] nums, int k) {
+    return quickSelect(nums, 0, nums.length - 1, k);
+  }
+
+  private int quickSelect(int[] nums, int l, int r, int k) {
+    final int pivot = nums[r];
+
+    int nextSwapped = l;
+    for (int i = l; i &lt; r; ++i)
+      if (nums[i] &gt;= pivot)
+        swap(nums, nextSwapped++, i);
+    swap(nums, nextSwapped, r);
+
+    final int count = nextSwapped - l + 1; // the number of `nums` &gt;= pivot
+    if (count == k)
+      return nums[nextSwapped];
+    if (count &gt; k)
+      return quickSelect(nums, l, nextSwapped - 1, k);
+    return quickSelect(nums, nextSwapped + 1, r, k - count);
+  }
+
+  private void swap(int[] nums, int i, int j) {
+    final int temp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = temp;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def wiggleSort(self, nums: list[int]) -&gt; None:
+    n = len(nums)
+    median = self._findKthLargest(nums, (n + 1) // 2)
+
+    def A(i: int):
+      return (1 + 2 * i) % (n | 1)
+
+    i = 0
+    j = 0
+    k = n - 1
+
+    while i &lt;= k:
+      if nums[A(i)] &gt; median:
+        nums[A(i)], nums[A(j)] = nums[A(j)], nums[A(i)]
+        i, j = i + 1, j + 1
+      elif nums[A(i)] &lt; median:
+        nums[A(i)], nums[A(k)] = nums[A(k)], nums[A(i)]
+        k -= 1
+      else:
+        i += 1
+
+  # Same as 215. Kth Largest Element in an Array
+  def _findKthLargest(self, nums: list[int], k: int) -&gt; int:
+    def quickSelect(l: int, r: int, k: int) -&gt; int:
+      randIndex = random.randint(0, r - l) + l
+      nums[randIndex], nums[r] = nums[r], nums[randIndex]
+      pivot = nums[r]
+
+      nextSwapped = l
+      for i in range(l, r):
+        if nums[i] &gt;= pivot:
+          nums[nextSwapped], nums[i] = nums[i], nums[nextSwapped]
+          nextSwapped += 1
+      nums[nextSwapped], nums[r] = nums[r], nums[nextSwapped]
+
+      count = nextSwapped - l + 1  # Number of nums &gt;= pivot
+      if count == k:
+        return nums[nextSwapped]
+      if count &gt; k:
+        return quickSelect(l, nextSwapped - 1, k)
+      return quickSelect(nextSwapped + 1, r, k - count)
+
+    return quickSelect(0, len(nums) - 1, k)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge k Sorted Lists - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Merge k Sorted Lists written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/merge-k-sorted-lists/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/generate-parentheses/" class="btn">← Previous</a>
+            <span>Problem 23 of 3563</span>
+            <a href="/leetcode-solutions/problems/swap-nodes-in-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>23. Merge k Sorted Lists</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Merge k Sorted Lists efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  ListNode* mergeKLists(vector&lt;ListNode*&gt;&amp; lists) {
+    ListNode dummy(0);
+    ListNode* curr = &amp;dummy;
+    auto compare = [](ListNode* a, ListNode* b) { return a-&gt;val &gt; b-&gt;val; };
+    priority_queue&lt;ListNode*, vector&lt;ListNode*&gt;, decltype(compare)&gt; minHeap(
+        compare);
+
+    for (ListNode* list : lists)
+      if (list != nullptr)
+        minHeap.push(list);
+
+    while (!minHeap.empty()) {
+      ListNode* minNode = minHeap.top();
+      minHeap.pop();
+      if (minNode-&gt;next)
+        minHeap.push(minNode-&gt;next);
+      curr-&gt;next = minNode;
+      curr = curr-&gt;next;
+    }
+
+    return dummy.next;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public ListNode mergeKLists(ListNode[] lists) {
+    ListNode dummy = new ListNode(0);
+    ListNode curr = dummy;
+    Queue&lt;ListNode&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; a.val));
+
+    for (final ListNode list : lists)
+      if (list != null)
+        minHeap.offer(list);
+
+    while (!minHeap.isEmpty()) {
+      ListNode minNode = minHeap.poll();
+      if (minNode.next != null)
+        minHeap.offer(minNode.next);
+      curr.next = minNode;
+      curr = curr.next;
+    }
+
+    return dummy.next;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from queue import PriorityQueue
+
+
+class Solution:
+  def mergeKLists(self, lists: list[ListNode]) -&gt; ListNode:
+    dummy = ListNode(0)
+    curr = dummy
+    pq = PriorityQueue()
+
+    for i, lst in enumerate(lists):
+      if lst:
+        pq.put((lst.val, i, lst))
+
+    while not pq.empty():
+      _, i, minNode = pq.get()
+      if minNode.next:
+        pq.put((minNode.next.val, i, minNode.next))
+      curr.next = minNode
+      curr = curr.next
+
+    return dummy.next</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

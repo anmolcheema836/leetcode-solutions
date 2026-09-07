@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Game VIII - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Stone Game VIII written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/stone-game-viii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/jump-game-vii/" class="btn">← Previous</a>
+            <span>Problem 1872 of 3563</span>
+            <a href="/leetcode-solutions/problems/calculate-special-bonus/" class="btn">Next →</a>
+        </div>
+        <h1>1872. Stone Game VIII</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Stone Game VIII efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int stoneGameVIII(vector&lt;int&gt;&amp; stones) {
+    const int n = stones.size();
+    vector&lt;int&gt; prefix(n);
+    // dp[i] := the maximum score difference the current player can get when the
+    // game starts at i, i.e. stones[0..i] are merged into the value prefix[i]
+    vector&lt;int&gt; dp(n, INT_MIN);
+
+    partial_sum(stones.begin(), stones.end(), prefix.begin());
+
+    // Must take all when there&#x27;re only two stones left.
+    dp[n - 2] = prefix.back();
+
+    for (int i = n - 3; i &gt;= 0; --i)
+      dp[i] = max(dp[i + 1], prefix[i + 1] - dp[i + 1]);
+
+    return dp[0];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int stoneGameVIII(int[] stones) {
+    final int n = stones.length;
+    int[] prefix = stones.clone();
+    // dp[i] := the maximum score difference the current player can get when the
+    // game starts at i, i.e. stones[0..i] are merged into the value prefix[i]
+    int[] dp = new int[n];
+    Arrays.fill(dp, Integer.MIN_VALUE);
+
+    for (int i = 1; i &lt; prefix.length; ++i)
+      prefix[i] += prefix[i - 1];
+
+    // Must take all when there&#x27;re only two stones left.
+    dp[n - 2] = prefix[n - 1];
+
+    for (int i = n - 3; i &gt;= 0; --i)
+      dp[i] = Math.max(dp[i + 1], prefix[i + 1] - dp[i + 1]);
+
+    return dp[0];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def stoneGameVIII(self, stones: list[int]) -&gt; int:
+    n = len(stones)
+    prefix = list(itertools.accumulate(stones))
+    # dp[i] := the maximum score difference the current player can get when the
+    # game starts at i, i.e. stones[0..i] are merged into the value prefix[i]
+    dp = [-math.inf] * n
+
+    # Must take all when there&#x27;re only two stones left.
+    dp[n - 2] = prefix[-1]
+
+    for i in reversed(range(n - 2)):
+      dp[i] = max(dp[i + 1], prefix[i + 1] - dp[i + 1])
+
+    return dp[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concatenated Divisibility - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Concatenated Divisibility written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/concatenated-divisibility/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/path-existence-queries-in-a-graph-i/" class="btn">← Previous</a>
+            <span>Problem 3533 of 3563</span>
+            <a href="/leetcode-solutions/problems/path-existence-queries-in-a-graph-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3533. Concatenated Divisibility</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Concatenated Divisibility efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; concatenatedDivisibility(vector&lt;int&gt;&amp; nums, int k) {
+    vector&lt;int&gt; lengths;
+    vector&lt;int&gt; pows;
+
+    ranges::sort(nums);
+
+    for (const int num : nums) {
+      lengths.push_back(to_string(num).length());
+      pows.push_back(static_cast&lt;int&gt;(pow(10, lengths.back())) % k);
+    }
+
+    vector&lt;vector&lt;int&gt;&gt; mem(1 &lt;&lt; nums.size(), vector&lt;int&gt;(k, -1));
+    return dp(nums, pows, mem, k, 0, 0) ? reconstruct(nums, pows, mem, k, 0, 0)
+                                        : vector&lt;int&gt;();
+  }
+
+ private:
+  // Returns true if there is a way to form a number divisible by `k` using the
+  // numbers in `nums`, where nums[i] is used iff `mask &amp; (1 &lt;&lt; i)`.
+  bool dp(const vector&lt;int&gt;&amp; nums, const vector&lt;int&gt;&amp; pows,
+          vector&lt;vector&lt;int&gt;&gt;&amp; mem, int k, int mask, int mod) {
+    if (mem[mask][mod] != -1)
+      return mem[mask][mod] == 1;
+    if (mask == (1 &lt;&lt; nums.size()) - 1)
+      return mod == 0;
+    for (int i = 0; i &lt; nums.size(); ++i)
+      if ((mask &gt;&gt; i &amp; 1) == 0) {
+        const int newMod = (mod * pows[i] + nums[i]) % k;
+        if (dp(nums, pows, mem, k, mask | 1 &lt;&lt; i, newMod))
+          return mem[mask][mod] = 1;
+      }
+    return mem[mask][mod] = 0;
+  }
+
+  // Reconstructs the numbers that form a number divisible by `k` using the
+  // numbers in `nums`, where nums[i] is used iff `mask &amp; (1 &lt;&lt; i)`.
+  vector&lt;int&gt; reconstruct(const vector&lt;int&gt;&amp; nums, const vector&lt;int&gt;&amp; pows,
+                          vector&lt;vector&lt;int&gt;&gt;&amp; mem, int k, int mask, int mod) {
+    for (int i = 0; i &lt; nums.size(); ++i)
+      if ((mask &gt;&gt; i &amp; 1) == 0) {
+        const int newMod = (mod * pows[i] + nums[i]) % k;
+        if (dp(nums, pows, mem, k, mask | 1 &lt;&lt; i, newMod)) {
+          vector&lt;int&gt; res{nums[i]};
+          vector&lt;int&gt; rest =
+              reconstruct(nums, pows, mem, k, mask | 1 &lt;&lt; i, newMod);
+          ranges::copy(rest, ranges::back_inserter(res));
+          return res;
+        }
+      }
+    return {};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] concatenatedDivisibility(int[] nums, int k) {
+    final int n = nums.length;
+    int[] lengths = new int[n];
+    int[] pows = new int[n];
+
+    Arrays.sort(nums);
+
+    for (int i = 0; i &lt; n; ++i) {
+      lengths[i] = String.valueOf(nums[i]).length();
+      pows[i] = (int) Math.pow(10, lengths[i]) % k;
+    }
+
+    Integer[][] mem = new Integer[1 &lt;&lt; n][k];
+    return dp(nums, pows, mem, k, 0, 0) ? reconstruct(nums, pows, mem, k, 0, 0) : new int[0];
+  }
+
+  // Returns true if there is a way to form a number divisible by `k` using the
+  // numbers in `nums`, where nums[i] is used iff `mask &amp; (1 &lt;&lt; i)`.
+  private boolean dp(int[] nums, int[] pows, Integer[][] mem, int k, int mask, int mod) {
+    if (mem[mask][mod] != null)
+      return mem[mask][mod] == 1;
+    if (mask == (1 &lt;&lt; nums.length) - 1)
+      return (mem[mask][mod] = mod == 0 ? 1 : 0) == 1;
+    for (int i = 0; i &lt; nums.length; ++i)
+      if ((mask &gt;&gt; i &amp; 1) == 0) {
+        final int newMod = (mod * pows[i] + nums[i]) % k;
+        if (dp(nums, pows, mem, k, mask | 1 &lt;&lt; i, newMod))
+          return (mem[mask][mod] = 1) == 1;
+      }
+    return (mem[mask][mod] = 0) == 1;
+  }
+
+  // Reconstructs the numbers that form a number divisible by `k` using the
+  // numbers in `nums`, where nums[i] is used iff `mask &amp; (1 &lt;&lt; i)`.
+  private int[] reconstruct(int[] nums, int[] pows, Integer[][] mem, int k, int mask, int mod) {
+    for (int i = 0; i &lt; nums.length; ++i)
+      if ((mask &gt;&gt; i &amp; 1) == 0) {
+        final int newMod = (mod * pows[i] + nums[i]) % k;
+        if (dp(nums, pows, mem, k, mask | 1 &lt;&lt; i, newMod)) {
+          int[] first = new int[] {nums[i]};
+          int[] rest = reconstruct(nums, pows, mem, k, mask | 1 &lt;&lt; i, newMod);
+          int[] res = new int[first.length + rest.length];
+          System.arraycopy(first, 0, res, 0, first.length);
+          System.arraycopy(rest, 0, res, first.length, rest.length);
+          return res;
+        }
+      }
+    return new int[0];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def concatenatedDivisibility(self, nums: list[int], k: int) -&gt; list[int]:
+    n = len(nums)
+    nums.sort()
+    lengths = [len(str(num)) for num in nums]
+    pows = [pow(10, length, k) for length in lengths]
+
+    @functools.lru_cache(None)
+    def dp(mask: int, mod: int) -&gt; bool:
+      &quot;&quot;&quot;
+      Returns True if there is a way to form a number divisible by `k` using the
+      numbers in `nums`, where nums[i] is used iff `mask &amp; (1 &lt;&lt; i)`.
+      &quot;&quot;&quot;
+      if mask == (1 &lt;&lt; n) - 1:
+        return mod == 0
+      for i in range(n):
+        if (mask &gt;&gt; i &amp; 1) == 0:
+          newMod = (mod * pows[i] + nums[i]) % k
+          if dp(mask | 1 &lt;&lt; i, newMod):
+            return True
+      return False
+
+    def reconstruct(mask: int, mod: int) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Reconstructs the numbers that form a number divisible by `k` using the
+      numbers in `nums`, where nums[i] is used iff `mask &amp; (1 &lt;&lt; i)`.
+      &quot;&quot;&quot;
+      for i in range(n):
+        if (mask &gt;&gt; i &amp; 1) == 0:
+          newMod = (mod * pows[i] + nums[i]) % k
+          if dp(mask | 1 &lt;&lt; i, newMod):
+            return [nums[i]] + reconstruct(mask | 1 &lt;&lt; i, newMod)
+      return []
+
+    return reconstruct(0, 0) if dp(0, 0) else []</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

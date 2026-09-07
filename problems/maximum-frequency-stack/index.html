@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Frequency Stack - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Frequency Stack written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-frequency-stack/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/all-possible-full-binary-trees/" class="btn">← Previous</a>
+            <span>Problem 895 of 3563</span>
+            <a href="/leetcode-solutions/problems/monotonic-array/" class="btn">Next →</a>
+        </div>
+        <h1>895. Maximum Frequency Stack</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Frequency Stack efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FreqStack {
+ public:
+  void push(int val) {
+    countToStack[++count[val]].push(val);
+    maxFreq = max(maxFreq, count[val]);
+  }
+
+  int pop() {
+    const int val = countToStack[maxFreq].top();
+    countToStack[maxFreq].pop();
+    --count[val];
+    if (countToStack[maxFreq].empty())
+      --maxFreq;
+    return val;
+  }
+
+ private:
+  int maxFreq = 0;
+  unordered_map&lt;int, int&gt; count;
+  unordered_map&lt;int, stack&lt;int&gt;&gt; countToStack;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FreqStack {
+  public void push(int val) {
+    count.merge(val, 1, Integer::sum);
+    countToStack.putIfAbsent(count.get(val), new ArrayDeque&lt;&gt;());
+    countToStack.get(count.get(val)).push(val);
+    maxFreq = Math.max(maxFreq, count.get(val));
+  }
+
+  public int pop() {
+    final int val = countToStack.get(maxFreq).pop();
+    count.merge(val, -1, Integer::sum);
+    if (countToStack.get(maxFreq).isEmpty())
+      --maxFreq;
+    return val;
+  }
+
+  private int maxFreq = 0;
+  private Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+  private Map&lt;Integer, Deque&lt;Integer&gt;&gt; countToStack = new HashMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class FreqStack:
+  def __init__(self):
+    self.maxFreq = 0
+    self.count = collections.Counter()
+    self.countToStack = collections.defaultdict(list)
+
+  def push(self, val: int) -&gt; None:
+    self.count[val] += 1
+    self.countToStack[self.count[val]].append(val)
+    self.maxFreq = max(self.maxFreq, self.count[val])
+
+  def pop(self) -&gt; int:
+    val = self.countToStack[self.maxFreq].pop()
+    self.count[val] -= 1
+    if not self.countToStack[self.maxFreq]:
+      self.maxFreq -= 1
+    return val</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive Time of Functions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Exclusive Time of Functions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/exclusive-time-of-functions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-log-storage-system/" class="btn">← Previous</a>
+            <span>Problem 636 of 3563</span>
+            <a href="/leetcode-solutions/problems/average-of-levels-in-binary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>636. Exclusive Time of Functions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Exclusive Time of Functions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; exclusiveTime(int n, vector&lt;string&gt;&amp; logs) {
+    vector&lt;int&gt; ans(n);
+    stack&lt;int&gt; stack;  // [oldest_id, ..., latest_id]
+    int prevTime;
+
+    for (const string&amp; log : logs) {
+      // Get the seperators&#x27; indices.
+      const int colon1 = log.find_first_of(&#x27;:&#x27;);
+      const int colon2 = log.find_last_of(&#x27;:&#x27;);
+      // Get the function_id, the label, and the timestamp.
+      const int id = stoi(log.substr(0, colon1));  // {function_id}
+      const char label = log[colon1 + 1];  // {&quot;s&quot; (&quot;start&quot;) | &quot;e&quot; (&quot;end&quot;) }
+      const int timestamp = stoi(log.substr(colon2 + 1));  // {timestamp}
+      if (label == &#x27;s&#x27;) {
+        if (!stack.empty())
+          ans[stack.top()] += timestamp - prevTime;
+        stack.push(id);
+        prevTime = timestamp;
+      } else {
+        ans[stack.top()] += timestamp - prevTime + 1, stack.pop();
+        prevTime = timestamp + 1;
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] exclusiveTime(int n, List&lt;String&gt; logs) {
+    int[] ans = new int[n];
+    Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;(); // [oldest_id, ..., latest_id]
+    int prevTime = -1;
+
+    for (final String log : logs) {
+      final String[] splits = log.split(&quot;:&quot;);
+      // Get the function_id, the label, and the timestamp.
+      final int id = Integer.parseInt(splits[0]);        // {function_id}
+      final char label = splits[1].charAt(0);            // {&quot;s&quot; (&quot;start&quot;) | &quot;e&quot; (&quot;end&quot;) }
+      final int timestamp = Integer.parseInt(splits[2]); // {timestamp}
+      if (label == &#x27;s&#x27;) {
+        if (!stack.isEmpty())
+          ans[stack.peek()] += timestamp - prevTime;
+        stack.push(id);
+        prevTime = timestamp;
+      } else {
+        ans[stack.pop()] += timestamp - prevTime + 1;
+        prevTime = timestamp + 1;
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

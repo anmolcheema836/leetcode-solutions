@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Artifacts That Can Be Extracted - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Artifacts That Can Be Extracted written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-artifacts-that-can-be-extracted/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-all-k-distant-indices-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 2201 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-the-topmost-element-after-k-moves/" class="btn">Next →</a>
+        </div>
+        <h1>2201. Count Artifacts That Can Be Extracted</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Artifacts That Can Be Extracted efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int digArtifacts(int n, vector&lt;vector&lt;int&gt;&gt;&amp; artifacts,
+                   vector&lt;vector&lt;int&gt;&gt;&amp; dig) {
+    unordered_set&lt;int&gt; digged;
+
+    for (const vector&lt;int&gt;&amp; d : dig)
+      digged.insert(hash(d[0], d[1]));
+
+    return ranges::count_if(
+        artifacts, [&amp;](const auto&amp; a) { return canExtract(a, digged); });
+  }
+
+ private:
+  int hash(int i, int j) {
+    return i &lt;&lt; 16 | j;
+  }
+
+  bool canExtract(const vector&lt;int&gt;&amp; a, const unordered_set&lt;int&gt;&amp; digged) {
+    for (int i = a[0]; i &lt;= a[2]; ++i)
+      for (int j = a[1]; j &lt;= a[3]; ++j)
+        if (!digged.contains(hash(i, j)))
+          return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int digArtifacts(int n, int[][] artifacts, int[][] dig) {
+    Set&lt;Integer&gt; digged = new HashSet&lt;&gt;();
+
+    for (int[] d : dig)
+      digged.add(hash(d[0], d[1]));
+
+    return (int) Arrays.stream(artifacts).filter(a -&gt; canExtract(a, digged)).count();
+  }
+
+  private int hash(int i, int j) {
+    return i &lt;&lt; 16 | j;
+  }
+
+  private boolean canExtract(int[] a, Set&lt;Integer&gt; digged) {
+    for (int i = a[0]; i &lt;= a[2]; ++i)
+      for (int j = a[1]; j &lt;= a[3]; ++j)
+        if (!digged.contains(hash(i, j)))
+          return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def digArtifacts(
+      self,
+      n: int,
+      artifacts: list[list[int]],
+      dig: list[list[int]],
+  ) -&gt; int:
+    digged = set((r, c) for r, c in dig)
+
+    def canExtract(a: list[int]) -&gt; bool:
+      for i in range(a[0], a[2] + 1):
+        for j in range(a[1], a[3] + 1):
+          if (i, j) not in digged:
+            return False
+      return True
+
+    return sum(canExtract(a) for a in artifacts)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

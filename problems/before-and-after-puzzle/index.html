@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Before and After Puzzle - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Before and After Puzzle written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/before-and-after-puzzle/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-substrings-with-only-one-distinct-letter/" class="btn">← Previous</a>
+            <span>Problem 1181 of 3563</span>
+            <a href="/leetcode-solutions/problems/shortest-distance-to-target-color/" class="btn">Next →</a>
+        </div>
+        <h1>1181. Before and After Puzzle</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Before and After Puzzle efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; beforeAndAfterPuzzles(vector&lt;string&gt;&amp; phrases) {
+    set&lt;string&gt; ans;
+    unordered_map&lt;string, set&lt;string&gt;&gt; firstWordToLasts;
+    unordered_map&lt;string, set&lt;string&gt;&gt; lastWordToFirsts;
+
+    for (const string&amp; phrase : phrases) {
+      const int firstSpaceIndex = phrase.find(&#x27; &#x27;);
+      const int lastSpaceIndex = phrase.rfind(&#x27; &#x27;);
+      // the index after the firstWord
+      const int i =
+          firstSpaceIndex == string::npos ? phrase.length() : firstSpaceIndex;
+      // the index of the lastWord
+      const int j = lastSpaceIndex == string::npos ? 0 : lastSpaceIndex + 1;
+      const string firstWord = phrase.substr(0, i);
+      const string lastWord = phrase.substr(j);
+
+      // Concatenate `phrase` with `last` having the same `firstWord`.
+      if (const auto it = firstWordToLasts.find(lastWord);
+          it != firstWordToLasts.cend())
+        for (const string&amp; last : it-&gt;second)
+          ans.insert(phrase + last);
+
+      // Concatenate `first` having the same `lastWord` with `phrase`.
+      if (const auto it = lastWordToFirsts.find(firstWord);
+          it != lastWordToFirsts.cend())
+        for (const string&amp; first : it-&gt;second)
+          ans.insert(first + phrase);
+
+      // e.g. &quot;a b c&quot; -&gt; {&quot;a&quot;: &quot; b c&quot;}
+      //          &quot;a&quot; -&gt; {&quot;a&quot;: &quot;&quot;}
+      firstWordToLasts[firstWord].insert(phrase.substr(i));
+
+      // e.g. &quot;a b c&quot; -&gt; {&quot;c&quot;: &quot;a b &quot;}
+      //          &quot;a&quot; -&gt; {&quot;a&quot;: &quot;&quot;}
+      lastWordToFirsts[lastWord].insert(phrase.substr(0, j));
+    }
+
+    return {ans.begin(), ans.end()};
+  }
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

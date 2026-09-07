@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Lines to Represent a Line Chart - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Lines to Represent a Line Chart written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-lines-to-represent-a-line-chart/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-bags-with-full-capacity-of-rocks/" class="btn">← Previous</a>
+            <span>Problem 2280 of 3563</span>
+            <a href="/leetcode-solutions/problems/sum-of-total-strength-of-wizards/" class="btn">Next →</a>
+        </div>
+        <h1>2280. Minimum Lines to Represent a Line Chart</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Lines to Represent a Line Chart efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumLines(vector&lt;vector&lt;int&gt;&gt;&amp; stockPrices) {
+    int ans = 0;
+
+    ranges::sort(stockPrices);
+
+    for (int i = 2; i &lt; stockPrices.size(); ++i) {
+      const pair&lt;int, int&gt; a = getSlope(stockPrices[i - 2], stockPrices[i - 1]);
+      const pair&lt;int, int&gt; b = getSlope(stockPrices[i - 1], stockPrices[i]);
+      if (a != b)
+        ++ans;
+    }
+
+    return ans + (stockPrices.size() &gt; 1);
+  }
+
+ private:
+  pair&lt;int, int&gt; getSlope(const vector&lt;int&gt;&amp; p, const vector&lt;int&gt;&amp; q) {
+    const int dx = p[0] - q[0];
+    const int dy = p[1] - q[1];
+    if (dx == 0)
+      return {0, p[0]};
+    if (dy == 0)
+      return {p[1], 0};
+    const int d = __gcd(dx, dy);
+    return {dx / d, dy / d};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumLines(int[][] stockPrices) {
+    int ans = 0;
+
+    Arrays.sort(stockPrices, Comparator.comparingInt(stockPrice -&gt; stockPrice[0]));
+
+    for (int i = 2; i &lt; stockPrices.length; ++i) {
+      Pair&lt;Integer, Integer&gt; a = getSlope(stockPrices[i - 2], stockPrices[i - 1]);
+      Pair&lt;Integer, Integer&gt; b = getSlope(stockPrices[i - 1], stockPrices[i]);
+      if (a.getKey() != b.getKey() || a.getValue() != b.getValue())
+        ++ans;
+    }
+
+    return ans + (stockPrices.length &gt; 1 ? 1 : 0);
+  }
+
+  private Pair&lt;Integer, Integer&gt; getSlope(int[] p, int[] q) {
+    final int dx = p[0] - q[0];
+    final int dy = p[1] - q[1];
+    if (dx == 0)
+      return new Pair&lt;&gt;(0, p[0]);
+    if (dy == 0)
+      return new Pair&lt;&gt;(p[1], 0);
+    final int d = gcd(dx, dy);
+    return new Pair&lt;&gt;(dx / d, dy / d);
+  }
+
+  private int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumLines(self, stockPrices: list[list[int]]) -&gt; int:
+    ans = 0
+
+    stockPrices.sort()
+
+    def getSlope(p: list[int], q: list[int]) -&gt; tuple[int, int]:
+      dx = p[0] - q[0]
+      dy = p[1] - q[1]
+      if dx == 0:
+        return (0, p[0])
+      if dy == 0:
+        return (p[1], 0)
+      d = gcd(dx, dy)
+      return (dx // d, dy // d)
+
+    for i in range(2, len(stockPrices)):
+      a = getSlope(stockPrices[i - 2], stockPrices[i - 1])
+      b = getSlope(stockPrices[i - 1], stockPrices[i])
+      if a != b:
+        ans += 1
+
+    return ans + (len(stockPrices) &gt; 1)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

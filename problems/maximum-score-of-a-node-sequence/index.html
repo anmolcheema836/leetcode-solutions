@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Score of a Node Sequence - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Score of a Node Sequence written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-score-of-a-node-sequence/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-an-atm-machine/" class="btn">← Previous</a>
+            <span>Problem 2242 of 3563</span>
+            <a href="/leetcode-solutions/problems/calculate-digit-sum-of-a-string/" class="btn">Next →</a>
+        </div>
+        <h1>2242. Maximum Score of a Node Sequence</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Score of a Node Sequence efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximumScore(vector&lt;int&gt;&amp; scores, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    int ans = -1;
+    vector&lt;set&lt;pair&lt;int, int&gt;&gt;&gt; graph(scores.size());  // {(score, node)}
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace(scores[v], v);
+      graph[v].emplace(scores[u], u);
+      if (graph[u].size() &gt; 3)
+        graph[u].erase(graph[u].begin());
+      if (graph[v].size() &gt; 3)
+        graph[v].erase(graph[v].begin());
+    }
+
+    // To find the target sequence: a - u - v - b, enumerate each edge (u, v),
+    // and find a (u&#x27;s child) and b (v&#x27;s child). That&#x27;s why we find the 3
+    // children that have the highest scores because one of the 3 children is
+    // guaranteed to be valid.
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      for (const auto&amp; [scoreA, a] : graph[u])
+        for (const auto&amp; [scoreB, b] : graph[v])
+          if (a != b &amp;&amp; a != v &amp;&amp; b != u)
+            ans = max(ans, scoreA + scores[u] + scores[v] + scoreB);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximumScore(int[] scores, int[][] edges) {
+    final int n = scores.length;
+    int ans = -1;
+    Queue&lt;Integer&gt;[] graph = new Queue[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      graph[i] = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; scores[a]));
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].offer(v);
+      graph[v].offer(u);
+      if (graph[u].size() &gt; 3)
+        graph[u].poll();
+      if (graph[v].size() &gt; 3)
+        graph[v].poll();
+    }
+
+    // To find the target sequence: a - u - v - b, enumerate each edge (u, v),
+    // and find a (u&#x27;s child) and b (v&#x27;s child). That&#x27;s why we find the 3
+    // children that have the highest scores because one of the 3 children is
+    // guaranteed to be valid.
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      for (final int a : graph[u])
+        for (final int b : graph[v])
+          if (a != b &amp;&amp; a != v &amp;&amp; b != u)
+            ans = Math.max(ans, scores[a] + scores[u] + scores[v] + scores[b]);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumScore(self, scores: list[int], edges: list[list[int]]) -&gt; int:
+    n = len(scores)
+    ans = -1
+    graph = [[] for _ in range(n)]
+
+    for u, v in edges:
+      graph[u].append((scores[v], v))
+      graph[v].append((scores[u], u))
+
+    for i in range(n):
+      graph[i] = heapq.nlargest(3, graph[i])
+
+    # To find the target sequence: a - u - v - b, enumerate each edge (u, v),
+    # and find a (u&#x27;s child) and b (v&#x27;s child). That&#x27;s why we find the 3
+    # children that have the highest scores because one of the 3 children is
+    # guaranteed to be valid.
+    for u, v in edges:
+      for scoreA, a in graph[u]:
+        for scoreB, b in graph[v]:
+          if a != b and a != v and b != u:
+            ans = max(ans, scoreA + scores[u] + scores[v] + scoreB)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

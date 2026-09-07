@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Number of Operations to Make Arrays Similar - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Number of Operations to Make Arrays Similar written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-number-of-operations-to-make-arrays-similar/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-to-make-array-equal/" class="btn">← Previous</a>
+            <span>Problem 2449 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-distinct-binary-strings-after-applying-operations/" class="btn">Next →</a>
+        </div>
+        <h1>2449. Minimum Number of Operations to Make Arrays Similar</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Number of Operations to Make Arrays Similar efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long makeSimilar(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; target) {
+    long ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; A(2);  // A[0] := even nums, A[1] := odd nums
+    vector&lt;vector&lt;int&gt;&gt; B(2);  // B[0] := even target, B[1] := odd nums
+
+    for (const int num : nums)
+      A[num % 2].push_back(num);
+
+    for (const int num : target)
+      B[num % 2].push_back(num);
+
+    ranges::sort(A[0]);
+    ranges::sort(A[1]);
+    ranges::sort(B[0]);
+    ranges::sort(B[1]);
+
+    for (int i = 0; i &lt; 2; ++i)
+      for (int j = 0; j &lt; A[i].size(); ++j)
+        ans += abs(A[i][j] - B[i][j]) / 2;
+
+    return ans / 2;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long makeSimilar(int[] nums, int[] target) {
+    long ans = 0;
+    // A[0] := even nums, A[1] := odd nums
+    List&lt;Integer&gt;[] A = new List[] {new ArrayList&lt;&gt;(), new ArrayList&lt;&gt;()};
+    // B[0] := even target, B[1] := odd nums
+    List&lt;Integer&gt;[] B = new List[] {new ArrayList&lt;&gt;(), new ArrayList&lt;&gt;()};
+
+    for (final int num : nums)
+      A[num % 2].add(num);
+
+    for (final int num : target)
+      B[num % 2].add(num);
+
+    Collections.sort(A[0]);
+    Collections.sort(A[1]);
+    Collections.sort(B[0]);
+    Collections.sort(B[1]);
+
+    for (int i = 0; i &lt; 2; ++i)
+      for (int j = 0; j &lt; A[i].size(); ++j)
+        ans += Math.abs(A[i].get(j) - B[i].get(j)) / 2;
+
+    return ans / 2;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def makeSimilar(self, nums: list[int], target: list[int]) -&gt; int:
+    nums.sort(key=lambda x: (x % 2, x))
+    target.sort(key=lambda x: (x % 2, x))
+    return sum(abs(a - b) for a, b in zip(nums, target)) // 4</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

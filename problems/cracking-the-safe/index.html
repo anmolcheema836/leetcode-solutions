@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cracking the Safe - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Cracking the Safe written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/cracking-the-safe/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/open-the-lock/" class="btn">← Previous</a>
+            <span>Problem 753 of 3563</span>
+            <a href="/leetcode-solutions/problems/reach-a-number/" class="btn">Next →</a>
+        </div>
+        <h1>753. Cracking the Safe</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Cracking the Safe efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string crackSafe(int n, int k) {
+    string ans(n, &#x27;0&#x27;);
+    dfs(pow(k, n), n, k, {ans}, ans);
+    return ans;
+  }
+
+ private:
+  bool dfs(int passwordSize, int n, int k, unordered_set&lt;string&gt;&amp;&amp; seen,
+           string&amp; path) {
+    if (seen.size() == passwordSize)
+      return true;
+
+    string prefix = path.substr(path.length() - n + 1);
+
+    for (char c = &#x27;0&#x27;; c &lt; &#x27;0&#x27; + k; ++c) {
+      prefix.push_back(c);
+      if (!seen.contains(prefix)) {
+        seen.insert(prefix);
+        path.push_back(c);
+        if (dfs(passwordSize, n, k, std::move(seen), path))
+          return true;
+        path.pop_back();
+        seen.erase(prefix);
+      }
+      prefix.pop_back();
+    }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String crackSafe(int n, int k) {
+    final String allZeros = &quot;0&quot;.repeat(n);
+    StringBuilder sb = new StringBuilder(allZeros);
+    dfs((int) Math.pow(k, n), n, k, new HashSet&lt;&gt;(Arrays.asList(allZeros)), sb);
+    return sb.toString();
+  }
+
+  private boolean dfs(int passwordSize, int n, int k, Set&lt;String&gt; seen, StringBuilder path) {
+    if (seen.size() == passwordSize)
+      return true;
+
+    StringBuilder prefix = new StringBuilder(path.substring(path.length() - n + 1));
+
+    for (char c = &#x27;0&#x27;; c &lt; &#x27;0&#x27; + k; ++c) {
+      prefix.append(c);
+      final String prefixStr = prefix.toString();
+      if (!seen.contains(prefixStr)) {
+        seen.add(prefixStr);
+        path.append(c);
+        if (dfs(passwordSize, n, k, seen, path))
+          return true;
+        path.deleteCharAt(path.length() - 1);
+        seen.remove(prefixStr);
+      }
+      prefix.deleteCharAt(prefix.length() - 1);
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def crackSafe(self, n: int, k: int) -&gt; str:
+    passwordSize = k**n
+    path = &#x27;0&#x27; * n
+    seen = set()
+    seen.add(path)
+
+    def dfs(path: str) -&gt; str:
+      if len(seen) == passwordSize:
+        return path
+
+      for c in map(str, range(k)):
+        node = path[-n + 1:] + c if n &gt; 1 else c
+        if node not in seen:
+          seen.add(node)
+          res = dfs(path + c)
+          if res:
+            return res
+          seen.remove(node)
+
+    return dfs(path)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

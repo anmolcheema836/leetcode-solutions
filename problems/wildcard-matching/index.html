@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildcard Matching - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Wildcard Matching written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/wildcard-matching/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/multiply-strings/" class="btn">← Previous</a>
+            <span>Problem 44 of 3563</span>
+            <a href="/leetcode-solutions/problems/jump-game-ii/" class="btn">Next →</a>
+        </div>
+        <h1>44. Wildcard Matching</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Wildcard Matching efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isMatch(string s, string p) {
+    const int m = s.length();
+    const int n = p.length();
+    // dp[i][j] := true if s[0..i) matches p[0..j)
+    vector&lt;vector&lt;bool&gt;&gt; dp(m + 1, vector&lt;bool&gt;(n + 1));
+    dp[0][0] = true;
+
+    auto isMatch = [&amp;](int i, int j) -&gt; bool {
+      return j &gt;= 0 &amp;&amp; p[j] == &#x27;?&#x27; || s[i] == p[j];
+    };
+
+    for (int j = 0; j &lt; p.length(); ++j)
+      if (p[j] == &#x27;*&#x27;)
+        dp[0][j + 1] = dp[0][j];
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (p[j] == &#x27;*&#x27;) {
+          const bool matchEmpty = dp[i + 1][j];
+          const bool matchSome = dp[i][j + 1];
+          dp[i + 1][j + 1] = matchEmpty || matchSome;
+        } else if (isMatch(i, j)) {
+          dp[i + 1][j + 1] = dp[i][j];
+        }
+
+    return dp[m][n];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isMatch(String s, String p) {
+    final int m = s.length();
+    final int n = p.length();
+    // dp[i][j] := true if s[0..i) matches p[0..j)
+    boolean[][] dp = new boolean[m + 1][n + 1];
+    dp[0][0] = true;
+
+    for (int j = 0; j &lt; p.length(); ++j)
+      if (p.charAt(j) == &#x27;*&#x27;)
+        dp[0][j + 1] = dp[0][j];
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (p.charAt(j) == &#x27;*&#x27;) {
+          final boolean matchEmpty = dp[i + 1][j];
+          final boolean matchSome = dp[i][j + 1];
+          dp[i + 1][j + 1] = matchEmpty || matchSome;
+        } else if (isMatch(s, i, p, j)) {
+          dp[i + 1][j + 1] = dp[i][j];
+        }
+
+    return dp[m][n];
+  }
+
+  private boolean isMatch(final String s, int i, final String p, int j) {
+    return j &gt;= 0 &amp;&amp; p.charAt(j) == &#x27;?&#x27; || s.charAt(i) == p.charAt(j);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isMatch(self, s: str, p: str) -&gt; bool:
+    m = len(s)
+    n = len(p)
+    # dp[i][j] := True if s[0..i) matches p[0..j)
+    dp = [[False] * (n + 1) for _ in range(m + 1)]
+    dp[0][0] = True
+
+    def isMatch(i: int, j: int) -&gt; bool:
+      return i &gt;= 0 and p[j] == &#x27;?&#x27; or s[i] == p[j]
+
+    for j, c in enumerate(p):
+      if c == &#x27;*&#x27;:
+        dp[0][j + 1] = dp[0][j]
+
+    for i in range(m):
+      for j in range(n):
+        if p[j] == &#x27;*&#x27;:
+          matchEmpty = dp[i + 1][j]
+          matchSome = dp[i][j + 1]
+          dp[i + 1][j + 1] = matchEmpty or matchSome
+        elif isMatch(i, j):
+          dp[i + 1][j + 1] = dp[i][j]
+
+    return dp[m][n]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

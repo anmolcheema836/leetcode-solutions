@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Most Popular Video Creator - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Most Popular Video Creator written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/most-popular-video-creator/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/average-value-of-even-numbers-that-are-divisible-by-three/" class="btn">← Previous</a>
+            <span>Problem 2456 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-addition-to-make-integer-beautiful/" class="btn">Next →</a>
+        </div>
+        <h1>2456. Most Popular Video Creator</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Most Popular Video Creator efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Creator {
+  long popularity;  // the popularity sum
+  string videoId;   // the video id that has the maximum view
+  int maxView;      // the maximum view of the creator
+};
+
+class Solution {
+ public:
+  vector&lt;vector&lt;string&gt;&gt; mostPopularCreator(vector&lt;string&gt;&amp; creators,
+                                            vector&lt;string&gt;&amp; ids,
+                                            vector&lt;int&gt;&amp; views) {
+    vector&lt;vector&lt;string&gt;&gt; ans;
+    unordered_map&lt;string, Creator&gt; nameToCreator;
+    long maxPopularity = 0;
+
+    for (int i = 0; i &lt; creators.size(); ++i) {
+      if (!nameToCreator.contains(creators[i])) {
+        nameToCreator[creators[i]] = Creator{
+            .popularity = views[i],
+            .videoId = ids[i],
+            .maxView = views[i],
+        };
+        maxPopularity = max(maxPopularity, static_cast&lt;long&gt;(views[i]));
+        continue;
+      }
+      Creator&amp; creator = nameToCreator[creators[i]];
+      creator.popularity += views[i];
+      maxPopularity = max(maxPopularity, static_cast&lt;long&gt;(creator.popularity));
+      if (creator.maxView &lt; views[i] ||
+          creator.maxView == views[i] &amp;&amp; creator.videoId &gt; ids[i]) {
+        creator.videoId = ids[i];
+        creator.maxView = views[i];
+      }
+    }
+
+    for (const auto&amp; [name, creator] : nameToCreator)
+      if (creator.popularity == maxPopularity)
+        ans.push_back({name, creator.videoId});
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Creator {
+  public long popularity; // the popularity sum
+  public String videoId;  // the video id that has the maximum view
+  public int maxView;     // the maximum view of the creator
+  public Creator(long popularity, String videoId, int maxView) {
+    this.popularity = popularity;
+    this.videoId = videoId;
+    this.maxView = maxView;
+  }
+}
+
+class Solution {
+  public List&lt;List&lt;String&gt;&gt; mostPopularCreator(String[] creators, String[] ids, int[] views) {
+    List&lt;List&lt;String&gt;&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;String, Creator&gt; nameToCreator = new HashMap&lt;&gt;();
+    long maxPopularity = 0;
+
+    for (int i = 0; i &lt; creators.length; ++i) {
+      if (!nameToCreator.containsKey(creators[i])) {
+        nameToCreator.put(creators[i], new Creator(views[i], ids[i], views[i]));
+        maxPopularity = Math.max(maxPopularity, (long) views[i]);
+        continue;
+      }
+      Creator creator = nameToCreator.get(creators[i]);
+      creator.popularity += views[i];
+      maxPopularity = Math.max(maxPopularity, (long) creator.popularity);
+      if (creator.maxView &lt; views[i] ||
+          creator.maxView == views[i] &amp;&amp; creator.videoId.compareTo(ids[i]) &gt; 0) {
+        creator.videoId = ids[i];
+        creator.maxView = views[i];
+      }
+    }
+
+    for (Map.Entry&lt;String, Creator&gt; entry : nameToCreator.entrySet())
+      if (entry.getValue().popularity == maxPopularity)
+        ans.add(Arrays.asList(entry.getKey(), entry.getValue().videoId));
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Creator:
+  def __init__(self, popularity: int, videoId: str, maxView: int):
+    self.popularity = popularity  # the popularity sum
+    self.videoId = videoId        # the video id that has the maximum view
+    self.maxView = maxView        # the maximum view of the creator
+
+
+class Solution:
+  def mostPopularCreator(self, creators: list[str],
+                         ids: list[str],
+                         views: list[int]) -&gt; list[list[str]]:
+    ans = []
+    maxPopularity = 0
+    nameToCreator = {}
+
+    for name, id, view in zip(creators, ids, views):
+      if name not in nameToCreator:
+        nameToCreator[name] = Creator(view, id, view)
+        maxPopularity = max(maxPopularity, view)
+        continue
+      creator = nameToCreator[name]
+      creator.popularity += view
+      maxPopularity = max(maxPopularity, creator.popularity)
+      if (creator.maxView &lt; view or
+              creator.maxView == view and creator.videoId &gt; id):
+        creator.videoId = id
+        creator.maxView = view
+
+    for name, creator in nameToCreator.items():
+      if creator.popularity == maxPopularity:
+        ans.append([name, creator.videoId])
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

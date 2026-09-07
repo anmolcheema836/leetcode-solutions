@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Atoms - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Atoms written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-atoms/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/split-linked-list-in-parts/" class="btn">← Previous</a>
+            <span>Problem 726 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-window-subsequence/" class="btn">Next →</a>
+        </div>
+        <h1>726. Number of Atoms</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Atoms efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string countOfAtoms(string formula) {
+    string ans;
+    int i = 0;
+
+    for (const auto&amp; [elem, freq] : parse(formula, i)) {
+      ans += elem;
+      if (freq &gt; 1)
+        ans += to_string(freq);
+    }
+
+    return ans;
+  }
+
+ private:
+  map&lt;string, int&gt; parse(const string&amp; s, int&amp; i) {
+    map&lt;string, int&gt; count;
+
+    while (i &lt; s.length())
+      if (s[i] == &#x27;(&#x27;) {
+        for (const auto&amp; [elem, freq] : parse(s, ++i))
+          count[elem] += freq;
+      } else if (s[i] == &#x27;)&#x27;) {
+        const int num = getNum(s, ++i);
+        for (auto&amp;&amp; [_, freq] : count)
+          freq *= num;
+        return count;  // Return back to the previous scope.
+      } else {         // `s[i]` must be uppercased.
+        const string&amp; elem = getElem(s, i);
+        const int num = getNum(s, i);
+        count[elem] += num;
+      }
+
+    return count;
+  }
+
+  string getElem(const string&amp; s, int&amp; i) {
+    const int elemStart = i++;  // `s[elemStart]` is uppercased.
+    while (i &lt; s.length() &amp;&amp; islower(s[i]))
+      ++i;
+    return s.substr(elemStart, i - elemStart);
+  }
+
+  int getNum(const string&amp; s, int&amp; i) {
+    const int numStart = i;
+    while (i &lt; s.length() &amp;&amp; isdigit(s[i]))
+      ++i;
+    const string&amp; numString = s.substr(numStart, i - numStart);
+    return numString.empty() ? 1 : stoi(numString);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String countOfAtoms(String formula) {
+    StringBuilder sb = new StringBuilder();
+    Map&lt;String, Integer&gt; count = parse(formula);
+
+    for (final String elem : count.keySet())
+      sb.append(elem + (count.get(elem) == 1 ? &quot;&quot; : String.valueOf(count.get(elem))));
+
+    return sb.toString();
+  }
+
+  private int i = 0;
+
+  private Map&lt;String, Integer&gt; parse(String s) {
+    Map&lt;String, Integer&gt; count = new TreeMap&lt;&gt;();
+
+    while (i &lt; s.length())
+      if (s.charAt(i) == &#x27;(&#x27;) {
+        ++i; // Skip &#x27;(&#x27;
+        for (Map.Entry&lt;String, Integer&gt; entry : parse(s).entrySet()) {
+          final String elem = entry.getKey();
+          final int freq = entry.getValue();
+          count.merge(elem, freq, Integer::sum);
+        }
+      } else if (s.charAt(i) == &#x27;)&#x27;) {
+        ++i; // Skip &#x27;)&#x27;
+        final int num = getNum(s);
+        for (final String elem : count.keySet()) {
+          final int freq = count.get(elem);
+          count.put(elem, freq * num);
+        }
+        return count; // Return back to the previous scope.
+      } else {
+        final String elem = getElem(s);
+        final int num = getNum(s);
+        count.merge(elem, num, Integer::sum);
+      }
+
+    return count;
+  }
+
+  private String getElem(final String s) {
+    final int elemStart = i++; // `s[elemStart]` is uppercased.
+    while (i &lt; s.length() &amp;&amp; Character.isLowerCase(s.charAt(i)))
+      ++i;
+    return s.substring(elemStart, i);
+  }
+
+  private int getNum(final String s) {
+    final int numStart = i;
+    while (i &lt; s.length() &amp;&amp; Character.isDigit(s.charAt(i)))
+      ++i;
+    final String numString = s.substring(numStart, i);
+    return numString.isEmpty() ? 1 : Integer.parseInt(numString);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countOfAtoms(self, formula: str) -&gt; str:
+    def parse() -&gt; dict:
+      ans = collections.defaultdict(int)
+
+      nonlocal i
+      while i &lt; n:
+        if formula[i] == &#x27;(&#x27;:
+          i += 1
+          for elem, freq in parse().items():
+            ans[elem] += freq
+        elif formula[i] == &#x27;)&#x27;:
+          i += 1
+          numStart = i
+          while i &lt; n and formula[i].isdigit():
+            i += 1
+          factor = int(formula[numStart:i])
+          for elem, freq in ans.items():
+            ans[elem] *= factor
+          return ans
+        elif formula[i].isupper():
+          elemStart = i
+          i += 1
+          while i &lt; n and formula[i].islower():
+            i += 1
+          elem = formula[elemStart:i]
+          numStart = i
+          while i &lt; n and formula[i].isdigit():
+            i += 1
+          num = 1 if i == numStart else int(
+              formula[numStart:i])
+          ans[elem] += num
+
+      return ans
+
+    n = len(formula)
+
+    ans = &quot;&quot;
+    i = 0
+    count = parse()
+
+    for elem in sorted(count.keys()):
+      ans += elem
+      if count[elem] &gt; 1:
+        ans += str(count[elem])
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

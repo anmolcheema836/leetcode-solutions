@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where Will the Ball Fall - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Where Will the Ball Fall written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/where-will-the-ball-fall/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-of-eaten-apples/" class="btn">← Previous</a>
+            <span>Problem 1706 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-xor-with-an-element-from-array/" class="btn">Next →</a>
+        </div>
+        <h1>1706. Where Will the Ball Fall</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Where Will the Ball Fall efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; findBall(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    // dp[i] := status of the i-th column
+    // -1 := empty, 0 := b0, 1 := b1, ...
+    vector&lt;int&gt; dp(n);
+    // ans[i] := the i-th ball&#x27;s final position
+    vector&lt;int&gt; ans(n, -1);
+
+    iota(dp.begin(), dp.end(), 0);
+
+    for (int i = 0; i &lt; m; ++i) {
+      vector&lt;int&gt; newDp(n, -1);
+      for (int j = 0; j &lt; n; ++j) {
+        // out-of-bounds
+        if (j + grid[i][j] &lt; 0 || j + grid[i][j] == n)
+          continue;
+        // Stuck
+        if (grid[i][j] == 1 &amp;&amp; grid[i][j + 1] == -1 ||
+            grid[i][j] == -1 &amp;&amp; grid[i][j - 1] == 1)
+          continue;
+        newDp[j + grid[i][j]] = dp[j];
+      }
+      dp = std::move(newDp);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      if (dp[i] != -1)
+        ans[dp[i]] = i;
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] findBall(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    // dp[i] := status of the i-th column
+    // -1 := empty, 0 := b0, 1 := b1, ...
+    int[] dp = new int[n];
+    // ans[i] := the i-th ball&#x27;s final position
+    int[] ans = new int[n];
+    Arrays.fill(ans, -1);
+
+    for (int i = 0; i &lt; n; ++i)
+      dp[i] = i;
+
+    for (int i = 0; i &lt; m; ++i) {
+      int[] newDp = new int[n];
+      Arrays.fill(newDp, -1);
+      for (int j = 0; j &lt; n; ++j) {
+        // out-of-bounds
+        if (j + grid[i][j] &lt; 0 || j + grid[i][j] == n)
+          continue;
+        // Stuck
+        if (grid[i][j] == 1 &amp;&amp; grid[i][j + 1] == -1 || grid[i][j] == -1 &amp;&amp; grid[i][j - 1] == 1)
+          continue;
+        newDp[j + grid[i][j]] = dp[j];
+      }
+      dp = newDp;
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      if (dp[i] != -1)
+        ans[dp[i]] = i;
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findBall(self, grid: list[list[int]]) -&gt; list[int]:
+    m = len(grid)
+    n = len(grid[0])
+    # dp[i] := status of the i-th column
+    # -1 := empty, 0 := b0, 1 := b1, ...
+    dp = [i for i in range(n)]
+    # ans[i] := the i-th ball&#x27;s final positio
+    ans = [-1] * n
+
+    for i in range(m):
+      newDp = [-1] * n
+      for j in range(n):
+        # out-of-bounds
+        if j + grid[i][j] &lt; 0 or j + grid[i][j] == n:
+          continue
+        if (grid[i][j] == 1 and grid[i][j + 1] == -1 or
+                grid[i][j] == -1 and grid[i][j - 1] == 1):
+          continue
+        newDp[j + grid[i][j]] = dp[j]
+      dp = newDp
+
+    for i, ball in enumerate(dp):
+      if ball != -1:
+        ans[ball] = i
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

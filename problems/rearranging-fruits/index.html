@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rearranging Fruits - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Rearranging Fruits written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/rearranging-fruits/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/house-robber-iv/" class="btn">← Previous</a>
+            <span>Problem 2561 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-array-concatenation-value/" class="btn">Next →</a>
+        </div>
+        <h1>2561. Rearranging Fruits</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Rearranging Fruits efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minCost(vector&lt;int&gt;&amp; basket1, vector&lt;int&gt;&amp; basket2) {
+    vector&lt;int&gt; swapped;
+    unordered_map&lt;int, int&gt; count;
+
+    for (const int b : basket1)
+      ++count[b];
+
+    for (const int b : basket2)
+      --count[b];
+
+    for (const auto&amp; [num, freq] : count) {
+      if (freq % 2 != 0)
+        return -1;
+      for (int i = 0; i &lt; abs(freq) / 2; ++i)
+        swapped.push_back(num);
+    }
+
+    const int minNum = min(ranges::min(basket1), ranges::min(basket2));
+    const auto midIt = swapped.begin() + swapped.size() / 2;
+    nth_element(swapped.begin(), midIt, swapped.end());
+    return accumulate(swapped.begin(), midIt, 0L, [minNum](long acc, int num) {
+      return acc + min(2 * minNum, num);
+    });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minCost(int[] basket1, int[] basket2) {
+    long ans = 0;
+    List&lt;Integer&gt; swapped = new ArrayList&lt;&gt;();
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final int b : basket1)
+      count.merge(b, 1, Integer::sum);
+
+    for (final int b : basket2)
+      count.merge(b, -1, Integer::sum);
+
+    for (Map.Entry&lt;Integer, Integer&gt; entry : count.entrySet()) {
+      final Integer num = entry.getKey();
+      final Integer freq = entry.getValue();
+      if (freq % 2 != 0)
+        return -1;
+      for (int i = 0; i &lt; Math.abs(freq) / 2; ++i)
+        swapped.add(num);
+    }
+
+    final int minNum =
+        Math.min(Arrays.stream(basket1).min().getAsInt(), Arrays.stream(basket2).min().getAsInt());
+    Collections.sort(swapped);
+
+    for (int i = 0; i &lt; swapped.size() / 2; ++i)
+      ans += Math.min(minNum * 2, swapped.get(i));
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minCost(self, basket1: list[int], basket2: list[int]) -&gt; int:
+    swapped = []
+    count = collections.Counter(basket1)
+    count.subtract(collections.Counter(basket2))
+
+    for num, freq in count.items():
+      if freq % 2 != 0:
+        return -1
+      swapped += [num] * abs(freq // 2)
+
+    swapped.sort()
+    minNum = min(min(basket1), min(basket2))
+    # Other than directly swap basket1[i] and basket2[j], we can swap basket1[i]
+    # with `minNum` first then swap `minNum` with basket2[j], and vice versa.
+    # That&#x27;s why we take min(2 * minNum, num) in the below.
+    return sum(min(2 * minNum, num) for num in swapped[0:len(swapped) // 2])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

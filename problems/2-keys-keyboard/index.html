@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Keys Keyboard - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for 2 Keys Keyboard written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/2-keys-keyboard/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/dota2-senate/" class="btn">← Previous</a>
+            <span>Problem 650 of 3563</span>
+            <a href="/leetcode-solutions/problems/4-keys-keyboard/" class="btn">Next →</a>
+        </div>
+        <h1>650. 2 Keys Keyboard</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve 2 Keys Keyboard efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minSteps(int n) {
+    if (n &lt;= 1)
+      return 0;
+
+    // dp[i] := the minimum steps to get i &#x27;A&#x27;s
+    vector&lt;int&gt; dp(n + 1);
+
+    // Copy &#x27;A&#x27;, then paste &#x27;A&#x27; i - 1 times.
+    iota(dp.begin(), dp.end(), 0);
+
+    for (int i = 2; i &lt;= n; ++i)
+      for (int j = i / 2; j &gt; 2; --j)
+        if (i % j == 0) {
+          dp[i] = dp[j] + i / j;  // Paste dp[j] i / j times.
+          break;
+        }
+
+    return dp[n];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minSteps(int n) {
+    // dp[i] := the minimum steps to get i &#x27;A&#x27;s
+    int[] dp = new int[n + 1];
+
+    for (int i = 2; i &lt;= n; ++i) {
+      dp[i] = i; // Copy &#x27;A&#x27;, then paste &#x27;A&#x27; i - 1 times.
+      for (int j = i / 2; j &gt; 2; --j)
+        if (i % j == 0) {
+          dp[i] = dp[j] + i / j; // Paste dp[j] i / j times.
+          break;
+        }
+    }
+
+    return dp[n];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minSteps(self, n: int) -&gt; int:
+    if n &lt;= 1:
+      return 0
+
+    # dp[i] := the minimum steps to get i &#x27;A&#x27;s
+    # Copy &#x27;A&#x27;, then paste &#x27;A&#x27; i - 1 times.
+    dp = [i for i in range(n + 1)]
+
+    for i in range(2, n + 1):
+      for j in range(i // 2, 2, -1):
+        if i % j == 0:
+          dp[i] = dp[j] + i // j  # Paste dp[j] i / j times.
+          break
+
+    return dp[n]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

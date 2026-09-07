@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Binary Search Trees II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Unique Binary Search Trees II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/unique-binary-search-trees-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/binary-tree-inorder-traversal/" class="btn">← Previous</a>
+            <span>Problem 95 of 3563</span>
+            <a href="/leetcode-solutions/problems/unique-binary-search-trees/" class="btn">Next →</a>
+        </div>
+        <h1>95. Unique Binary Search Trees II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Unique Binary Search Trees II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;TreeNode*&gt; generateTrees(int n) {
+    if (n == 0)
+      return {};
+    return generateTrees(1, n);
+  }
+
+ private:
+  vector&lt;TreeNode*&gt; generateTrees(int min, int max) {
+    if (min &gt; max)
+      return {nullptr};
+
+    vector&lt;TreeNode*&gt; ans;
+
+    for (int i = min; i &lt;= max; ++i)
+      for (TreeNode* left : generateTrees(min, i - 1))
+        for (TreeNode* right : generateTrees(i + 1, max)) {
+          ans.push_back(new TreeNode(i));
+          ans.back()-&gt;left = left;
+          ans.back()-&gt;right = right;
+        }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;TreeNode&gt; generateTrees(int n) {
+    if (n == 0)
+      return new ArrayList&lt;&gt;();
+    return generateTrees(1, n);
+  }
+
+  private List&lt;TreeNode&gt; generateTrees(int mn, int mx) {
+    if (mn &gt; mx)
+      return Arrays.asList((TreeNode) null);
+
+    List&lt;TreeNode&gt; ans = new ArrayList&lt;&gt;();
+
+    for (int i = mn; i &lt;= mx; ++i)
+      for (TreeNode left : generateTrees(mn, i - 1))
+        for (TreeNode right : generateTrees(i + 1, mx)) {
+          ans.add(new TreeNode(i));
+          ans.get(ans.size() - 1).left = left;
+          ans.get(ans.size() - 1).right = right;
+        }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def generateTrees(self, n: int) -&gt; list[TreeNode]:
+    if n == 0:
+      return []
+
+    def generateTrees(mn: int, mx: int) -&gt; list[int | None]:
+      if mn &gt; mx:
+        return [None]
+
+      ans = []
+
+      for i in range(mn, mx + 1):
+        for left in generateTrees(mn, i - 1):
+          for right in generateTrees(i + 1, mx):
+            ans.append(TreeNode(i))
+            ans[-1].left = left
+            ans[-1].right = right
+
+      return ans
+
+    return generateTrees(1, n)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Offers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shopping Offers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shopping-offers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/average-of-levels-in-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 638 of 3563</span>
+            <a href="/leetcode-solutions/problems/decode-ways-ii/" class="btn">Next →</a>
+        </div>
+        <h1>638. Shopping Offers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shopping Offers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int shoppingOffers(vector&lt;int&gt;&amp; price, vector&lt;vector&lt;int&gt;&gt;&amp; special,
+                     vector&lt;int&gt;&amp; needs) {
+    return dfs(price, special, needs, 0);
+  }
+
+ private:
+  int dfs(const vector&lt;int&gt;&amp; price, const vector&lt;vector&lt;int&gt;&gt;&amp; special,
+          vector&lt;int&gt;&amp; needs, int s) {
+    int ans = 0;
+    for (int i = 0; i &lt; price.size(); ++i)
+      ans += price[i] * needs[i];
+
+    for (int i = s; i &lt; special.size(); ++i)
+      if (isValid(special[i], needs)) {
+        // Use the special[i].
+        for (int j = 0; j &lt; needs.size(); ++j)
+          needs[j] -= special[i][j];
+        ans = min(ans, special[i].back() + dfs(price, special, needs, i));
+        // Unuse the special[i] (backtracking).
+        for (int j = 0; j &lt; needs.size(); ++j)
+          needs[j] += special[i][j];
+      }
+
+    return ans;
+  }
+
+  // Returns true if this special offer is a valid one.
+  bool isValid(const vector&lt;int&gt;&amp; offer, const vector&lt;int&gt;&amp; needs) {
+    for (int i = 0; i &lt; needs.size(); ++i)
+      if (needs[i] &lt; offer[i])
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int shoppingOffers(List&lt;Integer&gt; price, List&lt;List&lt;Integer&gt;&gt; special, List&lt;Integer&gt; needs) {
+    return dfs(price, special, needs, 0);
+  }
+
+  private int dfs(List&lt;Integer&gt; price, List&lt;List&lt;Integer&gt;&gt; special, List&lt;Integer&gt; needs, int s) {
+    int ans = 0;
+    for (int i = 0; i &lt; needs.size(); ++i)
+      ans += needs.get(i) * price.get(i);
+
+    for (int i = s; i &lt; special.size(); ++i) {
+      List&lt;Integer&gt; offer = special.get(i);
+      if (isValid(offer, needs)) {
+        // Use the special[i].
+        for (int j = 0; j &lt; needs.size(); ++j)
+          needs.set(j, needs.get(j) - offer.get(j));
+        ans = Math.min(ans, offer.get(offer.size() - 1) + dfs(price, special, needs, i));
+        // Unuse the special[i] (backtracking).
+        for (int j = 0; j &lt; needs.size(); ++j)
+          needs.set(j, needs.get(j) + offer.get(j));
+      }
+    }
+
+    return ans;
+  }
+
+  // Returns true if this special offer is a valid one.
+  private boolean isValid(List&lt;Integer&gt; offer, List&lt;Integer&gt; needs) {
+    for (int i = 0; i &lt; needs.size(); ++i)
+      if (offer.get(i) &gt; needs.get(i))
+        return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def shoppingOffers(
+      self,
+      price: list[int],
+      special: list[list[int]],
+      needs: list[int]
+  ) -&gt; int:
+    def dfs(s: int) -&gt; int:
+      ans = 0
+      for i, need in enumerate(needs):
+        ans += need * price[i]
+
+      for i in range(s, len(special)):
+        offer = special[i]
+        if all(offer[j] &lt;= need for j, need in enumerate(needs)):
+          # Use the special[i].
+          for j in range(len(needs)):
+            needs[j] -= offer[j]
+          ans = min(ans, offer[-1] + dfs(i))
+          # Unuse the special[i] (backtracking).
+          for j in range(len(needs)):
+            needs[j] += offer[j]
+
+      return ans
+
+    return dfs(0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

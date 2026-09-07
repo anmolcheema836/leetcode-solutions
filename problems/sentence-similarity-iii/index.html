@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Similarity III - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sentence Similarity III written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sentence-similarity-iii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/determine-color-of-a-chessboard-square/" class="btn">← Previous</a>
+            <span>Problem 1813 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-nice-pairs-in-an-array/" class="btn">Next →</a>
+        </div>
+        <h1>1813. Sentence Similarity III</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sentence Similarity III efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool areSentencesSimilar(string sentence1, string sentence2) {
+    if (sentence1.length() == sentence2.length())
+      return sentence1 == sentence2;
+
+    vector&lt;string&gt; words1 = split(sentence1);
+    vector&lt;string&gt; words2 = split(sentence2);
+    const int m = words1.size();
+    const int n = words2.size();
+    if (m &gt; n)
+      return areSentencesSimilar(sentence2, sentence1);
+
+    int i = 0;  // words1&#x27;s index
+    while (i &lt; m &amp;&amp; words1[i] == words2[i])
+      ++i;
+    while (i &lt; m &amp;&amp; words1[i] == words2[i + n - m])
+      ++i;
+
+    return i == m;
+  }
+
+ private:
+  vector&lt;string&gt; split(const string&amp; sentence) {
+    vector&lt;string&gt; words;
+    istringstream iss(sentence);
+
+    for (string s; iss &gt;&gt; s;)
+      words.push_back(s);
+
+    return words;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean areSentencesSimilar(String sentence1, String sentence2) {
+    if (sentence1.length() == sentence2.length())
+      return sentence1.equals(sentence2);
+
+    String[] words1 = sentence1.split(&quot; &quot;);
+    String[] words2 = sentence2.split(&quot; &quot;);
+    final int m = words1.length;
+    final int n = words2.length;
+    if (m &gt; n)
+      return areSentencesSimilar(sentence2, sentence1);
+
+    int i = 0; // words1&#x27;s index
+    while (i &lt; m &amp;&amp; words1[i].equals(words2[i]))
+      ++i;
+    while (i &lt; m &amp;&amp; words1[i].equals(words2[i + n - m]))
+      ++i;
+
+    return i == m;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def areSentencesSimilar(self, sentence1: str, sentence2: str) -&gt; bool:
+    if len(sentence1) == len(sentence2):
+      return sentence1 == sentence2
+
+    words1 = sentence1.split()
+    words2 = sentence2.split()
+    m, n = map(len, (words1, words2))
+    if m &gt; n:
+      return self.areSentencesSimilar(sentence2, sentence1)
+
+    i = 0  # words1&#x27;s index
+    while i &lt; m and words1[i] == words2[i]:
+      i += 1
+    while i &lt; m and words1[i] == words2[i + n - m]:
+      i += 1
+
+    return i == m</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

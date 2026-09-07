@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Bounded Blocking Queue - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Bounded Blocking Queue written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-bounded-blocking-queue/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/make-array-strictly-increasing/" class="btn">← Previous</a>
+            <span>Problem 1188 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-number-of-balloons/" class="btn">Next →</a>
+        </div>
+        <h1>1188. Design Bounded Blocking Queue</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Bounded Blocking Queue efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">// LeetCode doesn&#x27;t support C++20 yet, so we don&#x27;t have std::counting_semaphore
+// or binary_semaphore.
+#include &lt;semaphore.h&gt;
+
+class BoundedBlockingQueue {
+ public:
+  BoundedBlockingQueue(int capacity) {
+    sem_init(&amp;enqueueSemaphore, /*pshared=*/0, /*value=*/capacity);
+    sem_init(&amp;dequeueSemaphore, /*pshared=*/0, /*value=*/0);
+  }
+
+  ~BoundedBlockingQueue() {
+    sem_destroy(&amp;enqueueSemaphore);
+    sem_destroy(&amp;dequeueSemaphore);
+  }
+
+  void enqueue(int element) {
+    sem_wait(&amp;enqueueSemaphore);
+    q.push(element);
+    sem_post(&amp;dequeueSemaphore);
+  }
+
+  int dequeue() {
+    sem_wait(&amp;dequeueSemaphore);
+    const int element = q.front();
+    q.pop();
+    sem_post(&amp;enqueueSemaphore);
+    return element;
+  }
+
+  int size() {
+    return q.size();
+  }
+
+ private:
+  queue&lt;int&gt; q;
+  sem_t enqueueSemaphore;
+  sem_t dequeueSemaphore;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class BoundedBlockingQueue {
+  public BoundedBlockingQueue(int capacity) {
+    this.enqueueSemaphore = new Semaphore(capacity);
+  }
+
+  public void enqueue(int element) throws InterruptedException {
+    enqueueSemaphore.acquire();
+    q.offer(element);
+    dequeueSemaphore.release();
+  }
+
+  public int dequeue() throws InterruptedException {
+    dequeueSemaphore.acquire();
+    final int element = q.poll();
+    enqueueSemaphore.release();
+    return element;
+  }
+
+  public int size() {
+    return q.size();
+  }
+
+  private Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();
+  private Semaphore enqueueSemaphore;
+  private Semaphore dequeueSemaphore = new Semaphore(0);
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from threading import Semaphore
+
+
+class BoundedBlockingQueue:
+  def __init__(self, capacity: int):
+    self.q = collections.deque()
+    self.enqueueSemaphore = Semaphore(capacity)
+    self.dequeueSemaphore = Semaphore(0)
+
+  def enqueue(self, element: int) -&gt; None:
+    self.enqueueSemaphore.acquire()
+    self.q.append(element)
+    self.dequeueSemaphore.release()
+
+  def dequeue(self) -&gt; int:
+    self.dequeueSemaphore.acquire()
+    element = self.q.popleft()
+    self.enqueueSemaphore.release()
+    return element
+
+  def size(self) -&gt; int:
+    return len(self.q)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

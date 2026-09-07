@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rank Teams by Votes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Rank Teams by Votes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/rank-teams-by-votes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/how-many-numbers-are-smaller-than-the-current-number/" class="btn">← Previous</a>
+            <span>Problem 1366 of 3563</span>
+            <a href="/leetcode-solutions/problems/linked-list-in-binary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>1366. Rank Teams by Votes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Rank Teams by Votes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Team {
+  char name;
+  vector&lt;int&gt; rank;
+  Team(char name, int teamSize) : name(name), rank(teamSize) {}
+};
+
+class Solution {
+ public:
+  string rankTeams(vector&lt;string&gt;&amp; votes) {
+    const int teamSize = votes[0].size();
+    string ans;
+    vector&lt;Team&gt; teams;
+
+    for (int i = 0; i &lt; 26; ++i)
+      teams.push_back(Team(&#x27;A&#x27; + i, teamSize));
+
+    for (const string&amp; vote : votes)
+      for (int i = 0; i &lt; teamSize; ++i)
+        ++teams[vote[i] - &#x27;A&#x27;].rank[i];
+
+    ranges::sort(teams, ranges::greater{}, [](const Team&amp; team) {
+      return pair&lt;vector&lt;int&gt;, char&gt;{team.rank, -team.name};
+    });
+
+    for (int i = 0; i &lt; teamSize; ++i)
+      ans += teams[i].name;
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Team {
+  public char name;
+  public int[] rank;
+  public Team(char name, int teamSize) {
+    this.name = name;
+    this.rank = new int[teamSize];
+  }
+}
+
+class Solution {
+  public String rankTeams(String[] votes) {
+    final int teamSize = votes[0].length();
+    StringBuilder sb = new StringBuilder();
+    Team[] teams = new Team[26];
+
+    for (int i = 0; i &lt; 26; ++i)
+      teams[i] = new Team((char) (&#x27;A&#x27; + i), teamSize);
+
+    for (final String vote : votes)
+      for (int i = 0; i &lt; teamSize; ++i)
+        ++teams[vote.charAt(i) - &#x27;A&#x27;].rank[i];
+
+    Arrays.sort(teams, new Comparator&lt;Team&gt;() {
+      @Override
+      public int compare(Team a, Team b) {
+        for (int i = 0; i &lt; a.rank.length; ++i)
+          if (a.rank[i] &gt; b.rank[i])
+            return -1;
+          else if (a.rank[i] &lt; b.rank[i])
+            return 1;
+        return a.name - b.name;
+      }
+    });
+
+    for (int i = 0; i &lt; teamSize; ++i)
+      sb.append(teams[i].name);
+
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Team:
+  name: str
+  rank: list[int]
+
+  def __init__(self, name: str, teamSize: int):
+    self.name = name
+    self.rank = [0] * teamSize
+
+
+class Solution:
+  def rankTeams(self, votes: list[str]) -&gt; str:
+    teamSize = len(votes[0])
+    teams = [Team(chr(ord(&#x27;A&#x27;) + i), teamSize) for i in range(26)]
+
+    for vote in votes:
+      for i in range(teamSize):
+        teams[ord(vote[i]) - ord(&#x27;A&#x27;)].rank[i] += 1
+
+    teams.sort(key=lambda x: (x.rank, -ord(x.name)), reverse=True)
+    return &#x27;&#x27;.join(team.name for team in teams[:teamSize])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

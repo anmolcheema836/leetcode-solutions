@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Area Rectangle II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Area Rectangle II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-area-rectangle-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-width-ramp/" class="btn">← Previous</a>
+            <span>Problem 963 of 3563</span>
+            <a href="/leetcode-solutions/problems/least-operators-to-express-number/" class="btn">Next →</a>
+        </div>
+        <h1>963. Minimum Area Rectangle II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Area Rectangle II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  double minAreaFreeRect(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    long ans = LONG_MAX;
+    // For each A, B pair points, {hash(A, B): (ax, ay, bx, by)}.
+    unordered_map&lt;int, vector&lt;tuple&lt;int, int, int, int&gt;&gt;&gt; centerToPoints;
+
+    for (const vector&lt;int&gt;&amp; A : points)
+      for (const vector&lt;int&gt;&amp; B : points) {
+        const int center = hash(A, B);
+        centerToPoints[center].emplace_back(A[0], A[1], B[0], B[1]);
+      }
+
+    // For all pair points &quot;that share the same center&quot;.
+    for (const auto&amp; [_, points] : centerToPoints)
+      for (const auto&amp; [ax, ay, bx, by] : points)
+        for (const auto&amp; [cx, cy, dx, dy] : points)
+          // AC is perpendicular to AD.
+          // AC dot AD = (cx - ax, cy - ay) dot (dx - ax, dy - ay) == 0.
+          if ((cx - ax) * (dx - ax) + (cy - ay) * (dy - ay) == 0) {
+            const long squaredArea =
+                dist(ax, ay, cx, cy) * dist(ax, ay, dx, dy);
+            if (squaredArea &gt; 0)
+              ans = min(ans, squaredArea);
+          }
+
+    return ans == LONG_MAX ? 0 : sqrt(ans);
+  }
+
+ private:
+  int hash(const vector&lt;int&gt;&amp; p, const vector&lt;int&gt;&amp; q) {
+    return ((long)(p[0] + q[0]) &lt;&lt; 16) + (p[1] + q[1]);
+  }
+
+  long dist(int px, int py, int qx, int qy) {
+    return (px - qx) * (px - qx) + (py - qy) * (py - qy);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double minAreaFreeRect(int[][] points) {
+    long ans = Long.MAX_VALUE;
+    // For each A, B pair points, {hash(A, B): (ax, ay, bx, by)}.
+    Map&lt;Integer, List&lt;int[]&gt;&gt; centerToPoints = new HashMap&lt;&gt;();
+
+    for (int[] A : points)
+      for (int[] B : points) {
+        int center = hash(A, B);
+        if (centerToPoints.get(center) == null)
+          centerToPoints.put(center, new ArrayList&lt;&gt;());
+        centerToPoints.get(center).add(new int[] {A[0], A[1], B[0], B[1]});
+      }
+
+    // For all pair points &quot;that share the same center&quot;.
+    for (List&lt;int[]&gt; pointPairs : centerToPoints.values())
+      for (int[] ab : pointPairs)
+        for (int[] cd : pointPairs) {
+          final int ax = ab[0], ay = ab[1];
+          final int cx = cd[0], cy = cd[1];
+          final int dx = cd[2], dy = cd[3];
+          // AC is perpendicular to AD.
+          // AC dot AD = (cx - ax, cy - ay) dot (dx - ax, dy - ay) == 0.
+          if ((cx - ax) * (dx - ax) + (cy - ay) * (dy - ay) == 0) {
+            final long squaredArea = dist(ax, ay, cx, cy) * dist(ax, ay, dx, dy);
+            if (squaredArea &gt; 0)
+              ans = Math.min(ans, squaredArea);
+          }
+        }
+
+    return ans == Long.MAX_VALUE ? 0 : Math.sqrt(ans);
+  }
+
+  private int hash(int[] p, int[] q) {
+    return ((p[0] + q[0]) &lt;&lt; 16) + (p[1] + q[1]);
+  }
+
+  private long dist(long px, long py, long qx, long qy) {
+    return (px - qx) * (px - qx) + (py - qy) * (py - qy);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minAreaFreeRect(self, points: list[list[int]]) -&gt; float:
+    ans = math.inf
+    # For each A, B pair points, {hash(A, B): (ax, ay, bx, by)}.
+    centerToPoints = collections.defaultdict(list)
+
+    for ax, ay in points:
+      for bx, by in points:
+        center = ((ax + bx) / 2, (ay + by) / 2)
+        centerToPoints[center].append((ax, ay, bx, by))
+
+    def dist(px: int, py: int, qx: int, qy: int) -&gt; float:
+      return (px - qx)**2 + (py - qy)**2
+
+    # For all pair points &quot;that share the same center&quot;.
+    for points in centerToPoints.values():
+      for ax, ay, _, _ in points:
+        for cx, cy, dx, dy in points:
+          # AC is perpendicular to AD.
+          # AC dot AD = (cx - ax, cy - ay) dot (dx - ax, dy - ay) == 0.
+          if (cx - ax) * (dx - ax) + (cy - ay) * (dy - ay) == 0:
+            squaredArea = dist(ax, ay, cx, cy) * dist(ax, ay, dx, dy)
+            if squaredArea &gt; 0:
+              ans = min(ans, squaredArea)
+
+    return 0 if ans == math.inf else math.sqrt(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

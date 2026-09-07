@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Dominoes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Push Dominoes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/push-dominoes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/new-21-game/" class="btn">← Previous</a>
+            <span>Problem 838 of 3563</span>
+            <a href="/leetcode-solutions/problems/similar-string-groups/" class="btn">Next →</a>
+        </div>
+        <h1>838. Push Dominoes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Push Dominoes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string pushDominoes(string dominoes) {
+    int L = -1;
+    int R = -1;
+
+    for (int i = 0; i &lt;= dominoes.length(); ++i)
+      if (i == dominoes.length() || dominoes[i] == &#x27;R&#x27;) {
+        if (L &lt; R)
+          while (R &lt; i)
+            dominoes[R++] = &#x27;R&#x27;;
+        R = i;
+      } else if (dominoes[i] == &#x27;L&#x27;) {
+        if (R &lt; L || L == -1 &amp;&amp; R == -1) {
+          if (L == -1 &amp;&amp; R == -1)
+            ++L;
+          while (L &lt; i)
+            dominoes[L++] = &#x27;L&#x27;;
+        } else {
+          int l = R + 1;
+          int r = i - 1;
+          while (l &lt; r) {
+            dominoes[l++] = &#x27;R&#x27;;
+            dominoes[r--] = &#x27;L&#x27;;
+          }
+        }
+        L = i;
+      }
+
+    return dominoes;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String pushDominoes(String dominoes) {
+    char[] s = dominoes.toCharArray();
+    int L = -1;
+    int R = -1;
+
+    for (int i = 0; i &lt;= dominoes.length(); ++i)
+      if (i == dominoes.length() || s[i] == &#x27;R&#x27;) {
+        if (L &lt; R)
+          while (R &lt; i)
+            s[R++] = &#x27;R&#x27;;
+        R = i;
+      } else if (s[i] == &#x27;L&#x27;) {
+        if (R &lt; L || L == -1 &amp;&amp; R == -1) {
+          if (L == -1 &amp;&amp; R == -1)
+            ++L;
+          while (L &lt; i)
+            s[L++] = &#x27;L&#x27;;
+        } else {
+          int l = R + 1;
+          int r = i - 1;
+          while (l &lt; r) {
+            s[l++] = &#x27;R&#x27;;
+            s[r--] = &#x27;L&#x27;;
+          }
+        }
+        L = i;
+      }
+
+    return new String(s);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def pushDominoes(self, dominoes: str) -&gt; str:
+    ans = list(dominoes)
+    L = -1
+    R = -1
+
+    for i in range(len(dominoes) + 1):
+      if i == len(dominoes) or dominoes[i] == &#x27;R&#x27;:
+        if L &lt; R:
+          while R &lt; i:
+            ans[R] = &#x27;R&#x27;
+            R += 1
+        R = i
+      elif dominoes[i] == &#x27;L&#x27;:
+        if R &lt; L or (L, R) == (-1, -1):
+          if (L, R) == (-1, -1):
+            L += 1
+          while L &lt; i:
+            ans[L] = &#x27;L&#x27;
+            L += 1
+        else:
+          l = R + 1
+          r = i - 1
+          while l &lt; r:
+            ans[l] = &#x27;R&#x27;
+            ans[r] = &#x27;L&#x27;
+            l += 1
+            r -= 1
+        L = i
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

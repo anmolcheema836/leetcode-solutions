@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Array State After K Multiplication Operations I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Final Array State After K Multiplication Operations I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/final-array-state-after-k-multiplication-operations-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/convert-doubly-linked-list-to-array-i/" class="btn">← Previous</a>
+            <span>Problem 3264 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-almost-equal-pairs-i/" class="btn">Next →</a>
+        </div>
+        <h1>3264. Final Array State After K Multiplication Operations I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Final Array State After K Multiplication Operations I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; getFinalState(vector&lt;int&gt;&amp; nums, int k, int multiplier) {
+    vector&lt;int&gt; ans(nums.size());
+    using P = pair&lt;int, int&gt;;  // (nums[i], i)
+    priority_queue&lt;P, vector&lt;P&gt;, greater&lt;&gt;&gt; minHeap;
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      minHeap.emplace(nums[i], i);
+
+    while (k-- &gt; 0) {
+      const auto [num, i] = minHeap.top();
+      minHeap.pop();
+      minHeap.emplace(num * multiplier, i);
+    }
+
+    while (!minHeap.empty()) {
+      const auto [num, i] = minHeap.top();
+      minHeap.pop();
+      ans[i] = num;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] getFinalState(int[] nums, int k, int multiplier) {
+    int[] ans = new int[nums.length];
+    // (nums[i], i)
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; minHeap = new PriorityQueue&lt;&gt;(
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair&lt;Integer, Integer&gt;::getKey)
+                                .thenComparingInt(Pair&lt;Integer, Integer&gt;::getValue)));
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      minHeap.offer(new Pair&lt;&gt;(nums[i], i));
+
+    while (k-- &gt; 0) {
+      final int num = minHeap.peek().getKey();
+      final int i = minHeap.poll().getValue();
+      minHeap.offer(new Pair&lt;&gt;(num * multiplier, i));
+    }
+
+    while (!minHeap.isEmpty()) {
+      final int num = minHeap.peek().getKey();
+      final int i = minHeap.poll().getValue();
+      ans[i] = num;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getFinalState(
+      self,
+      nums: list[int],
+      k: int,
+      multiplier: int
+  ) -&gt; list[int]:
+    ans = [0] * len(nums)
+    minHeap = [(num, i) for i, num in enumerate(nums)]
+    heapq.heapify(minHeap)
+
+    for _ in range(k):
+      num, i = heapq.heappop(minHeap)
+      heapq.heappush(minHeap, (num * multiplier, i))
+
+    for num, i in minHeap:
+      ans[i] = num
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

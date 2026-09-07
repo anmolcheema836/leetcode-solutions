@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Operations to Make a Special Number - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Operations to Make a Special Number written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-operations-to-make-a-special-number/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-symmetric-integers/" class="btn">← Previous</a>
+            <span>Problem 2844 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-of-interesting-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>2844. Minimum Operations to Make a Special Number</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Operations to Make a Special Number efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumOperations(string num) {
+    const int n = num.length();
+    bool seenFive = false;
+    bool seenZero = false;
+
+    for (int i = n - 1; i &gt;= 0; --i) {
+      if (seenZero &amp;&amp; num[i] == &#x27;0&#x27;)  // &#x27;00&#x27;
+        return n - i - 2;
+      if (seenZero &amp;&amp; num[i] == &#x27;5&#x27;)  // &#x27;50&#x27;
+        return n - i - 2;
+      if (seenFive &amp;&amp; num[i] == &#x27;2&#x27;)  // &#x27;25&#x27;
+        return n - i - 2;
+      if (seenFive &amp;&amp; num[i] == &#x27;7&#x27;)  // &#x27;75&#x27;
+        return n - i - 2;
+      seenZero = seenZero || num[i] == &#x27;0&#x27;;
+      seenFive = seenFive || num[i] == &#x27;5&#x27;;
+    }
+
+    return seenZero ? n - 1 : n;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumOperations(String num) {
+    final int n = num.length();
+    boolean seenFive = false;
+    boolean seenZero = false;
+
+    for (int i = n - 1; i &gt;= 0; --i) {
+      if (seenZero &amp;&amp; num.charAt(i) == &#x27;0&#x27;) // &#x27;00&#x27;
+        return n - i - 2;
+      if (seenZero &amp;&amp; num.charAt(i) == &#x27;5&#x27;) // &#x27;50&#x27;
+        return n - i - 2;
+      if (seenFive &amp;&amp; num.charAt(i) == &#x27;2&#x27;) // &#x27;25&#x27;
+        return n - i - 2;
+      if (seenFive &amp;&amp; num.charAt(i) == &#x27;7&#x27;) // &#x27;75&#x27;
+        return n - i - 2;
+      seenZero = seenZero || num.charAt(i) == &#x27;0&#x27;;
+      seenFive = seenFive || num.charAt(i) == &#x27;5&#x27;;
+    }
+
+    return seenZero ? n - 1 : n;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumOperations(self, num: str) -&gt; int:
+    n = len(num)
+    seenFive = False
+    seenZero = False
+
+    for i in range(n - 1, -1, -1):
+      if seenZero and num[i] == &#x27;0&#x27;:  # &#x27;00&#x27;
+        return n - i - 2
+      if seenZero and num[i] == &#x27;5&#x27;:  # &#x27;50&#x27;
+        return n - i - 2
+      if seenFive and num[i] == &#x27;2&#x27;:  # &#x27;25&#x27;
+        return n - i - 2
+      if seenFive and num[i] == &#x27;7&#x27;:  # &#x27;75&#x27;
+        return n - i - 2
+      seenZero = seenZero or num[i] == &#x27;0&#x27;
+      seenFive = seenFive or num[i] == &#x27;5&#x27;
+
+    return n - 1 if seenZero else n</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

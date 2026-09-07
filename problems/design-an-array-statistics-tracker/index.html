@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design an Array Statistics Tracker - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design an Array Statistics Tracker written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-an-array-statistics-tracker/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/first-letter-capitalization/" class="btn">← Previous</a>
+            <span>Problem 3369 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-number-with-all-set-bits/" class="btn">Next →</a>
+        </div>
+        <h1>3369. Design an Array Statistics Tracker</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design an Array Statistics Tracker efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class StatisticsTracker {
+ public:
+  void addNumber(int number) {
+    q.push(number);
+    ++count[number];
+    sortedList.insert(number);
+    modeMaxHeap.emplace(count[number], -number);
+    sum += number;
+  }
+
+  void removeFirstAddedNumber() {
+    const int number = q.front();
+    q.pop();
+    if (--count[number])
+      count.erase(number);
+    sortedList.erase(sortedList.find(number));
+    // Note: No need to update the heap now; we&#x27;ll clean up stale entries when
+    // getting the mode.
+    sum -= number;
+  }
+
+  int getMean() {
+    return sum / q.size();
+  }
+
+  int getMedian() {
+    auto it = sortedList.begin();
+    advance(it, sortedList.size() / 2);
+    return *it;
+  }
+
+  int getMode() {
+    // Removes stale entries from the top of the heap.
+    while (!modeMaxHeap.empty()) {
+      const int frequency = modeMaxHeap.top().first;
+      const int number = -modeMaxHeap.top().second;
+      if (count.contains(number) &amp;&amp; count[number] == frequency)
+        return number;
+      modeMaxHeap.pop();
+    }
+    throw;
+  }
+
+ private:
+  queue&lt;int&gt; q;
+  unordered_map&lt;int, int&gt; count;
+  multiset&lt;int&gt; sortedList;
+  priority_queue&lt;pair&lt;int, int&gt;&gt; modeMaxHeap;  // (frequency, number)
+  long sum = 0;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class StatisticsTracker {
+  public void addNumber(int number) {
+    q.offer(number);
+    count.merge(number, 1, Integer::sum);
+    sortedList.merge(number, 1, Integer::sum);
+    modeMaxHeap.offer(new Pair&lt;&gt;(count.get(number), number));
+    sum += number;
+  }
+
+  public void removeFirstAddedNumber() {
+    final int number = q.poll();
+    count.merge(number, -1, Integer::sum);
+    if (count.get(number) == 0)
+      count.remove(number);
+    sortedList.merge(number, -1, Integer::sum);
+    if (sortedList.get(number) == 0)
+      sortedList.remove(number);
+    sum -= number;
+  }
+
+  public int getMean() {
+    return (int) (sum / q.size());
+  }
+
+  public int getMedian() {
+    final int midIndex = q.size() / 2; // Median depends on the queue size.
+    int count = 0;
+    for (Map.Entry&lt;Integer, Integer&gt; entry : sortedList.entrySet()) {
+      count += entry.getValue();
+      if (count &gt; midIndex)
+        return entry.getKey();
+    }
+    throw new IllegalArgumentException();
+  }
+
+  public int getMode() {
+    // Removes stale entries from the top of the heap.
+    while (!modeMaxHeap.isEmpty()) {
+      final int frequency = modeMaxHeap.peek().getKey();
+      final int number = modeMaxHeap.peek().getValue();
+      if (count.containsKey(number) &amp;&amp; count.get(number) == frequency)
+        return number;
+      modeMaxHeap.poll();
+    }
+    throw new IllegalArgumentException();
+  }
+
+  private Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+  private Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+  private TreeMap&lt;Integer, Integer&gt; sortedList = new TreeMap&lt;&gt;();
+  // (frequency, number)
+  private PriorityQueue&lt;Pair&lt;Integer, Integer&gt;&gt; modeMaxHeap =
+      new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair&lt;Integer, Integer&gt;::getKey)
+                              .reversed()
+                              .thenComparingInt(Pair&lt;Integer, Integer&gt;::getValue));
+  private long sum = 0;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class StatisticsTracker:
+  def __init__(self):
+    self.q = collections.deque()
+    self.count = collections.Counter()
+    self.sortedList = SortedList()
+    self.modeMaxHeap = []  # (frequency, number)
+    self.sum = 0
+
+  def addNumber(self, number: int) -&gt; None:
+    self.q.append(number)
+    self.count[number] += 1
+    self.sortedList.add(number)
+    heapq.heappush(self.modeMaxHeap, (-self.count[number], number))
+    self.sum += number
+
+  def removeFirstAddedNumber(self) -&gt; None:
+    number = self.q.popleft()
+    self.count[number] -= 1
+    self.sortedList.remove(number)
+    # Note: No need to update the heap now; we&#x27;ll clean up stale entries when
+    # getting the mode.
+    self.sum -= number
+
+  def getMean(self) -&gt; int:
+    return self.sum // len(self.q)
+
+  def getMedian(self) -&gt; int:
+    return self.sortedList[len(self.sortedList) // 2]
+
+  def getMode(self) -&gt; int:
+    # Removes stale heap entries where frequency no longer matches.
+    while self.modeMaxHeap:
+      frequency = -self.modeMaxHeap[0][0]
+      number = self.modeMaxHeap[0][1]
+      if self.count[number] == frequency:
+        return number
+      heapq.heappop(self.modeMaxHeap)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

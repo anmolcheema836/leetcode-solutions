@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earliest Second to Mark Indices II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Earliest Second to Mark Indices II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/earliest-second-to-mark-indices-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/earliest-second-to-mark-indices-i/" class="btn">← Previous</a>
+            <span>Problem 3049 of 3563</span>
+            <a href="/leetcode-solutions/problems/pizza-toppings-cost-analysis/" class="btn">Next →</a>
+        </div>
+        <h1>3049. Earliest Second to Mark Indices II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Earliest Second to Mark Indices II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int earliestSecondToMarkIndices(vector&lt;int&gt;&amp; nums,
+                                  vector&lt;int&gt;&amp; changeIndices) {
+    const long numsSum = accumulate(nums.begin(), nums.end(), 0L);
+    // {the second: the index of nums can be zeroed at the current second}
+    const unordered_map&lt;int, int&gt; secondToIndex =
+        getSecondToIndex(nums, changeIndices);
+    int l = 0;
+    int r = changeIndices.size() + 1;
+
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (canMark(nums, secondToIndex, m, numsSum))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l &lt;= changeIndices.size() ? l : -1;
+  }
+
+ private:
+  // Returns true if all indices of `nums` can be marked within `maxSecond`.
+  bool canMark(const vector&lt;int&gt;&amp; nums,
+               const unordered_map&lt;int, int&gt;&amp; secondToIndex, int maxSecond,
+               const long numsSum) {
+    // Use a min-heap to greedily pop out the minimum number, which yields the
+    // least saving.
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; minHeap;
+    int marks = 0;
+
+    for (int second = maxSecond - 1; second &gt;= 0; --second) {
+      if (const auto it = secondToIndex.find(second);
+          it != secondToIndex.end()) {
+        // The number mapped by the index is a candidate to be zeroed out.
+        const int index = it-&gt;second;
+        minHeap.push(nums[index]);
+        if (marks == 0) {
+          // Running out of marks, so need to pop out the minimum number.
+          // So, the current second will be used to mark an index.
+          minHeap.pop();
+          ++marks;
+        } else {
+          // There&#x27;re enough marks.
+          // So, the current second will be used to zero out a number.
+          --marks;
+        }
+      } else {
+        // There&#x27;s no candidate to be zeroed out.
+        // So, the current second will be used to mark an index.
+        ++marks;
+      }
+    }
+
+    const int heapSize = minHeap.size();
+    const long decrementAndMarkCost =
+        numsSum - getHeapSum(minHeap) + (nums.size() - heapSize);
+    const long zeroAndMarkCost = heapSize + heapSize;
+    return decrementAndMarkCost + zeroAndMarkCost &lt;= maxSecond;
+  }
+
+  long getHeapSum(priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;&amp; heap) {
+    long heapSum = 0;
+    while (!heap.empty())
+      heapSum += heap.top(), heap.pop();
+    return heapSum;
+  }
+
+  unordered_map&lt;int, int&gt; getSecondToIndex(const vector&lt;int&gt;&amp; nums,
+                                           const vector&lt;int&gt;&amp; changeIndices) {
+    // {the `index` of nums: the earliest second to zero out nums[index]}
+    unordered_map&lt;int, int&gt; indexToFirstSecond;
+    unordered_map&lt;int, int&gt; secondToIndex;
+    for (int zeroIndexedSecond = 0; zeroIndexedSecond &lt; changeIndices.size();
+         ++zeroIndexedSecond) {
+      // Convert to 0-indexed.
+      const int index = changeIndices[zeroIndexedSecond] - 1;
+      if (nums[index] &gt; 0 &amp;&amp; !indexToFirstSecond.contains(index))
+        indexToFirstSecond[index] = zeroIndexedSecond;
+    }
+    for (const auto&amp; [index, second] : indexToFirstSecond)
+      secondToIndex[second] = index;
+    return secondToIndex;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int earliestSecondToMarkIndices(int[] nums, int[] changeIndices) {
+    final long numsSum = Arrays.stream(nums).asLongStream().sum();
+    // {the second: the index of nums can be zeroed at the current second}
+    Map&lt;Integer, Integer&gt; secondToIndex = getSecondToIndex(nums, changeIndices);
+    int l = 0;
+    int r = changeIndices.length + 1;
+
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (canMark(nums, secondToIndex, m))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l &lt;= changeIndices.length ? l : -1;
+  }
+
+  // Returns true if all indices of `nums` can be marked within `maxSecond`.
+  private boolean canMark(int[] nums, Map&lt;Integer, Integer&gt; secondToIndex, int maxSecond,
+                          final long numsSum) {
+    // Use a min-heap to greedily pop out the minimum number, which yields the
+    // least saving.
+    Queue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();
+    int marks = 0;
+
+    for (int second = maxSecond - 1; second &gt;= 0; --second) {
+      if (secondToIndex.containsKey(second)) {
+        // The number mapped by the index is a candidate to be zeroed out.
+        final int index = secondToIndex.get(second);
+        minHeap.offer(nums[index]);
+        if (marks == 0) {
+          // Running out of marks, so need to pop out the minimum number.
+          // So, the current second will be used to mark an index.
+          minHeap.poll();
+          ++marks;
+        } else {
+          // There&#x27;re enough marks.
+          // So, the current second will be used to zero out a number.
+          --marks;
+        }
+      } else {
+        // There&#x27;s no candidate to be zeroed out.
+        // So, the current second will be used to mark an index.
+        ++marks;
+      }
+    }
+
+    final int heapSize = minHeap.size();
+    final long decrementAndMarkCost = numsSum - getHeapSum(minHeap) + (nums.length - heapSize);
+    final long zeroAndMarkCost = heapSize + heapSize;
+    return decrementAndMarkCost + zeroAndMarkCost &lt;= maxSecond;
+  }
+
+  private long getHeapSum(Queue&lt;Integer&gt; minHeap) {
+    long sum = 0;
+    while (!minHeap.isEmpty())
+      sum += minHeap.poll();
+    return sum;
+  }
+
+  private Map&lt;Integer, Integer&gt; getSecondToIndex(int[] nums, int[] changeIndices) {
+    // {the `index` of nums: the earliest second to zero out nums[index]}
+    Map&lt;Integer, Integer&gt; indexToFirstSecond = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; secondToIndex = new HashMap&lt;&gt;();
+    for (int zeroIndexedSecond = 0; zeroIndexedSecond &lt; changeIndices.length; ++zeroIndexedSecond) {
+      // Convert to 0-indexed.
+      final int index = changeIndices[zeroIndexedSecond] - 1;
+      if (nums[index] &gt; 0)
+        indexToFirstSecond.putIfAbsent(index, zeroIndexedSecond);
+    }
+    for (Map.Entry&lt;Integer, Integer&gt; entry : indexToFirstSecond.entrySet()) {
+      final int index = entry.getKey();
+      final int second = entry.getValue();
+      secondToIndex.put(second, index);
+    }
+    return secondToIndex;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def earliestSecondToMarkIndices(
+      self,
+      nums: list[int],
+      changeIndices: list[int],
+  ) -&gt; int:
+    # {the second: the index of nums can be zeroed at the current second}
+    secondToIndex = self._getSecondToIndex(nums, changeIndices)
+    numsSum = sum(nums)
+
+    def canMark(maxSecond: int) -&gt; bool:
+      &quot;&quot;&quot;
+      Returns True if all indices of `nums` can be marked within `maxSecond`.
+      &quot;&quot;&quot;
+      # Use a min-heap to greedily pop out the minimum number, which yields the
+      # least saving.
+      minHeap = []
+      marks = 0
+
+      for second in range(maxSecond - 1, -1, -1):
+        if second in secondToIndex:
+          # The number mapped by the index is a candidate to be zeroed out.
+          index = secondToIndex[second]
+          heapq.heappush(minHeap, nums[index])
+          if marks == 0:
+            # Running out of marks, so need to pop out the minimum number.
+            # So, the current second will be used to mark an index.
+            heapq.heappop(minHeap)
+            marks += 1
+          else:
+            # There&#x27;re enough marks.
+            # So, the current second will be used to zero out a number.
+            marks -= 1
+        else:
+          # There&#x27;s no candidate to be zeroed out.
+          # So, the current second will be used to mark an index.
+          marks += 1
+
+      decrementAndMarkCost = ((numsSum - sum(minHeap)) +
+                              (len(nums) - len(minHeap)))
+      zeroAndMarkCost = len(minHeap) + len(minHeap)
+      return decrementAndMarkCost + zeroAndMarkCost &lt;= maxSecond
+
+    l = 0
+    r = len(changeIndices) + 1
+    ans = bisect.bisect_left(range(l, r), True, key=canMark) + l
+    return ans if ans &lt;= len(changeIndices) else -1
+
+  def _getSecondToIndex(
+      self,
+      nums: list[int],
+      changeIndices: list[int],
+  ) -&gt; dict[int, int]:
+    # {the `index` of nums: the earliest second to zero out nums[index]}
+    indexToFirstSecond = {}
+    for zeroIndexedSecond, oneIndexedIndex in enumerate(changeIndices):
+      index = oneIndexedIndex - 1  # Convert to 0-indexed.
+      if nums[index] &gt; 0 and index not in indexToFirstSecond:
+        indexToFirstSecond[index] = zeroIndexedSecond
+    return {second: index for index, second in indexToFirstSecond.items()}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

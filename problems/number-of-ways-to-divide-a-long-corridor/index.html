@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Ways to Divide a Long Corridor - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Ways to Divide a Long Corridor written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-ways-to-divide-a-long-corridor/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/k-highest-ranked-items-within-a-price-range/" class="btn">← Previous</a>
+            <span>Problem 2147 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-elements-with-strictly-smaller-and-greater-elements/" class="btn">Next →</a>
+        </div>
+        <h1>2147. Number of Ways to Divide a Long Corridor</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Ways to Divide a Long Corridor efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numberOfWays(string corridor) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    long ans = 1;
+    int prevSeat = -1;
+    int numSeats = 0;
+
+    for (int i = 0; i &lt; corridor.length(); ++i) {
+      if (corridor[i] == &#x27;S&#x27;) {
+        if (++numSeats &gt; 2 &amp;&amp; numSeats % 2 == 1)
+          ans = ans * (i - prevSeat) % kMod;
+        prevSeat = i;
+      }
+    }
+
+    return numSeats &gt; 1 &amp;&amp; numSeats % 2 == 0 ? ans : 0;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numberOfWays(String corridor) {
+    final int MOD = 1_000_000_007;
+    long ans = 1;
+    int prevSeat = -1;
+    int numSeats = 0;
+
+    for (int i = 0; i &lt; corridor.length(); ++i) {
+      if (corridor.charAt(i) == &#x27;S&#x27;) {
+        if (++numSeats &gt; 2 &amp;&amp; numSeats % 2 == 1)
+          ans = ans * (i - prevSeat) % MOD;
+        prevSeat = i;
+      }
+    }
+
+    return numSeats &gt; 1 &amp;&amp; numSeats % 2 == 0 ? (int) ans : 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numberOfWays(self, corridor: str) -&gt; int:
+    MOD = 1_000_000_007
+    ans = 1
+    prevSeat = -1
+    numSeats = 0
+
+    for i, c in enumerate(corridor):
+      if c == &#x27;S&#x27;:
+        numSeats += 1
+        if numSeats &gt; 2 and numSeats % 2 == 1:
+          ans = ans * (i - prevSeat) % MOD
+        prevSeat = i
+
+    return ans if numSeats &gt; 1 and numSeats % 2 == 0 else 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

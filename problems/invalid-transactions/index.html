@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid Transactions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Invalid Transactions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/invalid-transactions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/optimize-water-distribution-in-a-village/" class="btn">← Previous</a>
+            <span>Problem 1169 of 3563</span>
+            <a href="/leetcode-solutions/problems/compare-strings-by-frequency-of-the-smallest-character/" class="btn">Next →</a>
+        </div>
+        <h1>1169. Invalid Transactions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Invalid Transactions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Transaction {
+  string name;
+  int time;
+  int amount;
+  string city;
+};
+
+class Solution {
+ public:
+  vector&lt;string&gt; invalidTransactions(vector&lt;string&gt;&amp; transactions) {
+    vector&lt;string&gt; ans;
+    unordered_map&lt;string, vector&lt;Transaction&gt;&gt; nameToTransactions;
+
+    for (const string&amp; t : transactions) {
+      const Transaction transaction = getTransaction(t);
+      nameToTransactions[transaction.name].push_back(transaction);
+    }
+
+    for (const string&amp; t : transactions) {
+      const Transaction currTransaction = getTransaction(t);
+      if (currTransaction.amount &gt; 1000) {
+        ans.push_back(t);
+      } else if (const auto it = nameToTransactions.find(currTransaction.name);
+                 it != nameToTransactions.cend()) {
+        // Iterate through all the transactions with the same name, check if
+        // they&#x27;re within 60 minutes in a different city.
+        for (Transaction transaction : it-&gt;second)
+          if (abs(transaction.time - currTransaction.time) &lt;= 60 &amp;&amp;
+              transaction.city != currTransaction.city) {
+            ans.push_back(t);
+            break;
+          }
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  Transaction getTransaction(const string&amp; t) {
+    istringstream iss(t);
+    vector&lt;string&gt; s(4, &quot;&quot;);
+    for (int i = 0; getline(iss, s[i++], &#x27;,&#x27;);)
+      ;
+    return {s[0], stoi(s[1]), stoi(s[2]), s[3]};  // [name, time, amount, city]
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; invalidTransactions(String[] transactions) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;String, List&lt;Trans&gt;&gt; nameToTrans = new HashMap&lt;&gt;();
+
+    for (final String t : transactions) {
+      Trans trans = getTrans(t);
+      nameToTrans.putIfAbsent(trans.name, new ArrayList&lt;&gt;());
+      nameToTrans.get(trans.name).add(trans);
+    }
+
+    for (final String t : transactions) {
+      Trans currTrans = getTrans(t);
+      if (currTrans.amount &gt; 1000) {
+        ans.add(t);
+      } else if (nameToTrans.containsKey(currTrans.name)) {
+        // Iterate through all the transactions with the same name, check if
+        // they&#x27;re within 60 minutes in a different city.
+        for (Trans trans : nameToTrans.get(currTrans.name))
+          if (Math.abs(trans.time - currTrans.time) &lt;= 60 &amp;&amp; !trans.city.equals(currTrans.city)) {
+            ans.add(t);
+            break;
+          }
+      }
+    }
+
+    return ans;
+  }
+
+  private record Trans(String name, int time, int amount, String city) {}
+
+  private Trans getTrans(final String t) {
+    String[] s = t.split(&quot;,&quot;); // [name, time, amount, city]
+    return new Trans(s[0], Integer.parseInt(s[1]), Integer.parseInt(s[2]), s[3]);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def invalidTransactions(self, transactions: list[str]) -&gt; list[str]:
+    ans = []
+    nameToTrans = collections.defaultdict(list)
+
+    for t in transactions:
+      name, time, amount, city = t.split(&#x27;,&#x27;)
+      time, amount = int(time), int(amount)
+      nameToTrans[name].append({&#x27;time&#x27;: time, &#x27;city&#x27;: city})
+
+    for t in transactions:
+      name, time, amount, city = t.split(&#x27;,&#x27;)
+      time, amount = int(time), int(amount)
+      if amount &gt; 1000:
+        ans.append(t)
+      elif name in nameToTrans:
+        for sameName in nameToTrans[name]:
+          if abs(sameName[&#x27;time&#x27;] - time) &lt;= 60 and sameName[&#x27;city&#x27;] != city:
+            ans.append(t)
+            break
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

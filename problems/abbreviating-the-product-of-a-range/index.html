@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abbreviating the Product of a Range - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Abbreviating the Product of a Range written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/abbreviating-the-product-of-a-range/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-if-a-parentheses-string-can-be-valid/" class="btn">← Previous</a>
+            <span>Problem 2117 of 3563</span>
+            <a href="/leetcode-solutions/problems/build-the-equation/" class="btn">Next →</a>
+        </div>
+        <h1>2117. Abbreviating the Product of a Range</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Abbreviating the Product of a Range efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string abbreviateProduct(int left, int right) {
+    constexpr long maxSuf = 100&#x27;000&#x27;000&#x27;000;
+    double prod = 1.0;
+    long suf = 1;
+    int countDigits = 0;
+    int countZeros = 0;
+
+    for (int num = left; num &lt;= right; ++num) {
+      prod *= num;
+      while (prod &gt;= 1.0) {
+        prod /= 10;
+        ++countDigits;
+      }
+      suf *= num;
+      while (suf % 10 == 0) {
+        suf /= 10;
+        ++countZeros;
+      }
+      if (suf &gt; maxSuf)
+        suf %= maxSuf;
+    }
+
+    if (countDigits - countZeros &lt;= 10) {
+      const long tens = pow(10, countDigits - countZeros);
+      return to_string(static_cast&lt;long&gt;(prod * tens + 0.5)) + &#x27;e&#x27; +
+             to_string(countZeros);
+    }
+
+    const string pre = to_string(static_cast&lt;long&gt;(prod * pow(10, 5)));
+    string sufStr = to_string(suf);
+    sufStr = sufStr.substr(sufStr.length() - 5);
+    return pre + &quot;...&quot; + sufStr + &#x27;e&#x27; + to_string(countZeros);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String abbreviateProduct(int left, int right) {
+    final long maxSuf = 100_000_000_000L;
+    double prod = 1.0;
+    long suf = 1;
+    int countDigits = 0;
+    int countZeros = 0;
+
+    for (int num = left; num &lt;= right; ++num) {
+      prod *= num;
+      while (prod &gt;= 1.0) {
+        prod /= 10;
+        ++countDigits;
+      }
+      suf *= num;
+      while (suf % 10 == 0) {
+        suf /= 10;
+        ++countZeros;
+      }
+      if (suf &gt; maxSuf)
+        suf %= maxSuf;
+    }
+
+    if (countDigits - countZeros &lt;= 10) {
+      final long tens = (long) Math.pow(10, countDigits - countZeros);
+      return String.valueOf((long) (prod * tens + 0.5)) + &quot;e&quot; + String.valueOf(countZeros);
+    }
+
+    final String pre = String.valueOf((long) (prod * Math.pow(10, 5)));
+    String sufStr = String.valueOf(suf);
+    sufStr = sufStr.substring(sufStr.length() - 5);
+    return pre + &quot;...&quot; + sufStr + &quot;e&quot; + String.valueOf(countZeros);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def abbreviateProduct(self, left: int, right: int) -&gt; str:
+    prod = 1.0
+    suf = 1
+    countDigits = 0
+    countZeros = 0
+
+    for num in range(left, right + 1):
+      prod *= num
+      while prod &gt;= 1.0:
+        prod /= 10
+        countDigits += 1
+      suf *= num
+      while suf % 10 == 0:
+        suf //= 10
+        countZeros += 1
+      if suf &gt; 10**8:
+        suf %= 10**8
+
+    if countDigits - countZeros &lt;= 10:
+      tens = 10**(countDigits - countZeros)
+      return str(int(prod * tens + 0.5)) + &#x27;e&#x27; + str(countZeros)
+
+    pre = str(int(prod * 10 ** 5))
+    suf = str(suf)[-5:]
+    return pre + &#x27;...&#x27; + suf + &#x27;e&#x27; + str(countZeros)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

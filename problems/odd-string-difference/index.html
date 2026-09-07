@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odd String Difference - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Odd String Difference written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/odd-string-difference/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-distinct-binary-strings-after-applying-operations/" class="btn">← Previous</a>
+            <span>Problem 2451 of 3563</span>
+            <a href="/leetcode-solutions/problems/words-within-two-edits-of-dictionary/" class="btn">Next →</a>
+        </div>
+        <h1>2451. Odd String Difference</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Odd String Difference efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string oddString(vector&lt;string&gt;&amp; words) {
+    const vector&lt;pair&lt;string, string&gt;&gt; wordAndDiffStrs =
+        getWordAndDiffStrs(words);
+    unordered_map&lt;string, int&gt; diffStrCount;
+
+    for (const auto&amp; [_, diffStr] : wordAndDiffStrs)
+      ++diffStrCount[diffStr];
+
+    for (const auto&amp; [word, diffStr] : wordAndDiffStrs)
+      if (diffStrCount[diffStr] == 1)
+        return word;
+
+    throw;
+  }
+
+ private:
+  // Returns the pairs of the word and its corresponding difference string.
+  // e.g. [(&quot;adc&quot;, &quot;3#-1#&quot;), (&quot;wzy&quot;, &quot;3#-1#&quot;), (&quot;abc&quot;, &quot;1#1#&quot;)]
+  vector&lt;pair&lt;string, string&gt;&gt; getWordAndDiffStrs(const vector&lt;string&gt;&amp; words) {
+    vector&lt;pair&lt;string, string&gt;&gt; wordAndDiffStrs;
+    for (const string&amp; word : words)
+      wordAndDiffStrs.emplace_back(word, getDiffStr(word));
+    return wordAndDiffStrs;
+  }
+
+  // Returns the difference string of `s`.
+  // e.g. getDiffStr(&quot;adc&quot;) -&gt; &quot;3#-1#&quot;
+  string getDiffStr(const string&amp; s) {
+    string diffStr;
+    for (int i = 1; i &lt; s.length(); ++i)
+      diffStr += to_string(s[i] - s[i - 1]) + &quot;#&quot;;
+    return diffStr;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String oddString(String[] words) {
+    List&lt;Pair&lt;String, Integer&gt;&gt; wordAndHashCodes = getWordAndHashCodes(words);
+    Map&lt;Integer, Integer&gt; hashCodeCount = new HashMap&lt;&gt;();
+
+    for (Pair&lt;String, Integer&gt; wordAndHashCode : wordAndHashCodes)
+      hashCodeCount.merge(wordAndHashCode.getValue(), 1, Integer::sum);
+
+    for (Pair&lt;String, Integer&gt; wordAndHashCode : wordAndHashCodes)
+      if (hashCodeCount.get(wordAndHashCode.getValue()) == 1)
+        return wordAndHashCode.getKey();
+
+    throw new IllegalArgumentException();
+  }
+
+  // Returns the pairs of the word and its corresponding difference string.
+  // e.g. [(&quot;adc&quot;, &quot;3#-1#&quot;), (&quot;wzy&quot;, &quot;3#-1#&quot;), (&quot;abc&quot;, &quot;1#1#&quot;)]
+  private List&lt;Pair&lt;String, Integer&gt;&gt; getWordAndHashCodes(String[] words) {
+    List&lt;Pair&lt;String, Integer&gt;&gt; wordAndHashCodes = new ArrayList&lt;&gt;();
+    for (final String word : words)
+      wordAndHashCodes.add(new Pair&lt;&gt;(word, getDiffStr(word).hashCode()));
+    return wordAndHashCodes;
+  }
+
+  // Returns the difference string of `s`.
+  // e.g. getDiffStr(&quot;adc&quot;) -&gt; &quot;3#-1#&quot;
+  private String getDiffStr(final String s) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 1; i &lt; s.length(); ++i)
+      sb.append(s.charAt(i) - s.charAt(i - 1)).append(&quot;#&quot;);
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def oddString(self, words: list[str]) -&gt; str:
+    def getDiff(s: str) -&gt; list[int]:
+      return [ord(b) - ord(a) for a, b in zip(s, s[1:])]
+
+    wordAndDiffTuples = [(word, tuple(getDiff(word))) for word in words]
+    diffTupleCount = collections.Counter()
+
+    for _, diffTuple in wordAndDiffTuples:
+      diffTupleCount[diffTuple] += 1
+
+    for word, diffTuple in wordAndDiffTuples:
+      if diffTupleCount[diffTuple] == 1:
+        return word</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

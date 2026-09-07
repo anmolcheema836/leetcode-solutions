@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Sorted Submatrices With Maximum Element at Most K - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Sorted Submatrices With Maximum Element at Most K written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-sorted-submatrices-with-maximum-element-at-most-k/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/books-with-null-ratings/" class="btn">← Previous</a>
+            <span>Problem 3359 of 3563</span>
+            <a href="/leetcode-solutions/problems/stone-removal-game/" class="btn">Next →</a>
+        </div>
+        <h1>3359. Find Sorted Submatrices With Maximum Element at Most K</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Sorted Submatrices With Maximum Element at Most K efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  int subarrayWidth;
+  int rowIndex;
+  int accumulatedSubmatrices;
+};
+
+class Solution {
+ public:
+  long long countSubmatrices(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int k) {
+    int m = grid.size();
+    int n = grid[0].size();
+    long ans = 0;
+    // dp[i][j] := the number of valid subarrays ending in grid[i][j]
+    vector&lt;vector&lt;int&gt;&gt; dp(m, vector&lt;int&gt;(n));
+    // stacks[j] := the stack of valid
+    // (subarray width, row index, number of accumulated submatrices) ending in
+    // column j
+    vector&lt;stack&lt;T&gt;&gt; stacks(n);
+
+    for (int j = 0; j &lt; n; ++j)
+      stacks[j].emplace(0, -1, 0);
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] &gt; k) {
+          stacks[j] = stack&lt;T&gt;();
+          stacks[j].emplace(0, i, 0);
+        } else {
+          dp[i][j] = 1;
+          if (j &gt; 0 &amp;&amp; grid[i][j - 1] &lt;= k &amp;&amp; grid[i][j - 1] &gt;= grid[i][j])
+            // Extend the valid subarrays to the current number.
+            dp[i][j] += dp[i][j - 1];
+          const int width = dp[i][j];
+          stack&lt;T&gt;&amp; stack = stacks[j];
+          // Remove subarray widths greater than the current width since they
+          // will become invalid.
+          while (!stack.empty() &amp;&amp; width &lt; stack.top().subarrayWidth)
+            stack.pop();
+          const int height = i - stack.top().rowIndex;
+          const int newSubmatrices = width * height;
+          const int accumulatedSubmatrices =
+              stack.top().accumulatedSubmatrices + newSubmatrices;
+          ans += accumulatedSubmatrices;
+          stack.emplace(width, i, accumulatedSubmatrices);
+        }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long countSubmatrices(int[][] grid, int k) {
+    record T(int subarrayWidth, int rowIndex, int accumulatedSubmatrices) {}
+    final int m = grid.length;
+    final int n = grid[0].length;
+    long ans = 0;
+    // dp[i][j] := the number of valid subarrays ending in grid[i][j]
+    int[][] dp = new int[m][n];
+    // stacks[j] := the stack of valid
+    // (subarray width, row index, number of accumulated submatrices) ending in
+    // column j
+    List&lt;Deque&lt;T&gt;&gt; stacks = new ArrayList&lt;&gt;(n);
+
+    for (int j = 0; j &lt; n; ++j) {
+      Deque&lt;T&gt; stack = new ArrayDeque&lt;&gt;();
+      stack.push(new T(0, -1, 0));
+      stacks.add(stack);
+    }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] &gt; k) {
+          stacks.get(j).clear();
+          stacks.get(j).push(new T(0, i, 0));
+        } else {
+          dp[i][j] = 1;
+          if (j &gt; 0 &amp;&amp; grid[i][j - 1] &lt;= k &amp;&amp; grid[i][j - 1] &gt;= grid[i][j])
+            // Extend the valid subarrays to the current number.
+            dp[i][j] += dp[i][j - 1];
+          final int width = dp[i][j];
+          // Remove subarray widths greater than the current width since they
+          // will become invalid.
+          Deque&lt;T&gt; stack = stacks.get(j);
+          while (!stack.isEmpty() &amp;&amp; width &lt; stack.peek().subarrayWidth)
+            stack.pop();
+          final int height = i - stack.peek().rowIndex;
+          final int newSubmatrices = width * height;
+          final int accumulatedSubmatrices = stack.peek().accumulatedSubmatrices + newSubmatrices;
+          ans += accumulatedSubmatrices;
+          stack.push(new T(width, i, accumulatedSubmatrices));
+        }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class T:
+  subarrayWidth: int
+  rowIndex: int
+  accumulatedSubmatrices: int
+
+
+class Solution:
+  def countSubmatrices(self, grid: list[list[int]], k: int) -&gt; int:
+    m = len(grid)
+    n = len(grid[0])
+    ans = 0
+    # dp[i][j] := the number of valid subarrays ending in grid[i][j]
+    dp = [[0] * n for _ in range(m)]
+    # stacks[j] := the stack of valid
+    # (subarray width, row index, number of accumulated submatrices) ending in
+    # column j
+    stacks: list[T] = [[T(0, -1, 0)] for _ in range(n)]
+
+    for i, row in enumerate(grid):
+      for j, num in enumerate(row):
+        if num &gt; k:
+          stacks[j] = [T(0, i, 0)]
+        else:
+          dp[i][j] = 1
+          if j &gt; 0 and row[j - 1] &lt;= k and row[j - 1] &gt;= row[j]:
+            # Extend the valid subarrays to the current number.
+            dp[i][j] += dp[i][j - 1]
+          width = dp[i][j]
+          # Remove subarray widths greater than the current count since they
+          # will become invalid.
+          while stacks[j] and width &lt; stacks[j][-1].subarrayWidth:
+            stacks[j].pop()
+          height = i - stacks[j][-1].rowIndex
+          newSubmatrices = width * height
+          accumulatedSubmatrices = (stacks[j][-1].accumulatedSubmatrices +
+                                    newSubmatrices)
+          ans += accumulatedSubmatrices
+          stacks[j].append(T(width, i, accumulatedSubmatrices))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

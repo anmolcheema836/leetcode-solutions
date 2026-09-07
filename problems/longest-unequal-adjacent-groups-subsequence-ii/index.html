@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Unequal Adjacent Groups Subsequence II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Unequal Adjacent Groups Subsequence II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-unequal-adjacent-groups-subsequence-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-unequal-adjacent-groups-subsequence-i/" class="btn">← Previous</a>
+            <span>Problem 2901 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-of-sub-multisets-with-bounded-sum/" class="btn">Next →</a>
+        </div>
+        <h1>2901. Longest Unequal Adjacent Groups Subsequence II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Unequal Adjacent Groups Subsequence II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; getWordsInLongestSubsequence(int n, vector&lt;string&gt;&amp; words,
+                                              vector&lt;int&gt;&amp; groups) {
+    vector&lt;string&gt; ans;
+    // dp[i] := the length of the longest subsequence ending in `words[i]`
+    vector&lt;int&gt; dp(n, 1);
+    // prev[i] := the best index of words[i]
+    vector&lt;int&gt; prev(n, -1);
+
+    for (int i = 1; i &lt; n; ++i)
+      for (int j = 0; j &lt; i; ++j) {
+        if (groups[i] == groups[j])
+          continue;
+        if (words[i].length() != words[j].length())
+          continue;
+        if (hammingDist(words[i], words[j]) != 1)
+          continue;
+        if (dp[i] &lt; dp[j] + 1) {
+          dp[i] = dp[j] + 1;
+          prev[i] = j;
+        }
+      }
+
+    // Find the last index of the subsequence.
+    int index = ranges::max_element(dp) - dp.begin();
+    while (index != -1) {
+      ans.push_back(words[index]);
+      index = prev[index];
+    }
+
+    ranges::reverse(ans);
+    return ans;
+  }
+
+ private:
+  int hammingDist(const string&amp; s1, const string&amp; s2) {
+    int dist = 0;
+    for (int i = 0; i &lt; s1.length(); ++i)
+      if (s1[i] != s2[i])
+        ++dist;
+    return dist;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; getWordsInLongestSubsequence(int n, String[] words, int[] groups) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    // dp[i] := the length of the longest subsequence ending in `words[i]`
+    int[] dp = new int[n];
+    Arrays.fill(dp, 1);
+    // prev[i] := the best index of words[i]
+    int[] prev = new int[n];
+    Arrays.fill(prev, -1);
+
+    for (int i = 1; i &lt; n; ++i)
+      for (int j = 0; j &lt; i; ++j) {
+        if (groups[i] == groups[j])
+          continue;
+        if (words[i].length() != words[j].length())
+          continue;
+        if (hammingDist(words[i], words[j]) != 1)
+          continue;
+        if (dp[i] &lt; dp[j] + 1) {
+          dp[i] = dp[j] + 1;
+          prev[i] = j;
+        }
+      }
+
+    // Find the last index of the subsequence.
+    int index = getMaxIndex(dp);
+    while (index != -1) {
+      ans.add(words[index]);
+      index = prev[index];
+    }
+
+    Collections.reverse(ans);
+    return ans;
+  }
+
+  private int hammingDist(final String s1, final String s2) {
+    int dist = 0;
+    for (int i = 0; i &lt; s1.length(); ++i)
+      if (s1.charAt(i) != s2.charAt(i))
+        ++dist;
+    return dist;
+  }
+
+  private int getMaxIndex(int[] dp) {
+    int maxIndex = 0;
+    for (int i = 0; i &lt; dp.length; ++i)
+      if (dp[i] &gt; dp[maxIndex])
+        maxIndex = i;
+    return maxIndex;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getWordsInLongestSubsequence(
+      self,
+      n: int,
+      words: list[str],
+      groups: list[int],
+  ) -&gt; list[str]:
+    ans = []
+    # dp[i] := the length of the longest subsequence ending in `words[i]`
+    dp = [1] * n
+    # prev[i] := the best index of words[i]
+    prev = [-1] * n
+
+    for i in range(1, n):
+      for j in range(i):
+        if groups[i] == groups[j]:
+          continue
+        if len(words[i]) != len(words[j]):
+          continue
+        if sum(a != b for a, b in zip(words[i], words[j])) != 1:
+          continue
+        if dp[i] &lt; dp[j] + 1:
+          dp[i] = dp[j] + 1
+          prev[i] = j
+
+    # Find the last index of the subsequence.
+    index = dp.index(max(dp))
+    while index != -1:
+      ans.append(words[index])
+      index = prev[index]
+
+    return ans[::-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Difference Between Maximum and Minimum Price Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Difference Between Maximum and Minimum Price Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/difference-between-maximum-and-minimum-price-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-the-number-of-good-subarrays/" class="btn">← Previous</a>
+            <span>Problem 2538 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-the-number-of-good-subsequences/" class="btn">Next →</a>
+        </div>
+        <h1>2538. Difference Between Maximum and Minimum Price Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Difference Between Maximum and Minimum Price Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxOutput(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges, vector&lt;int&gt;&amp; price) {
+    int ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+    // maxSums[i] := the maximum the sum of path rooted at i
+    vector&lt;int&gt; maxSums(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      tree[u].push_back(v);
+      tree[v].push_back(u);
+    }
+
+    // Precalculate `maxSums`.
+    maxSum(tree, 0, /*prev=*/-1, maxSums, price);
+    reroot(tree, 0, /*prev=*/-1, /*parentSum=*/0, maxSums, price, ans);
+    return ans;
+  }
+
+ private:
+  int maxSum(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev,
+             vector&lt;int&gt;&amp; maxSums, const vector&lt;int&gt;&amp; price) {
+    int maxChildSum = 0;
+    for (const int v : tree[u])
+      if (v != prev)
+        maxChildSum = max(maxChildSum, maxSum(tree, v, u, maxSums, price));
+    return maxSums[u] = price[u] + maxChildSum;
+  }
+
+  void reroot(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev, int parentSum,
+              const vector&lt;int&gt;&amp; maxSums, const vector&lt;int&gt;&amp; price, int&amp; ans) {
+    // Get the top two subtree sums and the top one node index.
+    int maxSubtreeSum1 = 0;
+    int maxSubtreeSum2 = 0;
+    int maxNode = -1;
+    for (const int v : tree[u]) {
+      if (v == prev)
+        continue;
+      if (maxSums[v] &gt; maxSubtreeSum1) {
+        maxSubtreeSum2 = maxSubtreeSum1;
+        maxSubtreeSum1 = maxSums[v];
+        maxNode = v;
+      } else if (maxSums[v] &gt; maxSubtreeSum2) {
+        maxSubtreeSum2 = maxSums[v];
+      }
+    }
+
+    if (tree[u].size() == 1)
+      ans = max({ans, parentSum, maxSubtreeSum1});
+
+    for (const int v : tree[u]) {
+      if (v == prev)
+        continue;
+      const int nextParentSum =
+          (v == maxNode ? price[u] + max(parentSum, maxSubtreeSum2)
+                        : price[u] + max(parentSum, maxSubtreeSum1));
+      reroot(tree, v, u, nextParentSum, maxSums, price, ans);
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxOutput(int n, int[][] edges, int[] price) {
+    List&lt;Integer&gt;[] tree = new List[n];
+    // maxSums[i] := the maximum the sum of path rooted at i
+    int[] maxSums = new int[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      tree[u].add(v);
+      tree[v].add(u);
+    }
+
+    // Precalculate `maxSums`.
+    maxSum(tree, 0, /*prev=*/-1, maxSums, price);
+    reroot(tree, 0, /*prev=*/-1, /*parentSum=*/0, maxSums, price);
+    return (long) ans;
+  }
+
+  private int ans = 0;
+
+  private int maxSum(List&lt;Integer&gt;[] tree, int u, int prev, int[] maxSums, int[] price) {
+    int maxChildSum = 0;
+    for (final int v : tree[u])
+      if (v != prev)
+        maxChildSum = Math.max(maxChildSum, maxSum(tree, v, u, maxSums, price));
+    return maxSums[u] = price[u] + maxChildSum;
+  }
+
+  private void reroot(List&lt;Integer&gt;[] tree, int u, int prev, int parentSum, int[] maxSums,
+                      int[] price) {
+    // Get top two sums and top one node index.
+    int maxSubtreeSum1 = 0;
+    int maxSubtreeSum2 = 0;
+    int maxNode = -1;
+    for (final int v : tree[u]) {
+      if (v == prev)
+        continue;
+      if (maxSums[v] &gt; maxSubtreeSum1) {
+        maxSubtreeSum2 = maxSubtreeSum1;
+        maxSubtreeSum1 = maxSums[v];
+        maxNode = v;
+      } else if (maxSums[v] &gt; maxSubtreeSum2) {
+        maxSubtreeSum2 = maxSums[v];
+      }
+    }
+
+    if (tree[u].size() == 1)
+      ans = Math.max(ans, Math.max(parentSum, maxSubtreeSum1));
+
+    for (final int v : tree[u]) {
+      if (v == prev)
+        continue;
+      final int nextParentSum = (v == maxNode ? price[u] + Math.max(parentSum, maxSubtreeSum2)
+                                              : price[u] + Math.max(parentSum, maxSubtreeSum1));
+      reroot(tree, v, u, nextParentSum, maxSums, price);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxOutput(self, n: int, edges: list[list[int]], price: list[int]) -&gt; int:
+    ans = 0
+    tree = [[] for _ in range(n)]
+    maxSums = [0] * n  # maxSums[i] := the maximum the sum of path rooted at i
+
+    for u, v in edges:
+      tree[u].append(v)
+      tree[v].append(u)
+
+    def maxSum(u: int, prev: int) -&gt; int:
+      maxChildSum = 0
+      for v in tree[u]:
+        if v != prev:
+          maxChildSum = max(maxChildSum, maxSum(v, u))
+      maxSums[u] = price[u] + maxChildSum
+      return maxSums[u]
+
+    # Precalculate `maxSums`.
+    maxSum(0, -1)
+
+    def reroot(u: int, prev: int, parentSum: int) -&gt; None:
+      nonlocal ans
+      # Get the top two subtree sums and the top one node index.
+      maxSubtreeSum1 = 0
+      maxSubtreeSum2 = 0
+      maxNode = -1
+      for v in tree[u]:
+        if v == prev:
+          continue
+        if maxSums[v] &gt; maxSubtreeSum1:
+          maxSubtreeSum2 = maxSubtreeSum1
+          maxSubtreeSum1 = maxSums[v]
+          maxNode = v
+        elif maxSums[v] &gt; maxSubtreeSum2:
+          maxSubtreeSum2 = maxSums[v]
+
+      if len(tree[u]) == 1:
+        ans = max(ans, parentSum, maxSubtreeSum1)
+
+      for v in tree[u]:
+        if v == prev:
+          continue
+        nextParentSum = (
+            price[u] + max(parentSum, maxSubtreeSum2) if v == maxNode else
+            price[u] + max(parentSum, maxSubtreeSum1))
+        reroot(v, u, nextParentSum)
+
+    reroot(0, -1, 0)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

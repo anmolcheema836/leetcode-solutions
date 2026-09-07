@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Delay Time - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Network Delay Time written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/network-delay-time/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/closest-leaf-in-a-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 743 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-smallest-letter-greater-than-target/" class="btn">Next →</a>
+        </div>
+        <h1>743. Network Delay Time</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Network Delay Time efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int networkDelayTime(vector&lt;vector&lt;int&gt;&gt;&amp; times, int n, int k) {
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; time : times) {
+      const int u = time[0] - 1;
+      const int v = time[1] - 1;
+      const int w = time[2];
+      graph[u].emplace_back(v, w);
+    }
+
+    return dijkstra(graph, k - 1);
+  }
+
+ private:
+  int dijkstra(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int src) {
+    vector&lt;int&gt; dist(graph.size(), INT_MAX);
+
+    dist[src] = 0;
+    using P = pair&lt;int, int&gt;;  // (d, u)
+    priority_queue&lt;P, vector&lt;P&gt;, greater&lt;&gt;&gt; minHeap;
+    minHeap.emplace(dist[src], src);
+
+    while (!minHeap.empty()) {
+      const auto [d, u] = minHeap.top();
+      minHeap.pop();
+      if (d &gt; dist[u])
+        continue;
+      for (const auto&amp; [v, w] : graph[u])
+        if (d + w &lt; dist[v]) {
+          dist[v] = d + w;
+          minHeap.emplace(dist[v], v);
+        }
+    }
+
+    const int maxDist = ranges::max(dist);
+    return maxDist == INT_MAX ? -1 : maxDist;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int networkDelayTime(int[][] times, int n, int k) {
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+
+    for (int i = 0; i &lt; n; i++)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] time : times) {
+      final int u = time[0] - 1;
+      final int v = time[1] - 1;
+      final int w = time[2];
+      graph[u].add(new Pair&lt;&gt;(v, w));
+    }
+
+    return dijkstra(graph, k - 1);
+  }
+
+  private int dijkstra(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int src) {
+    int[] dist = new int[graph.length];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+
+    dist[src] = 0;
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; minHeap =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair::getKey)) {
+          { offer(new Pair&lt;&gt;(dist[src], src)); } // (d, u)
+        };
+
+    while (!minHeap.isEmpty()) {
+      final int d = minHeap.peek().getKey();
+      final int u = minHeap.poll().getValue();
+      if (d &gt; dist[u])
+        continue;
+      for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+        final int v = pair.getKey();
+        final int w = pair.getValue();
+        if (d + w &lt; dist[v]) {
+          dist[v] = d + w;
+          minHeap.offer(new Pair&lt;&gt;(dist[v], v));
+        }
+      }
+    }
+
+    final int maxDist = Arrays.stream(dist).max().getAsInt();
+    return maxDist == Integer.MAX_VALUE ? -1 : maxDist;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def networkDelayTime(self, times: list[list[int]], n: int, k: int) -&gt; int:
+    graph = [[] for _ in range(n)]
+
+    for u, v, w in times:
+      graph[u - 1].append((v - 1, w))
+
+    return self._dijkstra(graph, k - 1)
+
+  def _dijkstra(self, graph: list[list[tuple[int, int]]], src: int) -&gt; int:
+    dist = [math.inf] * len(graph)
+
+    dist[src] = 0
+    minHeap = [(dist[src], src)]  # (d, u)
+
+    while minHeap:
+      d, u = heapq.heappop(minHeap)
+      if d &gt; dist[u]:
+        continue
+      for v, w in graph[u]:
+        if d + w &lt; dist[v]:
+          dist[v] = d + w
+          heapq.heappush(minHeap, (dist[v], v))
+
+    maxDist = max(dist)
+    return maxDist if maxDist != math.inf else -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

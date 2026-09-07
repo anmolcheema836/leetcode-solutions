@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat and Mouse II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Cat and Mouse II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/cat-and-mouse-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-submatrix-with-rearrangements/" class="btn">← Previous</a>
+            <span>Problem 1728 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-followers-count/" class="btn">Next →</a>
+        </div>
+        <h1>1728. Cat and Mouse II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Cat and Mouse II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool canMouseWin(vector&lt;string&gt;&amp; grid, int catJump, int mouseJump) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    int nFloors = 0;
+    int cat;    // cat&#x27;s position
+    int mouse;  // mouse&#x27;s position
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        if (grid[i][j] != &#x27;#&#x27;)
+          ++nFloors;
+        if (grid[i][j] == &#x27;C&#x27;)
+          cat = hash(i, j, n);
+        else if (grid[i][j] == &#x27;M&#x27;)
+          mouse = hash(i, j, n);
+      }
+
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; mem(
+        m * n, vector&lt;vector&lt;int&gt;&gt;(m * n, vector&lt;int&gt;(nFloors * 2, -1)));
+    return canMouseWin(grid, cat, mouse, 0, catJump, mouseJump, m, n, nFloors,
+                       mem);
+  }
+
+ private:
+  static constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+  // Returns true if the mouse can win, where the cat is on (i / 8, i % 8), the
+  // mouse is on (j / 8, j % 8), and the turns is k.
+  bool canMouseWin(const vector&lt;string&gt;&amp; grid, int cat, int mouse, int turn,
+                   const int&amp; catJump, const int&amp; mouseJump, const int&amp; m,
+                   const int&amp; n, const int&amp; nFloors,
+                   vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&amp; mem) {
+    // We already search the whole touchable grid.
+    if (turn == nFloors * 2)
+      return false;
+    if (mem[cat][mouse][turn] != -1)
+      return mem[cat][mouse][turn];
+
+    if (turn % 2 == 0) {
+      // the mouse&#x27;s turn
+      const int i = mouse / n;
+      const int j = mouse % n;
+      for (const auto&amp; [dx, dy] : kDirs) {
+        for (int jump = 0; jump &lt;= mouseJump; ++jump) {
+          const int x = i + dx * jump;
+          const int y = j + dy * jump;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            break;
+          if (grid[x][y] == &#x27;#&#x27;)
+            break;
+          // The mouse eats the food, so the mouse wins.
+          if (grid[x][y] == &#x27;F&#x27;)
+            return mem[cat][mouse][turn] = true;
+          if (canMouseWin(grid, cat, hash(x, y, n), turn + 1, catJump,
+                          mouseJump, m, n, nFloors, mem))
+            return mem[cat][mouse][turn] = true;
+        }
+      }
+      // The mouse can&#x27;t win, so the mouse loses.
+      return mem[cat][mouse][turn] = false;
+    } else {
+      // the cat&#x27;s turn
+      const int i = cat / n;
+      const int j = cat % n;
+      for (const auto&amp; [dx, dy] : kDirs) {
+        for (int jump = 0; jump &lt;= catJump; ++jump) {
+          const int x = i + dx * jump;
+          const int y = j + dy * jump;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            break;
+          if (grid[x][y] == &#x27;#&#x27;)
+            break;
+          // The cat eats the food, so the mouse loses.
+          if (grid[x][y] == &#x27;F&#x27;)
+            return mem[cat][mouse][turn] = false;
+          const int nextCat = hash(x, y, n);
+          // The cat catches the mouse, so the mouse loses.
+          if (nextCat == mouse)
+            return mem[cat][mouse][turn] = false;
+          if (!canMouseWin(grid, nextCat, mouse, turn + 1, catJump, mouseJump,
+                           m, n, nFloors, mem))
+            return mem[cat][mouse][turn] = false;
+        }
+      }
+      // The cat can&#x27;t win, so the mouse wins.
+      return mem[cat][mouse][turn] = true;
+    }
+  }
+
+  int hash(int i, int j, int n) {
+    return i * n + j;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean canMouseWin(String[] grid, int catJump, int mouseJump) {
+    final int m = grid.length;
+    final int n = grid[0].length();
+    int nFloors = 0;
+    int cat = 0;   // cat&#x27;s position
+    int mouse = 0; // mouse&#x27;s position
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        if (grid[i].charAt(j) != &#x27;#&#x27;)
+          ++nFloors;
+        if (grid[i].charAt(j) == &#x27;C&#x27;)
+          cat = hash(i, j, n);
+        else if (grid[i].charAt(j) == &#x27;M&#x27;)
+          mouse = hash(i, j, n);
+      }
+
+    Boolean[][][] mem = new Boolean[m * n][m * n][nFloors * 2];
+    return canMouseWin(grid, cat, mouse, 0, catJump, mouseJump, m, n, nFloors, mem);
+  }
+
+  private static final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+  // Returns true if the mouse can win, where the cat is on (i / 8, i % 8), the
+  // mouse is on (j / 8, j % 8), and the turns is k.
+  private boolean canMouseWin(String[] grid, int cat, int mouse, int turn, int catJump,
+                              int mouseJump, int m, int n, int nFloors, Boolean[][][] mem) {
+    // We already search the whole touchable grid.
+    if (turn == nFloors * 2)
+      return false;
+    if (mem[cat][mouse][turn] != null)
+      return mem[cat][mouse][turn];
+
+    if (turn % 2 == 0) {
+      // the mouse&#x27;s turn
+      int i = mouse / n;
+      int j = mouse % n;
+      for (int[] dir : DIRS) {
+        for (int jump = 0; jump &lt;= mouseJump; ++jump) {
+          int x = i + dir[0] * jump;
+          int y = j + dir[1] * jump;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            break;
+          if (grid[x].charAt(y) == &#x27;#&#x27;)
+            break;
+          // The mouse eats the food, so the mouse wins.
+          if (grid[x].charAt(y) == &#x27;F&#x27;)
+            return mem[cat][mouse][turn] = true;
+          if (canMouseWin(grid, cat, hash(x, y, n), turn + 1, catJump, mouseJump, m, n, nFloors,
+                          mem))
+            return mem[cat][mouse][turn] = true;
+        }
+      }
+      // The mouse can&#x27;t win, so the mouse loses.
+      return mem[cat][mouse][turn] = false;
+    } else {
+      // the cat&#x27;s turn
+      final int i = cat / n;
+      final int j = cat % n;
+      for (int[] dir : DIRS)
+        for (int jump = 0; jump &lt;= catJump; ++jump) {
+          final int x = i + dir[0] * jump;
+          final int y = j + dir[1] * jump;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            break;
+          if (grid[x].charAt(y) == &#x27;#&#x27;)
+            break;
+          // The cat eats the food, so the mouse loses.
+          if (grid[x].charAt(y) == &#x27;F&#x27;)
+            return mem[cat][mouse][turn] = false;
+          final int nextCat = hash(x, y, n);
+          if (nextCat == mouse)
+            return mem[cat][mouse][turn] = false;
+          if (!canMouseWin(grid, nextCat, mouse, turn + 1, catJump, mouseJump, m, n, nFloors, mem))
+            return mem[cat][mouse][turn] = false;
+        }
+      // The cat can&#x27;t win, so the mouse wins.
+      return mem[cat][mouse][turn] = true;
+    }
+  }
+
+  private int hash(int i, int j, int n) {
+    return i * n + j;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def canMouseWin(self, grid: list[str], catJump: int, mouseJump: int) -&gt; bool:
+    DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    m = len(grid)
+    n = len(grid[0])
+    nFloors = 0
+    cat = 0  # cat&#x27;s position
+    mouse = 0  # mouse&#x27;s position
+
+    def hash(i: int, j: int) -&gt; int:
+      return i * n + j
+
+    for i in range(m):
+      for j in range(n):
+        if grid[i][j] != &#x27;#&#x27;:
+          nFloors += 1
+        if grid[i][j] == &#x27;C&#x27;:
+          cat = hash(i, j)
+        elif grid[i][j] == &#x27;M&#x27;:
+          mouse = hash(i, j)
+
+    @functools.lru_cache(None)
+    def dp(cat: int, mouse: int, turn: int) -&gt; bool:
+      &quot;&quot;&quot;
+      Returns True if the mouse can win, where the cat is on (i / 8, i % 8), the
+      mouse is on (j / 8, j % 8), and the turns is k.
+      &quot;&quot;&quot;
+      # We already search the whole touchable grid.
+      if turn == nFloors * 2:
+        return False
+
+      if turn % 2 == 0:
+        # the mouse&#x27;s turn
+        i = mouse // n
+        j = mouse % n
+        for dx, dy in DIRS:
+          for jump in range(mouseJump + 1):
+            x = i + dx * jump
+            y = j + dy * jump
+            if x &lt; 0 or x == m or y &lt; 0 or y == n:
+              break
+            if grid[x][y] == &#x27;#&#x27;:
+              break
+            # The mouse eats the food, so the mouse wins.
+            if grid[x][y] == &#x27;F&#x27;:
+              return True
+            if dp(cat, hash(x, y), turn + 1):
+              return True
+        # The mouse can&#x27;t win, so the mouse loses.
+        return False
+      else:
+        # the cat&#x27;s turn
+        i = cat // n
+        j = cat % n
+        for dx, dy in DIRS:
+          for jump in range(catJump + 1):
+            x = i + dx * jump
+            y = j + dy * jump
+            if x &lt; 0 or x == m or y &lt; 0 or y == n:
+              break
+            if grid[x][y] == &#x27;#&#x27;:
+              break
+            # The cat eats the food, so the mouse loses.
+            if grid[x][y] == &#x27;F&#x27;:
+              return False
+            nextCat = hash(x, y)
+            # The cat catches the mouse, so the mouse loses.
+            if nextCat == mouse:
+              return False
+            if not dp(nextCat, mouse, turn + 1):
+              return False
+        # The cat can&#x27;t win, so the mouse wins.
+        return True
+
+    return dp(cat, mouse, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

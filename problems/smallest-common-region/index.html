@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallest Common Region - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Smallest Common Region written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/smallest-common-region/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/encode-number/" class="btn">← Previous</a>
+            <span>Problem 1257 of 3563</span>
+            <a href="/leetcode-solutions/problems/synonymous-sentences/" class="btn">Next →</a>
+        </div>
+        <h1>1257. Smallest Common Region</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Smallest Common Region efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string findSmallestRegion(vector&lt;vector&lt;string&gt;&gt;&amp; regions, string region1,
+                            string region2) {
+    unordered_map&lt;string, string&gt; parent;
+    unordered_set&lt;string&gt; ancestors;  // region1&#x27;s ancestors
+
+    for (const vector&lt;string&gt;&amp; region : regions)
+      for (int i = 1; i &lt; region.size(); ++i)
+        parent[region[i]] = region[0];
+
+    // Add all the region1&#x27;s ancestors.
+    while (region1 != &quot;&quot;) {
+      ancestors.insert(region1);
+      region1 = parent[region1];  // Region1 becomes &quot;&quot; in the end
+    }
+
+    // Go up from region2 until meet any of region1&#x27;s ancestors.
+    while (!ancestors.contains(region2))
+      region2 = parent[region2];
+
+    return region2;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String findSmallestRegion(List&lt;List&lt;String&gt;&gt; regions, String region1, String region2) {
+    Map&lt;String, String&gt; parent = new HashMap&lt;&gt;();
+    Set&lt;String&gt; ancestors = new HashSet&lt;&gt;(); // region1&#x27;s ancestors
+
+    for (List&lt;String&gt; region : regions)
+      for (int i = 1; i &lt; region.size(); ++i)
+        parent.put(region.get(i), region.get(0));
+
+    // Add all the region1&#x27;s ancestors.
+    while (region1 != null) {
+      ancestors.add(region1);
+      region1 = parent.get(region1); // Region1 becomes null in the end.
+    }
+
+    // Go up from region2 until meet any of region1&#x27;s ancestors.
+    while (!ancestors.contains(region2))
+      region2 = parent.get(region2);
+
+    return region2;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

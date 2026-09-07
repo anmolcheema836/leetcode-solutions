@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Subarrays That Match a Pattern II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Subarrays That Match a Pattern II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-subarrays-that-match-a-pattern-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-palindromes-after-operations/" class="btn">← Previous</a>
+            <span>Problem 3036 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-pattern-in-infinite-stream-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3036. Number of Subarrays That Match a Pattern II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Subarrays That Match a Pattern II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Same as 3034. Number of Subarrays That Match a Pattern I
+  int countMatchingSubarrays(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; pattern) {
+    const vector&lt;int&gt; numsPattern = getNumsPattern(nums);
+    return kmp(numsPattern, pattern);
+  }
+
+ private:
+  int getNum(int a, int b) {
+    if (a &lt; b)
+      return 1;
+    if (a &gt; b)
+      return -1;
+    return 0;
+  }
+
+  vector&lt;int&gt; getNumsPattern(const vector&lt;int&gt;&amp; nums) {
+    vector&lt;int&gt; numsPattern;
+    for (int i = 1; i &lt; nums.size(); ++i)
+      numsPattern.push_back(getNum(nums[i - 1], nums[i]));
+    return numsPattern;
+  }
+
+  // Returns the number of occurrences of the pattern in `nums`.
+  int kmp(const vector&lt;int&gt;&amp; nums, const vector&lt;int&gt;&amp; pattern) {
+    const vector&lt;int&gt; lps = getLPS(pattern);
+    int res = 0;
+    int i = 0;  // nums&#x27; index
+    int j = 0;  // pattern&#x27;s index
+    while (i &lt; nums.size()) {
+      if (nums[i] == pattern[j]) {
+        ++i;
+        ++j;
+        if (j == pattern.size()) {
+          ++res;
+          j = lps[j - 1];
+        }
+      } else if (j &gt; 0) {  // Mismatch after j matches.
+        // Don&#x27;t match lps[0..lps[j - 1]] since they will match anyway.
+        j = lps[j - 1];
+      } else {
+        ++i;
+      }
+    }
+    return res;
+  }
+
+  // Returns the lps array, where lps[i] is the length of the longest prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  vector&lt;int&gt; getLPS(const vector&lt;int&gt;&amp; pattern) {
+    vector&lt;int&gt; lps(pattern.size());
+    for (int i = 1, j = 0; i &lt; pattern.size(); ++i) {
+      while (j &gt; 0 &amp;&amp; pattern[j] != pattern[i])
+        j = lps[j - 1];
+      if (pattern[i] == pattern[j])
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Same as 3034. Number of Subarrays That Match a Pattern I
+  public int countMatchingSubarrays(int[] nums, int[] pattern) {
+    int[] numsPattern = getNumsPattern(nums);
+    return kmp(numsPattern, pattern);
+  }
+
+  private int getNum(int a, int b) {
+    if (a &lt; b)
+      return 1;
+    if (a &gt; b)
+      return -1;
+    return 0;
+  }
+
+  private int[] getNumsPattern(int[] nums) {
+    int[] numsPattern = new int[nums.length - 1];
+    for (int i = 1; i &lt; nums.length; ++i)
+      numsPattern[i - 1] = getNum(nums[i - 1], nums[i]);
+    return numsPattern;
+  }
+
+  // Returns the number of occurrences of the pattern in `nums`.
+  private int kmp(int[] nums, int[] pattern) {
+    int[] lps = getLPS(pattern);
+    int res = 0;
+    int i = 0; // nums&#x27; index
+    int j = 0; // pattern&#x27;s index
+    while (i &lt; nums.length) {
+      if (nums[i] == pattern[j]) {
+        ++i;
+        ++j;
+        if (j == pattern.length) {
+          ++res;
+          j = lps[j - 1];
+        }
+      } else if (j &gt; 0) { // Mismatch after j matches.
+        // Don&#x27;t match lps[0..lps[j - 1]] since they will match anyway.
+        j = lps[j - 1];
+      } else {
+        ++i;
+      }
+    }
+    return res;
+  }
+
+  // Returns the lps array, where lps[i] is the longest proper prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  private int[] getLPS(int[] pattern) {
+    int[] lps = new int[pattern.length];
+    for (int i = 1, j = 0; i &lt; pattern.length; ++i) {
+      while (j &gt; 0 &amp;&amp; pattern[j] != pattern[i])
+        j = lps[j - 1];
+      if (pattern[i] == pattern[j])
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Same as 3034. Number of Subarrays That Match a Pattern I
+  def countMatchingSubarrays(self, nums: list[int], pattern: list[int]) -&gt; int:
+    def getNum(a: int, b: int) -&gt; int:
+      if a &lt; b:
+        return 1
+      if a &gt; b:
+        return -1
+      return 0
+
+    numsPattern = [getNum(a, b) for a, b in itertools.pairwise(nums)]
+    return self._kmp(numsPattern, pattern)
+
+  def _kmp(self, nums: list[int], pattern: list[int]) -&gt; int:
+    &quot;&quot;&quot;Returns the number of occurrences of the pattern in `nums`.&quot;&quot;&quot;
+
+    def getLPS(nums: list[int]) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Returns the lps array, where lps[i] is the length of the longest prefix of
+      nums[0..i] which is also a suffix of this substring.
+      &quot;&quot;&quot;
+      lps = [0] * len(nums)
+      j = 0
+      for i in range(1, len(nums)):
+        while j &gt; 0 and nums[j] != nums[i]:
+          j = lps[j - 1]
+        if nums[i] == nums[j]:
+          lps[i] = j + 1
+          j += 1
+      return lps
+
+    lps = getLPS(pattern)
+    res = 0
+    i = 0  # s&#x27; index
+    j = 0  # pattern&#x27;s index
+    while i &lt; len(nums):
+      if nums[i] == pattern[j]:
+        i += 1
+        j += 1
+        if j == len(pattern):
+          res += 1
+          j = lps[j - 1]
+      elif j != 0:  # Mismatch after j matches.
+        # Don&#x27;t match lps[0..lps[j - 1]] since they will match anyway.
+        j = lps[j - 1]
+      else:
+        i += 1
+    return res</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

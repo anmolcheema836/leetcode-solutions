@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Sum of Distinct Subarrays With Length K - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Sum of Distinct Subarrays With Length K written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-sum-of-distinct-subarrays-with-length-k/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/apply-operations-to-an-array/" class="btn">← Previous</a>
+            <span>Problem 2461 of 3563</span>
+            <a href="/leetcode-solutions/problems/total-cost-to-hire-k-workers/" class="btn">Next →</a>
+        </div>
+        <h1>2461. Maximum Sum of Distinct Subarrays With Length K</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Sum of Distinct Subarrays With Length K efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maximumSubarraySum(vector&lt;int&gt;&amp; nums, int k) {
+    long ans = 0;
+    long sum = 0;
+    int distinct = 0;
+    unordered_map&lt;int, int&gt; count;
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      sum += nums[i];
+      if (++count[nums[i]] == 1)
+        ++distinct;
+      if (i &gt;= k) {
+        if (--count[nums[i - k]] == 0)
+          --distinct;
+        sum -= nums[i - k];
+      }
+      if (i &gt;= k - 1 &amp;&amp; distinct == k)
+        ans = max(ans, sum);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maximumSubarraySum(int[] nums, int k) {
+    long ans = 0;
+    long sum = 0;
+    int distinct = 0;
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      sum += nums[i];
+      if (count.merge(nums[i], 1, Integer::sum) == 1)
+        ++distinct;
+      if (i &gt;= k) {
+        if (count.merge(nums[i - k], -1, Integer::sum) == 0)
+          --distinct;
+        sum -= nums[i - k];
+      }
+      if (i &gt;= k - 1 &amp;&amp; distinct == k)
+        ans = Math.max(ans, sum);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumSubarraySum(self, nums: list[int], k: int) -&gt; int:
+    ans = 0
+    summ = 0
+    distinct = 0
+    count = collections.Counter()
+
+    for i, num in enumerate(nums):
+      summ += num
+      count[num] += 1
+      if count[num] == 1:
+        distinct += 1
+      if i &gt;= k:
+        count[nums[i - k]] -= 1
+        if count[nums[i - k]] == 0:
+          distinct -= 1
+        summ -= nums[i - k]
+      if i &gt;= k - 1 and distinct == k:
+        ans = max(ans, summ)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

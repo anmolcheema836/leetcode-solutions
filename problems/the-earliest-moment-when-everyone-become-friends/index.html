@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Earliest Moment When Everyone Become Friends - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Earliest Moment When Everyone Become Friends written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-earliest-moment-when-everyone-become-friends/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-k-length-substrings-with-no-repeated-characters/" class="btn">← Previous</a>
+            <span>Problem 1101 of 3563</span>
+            <a href="/leetcode-solutions/problems/path-with-maximum-minimum-value/" class="btn">Next →</a>
+        </div>
+        <h1>1101. The Earliest Moment When Everyone Become Friends</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Earliest Moment When Everyone Become Friends efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : count(n), id(n), rank(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+    --count;
+  }
+
+  int getCount() const {
+    return count;
+  }
+
+ private:
+  int count;
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; rank;
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+};
+
+class Solution {
+ public:
+  int earliestAcq(vector&lt;vector&lt;int&gt;&gt;&amp; logs, int n) {
+    UnionFind uf(n);
+
+    // Sort `logs` by timestamp.
+    ranges::sort(logs, ranges::less{},
+                 [](const vector&lt;int&gt;&amp; log) { return log[0]; });
+
+    for (const vector&lt;int&gt;&amp; log : logs) {
+      const int timestamp = log[0];
+      const int x = log[1];
+      const int y = log[2];
+      uf.unionByRank(x, y);
+      if (uf.getCount() == 1)
+        return timestamp;
+    }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    count = n;
+    id = new int[n];
+    rank = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+  }
+
+  public void unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+    --count;
+  }
+
+  public int getCount() {
+    return count;
+  }
+
+  private int count;
+  private int[] id;
+  private int[] rank;
+
+  private int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+}
+
+class Solution {
+  public int earliestAcq(int[][] logs, int n) {
+    UnionFind uf = new UnionFind(n);
+
+    // Sort `logs` by timestamp.
+    Arrays.sort(logs, Comparator.comparingInt(log -&gt; log[0]));
+
+    for (int[] log : logs) {
+      final int timestamp = log[0];
+      final int x = log[1];
+      final int y = log[2];
+      uf.unionByRank(x, y);
+      if (uf.getCount() == 1)
+        return timestamp;
+    }
+
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.count = n
+    self.id = list(range(n))
+    self.rank = [0] * n
+
+  def unionByRank(self, u: int, v: int) -&gt; None:
+    i = self._find(u)
+    j = self._find(v)
+    if i == j:
+      return
+    if self.rank[i] &lt; self.rank[j]:
+      self.id[i] = j
+    elif self.rank[i] &gt; self.rank[j]:
+      self.id[j] = i
+    else:
+      self.id[i] = j
+      self.rank[j] += 1
+    self.count -= 1
+
+  def getCount(self) -&gt; int:
+    return self.count
+
+  def _find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self._find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def earliestAcq(self, logs: list[list[int]], n: int) -&gt; int:
+    uf = UnionFind(n)
+
+    # Sort `logs` by timestamp.
+    logs.sort(key=lambda x: x[0])
+
+    for timestamp, x, y in logs:
+      uf.unionByRank(x, y)
+      if uf.getCount() == 1:
+        return timestamp
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

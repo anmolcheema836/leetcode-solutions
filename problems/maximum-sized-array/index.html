@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Sized Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Sized Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-sized-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-number-of-balanced-permutations/" class="btn">← Previous</a>
+            <span>Problem 3344 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-divisible-digit-product-i/" class="btn">Next →</a>
+        </div>
+        <h1>3344. Maximum Sized Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Sized Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxSizedArray(long long s) {
+    if (s == 0)
+      return 1;
+
+    int l = 0;
+    int r = 1196;  // when s = 10^15, n = 1196
+
+    while (l &lt; r) {
+      const int m = (l + r + 1) / 2;
+      if (getArraySum(m) &lt;= s)
+        l = m;
+      else
+        r = m - 1;
+    }
+
+    return l;
+  }
+
+ private:
+  // Returns the number of integers in [0, n - 1] with the i-th bit set.
+  //
+  // For the i-th bit, numbers in the range [0, n - 1] can be divided into
+  // groups of 2^(i + 1) numbers. In each group, exactly half of the numbers
+  // have the i-th bit set.
+  int getNumbersWithBitSet(int n, int i) {
+    const int groupSize = 1 &lt;&lt; (i + 1);
+    const int halfGroupSize = 1 &lt;&lt; i;
+    const int fullGroups = n / groupSize;
+    const int remaining = max(0, (n % groupSize) - halfGroupSize);
+    return fullGroups * halfGroupSize + remaining;
+  }
+
+  // Returns the sum of all i * (j OR k) values in 3D arrays of size n^3.
+  //
+  //   sum(i * (j OR k)), where 0 &lt;= i, j, k &lt; n
+  // = 0 * (j OR k) + 1 * (j OR k) + ... + (n - 1) * (j OR k)
+  // = (0 + 1 + ... + n - 1) * sum(j OR k)
+  // = (n * (n - 1) / 2) * sum(j OR k)
+  long getArraySum(int n) {
+    const int arithmeticSum = n * (n - 1) / 2;
+    long orSum = 0;
+    for (int i = 0; i &lt; bitLength(n); ++i) {
+      const int numbersWituoutBit = n - getNumbersWithBitSet(n, i);
+      const int pairsWithBit =
+          (n * n) - (numbersWituoutBit * numbersWituoutBit);
+      orSum += pairsWithBit * (1L &lt;&lt; i);
+    }
+    return arithmeticSum * orSum;
+  }
+
+  int bitLength(int n) {
+    return 32 - __builtin_clz(n);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxSizedArray(long s) {
+    if (s == 0)
+      return 1;
+
+    int l = 0;
+    int r = 1196; // when s = 10^15, n = 1196
+
+    while (l &lt; r) {
+      final int m = (l + r + 1) / 2;
+      if (getArraySum(m) &lt;= s)
+        l = m;
+      else
+        r = m - 1;
+    }
+
+    return l;
+  }
+
+  // Returns the number of integers in [0, n - 1] with the i-th bit set.
+  //
+  // For the i-th bit, numbers in the range [0, n - 1] can be divided into
+  // groups of 2^(i + 1) numbers. In each group, exactly half of the numbers
+  // have the i-th bit set.
+  private int getNumbersWithBitSet(int n, int i) {
+    final int groupSize = 1 &lt;&lt; (i + 1);
+    final int halfGroupSize = 1 &lt;&lt; i;
+    final int fullGroups = n / groupSize;
+    final int remaining = Math.max(0, (n % groupSize) - halfGroupSize);
+    return fullGroups * halfGroupSize + remaining;
+  }
+
+  // Returns the sum of all i * (j OR k) values in 3D arrays of size n^3.
+  //
+  //   sum(i * (j OR k)), where 0 &lt;= i, j, k &lt; n
+  // = 0 * (j OR k) + 1 * (j OR k) + ... + (n - 1) * (j OR k)
+  // = (0 + 1 + ... + n - 1) * sum(j OR k)
+  // = (n * (n - 1) / 2) * sum(j OR k)
+  private long getArraySum(int n) {
+    final int arithmeticSum = n * (n - 1) / 2;
+    long orSum = 0;
+    for (int i = 0; i &lt; bitLength(n); i++) {
+      int numbersWithoutBit = n - getNumbersWithBitSet(n, i);
+      long pairsWithBit = (long) n * n - (long) numbersWithoutBit * numbersWithoutBit;
+      orSum += pairsWithBit * (1L &lt;&lt; i);
+    }
+    return arithmeticSum * orSum;
+  }
+
+  private int bitLength(int n) {
+    return 32 - Integer.numberOfLeadingZeros(n);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxSizedArray(self, s: int) -&gt; int:
+    def getNumbersWithBitSet(n: int, i: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of integers in [0, n - 1] with the i-th bit set.
+
+      For the i-th bit, numbers in the range [0, n - 1] can be divided into
+      groups of 2^(i + 1) numbers. In each group, exactly half of the numbers
+      have the i-th bit set.
+      &quot;&quot;&quot;
+      groupSize = 1 &lt;&lt; (i + 1)
+      halfGroupSize = 1 &lt;&lt; i
+      fullGroups = n // groupSize
+      remaining = max(0, (n % groupSize) - halfGroupSize)
+      return fullGroups * halfGroupSize + remaining
+
+    def getArraySum(n: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the sum of all i * (j OR k) values in 3D arrays of size n^3.
+
+        sum(i * (j OR k)), where 0 &lt;= i, j, k &lt; n
+      = 0 * (j OR k) + 1 * (j OR k) + ... + (n - 1) * (j OR k)
+      = (0 + 1 + ... + n - 1) * sum(j OR k)
+      = (n * (n - 1) / 2) * sum(j OR k)
+      &quot;&quot;&quot;
+      arithmeticSum = n * (n - 1) // 2  # 0 + 1 + ... + n - 1
+      orSum = 0  # the sum of (j OR k) values in 2D arrays of size n^2
+      for i in range(n.bit_length()):
+        numbersWithoutBit = n - getNumbersWithBitSet(n, i)
+        pairsWithBit = n**2 - numbersWithoutBit**2
+        orSum += pairsWithBit * (1 &lt;&lt; i)  # Add contribution of this bit.
+      return arithmeticSum * orSum
+
+    if s == 0:
+      return 1
+    l = 0
+    r = 1196  # when s = 10^15, n = 1196
+    return bisect.bisect_right(range(l, r + 1), s, key=getArraySum) - 1 + l</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

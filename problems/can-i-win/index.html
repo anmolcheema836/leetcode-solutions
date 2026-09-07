@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can I Win - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Can I Win written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/can-i-win/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/island-perimeter/" class="btn">← Previous</a>
+            <span>Problem 464 of 3563</span>
+            <a href="/leetcode-solutions/problems/optimal-account-balancing/" class="btn">Next →</a>
+        </div>
+        <h1>464. Can I Win</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Can I Win efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool canIWin(int maxChoosableInteger, int desiredTotal) {
+    if (desiredTotal &lt;= 0)
+      return true;
+
+    const int sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
+    if (sum &lt; desiredTotal)
+      return false;
+
+    unordered_map&lt;int, bool&gt; mem;
+    return canIWin(desiredTotal, 0, maxChoosableInteger, mem);
+  }
+
+ private:
+  // Returns true if the first player can we, where `used` represents the used
+  // numbers.
+  bool canIWin(int total, int used, const int&amp; maxChoosableInteger,
+               unordered_map&lt;int, bool&gt;&amp; mem) {
+    if (total &lt;= 0)
+      return false;
+    if (const auto it = mem.find(used); it != mem.cend())
+      return it-&gt;second;
+
+    for (int i = 1; i &lt;= maxChoosableInteger; ++i) {
+      if (used &gt;&gt; i &amp; 1)  // Integer i is used.
+        continue;
+      if (!canIWin(total - i, used | 1 &lt;&lt; i, maxChoosableInteger, mem))
+        return true;
+    }
+
+    return mem[used] = false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
+    if (desiredTotal &lt;= 0)
+      return true;
+
+    final int sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
+    if (sum &lt; desiredTotal)
+      return false;
+
+    Map&lt;Integer, Boolean&gt; mem = new HashMap&lt;&gt;();
+    return canIWin(desiredTotal, 0, maxChoosableInteger, mem);
+  }
+
+  // Returns true if the first player can we, where `used` represents the used
+  // numbers.
+  private boolean canIWin(int total, int used, int maxChoosableInteger, Map&lt;Integer, Boolean&gt; mem) {
+    if (total &lt;= 0)
+      return false;
+    if (mem.containsKey(used))
+      return mem.get(used);
+
+    for (int i = 1; i &lt;= maxChoosableInteger; ++i) {
+      if ((used &gt;&gt; i &amp; 1) == 1) // Integer i is used.
+        continue;
+      if (!canIWin(total - i, used | 1 &lt;&lt; i, maxChoosableInteger, mem))
+        return true;
+    }
+
+    mem.put(used, false);
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def canIWin(self, maxChoosableInteger: int, desiredTotal: int) -&gt; bool:
+    if desiredTotal &lt;= 0:
+      return True
+
+    totalSum = maxChoosableInteger * (maxChoosableInteger + 1) // 2
+    if totalSum &lt; desiredTotal:
+      return False
+
+    @functools.lru_cache(None)
+    def dp(total: int, used: int) -&gt; bool:
+      &quot;&quot;&quot;
+      Returns true if the first player can we, where `used` represents the use
+      numbers.
+      &quot;&quot;&quot;
+      if total &lt;= 0:
+        return False
+      return any((used &gt;&gt; i &amp; 1) == 0
+                 and not dp(total - i, used | 1 &lt;&lt; i)
+                 for i in range(1, maxChoosableInteger + 1))
+
+    return dp(desiredTotal, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Stitching - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Video Stitching written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/video-stitching/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/camelcase-matching/" class="btn">← Previous</a>
+            <span>Problem 1024 of 3563</span>
+            <a href="/leetcode-solutions/problems/divisor-game/" class="btn">Next →</a>
+        </div>
+        <h1>1024. Video Stitching</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Video Stitching efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int videoStitching(vector&lt;vector&lt;int&gt;&gt;&amp; clips, int time) {
+    int ans = 0;
+    int end = 0;
+    int farthest = 0;
+
+    ranges::sort(clips);
+
+    int i = 0;
+    while (farthest &lt; time) {
+      while (i &lt; clips.size() &amp;&amp; clips[i][0] &lt;= end)
+        farthest = max(farthest, clips[i++][1]);
+      if (end == farthest)
+        return -1;
+      ++ans;
+      end = farthest;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int videoStitching(int[][] clips, int time) {
+    int ans = 0;
+    int end = 0;
+    int farthest = 0;
+
+    Arrays.sort(clips, Comparator.comparingInt(clip -&gt; clip[0]));
+
+    int i = 0;
+    while (farthest &lt; time) {
+      while (i &lt; clips.length &amp;&amp; clips[i][0] &lt;= end)
+        farthest = Math.max(farthest, clips[i++][1]);
+      if (end == farthest)
+        return -1;
+      ++ans;
+      end = farthest;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def videoStitching(self, clips: list[list[int]], time: int) -&gt; int:
+    ans = 0
+    end = 0
+    farthest = 0
+
+    clips.sort()
+
+    i = 0
+    while farthest &lt; time:
+      while i &lt; len(clips) and clips[i][0] &lt;= end:
+        farthest = max(farthest, clips[i][1])
+        i += 1
+      if end == farthest:
+        return -1
+      ans += 1
+      end = farthest
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

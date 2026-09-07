@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path Existence Queries in a Graph II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Path Existence Queries in a Graph II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/path-existence-queries-in-a-graph-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/concatenated-divisibility/" class="btn">← Previous</a>
+            <span>Problem 3534 of 3563</span>
+            <a href="/leetcode-solutions/problems/unit-conversion-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3534. Path Existence Queries in a Graph II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Path Existence Queries in a Graph II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; pathExistenceQueries(int n, vector&lt;int&gt;&amp; nums, int maxDiff,
+                                   vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;int&gt; ans;
+    vector&lt;int&gt; sortedNums;
+    vector&lt;int&gt; indexMap(n);
+    vector&lt;pair&lt;int, int&gt;&gt; sortedNumAndIndexes;
+
+    for (int i = 0; i &lt; n; ++i)
+      sortedNumAndIndexes.emplace_back(nums[i], i);
+
+    ranges::sort(sortedNumAndIndexes);
+
+    for (int i = 0; i &lt; n; ++i) {
+      const auto&amp; [num, sortedIndex] = sortedNumAndIndexes[i];
+      sortedNums.push_back(num);
+      indexMap[sortedIndex] = i;
+    }
+
+    const int maxLevel = std::bit_width(static_cast&lt;unsigned&gt;(n)) + 1;
+    // jump[i][j] := the index of the j-th ancestor of i
+    vector&lt;vector&lt;int&gt;&gt; jump(n, vector&lt;int&gt;(maxLevel));
+
+    int right = 0;
+    for (int i = 0; i &lt; n; ++i) {
+      while (right + 1 &lt; n &amp;&amp; sortedNums[right + 1] - sortedNums[i] &lt;= maxDiff)
+        ++right;
+      jump[i][0] = right;
+    }
+
+    for (int level = 1; level &lt; maxLevel; ++level)
+      for (int i = 0; i &lt; n; ++i) {
+        const int prevJump = jump[i][level - 1];
+        jump[i][level] = jump[prevJump][level - 1];
+      }
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int u = query[0];
+      const int v = query[1];
+      const int uIndex = indexMap[u];
+      const int vIndex = indexMap[v];
+      const int start = min(uIndex, vIndex);
+      const int end = max(uIndex, vIndex);
+      const int res = minJumps(jump, start, end, maxLevel - 1);
+      ans.push_back(res == INT_MAX ? -1 : res);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the minimum number of jumps from `start` to `end` using binary
+  // lifting.
+  int minJumps(const vector&lt;vector&lt;int&gt;&gt;&amp; jump, int start, int end, int level) {
+    if (start == end)
+      return 0;
+    if (jump[start][0] &gt;= end)
+      return 1;
+    if (jump[start][level] &lt; end)
+      return INT_MAX;
+    int j = level;
+    for (; j &gt;= 0; --j)
+      if (jump[start][j] &lt; end)
+        break;
+    return (1 &lt;&lt; j) + minJumps(jump, jump[start][j], end, j);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
+    int[] ans = new int[queries.length];
+    int[] indexMap = new int[n];
+    int[] sortedNums = new int[n];
+    Pair&lt;Integer, Integer&gt;[] sortedNumAndIndexes = new Pair[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      sortedNumAndIndexes[i] = new Pair&lt;&gt;(nums[i], i);
+
+    Arrays.sort(sortedNumAndIndexes, Comparator.comparingInt(Pair::getKey));
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int num = sortedNumAndIndexes[i].getKey();
+      final int sortedIndex = sortedNumAndIndexes[i].getValue();
+      sortedNums[i] = num;
+      indexMap[sortedIndex] = i;
+    }
+
+    final int maxLevel = Integer.SIZE - Integer.numberOfLeadingZeros(n) + 1;
+    // jump[i][j] := the index of the j-th ancestor of i
+    int[][] jump = new int[n][maxLevel];
+
+    int right = 0;
+    for (int i = 0; i &lt; n; ++i) {
+      while (right + 1 &lt; n &amp;&amp; sortedNums[right + 1] - sortedNums[i] &lt;= maxDiff)
+        ++right;
+      jump[i][0] = right;
+    }
+
+    for (int level = 1; level &lt; maxLevel; ++level)
+      for (int i = 0; i &lt; n; ++i) {
+        final int prevJump = jump[i][level - 1];
+        jump[i][level] = jump[prevJump][level - 1];
+      }
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int u = queries[i][0];
+      final int v = queries[i][1];
+      final int uIndex = indexMap[u];
+      final int vIndex = indexMap[v];
+      final int start = Math.min(uIndex, vIndex);
+      final int end = Math.max(uIndex, vIndex);
+      final int res = minJumps(jump, start, end, maxLevel - 1);
+      ans[i] = res == Integer.MAX_VALUE ? -1 : res;
+    }
+
+    return ans;
+  }
+
+  // Returns the minimum number of jumps from `start` to `end` using binary
+  // lifting.
+  private int minJumps(int[][] jump, int start, int end, int level) {
+    if (start == end)
+      return 0;
+    if (jump[start][0] &gt;= end)
+      return 1;
+    if (jump[start][level] &lt; end)
+      return Integer.MAX_VALUE;
+    int j = level;
+    for (; j &gt;= 0; --j)
+      if (jump[start][j] &lt; end)
+        break;
+    return (1 &lt;&lt; j) + minJumps(jump, jump[start][j], end, j);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def pathExistenceQueries(
+      self,
+      n: int,
+      nums: list[int],
+      maxDiff: int,
+      queries: list[list[int]],
+  ) -&gt; list[int]:
+    sortedNumAndIndexes = sorted((num, i) for i, num in enumerate(nums))
+    sortedNums = [num for num, _ in sortedNumAndIndexes]
+    indexMap = {originalIndex: sortedIndex for sortedIndex,
+                (_, originalIndex) in enumerate(sortedNumAndIndexes)}
+    maxLevel = n.bit_length() + 1
+    # jump[i][j] is the index of the j-th ancestor of i
+    jump = [[0] * maxLevel for _ in range(n)]
+
+    right = 0
+    for i in range(n):
+      while right + 1 &lt; n and sortedNums[right + 1] - sortedNums[i] &lt;= maxDiff:
+        right += 1
+      jump[i][0] = right
+
+    for level in range(1, maxLevel):
+      for i in range(n):
+        prevJump = jump[i][level - 1]
+        jump[i][level] = jump[prevJump][level - 1]
+
+    def minJumps(start: int, end: int, level: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the minimum number of jumps from `start` to `end` using binary
+      lifting.
+      &quot;&quot;&quot;
+      if start == end:
+        return 0
+      if jump[start][0] &gt;= end:
+        return 1
+      if jump[start][level] &lt; end:
+        return math.inf
+      for j in range(level, -1, -1):
+        if jump[start][j] &lt; end:
+          break
+      return (1 &lt;&lt; j) + minJumps(jump[start][j], end, j)
+
+    def minDist(u: int, v: int) -&gt; int:
+      uIndex = indexMap[u]
+      vIndex = indexMap[v]
+      start = min(uIndex, vIndex)
+      end = max(uIndex, vIndex)
+      res = minJumps(start, end, maxLevel - 1)
+      return res if res &lt; math.inf else -1
+
+    return [minDist(u, v) for u, v in queries]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

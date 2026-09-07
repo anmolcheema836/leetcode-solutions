@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Interval to Include Each Query - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Interval to Include Each Query written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-interval-to-include-each-query/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/" class="btn">← Previous</a>
+            <span>Problem 1851 of 3563</span>
+            <a href="/leetcode-solutions/problems/distinct-numbers-in-each-subarray/" class="btn">Next →</a>
+        </div>
+        <h1>1851. Minimum Interval to Include Each Query</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Interval to Include Each Query efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  int size;
+  int right;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; minInterval(vector&lt;vector&lt;int&gt;&gt;&amp; intervals,
+                          vector&lt;int&gt;&amp; queries) {
+    vector&lt;int&gt; ans(queries.size(), -1);
+    auto compare = [](const T&amp; a, const T&amp; b) { return a.size &gt; b.size; };
+    priority_queue&lt;T, vector&lt;T&gt;, decltype(compare)&gt; minHeap(compare);
+    vector&lt;vector&lt;int&gt;&gt; qs;
+
+    for (int i = 0; i &lt; queries.size(); ++i)
+      qs.push_back({queries[i], i});
+
+    ranges::sort(intervals);
+    ranges::sort(qs);
+
+    int i = 0;  // intervals&#x27; index
+    for (const vector&lt;int&gt;&amp; q : qs) {
+      while (i &lt; intervals.size() &amp;&amp; intervals[i][0] &lt;= q[0]) {
+        minHeap.emplace(intervals[i][1] - intervals[i][0] + 1, intervals[i][1]);
+        ++i;
+      }
+      while (!minHeap.empty() &amp;&amp; minHeap.top().right &lt; q[0])
+        minHeap.pop();
+      if (!minHeap.empty())
+        ans[q[1]] = minHeap.top().size;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] minInterval(int[][] intervals, int[] queries) {
+    record T(int size, int right) {}
+    int[] ans = new int[queries.length];
+    Arrays.fill(ans, -1);
+    Queue&lt;T&gt; minHeap = new PriorityQueue&lt;T&gt;(Comparator.comparingInt(T::size));
+    Integer[] indices = new Integer[queries.length];
+
+    for (int i = 0; i &lt; queries.length; ++i)
+      indices[i] = i;
+
+    Arrays.sort(intervals, Comparator.comparingInt(interval -&gt; interval[0]));
+    Arrays.sort(indices, Comparator.comparingInt(index -&gt; queries[index]));
+
+    int i = 0; // intervals&#x27; index
+    for (final int index : indices) {
+      while (i &lt; intervals.length &amp;&amp; intervals[i][0] &lt;= queries[index]) {
+        minHeap.offer(new T(intervals[i][1] - intervals[i][0] + 1, intervals[i][1]));
+        ++i;
+      }
+      while (!minHeap.isEmpty() &amp;&amp; minHeap.peek().right &lt; queries[index])
+        minHeap.poll();
+      if (!minHeap.isEmpty())
+        ans[index] = minHeap.peek().size;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

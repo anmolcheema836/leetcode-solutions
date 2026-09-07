@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding Two Negabinary Numbers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Adding Two Negabinary Numbers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/adding-two-negabinary-numbers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/flip-columns-for-maximum-number-of-equal-rows/" class="btn">← Previous</a>
+            <span>Problem 1073 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-submatrices-that-sum-to-target/" class="btn">Next →</a>
+        </div>
+        <h1>1073. Adding Two Negabinary Numbers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Adding Two Negabinary Numbers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; addNegabinary(vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2) {
+    deque&lt;int&gt; ans;
+    int carry = 0;
+    int i = arr1.size() - 1;
+    int j = arr2.size() - 1;
+
+    while (carry != 0 || i &gt;= 0 || j &gt;= 0) {
+      if (i &gt;= 0)
+        carry += arr1[i--];
+      if (j &gt;= 0)
+        carry += arr2[j--];
+      ans.push_front(carry &amp; 1);
+      carry = -(carry &gt;&gt; 1);
+    }
+
+    while (ans.size() &gt; 1 &amp;&amp; ans.front() == 0)
+      ans.pop_front();
+
+    return {ans.begin(), ans.end()};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] addNegabinary(int[] arr1, int[] arr2) {
+    Deque&lt;Integer&gt; ans = new ArrayDeque&lt;&gt;();
+    int carry = 0;
+    int i = arr1.length - 1;
+    int j = arr2.length - 1;
+
+    while (carry != 0 || i &gt;= 0 || j &gt;= 0) {
+      if (i &gt;= 0)
+        carry += arr1[i--];
+      if (j &gt;= 0)
+        carry += arr2[j--];
+      ans.addFirst(carry &amp; 1);
+      carry = -(carry &gt;&gt; 1);
+    }
+
+    while (ans.size() &gt; 1 &amp;&amp; ans.getFirst() == 0)
+      ans.pollFirst();
+
+    return ans.stream().mapToInt(Integer::intValue).toArray();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def addNegabinary(self, arr1: list[int], arr2: list[int]) -&gt; list[int]:
+    ans = []
+    carry = 0
+
+    while carry != 0 or arr1 or arr2:
+      if arr1:
+        carry += arr1.pop()
+      if arr2:
+        carry += arr2.pop()
+      ans.append(carry &amp; 1)
+      carry = -(carry &gt;&gt; 1)
+
+    while len(ans) &gt; 1 and ans[-1] == 0:
+      ans.pop()
+
+    return ans[::-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

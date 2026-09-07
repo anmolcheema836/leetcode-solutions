@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Difference Between Even and Odd Frequency II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Difference Between Even and Odd Frequency II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-difference-between-even-and-odd-frequency-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-increments-for-target-multiples-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 3445 of 3563</span>
+            <a href="/leetcode-solutions/problems/sort-matrix-by-diagonals/" class="btn">Next →</a>
+        </div>
+        <h1>3445. Maximum Difference Between Even and Odd Frequency II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Difference Between Even and Odd Frequency II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxDifference(string s, int k) {
+    int ans = INT_MIN;
+
+    for (const auto&amp; [a, b] : getPermutations()) {
+      // minDiff[parityA][parityB] := min(a - b) of all valid windows with
+      // parityA and parityB
+      vector&lt;vector&lt;int&gt;&gt; minDiff(2, vector&lt;int&gt;(2, INT_MAX / 2));
+      vector&lt;int&gt; prefixA{0};  // prefixA[i] := the number of &#x27;a&#x27;s in s[0..i)
+      vector&lt;int&gt; prefixB{0};  // prefixB[i] := the number of &#x27;b&#x27;s in s[0..i)
+      for (int l = 0, r = 0; r &lt; s.length(); ++r) {
+        prefixA.push_back(prefixA.back() + (s[r] == a ? 1 : 0));
+        prefixB.push_back(prefixB.back() + (s[r] == b ? 1 : 0));
+        while (r - l + 1 &gt;= k &amp;&amp;               // the window size &gt;= k
+               prefixA[l] &lt; prefixA.back() &amp;&amp;  // the number of &#x27;a&#x27;s &gt; 0
+               prefixB[l] &lt; prefixB.back()) {  // the number of &#x27;b&#x27;s &gt; 0
+          minDiff[prefixA[l] % 2][prefixB[l] % 2] = min(
+              minDiff[prefixA[l] % 2][prefixB[l] % 2], prefixA[l] - prefixB[l]);
+          ++l;
+        }
+        ans = max(ans, (prefixA.back() - prefixB.back()) -
+                           minDiff[1 - prefixA.back() % 2][prefixB.back() % 2]);
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;pair&lt;char, char&gt;&gt; getPermutations() {
+    vector&lt;pair&lt;char, char&gt;&gt; permutations;
+    for (const char a : &quot;01234&quot;)
+      for (const char b : &quot;01234&quot;)
+        if (a != b)
+          permutations.emplace_back(a, b);
+    return permutations;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxDifference(String s, int k) {
+    int ans = Integer.MIN_VALUE;
+
+    for (Pair&lt;Character, Character&gt; pair : getPermutations()) {
+      final char a = pair.getKey();
+      final char b = pair.getValue();
+
+      // minDiff[parityA][parityB] := min(a - b) of all valid windows with
+      // parityA and parityB
+      int[][] minDiff = new int[2][2];
+      Arrays.stream(minDiff).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE / 2));
+      // prefixA[i] := the number of &#x27;a&#x27;s in s[0..i)
+      List&lt;Integer&gt; prefixA = new ArrayList&lt;&gt;(List.of(0));
+      // prefixB[i] := the number of &#x27;b&#x27;s in s[0..i)
+      List&lt;Integer&gt; prefixB = new ArrayList&lt;&gt;(List.of(0));
+      for (int l = 0, r = 0; r &lt; s.length(); ++r) {
+        prefixA.add(prefixA.get(prefixA.size() - 1) + (s.charAt(r) == a ? 1 : 0));
+        prefixB.add(prefixB.get(prefixB.size() - 1) + (s.charAt(r) == b ? 1 : 0));
+        while (r - l + 1 &gt;= k &amp;&amp;                                   // the window size &gt;= k
+               prefixA.get(l) &lt; prefixA.get(prefixA.size() - 1) &amp;&amp; // the number of &#x27;a&#x27;s &gt; 0
+               prefixB.get(l) &lt; prefixB.get(prefixB.size() - 1)) { // the number of &#x27;b&#x27;s &gt; 0
+          minDiff[prefixA.get(l) % 2][prefixB.get(l) % 2] = Math.min(
+              minDiff[prefixA.get(l) % 2][prefixB.get(l) % 2], prefixA.get(l) - prefixB.get(l));
+          ++l;
+        }
+        ans = Math.max(ans, (prefixA.get(prefixA.size() - 1) - prefixB.get(prefixB.size() - 1)) -
+                                minDiff[1 - prefixA.get(prefixA.size() - 1) % 2]
+                                       [prefixB.get(prefixB.size() - 1) % 2]);
+      }
+    }
+
+    return ans;
+  }
+
+  private List&lt;Pair&lt;Character, Character&gt;&gt; getPermutations() {
+    List&lt;Pair&lt;Character, Character&gt;&gt; permutations = new ArrayList&lt;&gt;();
+    for (final char a : &quot;01234&quot;.toCharArray())
+      for (final char b : &quot;01234&quot;.toCharArray())
+        if (a != b)
+          permutations.add(new Pair&lt;&gt;(a, b));
+    return permutations;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxDifference(self, s: str, k: int) -&gt; int:
+    ans = -math.inf
+    permutations = [(a, b) for a in &#x27;01234&#x27; for b in &#x27;01234&#x27; if a != b]
+
+    for a, b in permutations:
+      # minDiff[(parityA, parityB)] := min(a - b) of all valid windows with
+      # parityA and parityB
+      minDiff = collections.defaultdict(lambda: math.inf)
+      prefixA = [0]  # prefixA[i] := the number of &#x27;a&#x27;s in s[0..i)
+      prefixB = [0]  # prefixB[i] := the number of &#x27;b&#x27;s in s[0..i)
+
+      l = 0
+      for r, c in enumerate(s):
+        prefixA.append(prefixA[-1] + int(c == a))
+        prefixB.append(prefixB[-1] + int(c == b))
+        while (r - l + 1 &gt;= k and  # the window size &gt;= k
+               prefixA[l] &lt; prefixA[-1] and  # the number of &#x27;a&#x27;s &gt; 0
+               prefixB[l] &lt; prefixB[-1]):  # the number of &#x27;b&#x27;s &gt; 0
+          paritiesKey = (prefixA[l] % 2, prefixB[l] % 2)
+          minDiff[paritiesKey] = min(minDiff[paritiesKey],
+                                     prefixA[l] - prefixB[l])
+          l += 1
+        ans = max(ans, (prefixA[-1] - prefixB[-1]) -
+                  minDiff[(1 - prefixA[-1] % 2, prefixB[-1] % 2)])
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

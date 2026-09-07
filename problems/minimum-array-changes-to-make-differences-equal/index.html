@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Array Changes to Make Differences Equal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Array Changes to Make Differences Equal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-array-changes-to-make-differences-equal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-length-of-string-after-operations/" class="btn">← Previous</a>
+            <span>Problem 3224 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-score-from-grid-operations/" class="btn">Next →</a>
+        </div>
+        <h1>3224. Minimum Array Changes to Make Differences Equal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Array Changes to Make Differences Equal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minChanges(vector&lt;int&gt;&amp; nums, int k) {
+    const int n = nums.size();
+    const int pairSize = n / 2;
+    int ans = n;
+    unordered_map&lt;int, int&gt; diffCount;  // {abs(nums[-1 - i] - nums[i]): freq}
+    // oneChangeCount[i] := the number of pairs that need only one change to to
+    // achieve a difference of `i`
+    vector&lt;int&gt; oneChangeCount(k + 1);
+
+    for (int i = 0; i &lt; pairSize; ++i) {
+      const int a = nums[i];
+      const int b = nums[n - 1 - i];
+      ++diffCount[abs(a - b)];
+      ++oneChangeCount[max({a, b, k - a, k - b})];
+    }
+
+    // prefixOneChangeCount[i] := the number of pairs that need only one change
+    // to achieve a difference &gt;= `i`
+    // prefixOneChangeCount[i] = sum(oneChangeCount[i..k])
+    vector&lt;int&gt; prefixOneChangeCount{oneChangeCount};
+
+    for (int i = k - 1; i &gt;= 0; --i)
+      prefixOneChangeCount[i] += prefixOneChangeCount[i + 1];
+
+    for (const auto&amp; [diff, freq] : diffCount) {
+      const int oneChange = prefixOneChangeCount[diff] - freq;
+      const int twoChanges = (pairSize - prefixOneChangeCount[diff]) * 2;
+      ans = min(ans, oneChange + twoChanges);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minChanges(int[] nums, int k) {
+    final int n = nums.length;
+    final int pairSize = n / 2;
+    int ans = n;
+    Map&lt;Integer, Integer&gt; diffCount = new HashMap&lt;&gt;(); // {abs(nums[-1 - i] - nums[i]): freq}
+    // oneChangeCount[i] := the number of pairs that need only one change to
+    // achieve a difference of `i`
+    int[] oneChangeCount = new int[k + 1];
+
+    for (int i = 0; i &lt; pairSize; ++i) {
+      final int a = nums[i];
+      final int b = nums[n - 1 - i];
+      diffCount.merge(Math.abs(a - b), 1, Integer::sum);
+      ++oneChangeCount[Math.max(Math.max(a, b), Math.max(k - a, k - b))];
+    }
+
+    // prefixOneChangeCount[i] := the number of pairs that need only one change
+    // to achieve a difference &gt;= `i`
+    // prefixOneChangeCount[i] = sum(oneChangeCount[i..k])
+    int[] prefixOneChangeCount = oneChangeCount.clone();
+
+    for (int i = k - 1; i &gt;= 0; --i)
+      prefixOneChangeCount[i] += prefixOneChangeCount[i + 1];
+
+    for (Map.Entry&lt;Integer, Integer&gt; entry : diffCount.entrySet()) {
+      final int diff = entry.getKey();
+      final int freq = entry.getValue();
+      final int oneChange = prefixOneChangeCount[diff] - freq;
+      final int twoChanges = (pairSize - prefixOneChangeCount[diff]) * 2;
+      ans = Math.min(ans, oneChange + twoChanges);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minChanges(self, nums: list[int], k: int) -&gt; int:
+    pairSize = len(nums) // 2
+    diffCount = collections.Counter()  # {nums[-1 - i] - nums[i]: freq}
+    # oneChangeCount[i] := the number of pairs that need only one change to
+    # to achieve a difference of `i`
+    oneChangeCount = [0] * (k + 1)
+
+    for i in range(pairSize):
+      a = nums[i]
+      b = nums[-1 - i]
+      diffCount[abs(a - b)] += 1
+      oneChangeCount[max(a, b, k - a, k - b)] += 1
+
+    # prefixOneChangeCount[i] := the number of pairs that need only one change
+    # to achieve a difference &gt;= `i`
+    # prefixOneChangeCount[i] = sum(oneChangeCount[i..k])
+    prefixOneChangeCount = list(
+        itertools.accumulate(reversed(oneChangeCount)))[::-1]
+
+    return min(prefixOneChangeCount[diff] - freq +  # one change
+               (pairSize - prefixOneChangeCount[diff]) * 2  # two changes
+               for diff, freq in diffCount.items())</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

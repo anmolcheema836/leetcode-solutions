@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability of a Two Boxes Having The Same Number of Distinct Balls - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Probability of a Two Boxes Having The Same Number of Distinct Balls written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/" class="btn">← Previous</a>
+            <span>Problem 1467 of 3563</span>
+            <a href="/leetcode-solutions/problems/calculate-salaries/" class="btn">Next →</a>
+        </div>
+        <h1>1467. Probability of a Two Boxes Having The Same Number of Distinct Balls</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Probability of a Two Boxes Having The Same Number of Distinct Balls efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">enum class BoxCase { kEqualBalls, kEqualDistantBalls };
+
+class Solution {
+ public:
+  double getProbability(vector&lt;int&gt;&amp; balls) {
+    const int n = accumulate(balls.begin(), balls.end(), 0) / 2;
+    return cases(balls, 0, 0, 0, 0, 0, n, BoxCase::kEqualDistantBalls) /
+           cases(balls, 0, 0, 0, 0, 0, n, BoxCase::kEqualBalls);
+  }
+
+ private:
+  const vector&lt;int&gt; fact{1, 1, 2, 6, 24, 120, 720};
+
+  // Assume we have two boxes A and B.
+  double cases(const vector&lt;int&gt;&amp; balls, int i, int ballsCountA,
+               int ballsCountB, int colorsCountA, int colorsCountB, int n,
+               BoxCase boxCase) {
+    if (ballsCountA &gt; n || ballsCountB &gt; n)
+      return 0;
+    if (i == balls.size())
+      return boxCase == BoxCase::kEqualBalls ? 1 : colorsCountA == colorsCountB;
+
+    double ans = 0;
+
+    // balls taken from A for `balls[i]`
+    for (int ballsTakenA = 0; ballsTakenA &lt;= balls[i]; ++ballsTakenA) {
+      const int ballsTakenB = balls[i] - ballsTakenA;
+      const int newcolorsCountA = colorsCountA + (ballsTakenA &gt; 0);
+      const int newcolorsCountB = colorsCountB + (ballsTakenB &gt; 0);
+      ans += cases(balls, i + 1, ballsCountA + ballsTakenA,
+                   ballsCountB + ballsTakenB, newcolorsCountA, newcolorsCountB,
+                   n, boxCase) /
+             (fact[ballsTakenA] * fact[ballsTakenB]);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">enum BoxCase { EQUAL_BALLS, EQUAL_DISTANT_BALLS }
+
+class Solution {
+  public double getProbability(int[] balls) {
+    final int n = Arrays.stream(balls).sum() / 2;
+    return cases(balls, 0, 0, 0, 0, 0, n, BoxCase.EQUAL_DISTANT_BALLS) /
+        cases(balls, 0, 0, 0, 0, 0, n, BoxCase.EQUAL_BALLS);
+  }
+
+  private int[] fact = {1, 1, 2, 6, 24, 120, 720};
+
+  // Assume we have two boxes A and B.
+  double cases(int[] balls, int i, int ballsCountA, int ballsCountB, int colorsCountA,
+               int colorsCountB, int n, BoxCase boxCase) {
+    if (ballsCountA &gt; n || ballsCountB &gt; n)
+      return 0;
+    if (i == balls.length)
+      return boxCase == BoxCase.EQUAL_BALLS ? 1 : (colorsCountA == colorsCountB ? 1 : 0);
+
+    double ans = 0;
+
+    // balls taken from A for `balls[i]`
+    for (int ballsTakenA = 0; ballsTakenA &lt;= balls[i]; ++ballsTakenA) {
+      final int ballsTakenB = balls[i] - ballsTakenA;
+      final int newcolorsCountA = colorsCountA + (ballsTakenA &gt; 0 ? 1 : 0);
+      final int newcolorsCountB = colorsCountB + (ballsTakenB &gt; 0 ? 1 : 0);
+      ans += cases(balls, i + 1, ballsCountA + ballsTakenA, ballsCountB + ballsTakenB,
+                   newcolorsCountA, newcolorsCountB, n, boxCase) /
+             (fact[ballsTakenA] * fact[ballsTakenB]);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from enum import Enum
+
+
+class BoxCase(Enum):
+  EQUAL_DISTANT_BALLS = 0
+  EQUAL_BALLS = 1
+
+
+class Solution:
+  def getProbability(self, balls: list[int]) -&gt; float:
+    n = sum(balls) // 2
+    fact = [1, 1, 2, 6, 24, 120, 720]
+
+    def cases(
+            i: int,
+            ballsCountA: int,
+            ballsCountB: int,
+            colorsCountA: int,
+            colorsCountB,
+            boxCase: BoxCase) -&gt; float:
+      if ballsCountA &gt; n or ballsCountB &gt; n:
+        return 0
+      if i == len(balls):
+        return (1 if boxCase == BoxCase.EQUAL_BALLS
+                else colorsCountA == colorsCountB)
+
+      ans = 0.0
+
+      # balls taken from A for `balls[i]`
+      for ballsTakenA in range(balls[i] + 1):
+        ballsTakenB = balls[i] - ballsTakenA
+        newcolorsCountA = colorsCountA + (ballsTakenA &gt; 0)
+        newcolorsCountB = colorsCountB + (ballsTakenB &gt; 0)
+        ans += (cases(i + 1,
+                      ballsCountA + ballsTakenA,
+                      ballsCountB + ballsTakenB,
+                      newcolorsCountA, newcolorsCountB, boxCase) /
+                (fact[ballsTakenA] * fact[ballsTakenB]))
+
+      return ans
+
+    return (cases(0, 0, 0, 0, 0, BoxCase.EQUAL_DISTANT_BALLS) /
+            cases(0, 0, 0, 0, 0, BoxCase.EQUAL_BALLS))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

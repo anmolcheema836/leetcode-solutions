@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Grid Happiness - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize Grid Happiness written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-grid-happiness/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-operations-to-reduce-x-to-zero/" class="btn">← Previous</a>
+            <span>Problem 1659 of 3563</span>
+            <a href="/leetcode-solutions/problems/correct-a-binary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>1659. Maximize Grid Happiness</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize Grid Happiness efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int getMaxGridHappiness(int m, int n, int introvertsCount,
+                          int extrovertsCount) {
+    const int twoToThePowerOfN = pow(2, n);
+    vector&lt;vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;&gt; mem(
+        m * n, vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;(
+                   twoToThePowerOfN,
+                   vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;(
+                       twoToThePowerOfN,
+                       vector&lt;vector&lt;int&gt;&gt;(introvertsCount + 1,
+                                           vector&lt;int&gt;(extrovertsCount + 1)))));
+    return getMaxGridHappiness(m, n, 0, 0, 0, introvertsCount, extrovertsCount,
+                               mem);
+  }
+
+ private:
+  // Calculates the cost based on left and up neighbors.
+  //
+  // The `diff` parameter represents the happiness change due to the current
+  // placed person in (i, j). We add `diff` each time we encounter a neighbor
+  // (left or up) who is already placed.
+  //
+  // 1. If the neighbor is an introvert, we subtract 30 from cost.
+  // 2. If the neighbor is an extrovert, we add 20 to from cost.
+  int getPlacementCost(int n, int i, int j, int inMask, int exMask, int diff) {
+    int cost = 0;
+    if (i &gt; 0) {
+      if ((1 &lt;&lt; (n - 1)) &amp; inMask)
+        cost += diff - 30;
+      if ((1 &lt;&lt; (n - 1)) &amp; exMask)
+        cost += diff + 20;
+    }
+    if (j &gt; 0) {
+      if (1 &amp; inMask)
+        cost += diff - 30;
+      if (1 &amp; exMask)
+        cost += diff + 20;
+    }
+    return cost;
+  }
+
+  int getMaxGridHappiness(int m, int n, int pos, int inMask, int exMask,
+                          int inCount, int exCount,
+                          vector&lt;vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;&gt;&amp; mem) {
+    // `inMask` is the placement of introvert people in the last n cells.
+    // e.g. if we have m = 2, n = 3, i = 1, j = 1, then inMask = 0b101 means
+    //
+    // ? 1 0
+    // 1 x ? (x := current position)
+    const int i = pos / n;
+    const int j = pos % n;
+    if (i == m)
+      return 0;
+    if (mem[pos][inMask][exMask][inCount][exCount] &gt; 0)
+      return mem[pos][inMask][exMask][inCount][exCount];
+
+    const int shiftedInMask = (inMask &lt;&lt; 1) &amp; ((1 &lt;&lt; n) - 1);
+    const int shiftedExMask = (exMask &lt;&lt; 1) &amp; ((1 &lt;&lt; n) - 1);
+
+    const int skip = getMaxGridHappiness(m, n, pos + 1, shiftedInMask,
+                                         shiftedExMask, inCount, exCount, mem);
+    const int placeIntrovert =
+        inCount &gt; 0
+            ? 120 + getPlacementCost(n, i, j, inMask, exMask, -30) +
+                  getMaxGridHappiness(m, n, pos + 1, shiftedInMask | 1,
+                                      shiftedExMask, inCount - 1, exCount, mem)
+            : INT_MIN;
+    const int placeExtrovert =
+        exCount &gt; 0 ? 40 + getPlacementCost(n, i, j, inMask, exMask, 20) +
+                          getMaxGridHappiness(m, n, pos + 1, shiftedInMask,
+                                              shiftedExMask | 1, inCount,
+                                              exCount - 1, mem)
+                    : INT_MIN;
+    return mem[pos][inMask][exMask][inCount][exCount] =
+               max({skip, placeIntrovert, placeExtrovert});
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int getMaxGridHappiness(int m, int n, int introvertsCount, int extrovertsCount) {
+    final int twoToThePowerOfN = (int) Math.pow(2, n);
+    int[][][][][] mem = new int[m * n][twoToThePowerOfN][twoToThePowerOfN][introvertsCount + 1]
+                               [extrovertsCount + 1];
+    return getMaxGridHappiness(m, n, 0, 0, 0, introvertsCount, extrovertsCount, mem);
+  }
+
+  // Calculates the cost based on left and up neighbors.
+  //
+  // The `diff` parameter represents the happiness change due to the current
+  // placed person in (i, j). We add `diff` each time we encounter a neighbor
+  // (left or up) who is already placed.
+  //
+  // 1. If the neighbor is an introvert, we subtract 30 from cost.
+  // 2. If the neighbor is an extrovert, we add 20 to from cost.
+  private int getPlacementCost(int n, int i, int j, int inMask, int exMask, int diff) {
+    int cost = 0;
+    if (i &gt; 0) {
+      if (((1 &lt;&lt; (n - 1)) &amp; inMask) &gt; 0)
+        cost += diff - 30;
+      if (((1 &lt;&lt; (n - 1)) &amp; exMask) &gt; 0)
+        cost += diff + 20;
+    }
+    if (j &gt; 0) {
+      if ((1 &amp; inMask) &gt; 0)
+        cost += diff - 30;
+      if ((1 &amp; exMask) &gt; 0)
+        cost += diff + 20;
+    }
+    return cost;
+  }
+
+  private int getMaxGridHappiness(int m, int n, int pos, int inMask, int exMask, int inCount,
+                                  int exCount, int[][][][][] mem) {
+    // `inMask` is the placement of introvert people in the last n cells.
+    // e.g. if we have m = 2, n = 3, i = 1, j = 1, then inMask = 0b101 means
+    //
+    // ? 1 0
+    // 1 x ? (x := current position)
+    final int i = pos / n;
+    final int j = pos % n;
+    if (i == m)
+      return 0;
+    if (mem[pos][inMask][exMask][inCount][exCount] &gt; 0)
+      return mem[pos][inMask][exMask][inCount][exCount];
+
+    final int shiftedInMask = (inMask &lt;&lt; 1) &amp; ((1 &lt;&lt; n) - 1);
+    final int shiftedExMask = (exMask &lt;&lt; 1) &amp; ((1 &lt;&lt; n) - 1);
+
+    final int skip =
+        getMaxGridHappiness(m, n, pos + 1, shiftedInMask, shiftedExMask, inCount, exCount, mem);
+    final int placeIntrovert =
+        inCount &gt; 0 ? 120 + getPlacementCost(n, i, j, inMask, exMask, -30) +
+                          getMaxGridHappiness(m, n, pos + 1, shiftedInMask | 1, shiftedExMask,
+                                              inCount - 1, exCount, mem)
+                    : Integer.MIN_VALUE;
+    final int placeExtrovert =
+        exCount &gt; 0 ? 40 + getPlacementCost(n, i, j, inMask, exMask, 20) +
+                          getMaxGridHappiness(m, n, pos + 1, shiftedInMask, shiftedExMask | 1,
+                                              inCount, exCount - 1, mem)
+                    : Integer.MIN_VALUE;
+    return mem[pos][inMask][exMask][inCount][exCount] =
+               Math.max(skip, Math.max(placeIntrovert, placeExtrovert));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getMaxGridHappiness(
+      self,
+      m: int,
+      n: int,
+      introvertsCount: int,
+      extrovertsCount: int,
+  ) -&gt; int:
+    def getPlacementCost(
+        i: int,
+        j: int,
+        inMask: int,
+        exMask: int,
+        diff: int,
+    ) -&gt; int:
+      &quot;&quot;&quot;Calculates the cost based on left and up neighbors.
+
+      The `diff` parameter represents the happiness change due to the current
+      placed person in (i, j). We add `diff` each time we encounter a neighbor
+      (left or up) who is already placed.
+
+      1. If the neighbor is an introvert, we subtract 30 from cost.
+      2. If the neighbor is an extrovert, we add 20 to from cost.
+      &quot;&quot;&quot;
+      cost = 0
+      if i &gt; 0:
+        if (1 &lt;&lt; (n - 1)) &amp; inMask:
+          cost += diff - 30
+        if (1 &lt;&lt; (n - 1)) &amp; exMask:
+          cost += diff + 20
+      if j &gt; 0:
+        if 1 &amp; inMask:
+          cost += diff - 30
+        if 1 &amp; exMask:
+          cost += diff + 20
+      return cost
+
+    @functools.lru_cache(None)
+    def dp(
+        pos: int, inMask: int, exMask: int, inCount: int, exCount: int
+    ) -&gt; int:
+      # `inMask` is the placement of introvert people in the last n cells.
+      # e.g. if we have m = 2, n = 3, i = 1, j = 1, then inMask = 0b101 means
+      #
+      # ? 1 0
+      # 1 x ? (x := current position)
+      i, j = divmod(pos, n)
+      if i == m:
+        return 0
+
+      shiftedInMask = (inMask &lt;&lt; 1) &amp; ((1 &lt;&lt; n) - 1)
+      shiftedExMask = (exMask &lt;&lt; 1) &amp; ((1 &lt;&lt; n) - 1)
+
+      skip = dp(pos + 1, shiftedInMask, shiftedExMask, inCount, exCount)
+      placeIntrovert = (
+          120 + getPlacementCost(i, j, inMask, exMask, -30) +
+          dp(pos + 1, shiftedInMask + 1, shiftedExMask, inCount - 1, exCount)
+          if inCount &gt; 0
+          else -math.inf)
+      placeExtrovert = (
+          40 + getPlacementCost(i, j, inMask, exMask, 20) +
+          dp(pos + 1, shiftedInMask, shiftedExMask + 1, inCount, exCount - 1)
+          if exCount &gt; 0
+          else -math.inf)
+      return max(skip, placeIntrovert, placeExtrovert)
+
+    return dp(0, 0, 0, introvertsCount, extrovertsCount)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

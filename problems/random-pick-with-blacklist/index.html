@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Pick with Blacklist - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Random Pick with Blacklist written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/random-pick-with-blacklist/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/to-lower-case/" class="btn">← Previous</a>
+            <span>Problem 710 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-distinct-islands-ii/" class="btn">Next →</a>
+        </div>
+        <h1>710. Random Pick with Blacklist</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Random Pick with Blacklist efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  Solution(int n, vector&lt;int&gt;&amp; blacklist) : validRange(n - blacklist.size()) {
+    for (const int b : blacklist)
+      map[b] = -1;
+
+    int maxAvailable = n - 1;
+
+    for (const int b : blacklist)
+      if (b &lt; validRange) {
+        // Find the slot that haven&#x27;t been used.
+        while (map.contains(maxAvailable))
+          --maxAvailable;
+        map[b] = maxAvailable--;
+      }
+  }
+
+  int pick() {
+    const int num = rand() % validRange;
+    const auto it = map.find(num);
+    return it == map.cend() ? num : it-&gt;second;
+  }
+
+ private:
+  const int validRange;
+  unordered_map&lt;int, int&gt; map;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public Solution(int n, int[] blacklist) {
+    validRange = n - blacklist.length;
+
+    for (final int b : blacklist)
+      map.put(b, -1);
+
+    int maxAvailable = n - 1;
+
+    for (final int b : blacklist)
+      if (b &lt; validRange) {
+        // Find the slot that haven&#x27;t been used.
+        while (map.containsKey(maxAvailable))
+          --maxAvailable;
+        map.put(b, maxAvailable--);
+      }
+  }
+
+  public int pick() {
+    final int num = rand.nextInt(validRange);
+    return map.getOrDefault(num, num);
+  }
+
+  private int validRange;
+  private Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();
+  private Random rand = new Random();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def __init__(self, n: int, blacklist: list[int]):
+    self.validRange = n - len(blacklist)
+    self.dict = {}
+
+    maxAvailable = n - 1
+
+    for b in blacklist:
+      self.dict[b] = -1
+
+    for b in blacklist:
+      if b &lt; self.validRange:
+        # Find the slot that haven&#x27;t been used.
+        while maxAvailable in self.dict:
+          maxAvailable -= 1
+        self.dict[b] = maxAvailable
+        maxAvailable -= 1
+
+  def pick(self) -&gt; int:
+    value = random.randint(0, self.validRange - 1)
+
+    if value in self.dict:
+      return self.dict[value]
+
+    return value</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

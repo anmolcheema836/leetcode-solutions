@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find All Good Strings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find All Good Strings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-all-good-strings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-underground-system/" class="btn">← Previous</a>
+            <span>Problem 1397 of 3563</span>
+            <a href="/leetcode-solutions/problems/customers-who-bought-products-a-and-b-but-not-c/" class="btn">Next →</a>
+        </div>
+        <h1>1397. Find All Good Strings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find All Good Strings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findGoodStrings(int n, string s1, string s2, string evil) {
+    vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt; mem(
+        n, vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;(
+               evil.length(), vector&lt;vector&lt;int&gt;&gt;(2, vector&lt;int&gt;(2, -1))));
+    // nextMatchedCount[i][j] := the number of next matched evil count, where
+    // there&#x27;re i matches with `evil` and the current letter is (&#x27;a&#x27; + j)
+    vector&lt;vector&lt;int&gt;&gt; nextMatchedCount(evil.length(), vector&lt;int&gt;(26, -1));
+    return count(s1, s2, evil, 0, 0, true, true, getLPS(evil), nextMatchedCount,
+                 mem);
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  // Returns the number of good strings for s[i..n), where there&#x27;re j matches
+  // with `evil`, `isS1Prefix` indicates if the current letter is tightly bound
+  // for `s1` and `isS2Prefix` indicates if the current letter is tightly bound
+  // for `s2`.
+  int count(const string&amp; s1, const string&amp; s2, const string&amp; evil, int i,
+            int matchedEvilCount, bool isS1Prefix, bool isS2Prefix,
+            const vector&lt;int&gt;&amp; evilLPS, vector&lt;vector&lt;int&gt;&gt;&amp; nextMatchedCount,
+            vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;&amp; mem) {
+    // s[0..i) contains `evil`, so don&#x27;t consider any ongoing strings.
+    if (matchedEvilCount == evil.length())
+      return 0;
+    // Run out of strings, so contribute one.
+    if (i == s1.length())
+      return 1;
+    int&amp; res = mem[i][matchedEvilCount][isS1Prefix][isS2Prefix];
+    if (res != -1)
+      return res;
+    res = 0;
+    const char minLetter = isS1Prefix ? s1[i] : &#x27;a&#x27;;
+    const char maxLetter = isS2Prefix ? s2[i] : &#x27;z&#x27;;
+    for (char c = minLetter; c &lt;= maxLetter; ++c) {
+      const int nextMatchedEvilCount = getNextMatchedEvilCount(
+          nextMatchedCount, evil, matchedEvilCount, c, evilLPS);
+      res += count(s1, s2, evil, i + 1, nextMatchedEvilCount,
+                   isS1Prefix &amp;&amp; c == s1[i], isS2Prefix &amp;&amp; c == s2[i], evilLPS,
+                   nextMatchedCount, mem);
+      res %= kMod;
+    }
+    return res;
+  }
+
+  // Returns the lps array, where lps[i] is the length of the longest prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  vector&lt;int&gt; getLPS(const string&amp; pattern) {
+    vector&lt;int&gt; lps(pattern.length());
+    for (int i = 1, j = 0; i &lt; pattern.length(); ++i) {
+      while (j &gt; 0 &amp;&amp; pattern[j] != pattern[i])
+        j = lps[j - 1];
+      if (pattern[i] == pattern[j])
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+
+  // j := the next index we&#x27;re trying to match with `currLetter`
+  int getNextMatchedEvilCount(vector&lt;vector&lt;int&gt;&gt;&amp; nextMatchedCount,
+                              const string&amp; evil, int j, char currLetter,
+                              const vector&lt;int&gt;&amp; evilLPS) {
+    int&amp; res = nextMatchedCount[j][currLetter - &#x27;a&#x27;];
+    if (res != -1)
+      return res;
+    while (j &gt; 0 &amp;&amp; evil[j] != currLetter)
+      j = evilLPS[j - 1];
+    return res = (evil[j] == currLetter ? j + 1 : j);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findGoodStrings(int n, String s1, String s2, String evil) {
+    Integer[][][][] mem = new Integer[n][evil.length()][2][2];
+    // nextMatchedCount[i][j] := the number of next matched evil count, where
+    // there&#x27;re j matches with `evil` and the current letter is (&#x27;a&#x27; + j)
+    Integer[][] nextMatchedCount = new Integer[evil.length()][26];
+    return count(s1, s2, evil, 0, 0, true, true, getLPS(evil), nextMatchedCount, mem);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  // Returns the number of good strings for s[i..n), where there&#x27;re j matches
+  // with `evil`, `isS1Prefix` indicates if the current letter is tightly bound
+  // for `s1` and `isS2Prefix` indicates if the current letter is tightly bound
+  // for `s2`.
+  private int count(final String s1, final String s2, final String evil, int i,
+                    int matchedEvilCount, boolean isS1Prefix, boolean isS2Prefix, int[] evilLPS,
+                    Integer[][] nextMatchedCount, Integer[][][][] mem) {
+    // s[0..i) contains `evil`, so don&#x27;t consider any ongoing strings.
+    if (matchedEvilCount == evil.length())
+      return 0;
+    // Run out of strings, so contribute one.
+    if (i == s1.length())
+      return 1;
+    final int k1 = isS1Prefix ? 1 : 0;
+    final int k2 = isS2Prefix ? 1 : 0;
+    if (mem[i][matchedEvilCount][k1][k2] != null)
+      return mem[i][matchedEvilCount][k1][k2];
+    mem[i][matchedEvilCount][k1][k2] = 0;
+    final char minChar = isS1Prefix ? s1.charAt(i) : &#x27;a&#x27;;
+    final char maxChar = isS2Prefix ? s2.charAt(i) : &#x27;z&#x27;;
+    for (char c = minChar; c &lt;= maxChar; ++c) {
+      final int nextMatchedEvilCount =
+          getNextMatchedEvilCount(nextMatchedCount, evil, matchedEvilCount, c, evilLPS);
+      mem[i][matchedEvilCount][k1][k2] +=
+          count(s1, s2, evil, i + 1, nextMatchedEvilCount, isS1Prefix &amp;&amp; c == s1.charAt(i),
+                isS2Prefix &amp;&amp; c == s2.charAt(i), evilLPS, nextMatchedCount, mem);
+      mem[i][matchedEvilCount][k1][k2] %= MOD;
+    }
+    return mem[i][matchedEvilCount][k1][k2];
+  }
+
+  // Returns the lps array, where lps[i] is the length of the longest prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  private int[] getLPS(final String pattern) {
+    int[] lps = new int[pattern.length()];
+    for (int i = 1, j = 0; i &lt; pattern.length(); ++i) {
+      while (j &gt; 0 &amp;&amp; pattern.charAt(j) != pattern.charAt(i))
+        j = lps[j - 1];
+      if (pattern.charAt(i) == pattern.charAt(j))
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+
+  // j := the next index we&#x27;re trying to match with `currLetter`
+  private int getNextMatchedEvilCount(Integer[][] nextMatchedCount, final String evil, int j,
+                                      char currChar, int[] lps) {
+    if (nextMatchedCount[j][currChar - &#x27;a&#x27;] != null)
+      return nextMatchedCount[j][currChar - &#x27;a&#x27;];
+    while (j &gt; 0 &amp;&amp; evil.charAt(j) != currChar)
+      j = lps[j - 1];
+    return nextMatchedCount[j][currChar - &#x27;a&#x27;] = (evil.charAt(j) == currChar ? j + 1 : j);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findGoodStrings(self, n: int, s1: str, s2: str, evil: str) -&gt; int:
+    MOD = 1_000_000_007
+    evilLPS = self._getLPS(evil)
+
+    @functools.lru_cache(None)
+    def getNextMatchedEvilCount(j: int, currChar: str) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of next matched evil count, where there&#x27;re j matches
+      with `evil` and the current letter is (&#x27;a&#x27; + j).
+      &quot;&quot;&quot;
+      while j &gt; 0 and evil[j] != currChar:
+        j = evilLPS[j - 1]
+      return j + 1 if evil[j] == currChar else j
+
+    @functools.lru_cache(None)
+    def dp(i: int, matchedEvilCount: int, isS1Prefix: bool, isS2Prefix: bool) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of good strings for s[i..n), where there&#x27;re j matches
+      with `evil`, `isS1Prefix` indicates if the current letter is tightly bound
+      for `s1` and `isS2Prefix` indicates if the current letter is tightly bound
+      for `s2`.
+      &quot;&quot;&quot;
+      # s[0..i) contains `evil`, so don&#x27;t consider any ongoing strings.
+      if matchedEvilCount == len(evil):
+        return 0
+      # Run out of strings, so contribute one.
+      if i == n:
+        return 1
+      ans = 0
+      minCharIndex = ord(s1[i]) if isS1Prefix else ord(&#x27;a&#x27;)
+      maxCharIndex = ord(s2[i]) if isS2Prefix else ord(&#x27;z&#x27;)
+      for charIndex in range(minCharIndex, maxCharIndex + 1):
+        c = chr(charIndex)
+        nextMatchedEvilCount = getNextMatchedEvilCount(matchedEvilCount, c)
+        ans += dp(i + 1, nextMatchedEvilCount,
+                  isS1Prefix and c == s1[i],
+                  isS2Prefix and c == s2[i])
+        ans %= MOD
+      return ans
+
+    return dp(0, 0, True, True)
+
+  def _getLPS(self, pattern: str) -&gt; list[int]:
+    &quot;&quot;&quot;
+    Returns the lps array, where lps[i] is the length of the longest prefix of
+    pattern[0..i] which is also a suffix of this substring.
+    &quot;&quot;&quot;
+    lps = [0] * len(pattern)
+    j = 0
+    for i in range(1, len(pattern)):
+      while j &gt; 0 and pattern[j] != pattern[i]:
+        j = lps[j - 1]
+      if pattern[i] == pattern[j]:
+        lps[i] = j + 1
+        j += 1
+    return lps</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

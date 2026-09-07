@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Fuel Cost to Report to the Capital - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Fuel Cost to Report to the Capital written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-fuel-cost-to-report-to-the-capital/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/closest-nodes-queries-in-a-binary-search-tree/" class="btn">← Previous</a>
+            <span>Problem 2477 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-beautiful-partitions/" class="btn">Next →</a>
+        </div>
+        <h1>2477. Minimum Fuel Cost to Report to the Capital</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Fuel Cost to Report to the Capital efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minimumFuelCost(vector&lt;vector&lt;int&gt;&gt;&amp; roads, int seats) {
+    long ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; tree(roads.size() + 1);
+
+    for (const vector&lt;int&gt;&amp; road : roads) {
+      const int u = road[0];
+      const int v = road[1];
+      tree[u].push_back(v);
+      tree[v].push_back(u);
+    }
+
+    dfs(tree, 0, -1, seats, ans);
+    return ans;
+  }
+
+ private:
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev, int seats,
+          long&amp; ans) {
+    int people = 1;
+    for (const int v : tree[u])
+      if (v != prev)
+        people += dfs(tree, v, u, seats, ans);
+    if (u &gt; 0)
+      // the number of cars needed = ceil(people / seats)
+      ans += (people + seats - 1) / seats;
+    return people;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minimumFuelCost(int[][] roads, int seats) {
+    List&lt;Integer&gt;[] tree = new List[roads.length + 1];
+
+    for (int i = 0; i &lt; tree.length; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int[] road : roads) {
+      final int u = road[0];
+      final int v = road[1];
+      tree[u].add(v);
+      tree[v].add(u);
+    }
+
+    dfs(tree, 0, -1, seats);
+    return ans;
+  }
+
+  private long ans = 0;
+
+  private int dfs(List&lt;Integer&gt;[] tree, int u, int prev, int seats) {
+    int people = 1;
+    for (final int v : tree[u])
+      if (v != prev)
+        people += dfs(tree, v, u, seats);
+    if (u &gt; 0)
+      // the number of cars needed = ceil(people / seats)
+      ans += (people + seats - 1) / seats;
+    return people;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumFuelCost(self, roads: list[list[int]], seats: int) -&gt; int:
+    ans = 0
+    tree = [[] for _ in range(len(roads) + 1)]
+
+    for u, v in roads:
+      tree[u].append(v)
+      tree[v].append(u)
+
+    def dfs(u: int, prev: int) -&gt; int:
+      nonlocal ans
+      people = 1 + sum(dfs(v, u) for v in tree[u] if v != prev)
+      if u &gt; 0:
+        # the number of cars needed
+        ans += int(math.ceil(people / seats))
+      return people
+
+    dfs(0, -1)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

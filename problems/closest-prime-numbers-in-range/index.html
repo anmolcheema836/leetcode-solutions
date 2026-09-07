@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closest Prime Numbers in Range - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Closest Prime Numbers in Range written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/closest-prime-numbers-in-range/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/partition-string-into-substrings-with-values-at-most-k/" class="btn">← Previous</a>
+            <span>Problem 2523 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-frequency-score-of-a-subarray/" class="btn">Next →</a>
+        </div>
+        <h1>2523. Closest Prime Numbers in Range</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Closest Prime Numbers in Range efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; closestPrimes(int left, int right) {
+    const vector&lt;bool&gt; isPrime = sieveEratosthenes(right + 1);
+    vector&lt;int&gt; primes;
+
+    for (int i = left; i &lt;= right; ++i)
+      if (isPrime[i])
+        primes.push_back(i);
+
+    if (primes.size() &lt; 2)
+      return {-1, -1};
+
+    int minDiff = INT_MAX;
+    int num1 = -1;
+    int num2 = -1;
+
+    for (int i = 1; i &lt; primes.size(); ++i) {
+      const int diff = primes[i] - primes[i - 1];
+      if (diff &lt; minDiff) {
+        minDiff = diff;
+        num1 = primes[i - 1];
+        num2 = primes[i];
+      }
+    }
+
+    return {num1, num2};
+  }
+
+ private:
+  vector&lt;bool&gt; sieveEratosthenes(int n) {
+    vector&lt;bool&gt; isPrime(n, true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (isPrime[i])
+        for (int j = i * i; j &lt; n; j += i)
+          isPrime[j] = false;
+    return isPrime;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] closestPrimes(int left, int right) {
+    final boolean[] isPrime = sieveEratosthenes(right + 1);
+    List&lt;Integer&gt; primes = new ArrayList&lt;&gt;();
+
+    for (int i = left; i &lt;= right; ++i)
+      if (isPrime[i])
+        primes.add(i);
+
+    if (primes.size() &lt; 2)
+      return new int[] {-1, -1};
+
+    int minDiff = Integer.MAX_VALUE;
+    int num1 = -1;
+    int num2 = -1;
+
+    for (int i = 1; i &lt; primes.size(); ++i) {
+      final int diff = prime.get(i) - prime.get(i - 1);
+      if (diff &lt; minDiff) {
+        minDiff = diff;
+        num1 = prime.get(i - 1);
+        num2 = prime.get(i);
+      }
+    }
+
+    return new int[] {num1, num2};
+  }
+
+  private boolean[] sieveEratosthenes(int n) {
+    boolean[] isPrime = new boolean[n];
+    Arrays.fill(isPrime, true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (isPrime[i])
+        for (int j = i * i; j &lt; n; j += i)
+          isPrime[j] = false;
+    return isPrime;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def closestPrimes(self, left: int, right: int) -&gt; list[int]:
+    isPrime = self._sieveEratosthenes(right + 1)
+    primes = [i for i in range(left, right + 1) if isPrime[i]]
+
+    if len(primes) &lt; 2:
+      return [-1, -1]
+
+    minDiff = math.inf
+    num1 = -1
+    num2 = -1
+
+    for a, b in zip(primes, primes[1:]):
+      diff = b - a
+      if diff &lt; minDiff:
+        minDiff = diff
+        num1 = a
+        num2 = b
+
+    return [num1, num2]
+
+  def _sieveEratosthenes(self, n: int) -&gt; list[bool]:
+    isPrime = [True] * n
+    isPrime[0] = False
+    isPrime[1] = False
+    for i in range(2, int(n**0.5) + 1):
+      if isPrime[i]:
+        for j in range(i * i, n, i):
+          isPrime[j] = False
+    return isPrime</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

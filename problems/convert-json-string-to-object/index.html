@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert JSON String to Object - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Convert JSON String to Object written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/convert-json-string-to-object/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/next-day/" class="btn">← Previous</a>
+            <span>Problem 2759 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-even-odd-subarray-with-threshold/" class="btn">Next →</a>
+        </div>
+        <h1>2759. Convert JSON String to Object</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Convert JSON String to Object efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">TypeScript</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-clike">type JSONValue =
+  | null
+  | boolean
+  | number
+  | string
+  | JSONValue[]
+  | { [key: string]: JSONValue };
+
+class JSONParser {
+  private str: string;
+  private i: number;
+
+  constructor(str: string) {
+    this.str = str;
+    this.i = 0;
+  }
+
+  public parse(): JSONValue {
+    return this.parseValue();
+  }
+
+  private parseValue(): JSONValue {
+    switch (this.str[this.i]) {
+      case &#x27;{&#x27;:
+        return this.parseObject();
+      case &#x27;[&#x27;:
+        return this.parseArray();
+      case &#x27;t&#x27;: // true
+      case &#x27;f&#x27;: // false
+      case &#x27;n&#x27;: // null
+        return this.parseLiteral();
+      case &#x27;&quot;&#x27;:
+        return this.parseString();
+      default:
+        return this.parseNumber();
+    }
+  }
+
+  private parseObject(): JSONValue {
+    ++this.i;
+
+    const ans: JSONValue = {};
+
+    while (this.i &lt; this.str.length &amp;&amp; this.str[this.i] !== &#x27;}&#x27;) {
+      const key = this.parseString();
+      this.expectChar(&#x27;:&#x27;);
+      const value = this.parseValue();
+
+      ans[key] = value;
+      if (this.str[this.i] === &#x27;,&#x27;) {
+        ++this.i;
+      }
+    }
+
+    ++this.i;
+    return ans;
+  }
+
+  private parseArray(): JSONValue[] {
+    ++this.i;
+
+    const ans: JSONValue[] = [];
+
+    while (this.i &lt; this.str.length &amp;&amp; this.str[this.i] !== &#x27;]&#x27;) {
+      const value = this.parseValue();
+      ans.push(value);
+      if (this.str[this.i] === &#x27;,&#x27;) {
+        ++this.i;
+      }
+    }
+
+    ++this.i;
+    return ans;
+  }
+
+  private parseLiteral(): boolean | null {
+    if (this.str.startsWith(&#x27;true&#x27;, this.i)) {
+      this.i += 4;
+      return true;
+    }
+    if (this.str.startsWith(&#x27;false&#x27;, this.i)) {
+      this.i += 5;
+      return false;
+    }
+    if (this.str.startsWith(&#x27;null&#x27;, this.i)) {
+      this.i += 4;
+      return null;
+    }
+    throw new Error(`Unexpected token at position ${this.i}`);
+  }
+
+  private parseString(): string {
+    let ans = &#x27;&#x27;;
+    ++this.i;
+
+    while (this.i &lt; this.str.length &amp;&amp; this.str[this.i] !== &#x27;&quot;&#x27;) {
+      ans += this.str[this.i];
+      ++this.i;
+    }
+
+    ++this.i;
+    return ans;
+  }
+
+  private parseNumber(): number {
+    let start = this.i;
+
+    if (this.str[this.i] === &#x27;-&#x27;) {
+      ++this.i;
+    }
+
+    while (this.i &lt; this.str.length &amp;&amp; this.isDigit(this.str[this.i])) {
+      ++this.i;
+    }
+
+    if (this.str[this.i] === &#x27;.&#x27;) {
+      ++this.i;
+      while (this.i &lt; this.str.length &amp;&amp; this.isDigit(this.str[this.i])) {
+        ++this.i;
+      }
+    }
+
+    return Number(this.str.slice(start, this.i));
+  }
+
+  private isDigit(n: string): boolean {
+    return n &gt;= &#x27;0&#x27; &amp;&amp; n &lt;= &#x27;9&#x27;;
+  }
+
+  private expectChar(char: string): void {
+    if (this.str[this.i] !== char) {
+      throw new Error(`Expected &#x27;${char}&#x27; at position ${this.i}`);
+    }
+    ++this.i;
+  }
+}
+
+function jsonParse(str: string): JSONValue {
+  const parser = new JSONParser(str);
+  return parser.parse();
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

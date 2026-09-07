@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Books You Can Take - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Books You Can Take written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-books-you-can-take/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-excellent-pairs/" class="btn">← Previous</a>
+            <span>Problem 2355 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-unique-subjects-taught-by-each-teacher/" class="btn">Next →</a>
+        </div>
+        <h1>2355. Maximum Number of Books You Can Take</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Books You Can Take efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maximumBooks(vector&lt;int&gt;&amp; books) {
+    // dp[i] := the maximum number of books we can take from books[0..i] with
+    // taking all of books[i]
+    vector&lt;long&gt; dp(books.size());
+    stack&lt;int&gt; stack;  // the possible indices we can reach
+
+    for (int i = 0; i &lt; books.size(); ++i) {
+      // We may take all of books[j], where books[j] &lt; books[i] - (i - j).
+      while (!stack.empty() &amp;&amp;
+             books[stack.top()] &gt;= books[i] - (i - stack.top()))
+        stack.pop();
+      // We can now take books[j + 1..i].
+      const int j = stack.empty() ? -1 : stack.top();
+      const int lastTook = books[i] - (i - j) + 1;
+      if (lastTook &gt; 1)
+        // books[i] + (books[i] - 1) + ... + (books[i] - (i - j) + 1)
+        dp[i] = static_cast&lt;long&gt;(books[i] + lastTook) * (i - j) / 2;
+      else
+        // 1 + 2 + ... + books[i]
+        dp[i] = static_cast&lt;long&gt;(books[i]) * (books[i] + 1) / 2;
+      if (j &gt;= 0)
+        dp[i] += dp[j];
+      stack.push(i);
+    }
+
+    return ranges::max(dp);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maximumBooks(int[] books) {
+    // dp[i] := the maximum number of books we can take from books[0..i] with taking all of
+    // books[i]
+    long[] dp = new long[books.length];
+    Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;(); // the possible indices we can reach
+
+    for (int i = 0; i &lt; books.length; ++i) {
+      // We may take all of books[j], where books[j] &lt; books[i] - (i - j).
+      while (!stack.isEmpty() &amp;&amp; books[stack.peek()] &gt;= books[i] - (i - stack.peek()))
+        stack.pop();
+      // We can now take books[j + 1..i].
+      final int j = stack.isEmpty() ? -1 : stack.peek();
+      final int lastTook = books[i] - (i - j) + 1;
+      if (lastTook &gt; 1)
+        // books[i] + (books[i] - 1) + ... + (books[i] - (i - j) + 1)
+        dp[i] = (long) (books[i] + lastTook) * (i - j) / 2;
+      else
+        // 1 + 2 + ... + books[i]
+        dp[i] = (long) books[i] * (books[i] + 1) / 2;
+      if (j &gt;= 0)
+        dp[i] += dp[j];
+      stack.push(i);
+    }
+
+    return Arrays.stream(dp).max().getAsLong();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumBooks(self, books: list[int]) -&gt; int:
+    # dp[i] := the maximum the number of books we can take from books[0..i] with taking all of
+    # books[i]
+    dp = [0] * len(books)
+    stack = []  # the possible indices we can reach
+
+    for i, book in enumerate(books):
+      # We may take all of books[j], where books[j] &lt; books[i] - (i - j).
+      while stack and books[stack[-1]] &gt;= book - (i - stack[-1]):
+        stack.pop()
+      # We can now take books[j + 1..i].
+      j = stack[-1] if stack else -1
+      lastPicked = book - (i - j) + 1
+      if lastPicked &gt; 1:
+        # book + (book - 1) + ... + (book - (i - j) + 1)
+        dp[i] = (book + lastPicked) * (i - j) // 2
+      else:
+        # 1 + 2 + ... + book
+        dp[i] = book * (book + 1) // 2
+      if j &gt;= 0:
+        dp[i] += dp[j]
+      stack.append(i)
+
+    return max(dp)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

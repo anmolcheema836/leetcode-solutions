@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serialize and Deserialize Binary Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Serialize and Deserialize Binary Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/serialize-and-deserialize-binary-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/best-meeting-point/" class="btn">← Previous</a>
+            <span>Problem 297 of 3563</span>
+            <a href="/leetcode-solutions/problems/binary-tree-longest-consecutive-sequence/" class="btn">Next →</a>
+        </div>
+        <h1>297. Serialize and Deserialize Binary Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Serialize and Deserialize Binary Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Codec {
+ public:
+  // Encodes a tree to a single string.
+  string serialize(TreeNode* root) {
+    string s;
+    preorder(root, s);
+    return s;
+  }
+
+  // Decodes your encoded data to tree.
+  TreeNode* deserialize(string data) {
+    istringstream iss(data);
+    queue&lt;string&gt; q;
+
+    for (string s; iss &gt;&gt; s;)
+      q.push(s);
+
+    return preorder(q);
+  }
+
+ private:
+  void preorder(TreeNode* root, string&amp; s) {
+    if (root == nullptr) {
+      s += &quot;n &quot;;
+      return;
+    }
+
+    s += to_string(root-&gt;val) + &quot; &quot;;
+    preorder(root-&gt;left, s);
+    preorder(root-&gt;right, s);
+  }
+
+  TreeNode* preorder(queue&lt;string&gt;&amp; q) {
+    const string s = q.front();
+    q.pop();
+    if (s == &quot;n&quot;)
+      return nullptr;
+
+    TreeNode* root = new TreeNode(stoi(s));
+    root-&gt;left = preorder(q);
+    root-&gt;right = preorder(q);
+    return root;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">public class Codec {
+  // Encodes a tree to a single string.
+  public String serialize(TreeNode root) {
+    StringBuilder sb = new StringBuilder();
+    preorder(root, sb);
+    return sb.toString();
+  }
+
+  // Decodes your encoded data to tree.
+  public TreeNode deserialize(String data) {
+    final String[] vals = data.split(&quot; &quot;);
+    Queue&lt;String&gt; q = new ArrayDeque&lt;&gt;(List.of(vals));
+    return preorder(q);
+  }
+
+  private void preorder(TreeNode root, StringBuilder sb) {
+    if (root == null) {
+      sb.append(&quot;n &quot;);
+      return;
+    }
+
+    sb.append(root.val).append(&quot; &quot;);
+    preorder(root.left, sb);
+    preorder(root.right, sb);
+  }
+
+  private TreeNode preorder(Queue&lt;String&gt; q) {
+    final String s = q.poll();
+    if (s.equals(&quot;n&quot;))
+      return null;
+
+    TreeNode root = new TreeNode(Integer.parseInt(s));
+    root.left = preorder(q);
+    root.right = preorder(q);
+    return root;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Codec:
+  def serialize(self, root: &#x27;TreeNode&#x27;) -&gt; str:
+    &quot;&quot;&quot;Encodes a tree to a single string.&quot;&quot;&quot;
+    s = []
+
+    def preorder(root: &#x27;TreeNode&#x27;) -&gt; None:
+      if not root:
+        s.append(&#x27;n&#x27;)
+        return
+
+      s.append(str(root.val))
+      preorder(root.left)
+      preorder(root.right)
+
+    preorder(root)
+    return &#x27; &#x27;.join(s)
+
+  def deserialize(self, data: str) -&gt; &#x27;TreeNode&#x27;:
+    &quot;&quot;&quot;Decodes your encoded data to tree.&quot;&quot;&quot;
+    q = collections.deque(data.split())
+
+    def preorder() -&gt; &#x27;TreeNode&#x27;:
+      s = q.popleft()
+      if s == &#x27;n&#x27;:
+        return None
+
+      root = TreeNode(s)
+      root.left = preorder()
+      root.right = preorder()
+      return root
+
+    return preorder()</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

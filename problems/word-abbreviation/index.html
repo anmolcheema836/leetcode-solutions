@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Abbreviation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Word Abbreviation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/word-abbreviation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/beautiful-arrangement/" class="btn">← Previous</a>
+            <span>Problem 527 of 3563</span>
+            <a href="/leetcode-solutions/problems/random-pick-with-weight/" class="btn">Next →</a>
+        </div>
+        <h1>527. Word Abbreviation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Word Abbreviation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct IndexedWord {
+  string word;
+  int index;
+};
+
+struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  int count = 0;
+  bool isWord = false;
+  TrieNode() : children(26) {}
+};
+
+class Solution {
+ public:
+  vector&lt;string&gt; wordsAbbreviation(vector&lt;string&gt;&amp; words) {
+    const int n = words.size();
+    vector&lt;string&gt; ans(n);
+    unordered_map&lt;string, vector&lt;IndexedWord&gt;&gt; abbrevToIndexedWords;
+
+    for (int i = 0; i &lt; n; ++i) {
+      const string abbrev = getAbbrev(words[i], 0);
+      abbrevToIndexedWords[abbrev].emplace_back(words[i], i);
+    }
+
+    for (auto&amp; [_, indexedWords] : abbrevToIndexedWords) {
+      shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+      for (const IndexedWord&amp; iw : indexedWords)
+        insertWord(root, iw.word);
+      for (const IndexedWord&amp; iw : indexedWords) {
+        const int index = firstUniqueIndex(root, iw.word);
+        ans[iw.index] = getAbbrev(iw.word, index);
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  string getAbbrev(const string&amp; s, int prefixIndex) {
+    const int n = s.length();
+    const int num = n - (prefixIndex + 1) - 1;
+    const int numLength = num &lt; 10 ? 1 : num &lt; 100 ? 2 : 3;
+    const int abbrevLength = (prefixIndex + 1) + numLength + 1;
+    if (abbrevLength &gt;= n)
+      return s;
+    return s.substr(0, prefixIndex + 1) + to_string(num) + s.back();
+  }
+
+  void insertWord(shared_ptr&lt;TrieNode&gt; root, const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        node-&gt;children[i] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[i];
+      ++node-&gt;count;
+    }
+  }
+
+  int firstUniqueIndex(shared_ptr&lt;TrieNode&gt; root, const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = 0; i &lt; word.length(); ++i) {
+      node = node-&gt;children[word[i] - &#x27;a&#x27;];
+      if (node-&gt;count == 1)
+        return i;
+    }
+    return word.length();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[26];
+  public int count = 0;
+}
+
+class Solution {
+  public List&lt;String&gt; wordsAbbreviation(List&lt;String&gt; words) {
+    record IndexedWord(String word, int index) {}
+    String[] ans = new String[words.size()];
+    Map&lt;String, List&lt;IndexedWord&gt;&gt; abbrevToIndexedWords = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; words.size(); ++i) {
+      final String abbrev = getAbbrev(words.get(i), 0);
+      abbrevToIndexedWords.putIfAbsent(abbrev, new ArrayList&lt;&gt;());
+      abbrevToIndexedWords.get(abbrev).add(new IndexedWord(words.get(i), i));
+    }
+
+    for (List&lt;IndexedWord&gt; indexedWords : abbrevToIndexedWords.values()) {
+      TrieNode root = new TrieNode();
+      for (IndexedWord iw : indexedWords)
+        insertWord(root, iw.word);
+      for (IndexedWord iw : indexedWords) {
+        final int index = firstUniqueIndex(root, iw.word);
+        ans[iw.index] = getAbbrev(iw.word, index);
+      }
+    }
+
+    return Arrays.asList(ans);
+  }
+
+  private String getAbbrev(final String s, int prefixIndex) {
+    final int n = s.length();
+    final int num = n - (prefixIndex + 1) - 1;
+    final int numLength = num &lt; 10 ? 1 : num &lt; 100 ? 2 : 3;
+    final int abbrevLength = (prefixIndex + 1) + numLength + 1;
+    if (abbrevLength &gt;= n)
+      return s;
+    return s.substring(0, prefixIndex + 1) + num + s.charAt(n - 1);
+  }
+
+  private void insertWord(TrieNode root, final String word) {
+    TrieNode node = root;
+    for (final char c : word.toCharArray()) {
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        node.children[i] = new TrieNode();
+      node = node.children[i];
+      ++node.count;
+    }
+  }
+
+  private int firstUniqueIndex(TrieNode root, final String word) {
+    TrieNode node = root;
+    for (int i = 0; i &lt; word.length(); ++i) {
+      node = node.children[word.charAt(i) - &#x27;a&#x27;];
+      if (node.count == 1)
+        return i;
+    }
+    return word.length();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class IndexedWord:
+  word: str
+  index: int
+
+
+class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+    self.count = 0
+
+
+class Solution:
+  def wordsAbbreviation(self, words: list[str]) -&gt; list[str]:
+    n = len(words)
+    ans = [&#x27;&#x27;] * n
+
+    def getAbbrev(s: str, prefixIndex: int) -&gt; str:
+      n = len(s)
+      num = n - (prefixIndex + 1) - 1
+      numLength = 1 if num &lt; 10 else (2 if num &lt; 100 else 3)
+      abbrevLength = (prefixIndex + 1) + numLength + 1
+      if abbrevLength &gt;= n:
+        return s
+      return s[:prefixIndex + 1] + str(num) + s[-1]
+
+    abbrevToIndexedWords = collections.defaultdict(list)
+
+    for i, word in enumerate(words):
+      abbrev = getAbbrev(word, 0)
+      abbrevToIndexedWords[abbrev].append(IndexedWord(word, i))
+
+    def insertWord(root: TrieNode | None, word: str) -&gt; None:
+      node = root
+      for c in word:
+        node = node.children.setdefault(c, TrieNode())
+        node.count += 1
+
+    def firstUniqueIndex(root: TrieNode | None, word: str) -&gt; None:
+      node = root
+      for i, c in enumerate(word):
+        node = node.children[c]
+        if node.count == 1:
+          return i
+      return len(word)
+
+    for indexedWords in abbrevToIndexedWords.values():
+      root = TrieNode()
+      for iw in indexedWords:
+        insertWord(root, iw.word)
+      for iw in indexedWords:
+        index = firstUniqueIndex(root, iw.word)
+        ans[iw.index] = getAbbrev(iw.word, index)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

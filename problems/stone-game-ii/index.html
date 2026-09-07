@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Game II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Stone Game II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/stone-game-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-1-bordered-square/" class="btn">← Previous</a>
+            <span>Problem 1140 of 3563</span>
+            <a href="/leetcode-solutions/problems/user-activity-for-the-past-30-days-i/" class="btn">Next →</a>
+        </div>
+        <h1>1140. Stone Game II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Stone Game II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int stoneGameII(vector&lt;int&gt;&amp; piles) {
+    const int n = piles.size();
+    vector&lt;vector&lt;int&gt;&gt; mem(n, vector&lt;int&gt;(n));
+    vector&lt;int&gt; suffix = piles;  // suffix[i] := sum(piles[i..n))
+    for (int i = n - 2; i &gt;= 0; --i)
+      suffix[i] += suffix[i + 1];
+    return stoneGameII(suffix, 0, 1, mem);
+  }
+
+ private:
+  // Returns the maximum number of stones Alice can get from piles[i..n) with M.
+  int stoneGameII(const vector&lt;int&gt;&amp; suffix, int i, int M,
+                  vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i + 2 * M &gt;= mem.size())
+      return suffix[i];
+    if (mem[i][M] &gt; 0)
+      return mem[i][M];
+
+    int opponent = suffix[i];
+
+    for (int X = 1; X &lt;= 2 * M; ++X)
+      opponent = min(opponent, stoneGameII(suffix, i + X, max(M, X), mem));
+
+    return mem[i][M] = suffix[i] - opponent;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int stoneGameII(int[] piles) {
+    final int n = piles.length;
+    int[][] mem = new int[n][n];
+    int[] suffix = new int[n]; // suffix[i] := sum(piles[i..n))
+    Arrays.stream(mem).forEach(A -&gt; Arrays.fill(A, -1));
+    suffix[n - 1] = piles[n - 1];
+    for (int i = n - 2; i &gt;= 0; --i)
+      suffix[i] = suffix[i + 1] + piles[i];
+    return stoneGameII(suffix, 0, 1, mem);
+  }
+
+  // Returns the maximum number of stones Alice can get from piles[i..n) with M.
+  private int stoneGameII(int[] suffix, int i, int M, int[][] mem) {
+    if (i + 2 * M &gt;= suffix.length)
+      return suffix[i];
+    if (mem[i][M] != -1)
+      return mem[i][M];
+
+    int opponent = suffix[i];
+
+    for (int X = 1; X &lt;= 2 * M; ++X)
+      opponent = Math.min(opponent, stoneGameII(suffix, i + X, Math.max(M, X), mem));
+
+    return mem[i][M] = suffix[i] - opponent;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Subarray With Bitwise OR Closest to K - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Subarray With Bitwise OR Closest to K written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-subarray-with-bitwise-or-closest-to-k/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/lexicographically-minimum-string-after-removing-stars/" class="btn">← Previous</a>
+            <span>Problem 3171 of 3563</span>
+            <a href="/leetcode-solutions/problems/second-day-verification/" class="btn">Next →</a>
+        </div>
+        <h1>3171. Find Subarray With Bitwise OR Closest to K</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Subarray With Bitwise OR Closest to K efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 1521. Find a Value of a Mysterious Function Closest to Target
+  int minimumDifference(vector&lt;int&gt;&amp; nums, int k) {
+    int ans = INT_MAX;
+    // all the values of subarrays that end in the previous number
+    unordered_set&lt;int&gt; prev;
+
+    for (const int num : nums) {
+      unordered_set&lt;int&gt; next{num};
+      // Extend each subarray that ends in the previous number. Due to
+      // monotonicity of the OR operation, the size of `next` will be at most
+      // num.bit_count() + 1.
+      for (const int val : prev)
+        next.insert(val | num);
+      for (const int val : next)
+        ans = min(ans, abs(k - val));
+      prev = std::move(next);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 1521. Find a Value of a Mysterious Function Closest to Target
+  public int minimumDifference(int[] nums, int k) {
+    int ans = Integer.MAX_VALUE;
+    // all the values of subarrays that end in the previous number
+    Set&lt;Integer&gt; prev = new HashSet&lt;&gt;();
+
+    for (final int num : nums) {
+      HashSet&lt;Integer&gt; next = new HashSet&lt;&gt;(Arrays.asList(num));
+      // Extend each subarray that ends in the previous number. Due to
+      // monotonicity of the OR operation, the size of `next` will be at most
+      // Integer.bitCount(num) + 1.
+      for (final int val : prev)
+        next.add(val | num);
+      for (final int val : next)
+        ans = Math.min(ans, Math.abs(k - val));
+      prev = next;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 1521. Find a Value of a Mysterious Function Closest to Target
+  def minimumDifference(self, nums: list[int], k: int) -&gt; int:
+    ans = math.inf
+    dp = set()  # all the values of subarrays that end in the current number
+
+    for num in nums:
+      # Extend each subarray that ends in the dpious number. Due to
+      # monotonicity of the OR operation, the size of `next_set` will be at most
+      # bin(num).count(&#x27;1&#x27;) + 1.
+      dp = {num} | {val | num for val in dp}
+      ans = min(ans, min(abs(k - val) for val in dp))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

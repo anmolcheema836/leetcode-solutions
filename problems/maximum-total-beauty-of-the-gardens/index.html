@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Total Beauty of the Gardens - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Total Beauty of the Gardens written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-total-beauty-of-the-gardens/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-product-after-k-increments/" class="btn">← Previous</a>
+            <span>Problem 2234 of 3563</span>
+            <a href="/leetcode-solutions/problems/add-two-integers/" class="btn">Next →</a>
+        </div>
+        <h1>2234. Maximum Total Beauty of the Gardens</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Total Beauty of the Gardens efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maximumBeauty(vector&lt;int&gt;&amp; flowers, long long newFlowers,
+                          int target, int full, int partial) {
+    const int n = flowers.size();
+
+    // If a garden is already complete, clamp it to the target.
+    for (int&amp; flower : flowers)
+      flower = min(flower, target);
+    ranges::sort(flowers);
+
+    // All gardens are complete, so nothing we can do.
+    if (flowers[0] == target)
+      return static_cast&lt;long&gt;(n) * full;
+
+    // Having many new flowers maximizes the beauty value.
+    if (newFlowers &gt;= static_cast&lt;long&gt;(n) * target -
+                          accumulate(flowers.begin(), flowers.end(), 0L))
+      return max(static_cast&lt;long&gt;(n) * full,
+                 (n - 1L) * full + (target - 1L) * partial);
+
+    long ans = 0;
+    long leftFlowers = newFlowers;
+    // cost[i] := the cost to make flowers[0..i] the same
+    vector&lt;long&gt; cost(n);
+
+    for (int i = 1; i &lt; n; ++i)
+      // Plant (flowers[i] - flowers[i - 1]) flowers for flowers[0..i - 1].
+      cost[i] =
+          cost[i - 1] + static_cast&lt;long&gt;(i) * (flowers[i] - flowers[i - 1]);
+
+    int i = n - 1;  // flowers&#x27; index (flowers[i + 1..n) are complete)
+    while (flowers[i] == target)
+      --i;
+
+    for (; leftFlowers &gt;= 0; --i) {
+      // To maximize the minimum number of incomplete flowers, we find the first
+      // index j that we can&#x27;t make flowers[0..j] equal to flowers[j], then we
+      // know we can make flowers[0..j - 1] equal to flowers[j - 1]. In the
+      // meantime, evenly increase each of them to seek a bigger minimum value.
+      const int j = firstGreater(cost, i, leftFlowers);
+      const long minIncomplete =
+          flowers[j - 1] + (leftFlowers - cost[j - 1]) / j;
+      ans = max(ans, (n - 1L - i) * full + minIncomplete * partial);
+      leftFlowers -= max(0, target - flowers[i]);
+    }
+
+    return ans;
+  }
+
+ private:
+  int firstGreater(const vector&lt;long&gt;&amp; A, int maxIndex, long target) {
+    return upper_bound(A.begin(), A.begin() + maxIndex + 1, target) - A.begin();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maximumBeauty(int[] flowers, long newFlowers, int target, int full, int partial) {
+    final int n = flowers.length;
+
+    // If a garden is already complete, clamp it to the target.
+    for (int i = 0; i &lt; n; ++i)
+      flowers[i] = Math.min(flowers[i], target);
+    Arrays.sort(flowers);
+
+    // All gardens are complete, so nothing we can do.
+    if (flowers[0] == target)
+      return (long) n * full;
+
+    // Having many new flowers maximizes the beauty value.
+    if (newFlowers &gt;= (long) n * target - Arrays.stream(flowers).asLongStream().sum())
+      return Math.max((long) n * full, (n - 1L) * full + (target - 1L) * partial);
+
+    long ans = 0;
+    long leftFlowers = newFlowers;
+    // cost[i] := the cost to make flowers[0..i] the same
+    long[] cost = new long[flowers.length];
+
+    for (int i = 1; i &lt; flowers.length; ++i)
+      // Plant (flowers[i] - flowers[i - 1]) flowers for flowers[0..i - 1].
+      cost[i] = cost[i - 1] + i * (flowers[i] - flowers[i - 1]);
+
+    int i = flowers.length - 1; // flowers&#x27; index (flowers[i + 1..n) are complete)
+    while (flowers[i] == target)
+      --i;
+
+    for (; leftFlowers &gt;= 0; --i) {
+      // To maximize the minimum number of incomplete flowers, we find the first
+      // index j that we can&#x27;t make flowers[0..j] equal to flowers[j], then we
+      // know we can make flowers[0..j - 1] equal to flowers[j - 1]. In the
+      // meantime, evenly increase each of them to seek a bigger minimum value.
+      final int j = firstGreater(cost, i, leftFlowers);
+      final long minIncomplete = flowers[j - 1] + (leftFlowers - cost[j - 1]) / j;
+      ans = Math.max(ans, (n - 1L - i) * full + (long) minIncomplete * partial);
+      leftFlowers -= Math.max(0, target - flowers[i]);
+    }
+
+    return ans;
+  }
+
+  private int firstGreater(long[] A, int maxIndex, long target) {
+    final int i = Arrays.binarySearch(A, 0, maxIndex + 1, target + 1);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumBeauty(
+      self,
+      flowers: list[int],
+      newFlowers: int,
+      target: int,
+      full: int,
+      partial: int,
+  ) -&gt; int:
+    n = len(flowers)
+
+    # If a garden is already complete, clamp it to the target.
+    flowers = [min(flower, target) for flower in flowers]
+    flowers.sort()
+
+    # All gardens are complete, so nothing we can do.
+    if flowers[0] == target:
+      return n * full
+
+    # Having many new flowers maximizes the beauty value.
+    if newFlowers &gt;= n * target - sum(flowers):
+      return max(n * full, (n - 1) * full + (target - 1) * partial)
+
+    ans = 0
+    leftFlowers = newFlowers
+    # cost[i] := the cost to make flowers[0..i] the same
+    cost = [0] * n
+
+    for i in range(1, n):
+      # Plant (flowers[i] - flowers[i - 1]) flowers for flowers[0..i - 1].
+      cost[i] = cost[i - 1] + i * (flowers[i] - flowers[i - 1])
+
+    i = n - 1  # flowers&#x27; index (flowers[i + 1..n) are complete)
+    while flowers[i] == target:
+      i -= 1
+
+    while leftFlowers &gt;= 0:
+      # To maximize the minimum number of incomplete flowers, we find the first
+      # index j that we can&#x27;t make flowers[0..j] equal to flowers[j], then we
+      # know we can make flowers[0..j - 1] equal to flowers[j - 1]. In the
+      # meantime, evenly increase each of them to seek a bigger minimum value.
+      j = min(i + 1, bisect_right(cost, leftFlowers))
+      minIncomplete = flowers[j - 1] + (leftFlowers - cost[j - 1]) // j
+      ans = max(ans, (n - 1 - i) * full + minIncomplete * partial)
+      leftFlowers -= max(0, target - flowers[i])
+      i -= 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

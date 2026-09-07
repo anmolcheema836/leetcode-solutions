@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Increasing Path in a Matrix - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Increasing Path in a Matrix written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-increasing-path-in-a-matrix/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/odd-even-linked-list/" class="btn">← Previous</a>
+            <span>Problem 329 of 3563</span>
+            <a href="/leetcode-solutions/problems/patching-array/" class="btn">Next →</a>
+        </div>
+        <h1>329. Longest Increasing Path in a Matrix</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Increasing Path in a Matrix efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int longestIncreasingPath(vector&lt;vector&lt;int&gt;&gt;&amp; matrix) {
+    const int m = matrix.size();
+    const int n = matrix[0].size();
+    int ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; mem(m, vector&lt;int&gt;(n));
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        ans = max(ans, dfs(matrix, i, j, INT_MIN, mem));
+
+    return ans;
+  }
+
+ private:
+  // mem[i][j] := the LIP starting from matrix[i][j]
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; matrix, int i, int j, int prev,
+          vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i &lt; 0 || i == matrix.size() || j &lt; 0 || j == matrix[0].size())
+      return 0;
+    if (matrix[i][j] &lt;= prev)
+      return 0;
+    int&amp; ans = mem[i][j];
+    if (ans &gt; 0)
+      return ans;
+
+    const int curr = matrix[i][j];
+    return ans = 1 + max({dfs(matrix, i + 1, j, curr, mem),
+                          dfs(matrix, i - 1, j, curr, mem),
+                          dfs(matrix, i, j + 1, curr, mem),
+                          dfs(matrix, i, j - 1, curr, mem)});
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int longestIncreasingPath(int[][] matrix) {
+    final int m = matrix.length;
+    final int n = matrix[0].length;
+    int ans = 0;
+    // mem[i][j] := the LIP starting from matrix[i][j]
+    int[][] mem = new int[m][n];
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        ans = Math.max(ans, dfs(matrix, i, j, Integer.MIN_VALUE, mem));
+
+    return ans;
+  }
+
+  private int dfs(int[][] matrix, int i, int j, int prev, int[][] mem) {
+    if (i &lt; 0 || i == matrix.length || j &lt; 0 || j == matrix[0].length)
+      return 0;
+    if (matrix[i][j] &lt;= prev)
+      return 0;
+    if (mem[i][j] &gt; 0)
+      return mem[i][j];
+
+    final int curr = matrix[i][j];
+    final int a = dfs(matrix, i + 1, j, curr, mem);
+    final int b = dfs(matrix, i - 1, j, curr, mem);
+    final int c = dfs(matrix, i, j + 1, curr, mem);
+    final int d = dfs(matrix, i, j - 1, curr, mem);
+    return mem[i][j] = 1 + Math.max(Math.max(a, b), Math.max(c, d));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestIncreasingPath(self, matrix: list[list[int]]) -&gt; int:
+    m = len(matrix)
+    n = len(matrix[0])
+
+    @functools.lru_cache(None)
+    def dfs(i: int, j: int, prev: int) -&gt; int:
+      if i &lt; 0 or i == m or j &lt; 0 or j == n:
+        return 0
+      if matrix[i][j] &lt;= prev:
+        return 0
+
+      curr = matrix[i][j]
+      return 1 + max(dfs(i + 1, j, curr),
+                     dfs(i - 1, j, curr),
+                     dfs(i, j + 1, curr),
+                     dfs(i, j - 1, curr))
+
+    return max(dfs(i, j, -math.inf) for i in range(m) for j in range(n))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Subtraction Operation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Prime Subtraction Operation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/prime-subtraction-operation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/k-items-with-the-maximum-sum/" class="btn">← Previous</a>
+            <span>Problem 2601 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-operations-to-make-all-array-elements-equal/" class="btn">Next →</a>
+        </div>
+        <h1>2601. Prime Subtraction Operation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Prime Subtraction Operation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool primeSubOperation(vector&lt;int&gt;&amp; nums) {
+    constexpr int kMax = 1000;
+    const vector&lt;int&gt; primes = sieveEratosthenes(kMax);
+
+    int prevNum = 0;
+    for (int num : nums) {
+      // Make nums[i] the smallest as possible and still &gt; nums[i - 1].
+      const auto it = ranges::lower_bound(primes, num - prevNum);
+      if (it != primes.begin())
+        num -= *prev(it);
+      if (num &lt;= prevNum)
+        return false;
+      prevNum = num;
+    }
+
+    return true;
+  }
+
+  vector&lt;int&gt; sieveEratosthenes(int n) {
+    vector&lt;int&gt; primes;
+    vector&lt;bool&gt; isPrime(n, true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (isPrime[i])
+        for (int j = i * i; j &lt; n; j += i)
+          isPrime[j] = false;
+    for (int i = 2; i &lt; n; ++i)
+      if (isPrime[i])
+        primes.push_back(i);
+    return primes;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean primeSubOperation(int[] nums) {
+    final int MAX = 1000;
+    final List&lt;Integer&gt; primes = sieveEratosthenes(MAX);
+
+    int prevNum = 0;
+    for (int num : nums) {
+      // Make nums[i] the smallest as possible and still &gt; nums[i - 1].
+      final int i = firstGreaterEqual(primes, num - prevNum);
+      if (i &gt; 0)
+        num -= primes.get(i - 1);
+      if (num &lt;= prevNum)
+        return false;
+      prevNum = num;
+    }
+
+    return true;
+  }
+
+  private List&lt;Integer&gt; sieveEratosthenes(int n) {
+    List&lt;Integer&gt; primes = new ArrayList&lt;&gt;();
+    boolean[] isPrime = new boolean[n];
+    Arrays.fill(isPrime, true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (isPrime[i])
+        for (int j = i * i; j &lt; n; j += i)
+          isPrime[j] = false;
+    for (int i = 2; i &lt; n; ++i)
+      if (isPrime[i])
+        primes.add(i);
+    return primes;
+  }
+
+  private int firstGreaterEqual(List&lt;Integer&gt; A, int target) {
+    final int i = Collections.binarySearch(A, target);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def primeSubOperation(self, nums: list[int]) -&gt; bool:
+    MAX = 1000
+    primes = self._sieveEratosthenes(MAX)
+
+    prevNum = 0
+    for num in nums:
+      # Make nums[i] the smallest as possible and still &gt; nums[i - 1].
+      i = bisect.bisect_left(primes, num - prevNum)
+      if i &gt; 0:
+        num -= primes[i - 1]
+      if num &lt;= prevNum:
+        return False
+      prevNum = num
+
+    return True
+
+  def _sieveEratosthenes(self, n: int) -&gt; list[int]:
+    isPrime = [True] * n
+    isPrime[0] = False
+    isPrime[1] = False
+    for i in range(2, int(n**0.5) + 1):
+      if isPrime[i]:
+        for j in range(i * i, n, i):
+          isPrime[j] = False
+    return [i for i in range(n) if isPrime[i]]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

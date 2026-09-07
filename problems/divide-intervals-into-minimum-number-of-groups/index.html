@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divide Intervals Into Minimum Number of Groups - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Divide Intervals Into Minimum Number of Groups written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/divide-intervals-into-minimum-number-of-groups/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/optimal-partition-of-string/" class="btn">← Previous</a>
+            <span>Problem 2406 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-increasing-subsequence-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2406. Divide Intervals Into Minimum Number of Groups</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Divide Intervals Into Minimum Number of Groups efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 253. Meeting Rooms II
+  int minGroups(vector&lt;vector&lt;int&gt;&gt;&amp; intervals) {
+    // Stores `right`s.
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;&gt;&gt; minHeap;
+
+    ranges::sort(intervals);
+
+    for (const vector&lt;int&gt;&amp; interval : intervals) {
+      // There&#x27;s no overlap, so we can reuse the same group.
+      if (!minHeap.empty() &amp;&amp; interval[0] &gt; minHeap.top())
+        minHeap.pop();
+      minHeap.push(interval[1]);
+    }
+
+    return minHeap.size();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 253. Meeting Rooms II
+  public int minGroups(int[][] intervals) {
+    // Stores `right`s.
+    Queue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();
+
+    Arrays.sort(intervals, Comparator.comparingInt(interval -&gt; interval[0]));
+
+    for (int[] interval : intervals) {
+      // There&#x27;s no overlap, so we can reuse the same group.
+      if (!minHeap.isEmpty() &amp;&amp; interval[0] &gt; minHeap.peek())
+        minHeap.poll();
+      minHeap.offer(interval[1]);
+    }
+
+    return minHeap.size();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 253. Meeting Rooms II
+  def minGroups(self, intervals: list[list[int]]) -&gt; int:
+    minHeap = []  # Stores `right`s.
+
+    for left, right in sorted(intervals):
+      # There&#x27;s no overlap, so we can reuse the same group.
+      if minHeap and left &gt; minHeap[0]:
+        heapq.heappop(minHeap)
+      heapq.heappush(minHeap, right)
+
+    return len(minHeap)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Teleportation Traversal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Grid Teleportation Traversal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/grid-teleportation-traversal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-swaps-to-sort-by-digit-sum/" class="btn">← Previous</a>
+            <span>Problem 3552 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-weighted-subgraph-with-the-required-paths-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3552. Grid Teleportation Traversal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Grid Teleportation Traversal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 3341. Find Minimum Time to Reach Last Room I
+  int minMoves(vector&lt;string&gt;&amp; matrix) {
+    if (matrix.back().back() == &#x27;#&#x27;)
+      return -1;
+
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; teleportPositions(26);
+
+    for (int i = 0; i &lt; matrix.size(); ++i)
+      for (int j = 0; j &lt; matrix[0].size(); ++j)
+        if (matrix[i][j] != &#x27;.&#x27; &amp;&amp; matrix[i][j] != &#x27;#&#x27;)
+          teleportPositions[matrix[i][j] - &#x27;A&#x27;].emplace_back(i, j);
+
+    return dijkstra(matrix, teleportPositions, {0, 0},
+                    {matrix.size() - 1, matrix[0].size() - 1});
+  }
+
+ private:
+  int dijkstra(const vector&lt;string&gt;&amp; matrix,
+               const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; teleportPositions,
+               const pair&lt;int, int&gt;&amp; src, const pair&lt;int, int&gt;&amp; dst) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    const int m = matrix.size();
+    const int n = matrix[0].size();
+    vector&lt;vector&lt;int&gt;&gt; dist(m, vector&lt;int&gt;(n, INT_MAX));
+    vector&lt;bool&gt; seen(26);
+
+    dist[0][0] = 0;
+    using T = pair&lt;int, pair&lt;int, int&gt;&gt;;  // (d, u)
+    priority_queue&lt;T, vector&lt;T&gt;, greater&lt;&gt;&gt; minHeap;
+    minHeap.push({dist[0][0], src});
+
+    while (!minHeap.empty()) {
+      const auto [d, u] = minHeap.top();
+      minHeap.pop();
+      if (u == dst)
+        return d;
+      const auto [i, j] = u;
+      if (d &gt; dist[i][j])
+        continue;
+      const char c = matrix[i][j];
+      if (isupper(c) &amp;&amp; !seen[c - &#x27;A&#x27;]) {
+        seen[c - &#x27;A&#x27;] = true;
+        for (const auto&amp; [x, y] : teleportPositions[c - &#x27;A&#x27;])
+          if (d &lt; dist[x][y]) {
+            dist[x][y] = d;
+            minHeap.push({d, {x, y}});
+          }
+      }
+      for (const auto&amp; [dx, dy] : kDirs) {
+        const int x = i + dx;
+        const int y = j + dy;
+        if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+          continue;
+        if (matrix[x][y] == &#x27;#&#x27;)
+          continue;
+        if (d + 1 &lt; dist[x][y]) {
+          dist[x][y] = d + 1;
+          minHeap.push({d + 1, {x, y}});
+        }
+      }
+    }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 3341. Find Minimum Time to Reach Last Room I
+  public int minMoves(String[] matrix) {
+    if (matrix[matrix.length - 1].charAt(matrix[0].length() - 1) == &#x27;#&#x27;)
+      return -1;
+
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] teleportPositions = new ArrayList[26];
+
+    for (int i = 0; i &lt; 26; ++i)
+      teleportPositions[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; matrix.length; ++i)
+      for (int j = 0; j &lt; matrix[0].length(); ++j) {
+        final char c = matrix[i].charAt(j);
+        if (c != &#x27;.&#x27; &amp;&amp; c != &#x27;#&#x27;)
+          teleportPositions[c - &#x27;A&#x27;].add(new Pair&lt;&gt;(i, j));
+      }
+
+    return dijkstra(matrix, teleportPositions, new Pair&lt;&gt;(0, 0),
+                    new Pair&lt;&gt;(matrix.length - 1, matrix[0].length() - 1));
+  }
+
+  private int dijkstra(String[] matrix, List&lt;Pair&lt;Integer, Integer&gt;&gt;[] teleportPositions,
+                       Pair&lt;Integer, Integer&gt; src, Pair&lt;Integer, Integer&gt; dst) {
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int m = matrix.length;
+    final int n = matrix[0].length();
+    int[][] dist = new int[m][n];
+    Arrays.stream(dist).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE));
+    boolean[] seen = new boolean[26];
+
+    dist[0][0] = 0;
+    Queue&lt;Pair&lt;Integer, Pair&lt;Integer, Integer&gt;&gt;&gt; minHeap =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair::getKey)) {
+          { offer(new Pair&lt;&gt;(dist[0][0], src)); } // (d, u)
+        };
+
+    while (!minHeap.isEmpty()) {
+      final int d = minHeap.peek().getKey();
+      final Pair&lt;Integer, Integer&gt; u = minHeap.poll().getValue();
+      if (u.equals(dst))
+        return d;
+      final int i = u.getKey();
+      final int j = u.getValue();
+      if (d &gt; dist[i][j])
+        continue;
+      final char c = matrix[i].charAt(j);
+      if (Character.isUpperCase(c) &amp;&amp; !seen[c - &#x27;A&#x27;]) {
+        seen[c - &#x27;A&#x27;] = true;
+        for (Pair&lt;Integer, Integer&gt; pos : teleportPositions[c - &#x27;A&#x27;]) {
+          final int x = pos.getKey();
+          final int y = pos.getValue();
+          if (d &lt; dist[x][y]) {
+            dist[x][y] = d;
+            minHeap.offer(new Pair&lt;&gt;(d, new Pair&lt;&gt;(x, y)));
+          }
+        }
+      }
+      for (int[] dir : DIRS) {
+        final int x = i + dir[0];
+        final int y = j + dir[1];
+        if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+          continue;
+        if (matrix[x].charAt(y) == &#x27;#&#x27;)
+          continue;
+        if (d + 1 &lt; dist[x][y]) {
+          dist[x][y] = d + 1;
+          minHeap.offer(new Pair&lt;&gt;(d + 1, new Pair&lt;&gt;(x, y)));
+        }
+      }
+    }
+
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 3341. Find Minimum Time to Reach Last Room I
+  def minMoves(self, matrix: list[str]) -&gt; int:
+    if matrix[-1][-1] == &#x27;#&#x27;:
+      return -1
+
+    teleportPositions = [[] for _ in range(26)]
+
+    for i, row in enumerate(matrix):
+      for j, c in enumerate(row):
+        if c not in (&#x27;.&#x27;, &#x27;#&#x27;):
+          teleportPositions[ord(c) - ord(&#x27;A&#x27;)].append((i, j))
+
+    return self._dijkstra(matrix, teleportPositions,
+                          (0, 0), (len(matrix) - 1, len(matrix[0]) - 1))
+
+  def _dijkstra(
+      self,
+      matrix: list[str],
+      teleportPositions: list[list[tuple[int, int]]],
+      src: tuple[int, int],
+      dst: tuple[int, int],
+  ) -&gt; int:
+    DIRS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    m = len(matrix)
+    n = len(matrix[0])
+    dist = [[math.inf] * n for _ in range(m)]
+    seen = set()
+
+    dist[0][0] = 0
+    minHeap = [(dist[0][0], src)]  # (d, u)
+
+    while minHeap:
+      d, u = heapq.heappop(minHeap)
+      if u == dst:
+        return d
+      i, j = u
+      if d &gt; dist[i][j]:
+        continue
+      c = matrix[i][j]
+      if c.isupper() and c not in seen:
+        seen.add(c)
+        for x, y in teleportPositions[ord(c) - ord(&#x27;A&#x27;)]:
+          if d &lt; dist[x][y]:
+            dist[x][y] = d
+            heapq.heappush(minHeap, (d, (x, y)))
+      for dx, dy in DIRS:
+        x = i + dx
+        y = j + dy
+        if x &lt; 0 or x == m or y &lt; 0 or y == n:
+          continue
+        if matrix[x][y] == &#x27;#&#x27;:
+          continue
+        if d + 1 &lt; dist[x][y]:
+          dist[x][y] = d + 1
+          heapq.heappush(minHeap, (d + 1, (x, y)))
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

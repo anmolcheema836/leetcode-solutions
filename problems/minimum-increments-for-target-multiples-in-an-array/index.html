@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Increments for Target Multiples in an Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Increments for Target Multiples in an Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-increments-for-target-multiples-in-an-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-manhattan-distance-after-k-changes/" class="btn">← Previous</a>
+            <span>Problem 3444 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-difference-between-even-and-odd-frequency-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3444. Minimum Increments for Target Multiples in an Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Increments for Target Multiples in an Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumIncrements(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; target) {
+    const int maxMask = 1 &lt;&lt; target.size();
+    unordered_map&lt;int, long&gt; maskToLcm;
+
+    for (int mask = 1; mask &lt; maxMask; ++mask) {
+      const vector&lt;int&gt; subset = getSubset(mask, target);
+      maskToLcm[mask] = getLcm(subset);
+    }
+
+    // dp[mask] := the minimum number of increments to make each number in the
+    // subset of target have at least one number that is a multiple in `num`,
+    // where `mask` is the bitmask of the subset of target
+    vector&lt;long&gt; dp(maxMask, LONG_MAX);
+    dp[0] = 0;
+
+    for (const int num : nums) {
+      // maskToCost := (mask, cost), where `mask` is the bitmask of the subset
+      // of target and `cost` is the minimum number of increments to make each
+      // number in the subset of target have at least one number that is a
+      // multiple in `num`
+      vector&lt;pair&lt;int, long&gt;&gt; maskToCost;
+      for (const auto&amp; [mask, lcm] : maskToLcm) {
+        const int remainder = num % lcm;
+        maskToCost.emplace_back(mask, remainder == 0 ? 0 : lcm - remainder);
+      }
+      vector&lt;long&gt; newDp = dp;
+      for (int prevMask = 0; prevMask &lt; maxMask; ++prevMask) {
+        if (dp[prevMask] == LONG_MAX)
+          continue;
+        for (const auto&amp; [mask, cost] : maskToCost) {
+          const int newMask = prevMask | mask;
+          newDp[newMask] = min(newDp[newMask], dp[prevMask] + cost);
+        }
+      }
+      dp = std::move(newDp);
+    }
+
+    return dp.back() == LONG_MAX ? -1 : dp.back();
+  }
+
+ private:
+  vector&lt;int&gt; getSubset(int mask, const vector&lt;int&gt;&amp; target) {
+    vector&lt;int&gt; subset;
+    for (int i = 0; i &lt; target.size(); ++i)
+      if (mask &gt;&gt; i &amp; 1)
+        subset.push_back(target[i]);
+    return subset;
+  }
+
+  long getLcm(const vector&lt;int&gt;&amp; nums) {
+    long res = 1;
+    for (const int num : nums)
+      res = lcm(res, num);
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumIncrements(int[] nums, int[] target) {
+    final int maxMask = 1 &lt;&lt; target.length;
+    Map&lt;Integer, Long&gt; maskToLcm = new HashMap&lt;&gt;();
+
+    for (int mask = 1; mask &lt; maxMask; ++mask) {
+      List&lt;Integer&gt; subset = getSubset(mask, target);
+      maskToLcm.put(mask, getLcm(subset));
+    }
+
+    // dp[mask] := the minimum number of increments to make each number in the
+    // subset of target have at least one number that is a multiple in `num`,
+    // where `mask` is the bitmask of the subset of target
+    long[] dp = new long[maxMask];
+    Arrays.fill(dp, Long.MAX_VALUE);
+    dp[0] = 0;
+
+    for (final int num : nums) {
+      // maskToCost := (mask, cost), where `mask` is the bitmask of the subset
+      // of target and `cost` is the minimum number of increments to make each
+      // number in the subset of target have at least one number that is a
+      // multiple in `num`
+      List&lt;Pair&lt;Integer, Long&gt;&gt; maskToCost = new ArrayList&lt;&gt;();
+      for (Map.Entry&lt;Integer, Long&gt; entry : maskToLcm.entrySet()) {
+        final int mask = entry.getKey();
+        final long lcm = entry.getValue();
+        final long remainder = num % lcm;
+        maskToCost.add(new Pair&lt;&gt;(mask, remainder == 0 ? 0 : lcm - remainder));
+      }
+      long[] newDp = dp.clone();
+      for (int prevMask = 0; prevMask &lt; maxMask; ++prevMask) {
+        if (dp[prevMask] == Long.MAX_VALUE)
+          continue;
+        for (Pair&lt;Integer, Long&gt; pair : maskToCost) {
+          final int mask = pair.getKey();
+          final long cost = pair.getValue();
+          final int newMask = prevMask | mask;
+          newDp[newMask] = Math.min(newDp[newMask], dp[prevMask] + cost);
+        }
+      }
+      dp = newDp;
+    }
+
+    return dp[maxMask - 1] == Long.MAX_VALUE ? -1 : (int) dp[maxMask - 1];
+  }
+
+  private List&lt;Integer&gt; getSubset(int mask, int[] target) {
+    List&lt;Integer&gt; subset = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; target.length; ++i)
+      if ((mask &gt;&gt; i &amp; 1) == 1)
+        subset.add(target[i]);
+    return subset;
+  }
+
+  private long getLcm(List&lt;Integer&gt; nums) {
+    long res = 1;
+    for (final int num : nums)
+      res = lcm(res, num);
+    return res;
+  }
+
+  private long lcm(long a, long b) {
+    return a * b / gcd(a, b);
+  }
+
+  private long gcd(long a, long b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumIncrements(self, nums: list[int], target: list[int]) -&gt; int:
+    maxMask = 1 &lt;&lt; len(target)
+    maskToLcm = {}
+
+    for mask in range(1, maxMask):
+      subset = [num for i, num in enumerate(target) if mask &gt;&gt; i &amp; 1]
+      maskToLcm[mask] = functools.reduce(math.lcm, subset, 1)
+
+    # dp[mask] := the minimum number of increments to make each number in the
+    # subset of target have at least one number that is a multiple in `num`,
+    # where `mask` is the bitmask of the subset of target
+    dp = [math.inf] * maxMask
+    dp[0] = 0
+
+    for num in nums:
+      # maskToCost := (mask, cost), where `mask` is the bitmask of the subset
+      # of target and `cost` is the minimum number of increments to make each
+      # number in the subset of target have at least one number that is a
+      # multiple in `num`
+      maskToCost = [
+          (mask, 0 if (remainder := num % lcm) == 0 else lcm - remainder) for mask,
+          lcm in maskToLcm.items()]
+      newDp = dp[:]
+      for prevMask in range(maxMask):
+        if dp[prevMask] == float(&#x27;inf&#x27;):
+          continue
+        for mask, cost in maskToCost:
+          newMask = prevMask | mask
+          newDp[newMask] = min(newDp[newMask], dp[prevMask] + cost)
+      dp = newDp
+
+    return -1 if dp[-1] == math.inf else dp[-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

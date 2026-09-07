@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solve the Equation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Solve the Equation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/solve-the-equation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/decode-ways-ii/" class="btn">← Previous</a>
+            <span>Problem 640 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-circular-deque/" class="btn">Next →</a>
+        </div>
+        <h1>640. Solve the Equation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Solve the Equation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string solveEquation(string equation) {
+    const string lhsEquation = equation.substr(0, equation.find(&#x27;=&#x27;));
+    const string rhsEquation = equation.substr(equation.find(&#x27;=&#x27;) + 1);
+    const auto&amp; [lhsCoefficient, lhsConstant] = calculate(lhsEquation);
+    const auto&amp; [rhsCoefficient, rhsConstant] = calculate(rhsEquation);
+    const int coefficient = lhsCoefficient - rhsCoefficient;
+    const int constant = rhsConstant - lhsConstant;
+
+    if (coefficient == 0 &amp;&amp; constant == 0)
+      return &quot;Infinite solutions&quot;;
+    if (coefficient == 0 &amp;&amp; constant != 0)
+      return &quot;No solution&quot;;
+    return &quot;x=&quot; + to_string(constant / coefficient);
+  }
+
+ private:
+  pair&lt;int, int&gt; calculate(const string&amp; s) {
+    int coefficient = 0;
+    int constant = 0;
+    int num = 0;
+    int sign = 1;
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      const char c = s[i];
+      if (isdigit(c))
+        num = num * 10 + (c - &#x27;0&#x27;);
+      else if (c == &#x27;+&#x27; || c == &#x27;-&#x27;) {
+        constant += sign * num;
+        sign = c == &#x27;+&#x27; ? 1 : -1;
+        num = 0;
+      } else {
+        if (i &gt; 0 &amp;&amp; num == 0 &amp;&amp; s[i - 1] == &#x27;0&#x27;)
+          continue;
+        coefficient += num == 0 ? sign : sign * num;
+        num = 0;
+      }
+    }
+
+    return {coefficient, constant + sign * num};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String solveEquation(String equation) {
+    String[] equations = equation.split(&quot;=&quot;);
+    int[] lhs = calculate(equations[0]);
+    int[] rhs = calculate(equations[1]);
+    int coefficient = lhs[0] - rhs[0];
+    int constant = rhs[1] - lhs[1];
+
+    if (coefficient == 0 &amp;&amp; constant == 0)
+      return &quot;Infinite solutions&quot;;
+    if (coefficient == 0 &amp;&amp; constant != 0)
+      return &quot;No solution&quot;;
+    return &quot;x=&quot; + constant / coefficient;
+  }
+
+  private int[] calculate(final String s) {
+    int coefficient = 0;
+    int constant = 0;
+    int num = 0;
+    int sign = 1;
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      char c = s.charAt(i);
+      if (Character.isDigit(c))
+        num = num * 10 + (c - &#x27;0&#x27;);
+      else if (c == &#x27;+&#x27; || c == &#x27;-&#x27;) {
+        constant += sign * num;
+        sign = c == &#x27;+&#x27; ? 1 : -1;
+        num = 0;
+      } else {
+        if (i &gt; 0 &amp;&amp; num == 0 &amp;&amp; s.charAt(i - 1) == &#x27;0&#x27;)
+          continue;
+        coefficient += num == 0 ? sign : sign * num;
+        num = 0;
+      }
+    }
+
+    return new int[] {coefficient, constant + sign * num};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def solveEquation(self, equation: str) -&gt; str:
+    def calculate(s: str) -&gt; tuple:
+      coefficient = 0
+      constant = 0
+      num = 0
+      sign = 1
+
+      for i, c in enumerate(s):
+        if c.isdigit():
+          num = num * 10 + int(c)
+        elif c in &#x27;+-&#x27;:
+          constant += sign * num
+          sign = 1 if c == &#x27;+&#x27; else -1
+          num = 0
+        else:
+          if i &gt; 0 and num == 0 and s[i - 1] == &#x27;0&#x27;:
+            continue
+          coefficient += sign if num == 0 else sign * num
+          num = 0
+
+      return coefficient, constant + sign * num
+
+    lhsEquation, rhsEquation = equation.split(&#x27;=&#x27;)
+    lhsCoefficient, lhsConstant = calculate(lhsEquation)
+    rhsCoefficient, rhsConstant = calculate(rhsEquation)
+    coefficient = lhsCoefficient - rhsCoefficient
+    constant = rhsConstant - lhsConstant
+
+    if coefficient == 0 and constant == 0:
+      return &quot;Infinite solutions&quot;
+    if coefficient == 0 and constant != 0:
+      return &quot;No solution&quot;
+    return &quot;x=&quot; + str(constant // coefficient)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

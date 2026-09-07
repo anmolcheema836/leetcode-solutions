@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Operations to Make Character Frequencies Equal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Operations to Make Character Frequencies Equal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-operations-to-make-character-frequencies-equal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-beautiful-splits-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 3389 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-team-pass-streak/" class="btn">Next →</a>
+        </div>
+        <h1>3389. Minimum Operations to Make Character Frequencies Equal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Operations to Make Character Frequencies Equal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int makeStringGood(string s) {
+    int ans = s.length();
+    vector&lt;int&gt; count(26);
+
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+
+    const int mx = ranges::max(count);
+    for (int target = 1; target &lt;= mx; ++target)
+      ans = min(ans, getMinOperations(count, target));
+
+    return ans;
+  }
+
+ private:
+  int getMinOperations(const vector&lt;int&gt;&amp; count, int target) {
+    // dp[i] := the minimum number of operations to make the frequency of
+    // (i..25)-th (0-indexed) letters equal to `target`.
+    vector&lt;int&gt; dp(27);
+
+    for (int i = 25; i &gt;= 0; --i) {
+      // 1. Delete all the i-th letters.
+      const int deleteAllToZero = count[i];
+      // 2. Insert/delete the i-th letters to have `target` number of letters.
+      const int deleteOrInsertToTarget = abs(target - count[i]);
+      dp[i] = min(deleteAllToZero, deleteOrInsertToTarget) + dp[i + 1];
+      if (i + 1 &lt; 26 &amp;&amp; count[i + 1] &lt; target) {
+        const int nextDeficit = target - count[i + 1];
+        // Make the frequency of the i-th letter equal to the `target` or 0.
+        const int needToChange =
+            count[i] &gt; target ? count[i] - target : count[i];
+        const int changeToTarget =
+            nextDeficit &gt; needToChange
+                // 3. Change all the i-th letters to the next letter and then
+                // insert the remaining deficit for the next letter.
+                ? needToChange + (nextDeficit - needToChange)
+                // 4. Change `nextDeficit` i-th letters to the next letter and
+                // then delete the remaining i-th letters.
+                : nextDeficit + (needToChange - nextDeficit);
+        dp[i] = min(dp[i], changeToTarget + dp[i + 2]);
+      }
+    }
+
+    return dp[0];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int makeStringGood(String s) {
+    int ans = s.length();
+    int[] count = new int[26];
+
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    final int maxCount = Arrays.stream(count).max().getAsInt();
+    for (int target = 1; target &lt;= maxCount; ++target)
+      ans = Math.min(ans, getMinOperations(count, target));
+
+    return ans;
+  }
+
+  private int getMinOperations(int[] count, int target) {
+    // dp[i] represents the minimum number of operations to make the frequency of
+    // (i..25)-th (0-indexed) letters equal to `target`.
+    int[] dp = new int[27];
+
+    for (int i = 25; i &gt;= 0; --i) {
+      // 1. Delete all the i-th letters.
+      int deleteAllToZero = count[i];
+      // 2. Insert/delete the i-th letters to have `target` number of letters.
+      int deleteOrInsertToTarget = Math.abs(target - count[i]);
+      dp[i] = Math.min(deleteAllToZero, deleteOrInsertToTarget) + dp[i + 1];
+      if (i + 1 &lt; 26 &amp;&amp; count[i + 1] &lt; target) {
+        final int nextDeficit = target - count[i + 1];
+        // Make the frequency of the i-th letter equal to the `target` or 0.
+        final int needToChange = count[i] &lt;= target ? count[i] : count[i] - target;
+        final int changeToTarget = (nextDeficit &gt; needToChange)
+                                       // 3. Change all the i-th letters to the next letter and then
+                                       // insert the remaining deficit for the next letter.
+                                       ? needToChange + (nextDeficit - needToChange)
+                                       // 4. Change `nextDeficit` i-th letters to the next letter
+                                       // and then delete the remaining i-th letters.
+                                       : nextDeficit + (needToChange - nextDeficit);
+        dp[i] = Math.min(dp[i], changeToTarget + dp[i + 2]);
+      }
+    }
+
+    return dp[0];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def makeStringGood(self, s: str) -&gt; int:
+    count = [0] * 26
+    for c in s:
+      count[ord(c) - ord(&#x27;a&#x27;)] += 1
+    return min(self._getMinOperations(count, target)
+               for target in range(1, max(count) + 1))
+
+  def _getMinOperations(self, count: list[int], target: int) -&gt; int:
+    # dp[i] represents the minimum number of operations to make the frequency of
+    # (i..25)-th (0-indexed) letters equal to `target`.
+    dp = [0] * 27
+
+    for i in range(25, -1, -1):
+      # 1. Delete all the i-th letters.
+      deleteAllToZero = count[i]
+      # 2. Insert/delete the i-th letters to have `target` number of letters.
+      deleteOrInsertToTarget = abs(target - count[i])
+      dp[i] = min(deleteAllToZero, deleteOrInsertToTarget) + dp[i + 1]
+      if i + 1 &lt; 26 and count[i + 1] &lt; target:
+        nextDeficit = target - count[i + 1]
+        # Make the frequency of the i-th letter equal to the `target` or 0.
+        needToChange = count[i] if count[i] &lt;= target else count[i] - target
+        changeToTarget = (
+            # 3. Change all the i-th letters to the next letter and then
+            # insert the remaining deficit for the next letter.
+            needToChange + (nextDeficit - needToChange) if nextDeficit &gt; needToChange
+            # 4. Change `nextDeficit` i-th letters to the next letter and
+            # then delete the remaining i-th letters.
+            else nextDeficit + (needToChange - nextDeficit)
+        )
+        dp[i] = min(dp[i], changeToTarget + dp[i + 2])
+
+    return dp[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

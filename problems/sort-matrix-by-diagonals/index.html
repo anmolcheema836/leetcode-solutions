@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sort Matrix by Diagonals - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sort Matrix by Diagonals written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sort-matrix-by-diagonals/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-difference-between-even-and-odd-frequency-ii/" class="btn">← Previous</a>
+            <span>Problem 3446 of 3563</span>
+            <a href="/leetcode-solutions/problems/assign-elements-to-groups-with-constraints/" class="btn">Next →</a>
+        </div>
+        <h1>3446. Sort Matrix by Diagonals</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sort Matrix by Diagonals efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; sortMatrix(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int n = grid.size();
+    vector&lt;vector&lt;int&gt;&gt; ans(n, vector&lt;int&gt;(n));
+    vector&lt;vector&lt;int&gt;&gt; diag(2 * n + 1);
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        diag[i - j + n].push_back(grid[i][j]);
+
+    for (int i = 0; i &lt; 2 * n + 1; ++i)
+      if (i &lt; n)
+        ranges::sort(diag[i], greater&lt;int&gt;());
+      else
+        ranges::sort(diag[i]);
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        ans[i][j] = diag[i - j + n].back(), diag[i - j + n].pop_back();
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] sortMatrix(int[][] grid) {
+    final int n = grid.length;
+    int[][] ans = new int[n][n];
+    Map&lt;Integer, List&lt;Integer&gt;&gt; diag = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        final int key = i - j;
+        diag.putIfAbsent(key, new ArrayList&lt;&gt;());
+        diag.get(key).add(grid[i][j]);
+      }
+
+    for (Map.Entry&lt;Integer, List&lt;Integer&gt;&gt; entry : diag.entrySet()) {
+      List&lt;Integer&gt; values = entry.getValue();
+      if (entry.getKey() &lt; 0)
+        Collections.sort(values, Collections.reverseOrder());
+      else
+        Collections.sort(values);
+    }
+
+    for (int i = 0; i &lt; n; i++)
+      for (int j = 0; j &lt; n; j++) {
+        final int key = i - j;
+        ans[i][j] = diag.get(key).remove(diag.get(key).size() - 1);
+      }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def sortMatrix(self, grid: list[list[int]]) -&gt; list[list[int]]:
+    n = len(grid)
+    ans = [[0] * n for _ in range(n)]
+    diag = collections.defaultdict(list)
+
+    for i, row in enumerate(grid):
+      for j, num in enumerate(row):
+        diag[i - j].append(num)
+
+    for key in diag:
+      diag[key].sort(reverse=key &lt; 0)
+
+    for i in range(n):
+      for j in range(n):
+        ans[i][j] = diag[i - j].pop()
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

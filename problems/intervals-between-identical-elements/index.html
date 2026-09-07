@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intervals Between Identical Elements - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Intervals Between Identical Elements written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/intervals-between-identical-elements/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/execution-of-all-suffix-instructions-staying-in-a-grid/" class="btn">← Previous</a>
+            <span>Problem 2121 of 3563</span>
+            <a href="/leetcode-solutions/problems/recover-the-original-array/" class="btn">Next →</a>
+        </div>
+        <h1>2121. Intervals Between Identical Elements</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Intervals Between Identical Elements efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;long long&gt; getDistances(vector&lt;int&gt;&amp; arr) {
+    const int n = arr.size();
+    vector&lt;long long&gt; ans(n);
+    vector&lt;long&gt; prefix(n);
+    vector&lt;long&gt; suffix(n);
+    unordered_map&lt;int, vector&lt;int&gt;&gt; numToIndices;
+
+    for (int i = 0; i &lt; n; ++i)
+      numToIndices[arr[i]].push_back(i);
+
+    for (const auto&amp; [_, indices] : numToIndices) {
+      for (int i = 1; i &lt; indices.size(); ++i) {
+        const int currIndex = indices[i];
+        const int prevIndex = indices[i - 1];
+        prefix[currIndex] += prefix[prevIndex] + i * (currIndex - prevIndex);
+      }
+      for (int i = indices.size() - 2; i &gt;= 0; --i) {
+        const int currIndex = indices[i];
+        const int prevIndex = indices[i + 1];
+        suffix[currIndex] += suffix[prevIndex] +
+                             (indices.size() - i - 1) * (prevIndex - currIndex);
+      }
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      ans[i] = prefix[i] + suffix[i];
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long[] getDistances(int[] arr) {
+    final int n = arr.length;
+    long[] ans = new long[n];
+    long[] prefix = new long[n];
+    long[] suffix = new long[n];
+    Map&lt;Integer, List&lt;Integer&gt;&gt; numToIndices = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i) {
+      numToIndices.putIfAbsent(arr[i], new ArrayList&lt;&gt;());
+      numToIndices.get(arr[i]).add(i);
+    }
+
+    for (List&lt;Integer&gt; indices : numToIndices.values()) {
+      for (int i = 1; i &lt; indices.size(); ++i) {
+        final int currIndex = indices.get(i);
+        final int prevIndex = indices.get(i - 1);
+        prefix[currIndex] += prefix[prevIndex] + i * (currIndex - prevIndex);
+      }
+      for (int i = indices.size() - 2; i &gt;= 0; --i) {
+        final int currIndex = indices.get(i);
+        final int prevIndex = indices.get(i + 1);
+        suffix[currIndex] += suffix[prevIndex] + (indices.size() - i - 1) * (prevIndex - currIndex);
+      }
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      ans[i] = prefix[i] + suffix[i];
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getDistances(self, arr: list[int]) -&gt; list[int]:
+    prefix = [0] * len(arr)
+    suffix = [0] * len(arr)
+    numToIndices = collections.defaultdict(list)
+
+    for i, a in enumerate(arr):
+      numToIndices[a].append(i)
+
+    for indices in numToIndices.values():
+      for i in range(1, len(indices)):
+        currIndex = indices[i]
+        prevIndex = indices[i - 1]
+        prefix[currIndex] += prefix[prevIndex] + i * (currIndex - prevIndex)
+      for i in range(len(indices) - 2, -1, -1):
+        currIndex = indices[i]
+        prevIndex = indices[i + 1]
+        suffix[currIndex] += (suffix[prevIndex] +
+                              (len(indices) - i - 1) * (prevIndex - currIndex))
+
+    return [p + s for p, s in zip(prefix, suffix)]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

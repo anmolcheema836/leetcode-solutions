@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructing Two Increasing Arrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Constructing Two Increasing Arrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/constructing-two-increasing-arrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-overlapping-shifts-ii/" class="btn">← Previous</a>
+            <span>Problem 3269 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-key-of-the-numbers/" class="btn">Next →</a>
+        </div>
+        <h1>3269. Constructing Two Increasing Arrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Constructing Two Increasing Arrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minLargest(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    const int m = nums1.size();
+    const int n = nums2.size();
+    // dp[i][j] := the minimum largest number for the first i nums1 and the
+    // first j nums2
+    vector&lt;vector&lt;int&gt;&gt; dp(m + 1, vector&lt;int&gt;(n + 1, INT_MAX));
+    dp[0][0] = 0;
+
+    for (int i = 0; i &lt;= m; ++i)
+      for (int j = 0; j &lt;= n; ++j) {
+        if (i &gt; 0)
+          dp[i][j] = min(dp[i][j], f(dp[i - 1][j], nums1[i - 1]));
+        if (j &gt; 0)
+          dp[i][j] = min(dp[i][j], f(dp[i][j - 1], nums2[j - 1]));
+      }
+
+    return dp[m][n];
+  }
+
+ private:
+  // Returns the next number to fill in the array based on the previous number
+  // and the current number.
+  int f(int prev, int num) {
+    return prev + (prev % 2 == num ? 2 : 1);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minLargest(int[] nums1, int[] nums2) {
+    final int m = nums1.length;
+    final int n = nums2.length;
+    // dp[i][j] := the minimum largest number for the first i nums1 and the
+    // first j nums2
+    int[][] dp = new int[m + 1][n + 1];
+
+    Arrays.stream(dp).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE));
+    dp[0][0] = 0;
+
+    for (int i = 0; i &lt;= m; ++i)
+      for (int j = 0; j &lt;= n; ++j) {
+        if (i &gt; 0)
+          dp[i][j] = Math.min(dp[i][j], f(dp[i - 1][j], nums1[i - 1]));
+        if (j &gt; 0)
+          dp[i][j] = Math.min(dp[i][j], f(dp[i][j - 1], nums2[j - 1]));
+      }
+
+    return dp[m][n];
+  }
+
+  // Returns the next number to fill in the array based on the previous number
+  // and the current number.
+  private int f(int prev, int num) {
+    return prev + (prev % 2 == num ? 2 : 1);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minLargest(self, nums1: list[int], nums2: list[int]) -&gt; int:
+    m = len(nums1)
+    n = len(nums2)
+    # dp[i][j] := the minimum largest number for the first i nums1 and the
+    # first j nums2
+    dp = [[math.inf] * (n + 1) for _ in range(m + 1)]
+    dp[0][0] = 0
+
+    def f(prev: int, num: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the next number to fill in the array based on the previous number
+      and the current number.
+      &quot;&quot;&quot;
+      return prev + (2 if prev % 2 == num else 1)
+
+    for i in range(m + 1):
+      for j in range(n + 1):
+        if i &gt; 0:
+          dp[i][j] = min(dp[i][j], f(dp[i - 1][j], nums1[i - 1]))
+        if j &gt; 0:
+          dp[i][j] = min(dp[i][j], f(dp[i][j - 1], nums2[j - 1]))
+
+    return dp[m][n]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

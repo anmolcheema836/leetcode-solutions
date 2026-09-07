@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost of a Path With Special Roads - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost of a Path With Special Roads written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-of-a-path-with-special-roads/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/first-completely-painted-row-or-column/" class="btn">← Previous</a>
+            <span>Problem 2662 of 3563</span>
+            <a href="/leetcode-solutions/problems/lexicographically-smallest-beautiful-string/" class="btn">Next →</a>
+        </div>
+        <h1>2662. Minimum Cost of a Path With Special Roads</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost of a Path With Special Roads efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumCost(vector&lt;int&gt;&amp; start, vector&lt;int&gt;&amp; target,
+                  vector&lt;vector&lt;int&gt;&gt;&amp; specialRoads) {
+    return dijkstra(specialRoads, start[0], start[1], target[0], target[1]);
+  }
+
+ private:
+  int dijkstra(const vector&lt;vector&lt;int&gt;&gt;&amp; specialRoads, int srcX, int srcY,
+               int dstX, int dstY) {
+    const int n = specialRoads.size();
+    // dist[i] := the minimum distance of (srcX, srcY) to
+    // specialRoads[i](x2, y2)
+    vector&lt;int&gt; dist(specialRoads.size(), INT_MAX);
+    using P = pair&lt;int, int&gt;;  // (d, u), where u := the i-th specialRoads
+    priority_queue&lt;P, vector&lt;P&gt;, greater&lt;&gt;&gt; minHeap;
+
+    // (srcX, srcY) -&gt; (x1, y1) to cost -&gt; (x2, y2)
+    for (int u = 0; u &lt; n; ++u) {
+      const int x1 = specialRoads[u][0];
+      const int y1 = specialRoads[u][1];
+      const int cost = specialRoads[u][4];
+      const int d = abs(x1 - srcX) + abs(y1 - srcY) + cost;
+      dist[u] = d;
+      minHeap.emplace(dist[u], u);
+    }
+
+    while (!minHeap.empty()) {
+      const auto [d, u] = minHeap.top();
+      minHeap.pop();
+      if (d &gt; dist[u])
+        continue;
+      const int ux2 = specialRoads[u][2];
+      const int uy2 = specialRoads[u][3];
+      for (int v = 0; v &lt; n; ++v) {
+        if (v == u)
+          continue;
+        const int vx1 = specialRoads[v][0];
+        const int vy1 = specialRoads[v][1];
+        const int vcost = specialRoads[v][4];
+        // (ux2, uy2) -&gt; (vx1, vy1) to vcost -&gt; (vx2, vy2)
+        const int newDist = d + abs(vx1 - ux2) + abs(vy1 - uy2) + vcost;
+        if (newDist &lt; dist[v]) {
+          dist[v] = newDist;
+          minHeap.emplace(dist[v], v);
+        }
+      }
+    }
+
+    int ans = abs(dstX - srcX) + abs(dstY - srcY);
+    for (int u = 0; u &lt; n; ++u) {
+      const int x2 = specialRoads[u][2];
+      const int y2 = specialRoads[u][3];
+      // (srcX, srcY) -&gt; (x2, y2) -&gt; (dstX, dstY).
+      ans = min(ans, dist[u] + abs(dstX - x2) + abs(dstY - y2));
+    }
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumCost(int[] start, int[] target, int[][] specialRoads) {
+    return dijkstra(specialRoads, start[0], start[1], target[0], target[1]);
+  }
+
+  private int dijkstra(int[][] specialRoads, int srcX, int srcY, int dstX, int dstY) {
+    final int n = specialRoads.length;
+    // dist[i] := the minimum distance of (srcX, srcY) to
+    // specialRoads[i](x2, y2)
+    int[] dist = new int[n];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    // (d, u), where u := the i-th specialRoads
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; minHeap =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair::getKey));
+
+    // (srcX, srcY) -&gt; (x1, y1) to cost -&gt; (x2, y2)
+    for (int u = 0; u &lt; n; ++u) {
+      final int x1 = specialRoads[u][0];
+      final int y1 = specialRoads[u][1];
+      final int cost = specialRoads[u][4];
+      final int d = Math.abs(x1 - srcX) + Math.abs(y1 - srcY) + cost;
+      dist[u] = d;
+      minHeap.offer(new Pair&lt;&gt;(dist[u], u));
+    }
+
+    while (!minHeap.isEmpty()) {
+      final int d = minHeap.peek().getKey();
+      final int u = minHeap.poll().getValue();
+      if (d &gt; dist[u])
+        continue;
+      final int ux2 = specialRoads[u][2];
+      final int uy2 = specialRoads[u][3];
+      for (int v = 0; v &lt; n; ++v) {
+        if (v == u)
+          continue;
+        final int vx1 = specialRoads[v][0];
+        final int vy1 = specialRoads[v][1];
+        final int vcost = specialRoads[v][4];
+        // (ux2, uy2) -&gt; (vx1, vy1) to vcost -&gt; (vx2, vy2)
+        final int newDist = d + Math.abs(vx1 - ux2) + Math.abs(vy1 - uy2) + vcost;
+        if (newDist &lt; dist[v]) {
+          dist[v] = newDist;
+          minHeap.offer(new Pair&lt;&gt;(dist[v], v));
+        }
+      }
+    }
+
+    int ans = Math.abs(dstX - srcX) + Math.abs(dstY - srcY);
+    for (int u = 0; u &lt; n; ++u) {
+      final int x2 = specialRoads[u][2];
+      final int y2 = specialRoads[u][3];
+      // (srcX, srcY) -&gt; (x2, y2) -&gt; (dstX, dstY).
+      ans = Math.min(ans, dist[u] + Math.abs(dstX - x2) + Math.abs(dstY - y2));
+    }
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumCost(
+      self,
+      start: list[int],
+      target: list[int],
+      specialRoads: list[list[int]],
+  ) -&gt; int:
+    return self.dijkstra(specialRoads, *start, *target)
+
+  def dijkstra(
+      self,
+      specialRoads: list[list[int]],
+      srcX: int,
+      srcY: int,
+      dstX: int,
+      dstY: int,
+  ) -&gt; int:
+    n = len(specialRoads)
+    # dist[i] := the minimum distance of (srcX, srcY) to specialRoads[i](x2, y2)
+    dist = [math.inf] * n
+    minHeap = []  # (d, u), where u := the i-th specialRoads
+
+    # (srcX, srcY) -&gt; (x1, y1) to cost -&gt; (x2, y2)
+    for u, (x1, y1, _, _, cost) in enumerate(specialRoads):
+      d = abs(x1 - srcX) + abs(y1 - srcY) + cost
+      dist[u] = d
+      heapq.heappush(minHeap, (dist[u], u))
+
+    while minHeap:
+      d, u = heapq.heappop(minHeap)
+      if d &gt; dist[u]:
+        continue
+      _, _, ux2, uy2, _ = specialRoads[u]
+      for v in range(n):
+        if v == u:
+          continue
+        vx1, vy1, _, _, vcost = specialRoads[v]
+        # (ux2, uy2) -&gt; (vx1, vy1) to vcost -&gt; (vx2, vy2)
+        newDist = d + abs(vx1 - ux2) + abs(vy1 - uy2) + vcost
+        if newDist &lt; dist[v]:
+          dist[v] = newDist
+          heapq.heappush(minHeap, (dist[v], v))
+
+    ans = abs(dstX - srcX) + abs(dstY - srcY)
+    for u in range(n):
+      _, _, x2, y2, _ = specialRoads[u]
+      # (srcX, srcY) -&gt; (x2, y2) -&gt; (dstX, dstY).
+      ans = min(ans, dist[u] + abs(dstX - x2) + abs(dstY - y2))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

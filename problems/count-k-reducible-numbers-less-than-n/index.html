@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count K-Reducible Numbers Less Than N - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count K-Reducible Numbers Less Than N written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-k-reducible-numbers-less-than-n/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-good-subsequences/" class="btn">← Previous</a>
+            <span>Problem 3352 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-total-operations/" class="btn">Next →</a>
+        </div>
+        <h1>3352. Count K-Reducible Numbers Less Than N</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count K-Reducible Numbers Less Than N efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countKReducibleNumbers(string s, int k) {
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; mem(
+        s.length(), vector&lt;vector&lt;int&gt;&gt;(s.length() + 1, vector&lt;int&gt;(2, -1)));
+    return count(s, 0, 0, true, k, getOps(s), mem) - 1;  // - 0
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  // Returns the number of positive integers less than n that are k-reducible,
+  // considering the i-th digit, where `setBits` is the number of set bits in
+  // the current number, and `tight` indicates if the current digit is
+  // tightly bound.
+  int count(const string&amp; s, int i, int setBits, bool tight, int k,
+            const vector&lt;int&gt;&amp; ops, vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&amp; mem) {
+    if (i == s.length())
+      return (ops[setBits] &lt; k &amp;&amp; !tight) ? 1 : 0;
+    if (mem[i][setBits][tight] != -1)
+      return mem[i][setBits][tight];
+
+    int res = 0;
+    const int maxDigit = tight ? s[i] - &#x27;0&#x27; : 1;
+
+    for (int d = 0; d &lt;= maxDigit; ++d) {
+      const bool nextTight = tight &amp;&amp; (d == maxDigit);
+      res += count(s, i + 1, setBits + d, nextTight, k, ops, mem);
+      res %= kMod;
+    }
+
+    return mem[i][setBits][tight] = res;
+  };
+
+  // Returns the number of operations to reduce a number to 0.
+  vector&lt;int&gt; getOps(string&amp; s) {
+    vector&lt;int&gt; ops(s.length() + 1);
+    for (int num = 2; num &lt;= s.length(); ++num)
+      ops[num] = 1 + ops[__builtin_popcount(num)];
+    return ops;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countKReducibleNumbers(String s, int k) {
+    Integer[][][] mem = new Integer[s.length()][s.length() + 1][2];
+    return count(s, 0, 0, true, k, getOps(s), mem) - 1; // - 0
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  // Returns the number of positive integers less than n that are k-reducible,
+  // considering the i-th digit, where `setBits` is the number of set bits in
+  // the current number, and `tight` indicates if the current digit is
+  // tightly bound.
+  private int count(String s, int i, int setBits, boolean tight, int k, int[] ops,
+                    Integer[][][] mem) {
+    if (i == s.length())
+      return (ops[setBits] &lt; k &amp;&amp; !tight) ? 1 : 0;
+    if (mem[i][setBits][tight ? 1 : 0] != null)
+      return mem[i][setBits][tight ? 1 : 0];
+
+    int res = 0;
+    final int maxDigit = tight ? s.charAt(i) - &#x27;0&#x27; : 1;
+
+    for (int d = 0; d &lt;= maxDigit; ++d) {
+      final boolean nextTight = tight &amp;&amp; (d == maxDigit);
+      res += count(s, i + 1, setBits + d, nextTight, k, ops, mem);
+      res %= MOD;
+    }
+
+    return mem[i][setBits][tight ? 1 : 0] = res;
+  }
+
+  // Returns the number of operations to reduce a number to 0.
+  private int[] getOps(String s) {
+    int[] ops = new int[s.length() + 1];
+    for (int num = 2; num &lt;= s.length(); ++num)
+      ops[num] = 1 + ops[Integer.bitCount(num)];
+    return ops;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countKReducibleNumbers(self, s: str, k: int) -&gt; int:
+    MOD = 1_000_000_007
+    ops = self._getOps(s)
+
+    @functools.lru_cache(None)
+    def dp(i: int, setBits: int, tight: bool) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of positive integers less than n that are k-reducible,
+      considering the i-th digit, where `setBits` is the number of set bits in
+      the current number, and `tight` indicates if the current digit is
+      tightly bound.
+      &quot;&quot;&quot;
+      if i == len(s):
+        return int(ops[setBits] &lt; k and not tight)
+
+      res = 0
+      maxDigit = int(s[i]) if tight else 1
+
+      for d in range(maxDigit + 1):
+        nextTight = tight and (d == maxDigit)
+        res += dp(i + 1, setBits + d, nextTight)
+        res %= MOD
+      return res
+
+    return dp(0, 0, True) - 1  # - 0
+
+  def _getOps(self, s: str) -&gt; int:
+    &quot;&quot;&quot;Returns the number of operations to reduce a number to 0.&quot;&quot;&quot;
+    ops = [0] * (len(s) + 1)
+    for num in range(2, len(s) + 1):
+      ops[num] = 1 + ops[num.bit_count()]
+    return ops</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

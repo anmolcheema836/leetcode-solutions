@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Shortest Superstring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Shortest Superstring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-shortest-superstring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/di-string-match/" class="btn">← Previous</a>
+            <span>Problem 943 of 3563</span>
+            <a href="/leetcode-solutions/problems/delete-columns-to-make-sorted/" class="btn">Next →</a>
+        </div>
+        <h1>943. Find the Shortest Superstring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Shortest Superstring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string shortestSuperstring(vector&lt;string&gt;&amp; words) {
+    const int n = words.size();
+    // cost[i][j] := the cost to append words[j] after words[i]
+    vector&lt;vector&lt;int&gt;&gt; cost(n, vector&lt;int&gt;(n));
+    // dp[s][j] := the minimum cost to visit nodes of s ending in j, s is a
+    // binary Value, e.g. dp[6][2] means the minimum cost to visit {1, 2} ending
+    // in 2 (6 = 2^1 + 2^2)
+    vector&lt;vector&lt;int&gt;&gt; dp(1 &lt;&lt; n, vector&lt;int&gt;(n, INT_MAX / 2));
+    // parent[s][j] := the parent of &quot;nodes of s ending in j&quot;
+    vector&lt;vector&lt;int&gt;&gt; parent(1 &lt;&lt; n, vector&lt;int&gt;(n, -1));
+
+    // Returns the cost to append b after a.
+    auto getCost = [](const string&amp; a, const string&amp; b) {
+      int cost = b.length();
+      const int minLength = min(a.length(), b.length());
+      for (int k = 1; k &lt;= minLength; ++k)
+        if (a.substr(a.length() - k) == b.substr(0, k))
+          cost = b.length() - k;
+      return cost;
+    };
+
+    // Pre-calculate the `cost` array to save time.
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        cost[i][j] = getCost(words[i], words[j]);
+        cost[j][i] = getCost(words[j], words[i]);
+      }
+
+    for (int i = 0; i &lt; n; ++i)
+      dp[1 &lt;&lt; i][i] = words[i].length();
+
+    // Enumerate all the states ending in different nodes.
+    for (int s = 1; s &lt; (1 &lt;&lt; n); ++s)
+      for (int i = 0; i &lt; n; ++i) {
+        if ((s &amp; (1 &lt;&lt; i)) == 0)
+          continue;
+        for (int j = 0; j &lt; n; ++j)
+          if (dp[s - (1 &lt;&lt; i)][j] + cost[j][i] &lt; dp[s][i]) {
+            dp[s][i] = dp[s - (1 &lt;&lt; i)][j] + cost[j][i];
+            parent[s][i] = j;
+          }
+      }
+
+    string ans;
+    const vector&lt;int&gt;&amp; dpBack = dp.back();
+    int j = distance(dpBack.begin(), ranges::min_element(dpBack));
+    int s = (1 &lt;&lt; n) - 1;  // 2^0 + 2^1 + ... + 2^(n - 1)
+
+    // Traverse back to build the string.
+    while (s &gt; 0) {
+      const int i = parent[s][j];
+      if (i == -1)
+        ans = words[j] + ans;
+      else
+        ans = words[j].substr(words[j].length() - cost[i][j]) + ans;
+      s -= 1 &lt;&lt; j;
+      j = i;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String shortestSuperstring(String[] words) {
+    final int n = words.length;
+    // cost[i][j] := the cost to append words[j] after words[i]
+    int[][] cost = new int[n][n];
+    // Pre-calculate the `cost` array to save time.
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        cost[i][j] = getCost(words[i], words[j]);
+        cost[j][i] = getCost(words[j], words[i]);
+      }
+    // dp[s][j] := the minimum cost to visit nodes of s ending in j, s is a
+    // binary Value, e.g. dp[6][2] means the minimum cost to visit {1, 2} ending
+    // in 2 (6 = 2^1 + 2^2)
+    int[][] dp = new int[1 &lt;&lt; n][n];
+    Arrays.stream(dp).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE / 2));
+    // parent[s][j] := the parent of &quot;nodes of s ending in j&quot;
+    int[][] parent = new int[1 &lt;&lt; n][n];
+    Arrays.stream(parent).forEach(A -&gt; Arrays.fill(A, -1));
+
+    for (int i = 0; i &lt; n; ++i)
+      dp[1 &lt;&lt; i][i] = words[i].length();
+
+    // Enumerate all the states ending in different nodes.
+    for (int s = 1; s &lt; (1 &lt;&lt; n); ++s)
+      for (int i = 0; i &lt; n; ++i) {
+        if ((s &amp; (1 &lt;&lt; i)) == 0)
+          continue;
+        for (int j = 0; j &lt; n; ++j)
+          if (dp[s - (1 &lt;&lt; i)][j] + cost[j][i] &lt; dp[s][i]) {
+            dp[s][i] = dp[s - (1 &lt;&lt; i)][j] + cost[j][i];
+            parent[s][i] = j;
+          }
+      }
+
+    String ans = &quot;&quot;;
+    int j = getLastNode(dp[(1 &lt;&lt; n) - 1]);
+    int s = (1 &lt;&lt; n) - 1; // 2^0 + 2^1 + ... + 2^(n - 1)
+
+    // Traverse back to build the string.
+    while (s &gt; 0) {
+      final int i = parent[s][j];
+      if (i == -1)
+        ans = words[j] + ans;
+      else
+        ans = words[j].substring(words[j].length() - cost[i][j]) + ans;
+      s -= 1 &lt;&lt; j;
+      j = i;
+    }
+
+    return ans;
+  }
+
+  // Returns the cost to append b after a.
+  private int getCost(final String a, final String b) {
+    int cost = b.length();
+    final int minLength = Math.min(a.length(), b.length());
+    for (int k = 1; k &lt;= minLength; ++k)
+      if (a.substring(a.length() - k).equals(b.substring(0, k)))
+        cost = b.length() - k;
+    return cost;
+  }
+
+  private int getLastNode(int[] row) {
+    int minIndex = 0;
+    for (int i = 1; i &lt; row.length; ++i)
+      if (row[i] &lt; row[minIndex])
+        minIndex = i;
+    return minIndex;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

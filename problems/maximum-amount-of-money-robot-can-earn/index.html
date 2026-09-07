@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Amount of Money Robot Can Earn - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Amount of Money Robot Can Earn written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-amount-of-money-robot-can-earn/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/zigzag-grid-traversal-with-skip/" class="btn">← Previous</a>
+            <span>Problem 3418 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimize-the-maximum-edge-weight-of-graph/" class="btn">Next →</a>
+        </div>
+        <h1>3418. Maximum Amount of Money Robot Can Earn</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Amount of Money Robot Can Earn efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximumAmount(vector&lt;vector&lt;int&gt;&gt;&amp; coins) {
+    const int m = coins.size();
+    const int n = coins[0].size();
+    // dp[i][j][k] := the maximum profit at position (i, j) with k remaining
+    // neutralizations
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(
+        m, vector&lt;vector&lt;int&gt;&gt;(n, vector&lt;int&gt;(4, -INT_MAX / 2)));
+
+    // Base case: the robot starts at the top-left corner.
+    dp[0][0][2] = coins[0][0];
+    if (coins[0][0] &lt; 0)
+      dp[0][0][1] = 0;  // Neutralize the robber.
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int k = 0; k &lt; 3; ++k) {
+          if (i &gt; 0)
+            dp[i][j][k] = max({dp[i][j][k], dp[i - 1][j][k] + coins[i][j],
+                               dp[i - 1][j][k + 1]});
+          if (j &gt; 0)
+            dp[i][j][k] = max({dp[i][j][k], dp[i][j - 1][k] + coins[i][j],
+                               dp[i][j - 1][k + 1]});
+        }
+
+    return ranges::max(dp[m - 1][n - 1]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximumAmount(int[][] coins) {
+    final int m = coins.length;
+    final int n = coins[0].length;
+    // dp[i][j][k] := the maximum profit at position (i, j) with k remaining neutralizations
+    int[][][] dp = new int[m][n][4];
+    Arrays.stream(dp).forEach(
+        A -&gt; Arrays.stream(A).forEach(B -&gt; Arrays.fill(B, Integer.MIN_VALUE / 2)));
+
+    // Base case: the robot starts at the top-left corner.
+    dp[0][0][2] = coins[0][0];
+    if (coins[0][0] &lt; 0)
+      dp[0][0][1] = 0; // Neutralize the robber.
+
+    for (int i = 0; i &lt; m; i++)
+      for (int j = 0; j &lt; n; j++)
+        for (int k = 0; k &lt; 3; k++) {
+          if (i &gt; 0)
+            dp[i][j][k] =
+                Math.max(dp[i][j][k], Math.max(dp[i - 1][j][k] + coins[i][j], dp[i - 1][j][k + 1]));
+          if (j &gt; 0)
+            dp[i][j][k] =
+                Math.max(dp[i][j][k], Math.max(dp[i][j - 1][k] + coins[i][j], dp[i][j - 1][k + 1]));
+        }
+
+    return Arrays.stream(dp[m - 1][n - 1]).max().getAsInt();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumAmount(self, coins: list[list[int]]) -&gt; int:
+    m = len(coins)
+    n = len(coins[0])
+    # dp[i][j][k] := the maximum profit at position (i, j) with k remaining
+    # neutralizations
+    dp = [[[-math.inf] * 4 for _ in range(n)] for _ in range(m)]
+
+    # Base case: the robot starts at the top-left corner.
+    dp[0][0][2] = coins[0][0]
+    if coins[0][0] &lt; 0:
+      dp[0][0][1] = 0  # Neutralize the robber.
+
+    for i in range(m):
+      for j in range(n):
+        for k in range(3):  # for each number of remaining neutralizations
+          if i &gt; 0:
+            dp[i][j][k] = max(dp[i][j][k],
+                              dp[i - 1][j][k] + coins[i][j],
+                              dp[i - 1][j][k + 1])
+          if j &gt; 0:
+            dp[i][j][k] = max(dp[i][j][k],
+                              dp[i][j - 1][k] + coins[i][j],
+                              dp[i][j - 1][k + 1])
+
+    return max(dp[-1][-1])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

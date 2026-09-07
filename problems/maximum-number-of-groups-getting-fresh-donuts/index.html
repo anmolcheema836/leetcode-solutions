@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Groups Getting Fresh Donuts - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Groups Getting Fresh Donuts written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-groups-getting-fresh-donuts/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-nice-pairs-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 1815 of 3563</span>
+            <a href="/leetcode-solutions/problems/truncate-sentence/" class="btn">Next →</a>
+        </div>
+        <h1>1815. Maximum Number of Groups Getting Fresh Donuts</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Groups Getting Fresh Donuts efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxHappyGroups(int batchSize, vector&lt;int&gt;&amp; groups) {
+    int happy = 0;
+    vector&lt;int&gt; freq(batchSize);
+
+    for (int g : groups) {
+      g %= batchSize;
+      if (g == 0) {
+        ++happy;
+      } else if (freq[batchSize - g]) {
+        --freq[batchSize - g];
+        ++happy;
+      } else {
+        ++freq[g];
+      }
+    }
+
+    return happy + dp(freq, 0, batchSize);
+  }
+
+ private:
+  map&lt;vector&lt;int&gt;, int&gt; mem;
+
+  // Returns the maximum number of partitions can be formed.
+  int dp(const vector&lt;int&gt;&amp; freq, int remainder, const int&amp; batchSize) {
+    if (const auto it = mem.find(freq); it != mem.cend())
+      return it-&gt;second;
+
+    int ans = 0;
+
+    if (ranges::any_of(freq, [](int f) { return f != 0; })) {
+      for (int i = 0; i &lt; freq.size(); ++i)
+        if (freq[i]) {
+          vector&lt;int&gt; newFreq(freq);
+          --newFreq[i];
+          ans = max(ans, dp(newFreq, (remainder + i) % batchSize, batchSize));
+        }
+      if (remainder == 0)
+        ++ans;
+    }
+
+    return mem[freq] = ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxHappyGroups(int batchSize, int[] groups) {
+    int happy = 0;
+    int[] freq = new int[batchSize];
+
+    for (int g : groups) {
+      g %= batchSize;
+      if (g == 0) {
+        ++happy;
+      } else if (freq[batchSize - g] &gt; 0) {
+        --freq[batchSize - g];
+        ++happy;
+      } else {
+        ++freq[g];
+      }
+    }
+
+    return happy + dp(freq, 0, batchSize);
+  }
+
+  private Map&lt;String, Integer&gt; mem = new HashMap&lt;&gt;();
+
+  // Returns the maximum number of partitions can be formed.
+  private int dp(int[] freq, int remainder, int batchSize) {
+    final String hashed = hash(freq);
+    if (mem.containsKey(hashed))
+      return mem.get(hashed);
+
+    int ans = 0;
+
+    if (Arrays.stream(freq).anyMatch(f -&gt; f != 0)) {
+      for (int i = 0; i &lt; freq.length; ++i)
+        if (freq[i] &gt; 0) {
+          int[] newFreq = freq.clone();
+          --newFreq[i];
+          ans = Math.max(ans, dp(newFreq, (remainder + i) % batchSize, batchSize));
+        }
+      if (remainder == 0)
+        ++ans;
+    }
+
+    mem.put(hash(freq), ans);
+    return ans;
+  }
+
+  private String hash(int[] freq) {
+    StringBuilder sb = new StringBuilder();
+    for (final int f : freq)
+      sb.append(&quot;#&quot;).append(f);
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxHappyGroups(self, batchSize: int, groups: list[int]) -&gt; int:
+    happy = 0
+    freq = [0] * batchSize
+
+    for g in groups:
+      g %= batchSize
+      if g == 0:
+        happy += 1
+      elif freq[batchSize - g]:
+        freq[batchSize - g] -= 1
+        happy += 1
+      else:
+        freq[g] += 1
+
+    @functools.lru_cache(None)
+    def dp(freq: int, remainder: int) -&gt; int:
+      &quot;&quot;&quot;Returns the maximum number of partitions can be formed.&quot;&quot;&quot;
+      ans = 0
+      if any(freq):
+        for i, f in enumerate(freq):
+          if f:
+            ans = max(ans, dp(freq[:i] + (f - 1,) +
+                              freq[i + 1:], (remainder + i) % batchSize))
+        if remainder == 0:
+          ans += 1
+      return ans
+
+    return happy + dp(tuple(freq), 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

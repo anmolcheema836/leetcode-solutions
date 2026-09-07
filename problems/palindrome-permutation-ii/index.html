@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Permutation II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Palindrome Permutation II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/palindrome-permutation-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/palindrome-permutation/" class="btn">← Previous</a>
+            <span>Problem 267 of 3563</span>
+            <a href="/leetcode-solutions/problems/missing-number/" class="btn">Next →</a>
+        </div>
+        <h1>267. Palindrome Permutation II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Palindrome Permutation II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; generatePalindromes(string s) {
+    int odd = 0;
+    unordered_map&lt;char, int&gt; count;
+
+    for (const char c : s)
+      ++count[c];
+
+    // Count odd ones.
+    for (const auto&amp; [_, value] : count)
+      if (value % 2 == 1)
+        ++odd;
+
+    // Can&#x27;t form any palindrome.
+    if (odd &gt; 1)
+      return {};
+
+    vector&lt;string&gt; ans;
+    vector&lt;char&gt; candidates;
+    string mid;
+
+    // Get the mid and the candidates characters.
+    for (const auto&amp; [key, value] : count) {
+      if (value % 2 == 1)
+        mid += key;
+      for (int i = 0; i &lt; value / 2; ++i)
+        candidates.push_back(key);
+    }
+
+    // Backtrack to generate the ans strings.
+    dfs(candidates, mid, vector&lt;bool&gt;(candidates.size()), &quot;&quot;, ans);
+    return ans;
+  }
+
+ private:
+  // Generates all the unique palindromes from the candidates.
+  void dfs(const vector&lt;char&gt;&amp; candidates, const string&amp; mid,
+           vector&lt;bool&gt;&amp;&amp; used, string&amp;&amp; path, vector&lt;string&gt;&amp; ans) {
+    if (path.length() == candidates.size()) {
+      string secondHalf = path;
+      ranges::reverse(secondHalf);
+      ans.push_back(path + mid + secondHalf);
+      return;
+    }
+
+    for (int i = 0; i &lt; candidates.size(); ++i) {
+      if (used[i])
+        continue;
+      if (i &gt; 0 &amp;&amp; candidates[i] == candidates[i - 1] &amp;&amp; !used[i - 1])
+        continue;
+      used[i] = true;
+      path.push_back(candidates[i]);
+      dfs(candidates, mid, std::move(used), std::move(path), ans);
+      path.pop_back();
+      used[i] = false;
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; generatePalindromes(String s) {
+    int odd = 0;
+    Map&lt;Character, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final char c : s.toCharArray())
+      count.merge(c, 1, Integer::sum);
+
+    // Count odd ones.
+    for (Map.Entry&lt;Character, Integer&gt; entry : count.entrySet())
+      if (entry.getValue() % 2 == 1)
+        ++odd;
+
+    // Can&#x27;t form any palindrome.
+    if (odd &gt; 1)
+      return new ArrayList&lt;&gt;();
+
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;Character&gt; candidates = new ArrayList&lt;&gt;();
+    StringBuilder mid = new StringBuilder();
+
+    // Get the mid and the candidates characters.
+    for (Map.Entry&lt;Character, Integer&gt; entry : count.entrySet()) {
+      final char key = entry.getKey();
+      final int value = entry.getValue();
+      if (value % 2 == 1)
+        mid.append(key);
+      for (int i = 0; i &lt; value / 2; ++i)
+        candidates.add(key);
+    }
+
+    // Backtrack to generate the ans strings.
+    dfs(candidates, mid, new boolean[candidates.size()], new StringBuilder(), ans);
+    return ans;
+  }
+
+  // Generates all the unique palindromes from the candidates.
+  private void dfs(List&lt;Character&gt; candidates, StringBuilder mid, boolean[] used, StringBuilder sb,
+                   List&lt;String&gt; ans) {
+    if (sb.length() == candidates.size()) {
+      ans.add(sb.toString() + mid + sb.reverse().toString());
+      sb.reverse();
+      return;
+    }
+
+    for (int i = 0; i &lt; candidates.size(); ++i) {
+      if (used[i])
+        continue;
+      if (i &gt; 0 &amp;&amp; candidates.get(i) == candidates.get(i - 1) &amp;&amp; !used[i - 1])
+        continue;
+      used[i] = true;
+      sb.append(candidates.get(i));
+      dfs(candidates, mid, used, sb, ans);
+      sb.deleteCharAt(sb.length() - 1);
+      used[i] = false;
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def generatePalindromes(self, s: str) -&gt; list[str]:
+    count = collections.Counter(s)
+
+    # Count odd ones.
+    odd = sum(value &amp; 1 for value in count.values())
+
+    # Can&#x27;t form any palindrome.
+    if odd &gt; 1:
+      return []
+
+    ans = []
+    candidates = []
+    mid = &#x27;&#x27;
+
+    # Get the mid and the candidates characters.
+    for key, value in count.items():
+      if value % 2 == 1:
+        mid += key
+      for _ in range(value // 2):
+        candidates.append(key)
+
+    def dfs(used: list[bool], path: list[str]) -&gt; None:
+      &quot;&quot;&quot;Generates all the unique palindromes from the candidates.&quot;&quot;&quot;
+      if len(path) == len(candidates):
+        ans.append(&#x27;&#x27;.join(path) + mid + &#x27;&#x27;.join(reversed(path)))
+        return
+
+      for i, candidate in enumerate(candidates):
+        if used[i]:
+          continue
+        if i &gt; 0 and candidate == candidates[i - 1] and not used[i - 1]:
+          continue
+        used[i] = True
+        path.append(candidate)
+        dfs(used, path)
+        path.pop()
+        used[i] = False
+
+    # Backtrack to generate the ans strings.
+    dfs([False] * len(candidates), [])
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Overlap - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Image Overlap written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/image-overlap/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-distances-in-tree/" class="btn">← Previous</a>
+            <span>Problem 835 of 3563</span>
+            <a href="/leetcode-solutions/problems/rectangle-overlap/" class="btn">Next →</a>
+        </div>
+        <h1>835. Image Overlap</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Image Overlap efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int largestOverlap(vector&lt;vector&lt;int&gt;&gt;&amp; img1, vector&lt;vector&lt;int&gt;&gt;&amp; img2) {
+    constexpr int kMagic = 100;
+    const int n = img1.size();
+    int ans = 0;
+    vector&lt;pair&lt;int, int&gt;&gt; ones1;
+    vector&lt;pair&lt;int, int&gt;&gt; ones2;
+    unordered_map&lt;int, int&gt; offsetCount;
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        if (img1[i][j] == 1)
+          ones1.emplace_back(i, j);
+        if (img2[i][j] == 1)
+          ones2.emplace_back(i, j);
+      }
+
+    for (const auto&amp; [ax, ay] : ones1)
+      for (const auto&amp; [bx, by] : ones2)
+        ++offsetCount[(ax - bx) * kMagic + (ay - by)];
+
+    for (const auto&amp; [_, count] : offsetCount)
+      ans = max(ans, count);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int largestOverlap(int[][] img1, int[][] img2) {
+    final int MAGIC = 100;
+    final int n = img1.length;
+    int ans = 0;
+    List&lt;int[]&gt; ones1 = new ArrayList&lt;&gt;();
+    List&lt;int[]&gt; ones2 = new ArrayList&lt;&gt;();
+    Map&lt;Integer, Integer&gt; offsetCount = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        if (img1[i][j] == 1)
+          ones1.add(new int[] {i, j});
+        if (img2[i][j] == 1)
+          ones2.add(new int[] {i, j});
+      }
+
+    for (int[] a : ones1)
+      for (int[] b : ones2) {
+        final int key = (a[0] - b[0]) * MAGIC + a[1] - b[1];
+        offsetCount.merge(key, 1, Integer::sum);
+      }
+
+    for (final int count : offsetCount.values())
+      ans = Math.max(ans, count);
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestOverlap(self, img1: list[list[int]], img2: list[list[int]]) -&gt; int:
+    MAGIC = 100
+    ones1 = [(i, j)
+             for i, row in enumerate(img1)
+             for j, num in enumerate(row)
+             if num == 1]
+    ones2 = [(i, j)
+             for i, row in enumerate(img2)
+             for j, num in enumerate(row)
+             if num == 1]
+    offsetCount = collections.Counter()
+
+    for ax, ay in ones1:
+      for bx, by in ones2:
+        offsetCount[(ax - bx) * MAGIC + (ay - by)] += 1
+
+    return max(offsetCount.values()) if offsetCount else 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

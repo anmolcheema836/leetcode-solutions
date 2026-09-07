@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sort the Jumbled Numbers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sort the Jumbled Numbers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sort-the-jumbled-numbers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/most-frequent-number-following-key-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 2191 of 3563</span>
+            <a href="/leetcode-solutions/problems/all-ancestors-of-a-node-in-a-directed-acyclic-graph/" class="btn">Next →</a>
+        </div>
+        <h1>2191. Sort the Jumbled Numbers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sort the Jumbled Numbers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; sortJumbled(vector&lt;int&gt;&amp; mapping, vector&lt;int&gt;&amp; nums) {
+    vector&lt;int&gt; ans;
+    map&lt;int, vector&lt;int&gt;&gt; mappedToOriginalNums;
+
+    for (const int num : nums)
+      mappedToOriginalNums[getMapped(num, mapping)].push_back(num);
+
+    for (const auto&amp; [_, originalNums] : mappedToOriginalNums)
+      ans.insert(ans.end(), originalNums.begin(), originalNums.end());
+
+    return ans;
+  }
+
+ private:
+  int getMapped(int num, const vector&lt;int&gt;&amp; mapping) {
+    string mapped;
+    for (const char c : to_string(num))
+      mapped += to_string(mapping[c - &#x27;0&#x27;]);
+    return stoi(mapped);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] sortJumbled(int[] mapping, int[] nums) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    TreeMap&lt;Integer, List&lt;Integer&gt;&gt; mappedToOriginalNums = new TreeMap&lt;&gt;();
+
+    for (final int num : nums) {
+      final int mapped = getMapped(num, mapping);
+      mappedToOriginalNums.putIfAbsent(mapped, new ArrayList&lt;&gt;());
+      mappedToOriginalNums.get(mapped).add(num);
+    }
+
+    for (List&lt;Integer&gt; originalNums : mappedToOriginalNums.values())
+      ans.addAll(originalNums);
+
+    return ans.stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  private int getMapped(int num, int[] mapping) {
+    StringBuilder sb = new StringBuilder();
+    for (final char c : String.valueOf(num).toCharArray())
+      sb.append(mapping[c - &#x27;0&#x27;]);
+    return Integer.parseInt(sb.toString());
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def sortJumbled(self, mapping: list[int], nums: list[int]) -&gt; list[int]:
+    def getMapped(num: int) -&gt; int:
+      mapped = []
+      for c in str(num):
+        mapped.append(str(mapping[int(c)]))
+      return int(&#x27;&#x27;.join(mapped))
+    A = [(getMapped(num), i, num) for i, num in enumerate(nums)]
+    return [num for _, i, num in sorted(A)]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

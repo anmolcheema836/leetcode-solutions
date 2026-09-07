@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construct Smallest Number From DI String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Construct Smallest Number From DI String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/construct-smallest-number-from-di-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/node-with-highest-edge-score/" class="btn">← Previous</a>
+            <span>Problem 2375 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-special-integers/" class="btn">Next →</a>
+        </div>
+        <h1>2375. Construct Smallest Number From DI String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Construct Smallest Number From DI String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string smallestNumber(string pattern) {
+    string ans;
+    stack&lt;char&gt; stack{{&#x27;1&#x27;}};
+
+    for (const char c : pattern) {
+      char maxSorFar = stack.top();
+      if (c == &#x27;I&#x27;)
+        while (!stack.empty()) {
+          maxSorFar = max(maxSorFar, stack.top());
+          ans += stack.top(), stack.pop();
+        }
+      stack.push(maxSorFar + 1);
+    }
+
+    while (!stack.empty())
+      ans += stack.top(), stack.pop();
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String smallestNumber(String pattern) {
+    StringBuilder sb = new StringBuilder();
+    Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;(List.of(&#x27;1&#x27;));
+
+    for (final char c : pattern.toCharArray()) {
+      char maxSorFar = stack.peek();
+      if (c == &#x27;I&#x27;)
+        while (!stack.isEmpty()) {
+          maxSorFar = (char) Math.max(maxSorFar, stack.peek());
+          sb.append(stack.pop());
+        }
+      stack.push((char) (maxSorFar + 1));
+    }
+
+    while (!stack.isEmpty())
+      sb.append(stack.pop());
+
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def smallestNumber(self, pattern: str) -&gt; str:
+    ans = []
+    stack = [&#x27;1&#x27;]
+
+    for c in pattern:
+      maxSorFar = stack[-1]
+      if c == &#x27;I&#x27;:
+        while stack:
+          maxSorFar = max(maxSorFar, stack[-1])
+          ans.append(stack.pop())
+      stack.append(chr(ord(maxSorFar) + 1))
+
+    while stack:
+      ans.append(stack.pop())
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

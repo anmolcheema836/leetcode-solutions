@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Reverse Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Reverse Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-reverse-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/mice-and-cheese/" class="btn">← Previous</a>
+            <span>Problem 2612 of 3563</span>
+            <a href="/leetcode-solutions/problems/beautiful-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>2612. Minimum Reverse Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Reverse Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; minReverseOperations(int n, int p, vector&lt;int&gt;&amp; banned, int k) {
+    const unordered_set&lt;int&gt; bannedSet{banned.begin(), banned.end()};
+    vector&lt;int&gt; ans(n, -1);
+    // unseen[i] := the unseen numbers that % 2 == i
+    vector&lt;set&lt;int&gt;&gt; unseen(2);
+
+    for (int num = 0; num &lt; n; ++num)
+      if (num != p &amp;&amp; !bannedSet.contains(num))
+        unseen[num % 2].insert(num);
+
+    // Perform BFS from `p`.
+    queue&lt;int&gt; q{{p}};
+    ans[p] = 0;
+
+    while (!q.empty()) {
+      const int u = q.front();
+      q.pop();
+      const int lo = max(u - k + 1, k - 1 - u);
+      const int hi = min(u + k - 1, n - 1 - (u - (n - k)));
+      // Choose the correct set of numbers.
+      set&lt;int&gt;&amp; nums = unseen[lo % 2];
+      for (auto it = nums.lower_bound(lo); it != nums.end() &amp;&amp; *it &lt;= hi;) {
+        ans[*it] = ans[u] + 1;
+        q.push(*it);
+        it = nums.erase(it);
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] minReverseOperations(int n, int p, int[] banned, int k) {
+    Set&lt;Integer&gt; bannedSet = Arrays.stream(banned).boxed().collect(Collectors.toSet());
+    int[] ans = new int[n];
+    Arrays.fill(ans, -1);
+    // unseen[i] := the unseen numbers that % 2 == i
+    TreeSet&lt;Integer&gt;[] unseen = new TreeSet[2];
+    unseen[0] = new TreeSet&lt;&gt;();
+    unseen[1] = new TreeSet&lt;&gt;();
+
+    for (int num = 0; num &lt; n; ++num)
+      if (num != p &amp;&amp; !bannedSet.contains(num))
+        unseen[num % 2].add(num);
+
+    // Perform BFS from `p`.
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;(List.of(p));
+    ans[p] = 0;
+
+    while (!q.isEmpty()) {
+      final int u = q.poll();
+      final int lo = Math.max(u - k + 1, k - 1 - u);
+      final int hi = Math.min(u + k - 1, n - 1 - (u - (n - k)));
+      // Choose the correct set of numbers.
+      TreeSet&lt;Integer&gt; nums = unseen[lo % 2];
+      for (Integer num = nums.ceiling(lo); num != null &amp;&amp; num &lt;= hi;) {
+        ans[num] = ans[u] + 1;
+        q.offer(num);
+        nums.remove(num);
+        num = nums.higher(num);
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class Solution:
+  def minReverseOperations(
+      self,
+      n: int,
+      p: int,
+      banned: list[int],
+      k: int,
+  ) -&gt; list[int]:
+    bannedSet = set(banned)
+    ans = [-1] * n
+    # unseen[i] := the unseen numbers that % 2 == i
+    unseen = [SortedList(), SortedList()]
+
+    for num in range(n):
+      if num != p and num not in bannedSet:
+        unseen[num % 2].add(num)
+
+    # Perform BFS from `p`.
+    q = collections.deque([p])
+    ans[p] = 0
+
+    while q:
+      u = q.popleft()
+      lo = max(u - k + 1, k - 1 - u)
+      hi = min(u + k - 1, n - 1 - (u - (n - k)))
+      # Choose the correct set of numbers.
+      nums = unseen[lo % 2]
+      i = nums.bisect_left(lo)
+      while i &lt; len(nums) and nums[i] &lt;= hi:
+        num = nums[i]
+        ans[num] = ans[u] + 1
+        q.append(num)
+        nums.pop(i)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

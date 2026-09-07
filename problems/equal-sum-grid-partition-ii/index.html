@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equal Sum Grid Partition II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Equal Sum Grid Partition II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/equal-sum-grid-partition-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-sum-of-edge-values-in-a-graph/" class="btn">← Previous</a>
+            <span>Problem 3548 of 3563</span>
+            <a href="/leetcode-solutions/problems/multiply-two-polynomials/" class="btn">Next →</a>
+        </div>
+        <h1>3548. Equal Sum Grid Partition II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Equal Sum Grid Partition II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool canPartitionGrid(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const long sum = accumulate(grid.begin(), grid.end(), 0L,
+                                [](long acc, const vector&lt;int&gt;&amp; row) {
+      return acc + accumulate(row.begin(), row.end(), 0L);
+    });
+    return canPartition(grid, sum) || canPartition(reversed(grid), sum) ||
+           canPartition(reversed(transposed(grid)), sum) ||
+           canPartition(transposed(grid), sum);
+  }
+
+ private:
+  bool canPartition(const vector&lt;vector&lt;int&gt;&gt;&amp; grid, long sum) {
+    long topSum = 0;
+    unordered_set&lt;int&gt; seen;
+    for (int i = 0; i &lt; grid.size(); ++i) {
+      topSum += accumulate(grid[i].begin(), grid[i].end(), 0L);
+      const long botSum = sum - topSum;
+      seen.insert(grid[i].begin(), grid[i].end());
+      if (topSum - botSum == 0 || topSum - botSum == grid[0][0] ||
+          topSum - botSum == grid[0].back() || topSum - botSum == grid[i][0])
+        return true;
+      if (grid[0].size() &gt; 1 &amp;&amp; i &gt; 0 &amp;&amp; seen.count(topSum - botSum))
+        return true;
+    }
+    return false;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; transposed(const vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    vector&lt;vector&lt;int&gt;&gt; res(grid[0].size(), vector&lt;int&gt;(grid.size()));
+    for (int i = 0; i &lt; grid.size(); ++i)
+      for (int j = 0; j &lt; grid[0].size(); ++j)
+        res[j][i] = grid[i][j];
+    return res;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; reversed(const vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    return {grid.rbegin(), grid.rend()};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean canPartitionGrid(int[][] grid) {
+    final long sum = Arrays.stream(grid).flatMapToInt(Arrays::stream).asLongStream().sum();
+    return canPartition(grid, sum) || canPartition(reversed(grid), sum) ||
+        canPartition(reversed(transposed(grid)), sum) || canPartition(transposed(grid), sum);
+  }
+
+  private boolean canPartition(int[][] grid, long sum) {
+    long topSum = 0;
+    Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+    for (int i = 0; i &lt; grid.length; ++i) {
+      topSum += Arrays.stream(grid[i]).asLongStream().sum();
+      final long botSum = sum - topSum;
+      Arrays.stream(grid[i]).forEach(seen::add);
+      if (topSum - botSum == 0 || topSum - botSum == grid[0][0] ||
+          topSum - botSum == grid[0][grid[0].length - 1] || topSum - botSum == grid[i][0])
+        return true;
+      if (grid[0].length &gt; 1 &amp;&amp; i &gt; 0 &amp;&amp; seen.contains((int) (topSum - botSum)))
+        return true;
+    }
+    return false;
+  }
+
+  private int[][] transposed(int[][] grid) {
+    int[][] res = new int[grid[0].length][grid.length];
+    for (int i = 0; i &lt; grid.length; ++i)
+      for (int j = 0; j &lt; grid[0].length; ++j)
+        res[j][i] = grid[i][j];
+    return res;
+  }
+
+  private int[][] reversed(int[][] grid) {
+    return Arrays.stream(grid).collect(Collectors.collectingAndThen(Collectors.toList(), list -&gt; {
+      Collections.reverse(list);
+      return list.toArray(new int[0][]);
+    }));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def canPartitionGrid(self, grid: list[list[int]]) -&gt; bool:
+    summ = sum(map(sum, grid))
+
+    def canPartition(grid: list[list[int]]) -&gt; bool:
+      topSum = 0
+      seen = set()
+      for i, row in enumerate(grid):
+        topSum += sum(row)
+        botSum = summ - topSum
+        seen |= set(row)
+        if topSum - botSum in (0, grid[0][0],  grid[0][-1], row[0]):
+          return True
+        if len(grid[0]) &gt; 1 and i &gt; 0 and topSum - botSum in seen:
+          return True
+      return False
+
+    return (canPartition(grid) or
+            canPartition(grid[::-1]) or
+            canPartition(list(zip(*grid))[::-1]) or
+            canPartition(list(zip(*grid))))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

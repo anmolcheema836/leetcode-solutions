@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rectangle Area II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Rectangle Area II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/rectangle-area-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximize-distance-to-closest-person/" class="btn">← Previous</a>
+            <span>Problem 850 of 3563</span>
+            <a href="/leetcode-solutions/problems/loud-and-rich/" class="btn">Next →</a>
+        </div>
+        <h1>850. Rectangle Area II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Rectangle Area II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Event {
+  int x;
+  int y1;
+  int y2;
+  char type;
+};
+
+class Solution {
+ public:
+  int rectangleArea(vector&lt;vector&lt;int&gt;&gt;&amp; rectangles) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    vector&lt;Event&gt; events;
+
+    for (const vector&lt;int&gt;&amp; r : rectangles) {
+      events.emplace_back(r[0], r[1], r[3], &#x27;s&#x27;);
+      events.emplace_back(r[2], r[1], r[3], &#x27;e&#x27;);
+    }
+
+    ranges::sort(events, ranges::less{},
+                 [](const Event&amp; event) { return event.x; });
+
+    long ans = 0;
+    int prevX = 0;
+    vector&lt;pair&lt;int, int&gt;&gt; yPairs;
+
+    for (const auto&amp; [currX, y1, y2, type] : events) {
+      if (currX &gt; prevX) {
+        const int width = currX - prevX;
+        ans = (ans + width * getHeight(yPairs)) % kMod;
+        prevX = currX;
+      }
+      if (type == &#x27;s&#x27;) {
+        yPairs.emplace_back(y1, y2);
+        ranges::sort(yPairs);
+      } else {  // type == &#x27;e&#x27;
+        const auto it =
+            find(yPairs.begin(), yPairs.end(), pair&lt;int, int&gt;(y1, y2));
+        yPairs.erase(it);
+      }
+    }
+
+    return ans % kMod;
+  }
+
+ private:
+  long getHeight(const vector&lt;pair&lt;int, int&gt;&gt;&amp; yPairs) {
+    int height = 0;
+    int prevY = 0;
+
+    for (const auto&amp; [y1, y2] : yPairs) {
+      prevY = max(prevY, y1);
+      if (y2 &gt; prevY) {
+        height += y2 - prevY;
+        prevY = y2;
+      }
+    }
+
+    return height;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int rectangleArea(int[][] rectangles) {
+    record Event(int x, int y1, int y2, char type) {}
+    final int MOD = 1_000_000_007;
+    List&lt;Event&gt; events = new ArrayList&lt;&gt;();
+
+    for (int[] r : rectangles) {
+      events.add(new Event(r[0], r[1], r[3], &#x27;s&#x27;));
+      events.add(new Event(r[2], r[1], r[3], &#x27;e&#x27;));
+    }
+
+    Collections.sort(events, Comparator.comparingInt(Event::x));
+
+    long ans = 0;
+    int prevX = 0;
+    List&lt;Pair&lt;Integer, Integer&gt;&gt; yPairs = new ArrayList&lt;&gt;();
+
+    for (Event e : events) {
+      if (e.x &gt; prevX) {
+        final int width = e.x - prevX;
+        ans = (ans + width * getHeight(yPairs)) % MOD;
+        prevX = e.x;
+      }
+      if (e.type == &#x27;s&#x27;) {
+        yPairs.add(new Pair&lt;&gt;(e.y1, e.y2));
+        Collections.sort(yPairs, Comparator.comparingInt(Pair::getKey));
+      } else { // type == &#x27;e&#x27;
+        yPairs.remove(new Pair&lt;&gt;(e.y1, e.y2));
+      }
+    }
+
+    return (int) (ans % MOD);
+  }
+
+  private long getHeight(List&lt;Pair&lt;Integer, Integer&gt;&gt; yPairs) {
+    int height = 0;
+    int prevY = 0;
+
+    for (Pair&lt;Integer, Integer&gt; pair : yPairs) {
+      final int y1 = pair.getKey();
+      final int y2 = pair.getValue();
+      prevY = Math.max(prevY, y1);
+      if (y2 &gt; prevY) {
+        height += y2 - prevY;
+        prevY = y2;
+      }
+    }
+
+    return height;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def rectangleArea(self, rectangles: list[list[int]]) -&gt; int:
+    events = []
+
+    for x1, y1, x2, y2 in rectangles:
+      events.append((x1, y1, y2, &#x27;s&#x27;))
+      events.append((x2, y1, y2, &#x27;e&#x27;))
+
+    events.sort(key=lambda x: x[0])
+
+    ans = 0
+    prevX = 0
+    yPairs = []
+
+    def getHeight(yPairs: list[tuple[int, int]]) -&gt; int:
+      height = 0
+      prevY = 0
+
+      for y1, y2 in yPairs:
+        prevY = max(prevY, y1)
+        if y2 &gt; prevY:
+          height += y2 - prevY
+          prevY = y2
+
+      return height
+
+    for currX, y1, y2, type in events:
+      if currX &gt; prevX:
+        width = currX - prevX
+        ans += width * getHeight(yPairs)
+        prevX = currX
+      if type == &#x27;s&#x27;:
+        yPairs.append((y1, y2))
+        yPairs.sort()
+      else:  # type == &#x27;e&#x27;
+        yPairs.remove((y1, y2))
+
+    return ans % (10**9 + 7)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single-Threaded CPU - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Single-Threaded CPU written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/single-threaded-cpu/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-ice-cream-bars/" class="btn">← Previous</a>
+            <span>Problem 1834 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-xor-sum-of-all-pairs-bitwise-and/" class="btn">Next →</a>
+        </div>
+        <h1>1834. Single-Threaded CPU</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Single-Threaded CPU efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; getOrder(vector&lt;vector&lt;int&gt;&gt;&amp; tasks) {
+    const int n = tasks.size();
+
+    // Add index information.
+    for (int i = 0; i &lt; n; ++i)
+      tasks[i].push_back(i);
+
+    vector&lt;int&gt; ans;
+    priority_queue&lt;pair&lt;int, int&gt;, vector&lt;pair&lt;int, int&gt;&gt;, greater&lt;&gt;&gt; minHeap;
+    int i = 0;      // tasks&#x27; index
+    long time = 0;  // the current time
+
+    ranges::sort(tasks);
+    while (i &lt; n || !minHeap.empty()) {
+      if (minHeap.empty())
+        time = max(time, static_cast&lt;long&gt;(tasks[i][0]));
+      while (i &lt; n &amp;&amp; time &gt;= tasks[i][0]) {
+        minHeap.emplace(tasks[i][1], tasks[i][2]);
+        ++i;
+      }
+      const auto [procTime, index] = minHeap.top();
+      minHeap.pop();
+      time += procTime;
+      ans.push_back(index);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] getOrder(int[][] tasks) {
+    record T(int procTime, int index) {}
+    final int n = tasks.length;
+    int[][] A = new int[n][3];
+
+    for (int i = 0; i &lt; n; ++i) {
+      A[i][0] = tasks[i][0];
+      A[i][1] = tasks[i][1];
+      A[i][2] = i;
+    }
+
+    int[] ans = new int[n];
+    int ansIndex = 0;
+    Queue&lt;T&gt; minHeap =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(T::procTime).thenComparingInt(T::index));
+    int i = 0;     // tasks&#x27; index
+    long time = 0; // the current time
+
+    Arrays.sort(A, Comparator.comparingInt(a -&gt; a[0]));
+
+    while (i &lt; n || !minHeap.isEmpty()) {
+      if (minHeap.isEmpty())
+        time = Math.max(time, (long) A[i][0]);
+      while (i &lt; n &amp;&amp; time &gt;= (long) A[i][0]) {
+        minHeap.offer(new T(A[i][1], A[i][2]));
+        ++i;
+      }
+      final int procTime = minHeap.peek().procTime;
+      final int index = minHeap.poll().index;
+      time += procTime;
+      ans[ansIndex++] = index;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getOrder(self, tasks: list[list[int]]) -&gt; list[int]:
+    n = len(tasks)
+    A = [[*task, i] for i, task in enumerate(tasks)]
+    ans = []
+    minHeap = []
+    i = 0  # tasks&#x27; index
+    time = 0  # the current time
+
+    A.sort()
+
+    while i &lt; n or minHeap:
+      if not minHeap:
+        time = max(time, A[i][0])
+      while i &lt; n and time &gt;= A[i][0]:
+        heapq.heappush(minHeap, (A[i][1], A[i][2]))
+        i += 1
+      procTime, index = heapq.heappop(minHeap)
+      time += procTime
+      ans.append(index)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

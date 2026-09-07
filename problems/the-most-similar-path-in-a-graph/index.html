@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Most Similar Path in a Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Most Similar Path in a Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-most-similar-path-in-a-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-to-cut-a-stick/" class="btn">← Previous</a>
+            <span>Problem 1548 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-most-recent-orders-for-each-product/" class="btn">Next →</a>
+        </div>
+        <h1>1548. The Most Similar Path in a Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Most Similar Path in a Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; mostSimilar(int n, vector&lt;vector&lt;int&gt;&gt;&amp; roads,
+                          vector&lt;string&gt;&amp; names, vector&lt;string&gt;&amp; targetPath) {
+    this-&gt;names = names;
+    this-&gt;targetPath = targetPath;
+    // cost[i][j] := the minimum cost to start from names[i] in path[j]
+    this-&gt;cost.resize(names.size(), vector&lt;int&gt;(targetPath.size(), -1));
+    // next[i][j] := the best next of names[i] in path[j]
+    this-&gt;next.resize(names.size(), vector&lt;int&gt;(targetPath.size()));
+    this-&gt;graph.resize(n);
+
+    for (const vector&lt;int&gt;&amp; road : roads) {
+      graph[road[0]].push_back(road[1]);
+      graph[road[1]].push_back(road[0]);
+    }
+
+    int minDist = INT_MAX;
+    int start = 0;
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int dist = dfs(i, 0);
+      if (dist &lt; minDist) {
+        minDist = dist;
+        start = i;
+      }
+    }
+
+    vector&lt;int&gt; ans;
+
+    while (ans.size() &lt; targetPath.size()) {
+      ans.push_back(start);
+      start = next[start][ans.size() - 1];
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;string&gt; names;
+  vector&lt;string&gt; targetPath;
+  vector&lt;vector&lt;int&gt;&gt; cost;
+  vector&lt;vector&lt;int&gt;&gt; next;
+  vector&lt;vector&lt;int&gt;&gt; graph;
+
+  int dfs(int nameIndex, int pathIndex) {
+    if (cost[nameIndex][pathIndex] != -1)
+      return cost[nameIndex][pathIndex];
+
+    const int editDist = names[nameIndex] != targetPath[pathIndex];
+    if (pathIndex == targetPath.size() - 1)
+      return editDist;
+
+    int minDist = INT_MAX;
+
+    for (const int v : graph[nameIndex]) {
+      const int dist = dfs(v, pathIndex + 1);
+      if (dist &lt; minDist) {
+        minDist = dist;
+        next[nameIndex][pathIndex] = v;
+      }
+    }
+
+    return cost[nameIndex][pathIndex] = editDist + minDist;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; mostSimilar(int n, int[][] roads, String[] names, String[] targetPath) {
+    this.names = names;
+    this.targetPath = targetPath;
+    // cost[i][j] := the minimum cost to start from names[i] in path[j]
+    this.cost = new int[names.length][targetPath.length];
+    // next[i][j] := the best next of names[i] in path[j]
+    this.next = new int[names.length][targetPath.length];
+    this.graph = new List[n];
+
+    Arrays.stream(cost).forEach(a -&gt; Arrays.fill(a, -1));
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] road : roads) {
+      graph[road[0]].add(road[1]);
+      graph[road[1]].add(road[0]);
+    }
+
+    int minDist = Integer.MAX_VALUE;
+    int start = 0;
+
+    // Start from different names
+    for (int i = 0; i &lt; names.length; ++i) {
+      final int dist = dfs(i, 0);
+      if (dist &lt; minDist) {
+        minDist = dist;
+        start = i;
+      }
+    }
+
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+
+    while (ans.size() &lt; targetPath.length) {
+      ans.add(start);
+      start = next[start][ans.size() - 1];
+    }
+
+    return ans;
+  }
+
+  private String[] names;
+  private String[] targetPath;
+  private int[][] cost;
+  private int[][] next;
+  private List&lt;Integer&gt;[] graph;
+
+  private int dfs(int nameIndex, int pathIndex) {
+    if (cost[nameIndex][pathIndex] != -1)
+      return cost[nameIndex][pathIndex];
+
+    final int editDist = names[nameIndex].equals(targetPath[pathIndex]) ? 0 : 1;
+    if (pathIndex == targetPath.length - 1)
+      return editDist;
+
+    int minDist = Integer.MAX_VALUE;
+
+    for (final int v : graph[nameIndex]) {
+      final int dist = dfs(v, pathIndex + 1);
+      if (dist &lt; minDist) {
+        minDist = dist;
+        next[nameIndex][pathIndex] = v;
+      }
+    }
+
+    return cost[nameIndex][pathIndex] = editDist + minDist;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def mostSimilar(self, n: int, roads: list[list[int]], names: list[str],
+                  targetPath: list[str]) -&gt; list[int]:
+    # cost[i][j] := the minimum cost to start from names[i] in path[j]
+    cost = [[-1] * len(targetPath) for _ in range(len(names))]
+    # next[i][j] := the best next of names[i] in path[j]
+    next = [[0] * len(targetPath) for _ in range(len(names))]
+    graph = [[] for _ in range(n)]
+
+    for u, v in roads:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    minDist = math.inf
+    start = 0
+
+    def dfs(nameIndex: int, pathIndex: int) -&gt; int:
+      if cost[nameIndex][pathIndex] != -1:
+        return cost[nameIndex][pathIndex]
+
+      editDist = names[nameIndex] != targetPath[pathIndex]
+      if pathIndex == len(targetPath) - 1:
+        return editDist
+
+      minDist = math.inf
+
+      for v in graph[nameIndex]:
+        dist = dfs(v, pathIndex + 1)
+        if dist &lt; minDist:
+          minDist = dist
+          next[nameIndex][pathIndex] = v
+
+      cost[nameIndex][pathIndex] = editDist + minDist
+      return editDist + minDist
+
+    for i in range(n):
+      dist = dfs(i, 0)
+      if dist &lt; minDist:
+        minDist = dist
+        start = i
+
+    ans = []
+
+    while len(ans) &lt; len(targetPath):
+      ans.append(start)
+      start = next[start][len(ans) - 1]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

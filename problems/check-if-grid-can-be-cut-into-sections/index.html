@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check if Grid can be Cut into Sections - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check if Grid can be Cut into Sections written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-grid-can-be-cut-into-sections/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-paths-with-the-given-xor-value/" class="btn">← Previous</a>
+            <span>Problem 3394 of 3563</span>
+            <a href="/leetcode-solutions/problems/subsequences-with-a-unique-middle-mode-i/" class="btn">Next →</a>
+        </div>
+        <h1>3394. Check if Grid can be Cut into Sections</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check if Grid can be Cut into Sections efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool checkValidCuts(int n, vector&lt;vector&lt;int&gt;&gt;&amp; rectangles) {
+    vector&lt;pair&lt;int, int&gt;&gt; xs;
+    vector&lt;pair&lt;int, int&gt;&gt; ys;
+
+    for (const vector&lt;int&gt; rectangles : rectangles) {
+      const int startX = rectangles[0];
+      const int startY = rectangles[1];
+      const int endX = rectangles[2];
+      const int endY = rectangles[3];
+      xs.emplace_back(startX, endX);
+      ys.emplace_back(startY, endY);
+    }
+
+    return max(countMerged(xs), countMerged(ys)) &gt;= 3;
+  }
+
+ private:
+  int countMerged(vector&lt;pair&lt;int, int&gt;&gt;&amp; intervals) {
+    int count = 0;
+    int prevEnd = 0;
+
+    ranges::sort(intervals);
+
+    for (const auto&amp; [start, eend] : intervals)
+      if (start &lt; prevEnd) {
+        prevEnd = max(prevEnd, eend);
+      } else {
+        prevEnd = eend;
+        ++count;
+      }
+
+    return count;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean checkValidCuts(int n, int[][] rectangles) {
+    int[][] xs = new int[rectangles.length][2];
+    int[][] ys = new int[rectangles.length][2];
+
+    for (int i = 0; i &lt; rectangles.length; ++i) {
+      xs[i][0] = rectangles[i][0];
+      xs[i][1] = rectangles[i][2];
+      ys[i][0] = rectangles[i][1];
+      ys[i][1] = rectangles[i][3];
+    }
+
+    return Math.max(countMerged(xs), countMerged(ys)) &gt;= 3;
+  }
+
+  private int countMerged(int[][] intervals) {
+    int count = 0;
+    int prevEnd = 0;
+
+    Arrays.sort(intervals, Comparator.comparingInt((int[] interval) -&gt; interval[0]));
+
+    for (int[] interval : intervals) {
+      final int start = interval[0];
+      final int end = interval[1];
+      if (start &lt; prevEnd) {
+        prevEnd = Math.max(prevEnd, end);
+      } else {
+        prevEnd = end;
+        ++count;
+      }
+    }
+
+    return count;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def checkValidCuts(self, n: int, rectangles: list[list[int]]) -&gt; bool:
+    xs = [(startX, endX) for startX, _, endX, _ in rectangles]
+    ys = [(startY, endY) for _, startY, _, endY in rectangles]
+    return max(self._countMerged(xs),
+               self._countMerged(ys)) &gt;= 3
+
+  def _countMerged(self, intervals: list[tuple[int, int]]) -&gt; int:
+    count = 0
+    prevEnd = 0
+    for start, end in sorted(intervals):
+      if start &lt; prevEnd:
+        prevEnd = max(prevEnd, end)
+      else:
+        prevEnd = end
+        count += 1
+    return count</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

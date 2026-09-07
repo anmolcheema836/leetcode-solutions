@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sender With Largest Word Count - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sender With Largest Word Count written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sender-with-largest-word-count/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-if-number-has-equal-digit-count-and-digit-value/" class="btn">← Previous</a>
+            <span>Problem 2284 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-total-importance-of-roads/" class="btn">Next →</a>
+        </div>
+        <h1>2284. Sender With Largest Word Count</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sender With Largest Word Count efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string largestWordCount(vector&lt;string&gt;&amp; messages, vector&lt;string&gt;&amp; senders) {
+    const int n = messages.size();
+    string ans;
+    int maxWordsSent = 0;
+    unordered_map&lt;string, int&gt; count;  // {sender, the number of words sent}
+
+    for (int i = 0; i &lt; n; ++i) {
+      const string&amp; message = messages[i];
+      const string&amp; sender = senders[i];
+      const int wordsCount = ranges::count(message, &#x27; &#x27;) + 1;
+      count[sender] += wordsCount;
+      const int numWordsSent = count[sender];
+      if (numWordsSent &gt; maxWordsSent) {
+        ans = sender;
+        maxWordsSent = numWordsSent;
+      } else if (numWordsSent == maxWordsSent &amp;&amp; sender &gt; ans) {
+        ans = sender;
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String largestWordCount(String[] messages, String[] senders) {
+    final int n = messages.length;
+    String ans = &quot;&quot;;
+    int maxWordsSent = 0;
+    Map&lt;String, Integer&gt; count = new HashMap&lt;&gt;(); // {sender, the number of words sent}
+
+    for (int i = 0; i &lt; n; ++i) {
+      final String message = messages[i];
+      final String sender = senders[i];
+      final int wordsCount = (int) message.chars().filter(c -&gt; c == &#x27; &#x27;).count() + 1;
+      final int numWordsSent = count.merge(sender, wordsCount, Integer::sum);
+      if (numWordsSent &gt; maxWordsSent) {
+        ans = sender;
+        maxWordsSent = numWordsSent;
+      } else if (numWordsSent == maxWordsSent &amp;&amp; sender.compareTo(ans) &gt; 0) {
+        ans = sender;
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestWordCount(self, messages: list[str], senders: list[str]) -&gt; str:
+    n = len(messages)
+    ans = &#x27;&#x27;
+    maxWordsSent = 0
+    count = collections.Counter()  # [sender, # Words sent]
+
+    for message, sender in zip(messages, senders):
+      wordsCount = message.count(&#x27; &#x27;) + 1
+      count[sender] += wordsCount
+      numWordsSent = count[sender]
+      if numWordsSent &gt; maxWordsSent:
+        ans = sender
+        maxWordsSent = numWordsSent
+      elif numWordsSent == maxWordsSent and sender &gt; ans:
+        ans = sender
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

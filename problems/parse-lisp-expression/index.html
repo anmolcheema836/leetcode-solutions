@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse Lisp Expression - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Parse Lisp Expression written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/parse-lisp-expression/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/asteroid-collision/" class="btn">← Previous</a>
+            <span>Problem 736 of 3563</span>
+            <a href="/leetcode-solutions/problems/sentence-similarity-ii/" class="btn">Next →</a>
+        </div>
+        <h1>736. Parse Lisp Expression</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Parse Lisp Expression efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int evaluate(string expression) {
+    return evaluate(expression, unordered_map&lt;string, int&gt;());
+  }
+
+ private:
+  int evaluate(const string&amp; e, unordered_map&lt;string, int&gt; scope) {
+    if (isdigit(e[0]) || e[0] == &#x27;-&#x27;)
+      return stoi(e);
+    if (const auto it = scope.find(e); it != scope.cend())
+      return it-&gt;second;
+
+    const int spaceIndex = e.find_first_of(&#x27; &#x27;);
+    const string nextExpression =
+        e.substr(spaceIndex + 1, e.length() - spaceIndex - 2);  // -2: &quot;()&quot;
+    const vector&lt;string&gt; tokens = split(nextExpression);
+
+    // Note that e[0] == &#x27;(&#x27;.
+    if (e[1] == &#x27;m&#x27;)  // &#x27;mult&#x27;
+      return evaluate(tokens[0], scope) * evaluate(tokens[1], scope);
+    if (e[1] == &#x27;a&#x27;)  // &#x27;add&#x27;
+      return evaluate(tokens[0], scope) + evaluate(tokens[1], scope);
+
+    // &#x27;let&#x27;
+    for (int i = 0; i + 1 &lt; tokens.size(); i += 2)
+      scope[tokens[i]] = evaluate(tokens[i + 1], scope);
+    return evaluate(tokens.back(), scope);
+  };
+
+  vector&lt;string&gt; split(const string&amp; e) {
+    vector&lt;string&gt; tokens;
+    string s;
+    int opened = 0;
+
+    for (const char c : e) {
+      if (c == &#x27;(&#x27;)
+        ++opened;
+      else if (c == &#x27;)&#x27;)
+        --opened;
+      if (opened == 0 &amp;&amp; c == &#x27; &#x27;) {
+        tokens.push_back(s);
+        s = &quot;&quot;;
+      } else {
+        s += c;
+      }
+    }
+
+    if (!s.empty())
+      tokens.push_back(s);
+    return tokens;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int evaluate(String expression) {
+    return evaluate(expression, new HashMap&lt;&gt;());
+  }
+
+  private int evaluate(final String e, Map&lt;String, Integer&gt; prevScope) {
+    if (Character.isDigit(e.charAt(0)) || e.charAt(0) == &#x27;-&#x27;)
+      return Integer.parseInt(e);
+    if (prevScope.containsKey(e))
+      return prevScope.get(e);
+
+    Map&lt;String, Integer&gt; scope = new HashMap&lt;&gt;();
+    scope.putAll(prevScope);
+
+    final int spaceIndex = e.indexOf(&#x27; &#x27;);
+    // +1 and -1 because of &quot;()&quot;.
+    final String nextExpression = e.substring(spaceIndex + 1, e.length() - 1);
+    List&lt;String&gt; tokens = split(nextExpression);
+
+    if (e.startsWith(&quot;(m&quot;)) // &#x27;mult&#x27;
+      return evaluate(tokens.get(0), scope) * evaluate(tokens.get(1), scope);
+    if (e.startsWith(&quot;(a&quot;)) // &#x27;add&#x27;
+      return evaluate(tokens.get(0), scope) + evaluate(tokens.get(1), scope);
+
+    // &#x27;let&#x27;
+    for (int i = 0; i &lt; tokens.size() - 2; i += 2)
+      scope.put(tokens.get(i), evaluate(tokens.get(i + 1), scope));
+    return evaluate(tokens.get(tokens.size() - 1), scope);
+  }
+
+  private List&lt;String&gt; split(final String s) {
+    List&lt;String&gt; tokens = new ArrayList&lt;&gt;();
+    StringBuilder sb = new StringBuilder();
+    int opened = 0;
+
+    for (char c : s.toCharArray()) {
+      if (c == &#x27;(&#x27;)
+        ++opened;
+      else if (c == &#x27;)&#x27;)
+        --opened;
+      if (opened == 0 &amp;&amp; c == &#x27; &#x27;) {
+        tokens.add(sb.toString());
+        sb.setLength(0);
+      } else {
+        sb.append(c);
+      }
+    }
+
+    if (sb.length() &gt; 0)
+      tokens.add(sb.toString());
+    return tokens;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def evaluate(self, expression: str) -&gt; int:
+    def evaluate(e: str, prevScope: dict) -&gt; int:
+      if e[0].isdigit() or e[0] == &#x27;-&#x27;:
+        return int(e)
+      if e in prevScope:
+        return prevScope[e]
+
+      scope = prevScope.copy()
+      nextExpression = e[e.index(&#x27; &#x27;) + 1:-1]
+      tokens = parse(nextExpression)
+
+      if e[1] == &#x27;m&#x27;:  # &#x27;mult&#x27;
+        return evaluate(tokens[0], scope) * evaluate(tokens[1], scope)
+      if e[1] == &#x27;a&#x27;:  # &#x27;add&#x27;
+        return evaluate(tokens[0], scope) + evaluate(tokens[1], scope)
+
+      # &#x27;let&#x27;
+      for i in range(0, len(tokens) - 2, 2):
+        scope[tokens[i]] = evaluate(tokens[i + 1], scope)
+
+      return evaluate(tokens[-1], scope)
+
+    def parse(e: str):
+      tokens = []
+      s = &#x27;&#x27;
+      opened = 0
+
+      for c in e:
+        if c == &#x27;(&#x27;:
+          opened += 1
+        elif c == &#x27;)&#x27;:
+          opened -= 1
+        if opened == 0 and c == &#x27; &#x27;:
+          tokens.append(s)
+          s = &#x27;&#x27;
+        else:
+          s += c
+
+      if len(s) &gt; 0:
+        tokens.append(s)
+      return tokens
+
+    return evaluate(expression, {})</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

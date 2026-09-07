@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serialize and Deserialize N-ary Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Serialize and Deserialize N-ary Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/serialize-and-deserialize-n-ary-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/construct-quad-tree/" class="btn">← Previous</a>
+            <span>Problem 428 of 3563</span>
+            <a href="/leetcode-solutions/problems/n-ary-tree-level-order-traversal/" class="btn">Next →</a>
+        </div>
+        <h1>428. Serialize and Deserialize N-ary Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Serialize and Deserialize N-ary Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Codec {
+ public:
+  // Encodes a tree to a single string.
+  string serialize(Node* root) {
+    if (root == nullptr)
+      return &quot;&quot;;
+
+    string s;
+    queue&lt;Node*&gt; q{{root}};
+    s += to_string(root-&gt;val) + &quot; &quot;;
+
+    while (!q.empty())
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        Node* node = q.front();
+        q.pop();
+        if (node-&gt;children.empty()) {
+          s += &quot;n&quot;;
+        } else {
+          for (Node* child : node-&gt;children) {
+            q.push(child);
+            s += to_string(child-&gt;val) + &quot;#&quot;;
+          }
+        }
+        s += &quot; &quot;;
+      }
+
+    return s;
+  }
+
+  // Decodes your encoded data to tree.
+  Node* deserialize(string data) {
+    if (data.empty())
+      return nullptr;
+
+    istringstream iss(data);
+    string word;
+    iss &gt;&gt; word;
+    Node* root = new Node(stoi(word));
+    queue&lt;Node*&gt; q{{root}};
+
+    while (iss &gt;&gt; word) {
+      Node* parent = q.front();
+      q.pop();
+      vector&lt;Node*&gt; children;
+      for (const string&amp; kid : getKids(word)) {
+        if (kid == &quot;n&quot;)
+          continue;
+        Node* child = new Node(stoi(kid));
+        children.push_back(child);
+        q.push(child);
+      }
+      parent-&gt;children = children;
+    }
+
+    return root;
+  }
+
+ private:
+  vector&lt;string&gt; getKids(const string&amp; word) {
+    vector&lt;string&gt; kids;
+    for (int i = 0, j = 0; j &lt; word.length(); ++j)
+      if (word[j] == &#x27;#&#x27;) {
+        kids.push_back(word.substr(i, j - i));
+        i = j + 1;
+      }
+    return kids;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Codec {
+  // Encodes a tree to a single string.
+  public String serialize(Node root) {
+    if (root == null)
+      return &quot;&quot;;
+
+    StringBuilder sb = new StringBuilder().append(root.val).append(&quot;,&quot;);
+    Queue&lt;Node&gt; q = new ArrayDeque&lt;&gt;(List.of(root));
+
+    while (!q.isEmpty())
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        Node node = q.poll();
+        if (node.children.isEmpty()) {
+          sb.append(&quot;n&quot;);
+        } else {
+          for (Node child : node.children) {
+            q.offer(child);
+            sb.append(child.val).append(&quot;#&quot;);
+          }
+        }
+        sb.append(&quot;,&quot;);
+      }
+
+    return sb.toString();
+  }
+
+  // Decodes your encoded data to tree.
+  public Node deserialize(String data) {
+    if (data.equals(&quot;&quot;))
+      return null;
+
+    final String[] vals = data.split(&quot;,&quot;);
+    Node root = new Node(Integer.parseInt(vals[0]));
+    Queue&lt;Node&gt; q = new ArrayDeque&lt;&gt;(List.of(root));
+
+    for (int i = 1; i &lt; vals.length; ++i) {
+      Node parent = q.poll();
+      List&lt;Node&gt; children = new ArrayList&lt;&gt;();
+      for (final String kid : vals[i].split(&quot;#&quot;)) {
+        if (kid.equals(&quot;n&quot;))
+          continue;
+        Node child = new Node(Integer.parseInt(kid));
+        children.add(child);
+        q.offer(child);
+      }
+      parent.children = children;
+    }
+
+    return root;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Codec:
+  def serialize(self, root: &#x27;Node&#x27;) -&gt; str:
+    &quot;&quot;&quot;Encodes a tree to a single string.&quot;&quot;&quot;
+    if not root:
+      return &#x27;&#x27;
+
+    s = []
+    q = collections.deque([root])
+    s.append(str(root.val) + &#x27; &#x27;)
+
+    while q:
+      for _ in range(len(q)):
+        node = q.popleft()
+        if not node.children:
+          s.append(&#x27;n&#x27;)
+        else:
+          for child in node.children:
+            q.append(child)
+            s.append(str(child.val) + &#x27;#&#x27;)
+        s.append(&#x27; &#x27;)
+
+    return &#x27;&#x27;.join(s)
+
+  def deserialize(self, data: str) -&gt; &#x27;Node&#x27;:
+    &quot;&quot;&quot;Decodes your encoded data to tree.&quot;&quot;&quot;
+    if not data:
+      return None
+
+    words = data.split()
+    root = Node(int(words[0]))
+    q = collections.deque([root])
+
+    for word in words[1:]:
+      parent = q.popleft()
+      children = []
+      for kid in word.split(&#x27;#&#x27;):
+        if kid in (&#x27;&#x27;, &#x27;n&#x27;):
+          continue
+        child = Node(int(kid))
+        children.append(child)
+        q.append(child)
+      parent.children = children
+
+    return root</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

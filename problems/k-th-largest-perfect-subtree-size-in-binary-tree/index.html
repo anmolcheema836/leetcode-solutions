@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-th Largest Perfect Subtree Size in Binary Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for K-th Largest Perfect Subtree Size in Binary Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/k-th-largest-perfect-subtree-size-in-binary-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-x-sum-of-all-k-long-subarrays-i/" class="btn">← Previous</a>
+            <span>Problem 3319 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-the-number-of-winning-sequences/" class="btn">Next →</a>
+        </div>
+        <h1>3319. K-th Largest Perfect Subtree Size in Binary Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve K-th Largest Perfect Subtree Size in Binary Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  bool isPerfect;
+  int sz;
+};
+
+class Solution {
+ public:
+  int kthLargestPerfectSubtree(TreeNode* root, int k) {
+    vector&lt;int&gt; ans;
+    dfs(root, ans);
+    ranges::sort(ans, greater&lt;&gt;());
+    return ans.size() &lt; k ? -1 : ans[k - 1];
+  }
+
+ private:
+  T dfs(TreeNode* root, vector&lt;int&gt;&amp; ans) {
+    if (root == nullptr)
+      return {true, 0};
+    const auto l = dfs(root-&gt;left, ans);
+    const auto r = dfs(root-&gt;right, ans);
+    if (l.isPerfect &amp;&amp; r.isPerfect &amp;&amp; l.sz == r.sz) {
+      const int sz = 1 + l.sz + r.sz;
+      ans.push_back(sz);
+      return {true, sz};
+    }
+    return {false, 0};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">record T(boolean isPerfect, int sz) {}
+
+class Solution {
+  public int kthLargestPerfectSubtree(TreeNode root, int k) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    dfs(root, ans);
+    Collections.sort(ans, Collections.reverseOrder());
+    return ans.size() &lt; k ? -1 : ans.get(k - 1);
+  }
+
+  private T dfs(TreeNode root, List&lt;Integer&gt; ans) {
+    if (root == null)
+      return new T(true, 0);
+    T l = dfs(root.left, ans);
+    T r = dfs(root.right, ans);
+    if (l.isPerfect() &amp;&amp; r.isPerfect() &amp;&amp; l.sz() == r.sz()) {
+      final int sz = 1 + l.sz() + r.sz();
+      ans.add(sz);
+      return new T(true, sz);
+    }
+    return new T(false, 0);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class T:
+  isPerfect: bool
+  sz: int
+
+
+class Solution:
+  def kthLargestPerfectSubtree(self, root: TreeNode | None, k: int) -&gt; int:
+    ans = []
+    self._dfs(root, ans)
+    if len(ans) &lt; k:
+      return -1
+    return sorted(ans, reverse=True)[k - 1]
+
+  def _dfs(self, root: TreeNode, ans: list[int]) -&gt; T:
+    if not root:
+      return T(True, 0)
+    l = self._dfs(root.left, ans)
+    r = self._dfs(root.right, ans)
+    if l.isPerfect and r.isPerfect and l.sz == r.sz:
+      sz = 1 + l.sz + r.sz
+      ans.append(sz)
+      return T(True, sz)
+    return T(False, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

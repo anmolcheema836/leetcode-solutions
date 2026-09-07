@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Longest Self-Contained Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Longest Self-Contained Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-longest-self-contained-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-trending-hashtags-ii/" class="btn">← Previous</a>
+            <span>Problem 3104 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/" class="btn">Next →</a>
+        </div>
+        <h1>3104. Find Longest Self-Contained Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Longest Self-Contained Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxSubstringLength(string s) {
+    int ans = -1;
+    vector&lt;int&gt; count(26);
+
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+
+    for (int n = 1; n &lt;= 26; ++n)
+      ans = max(ans, maxSubstringLengthWithNUniqueLetters(s, n, count));
+
+    return ans;
+  }
+
+ private:
+  // Similar to 395. Longest Substring with At Least K Repeating Characters
+  int maxSubstringLengthWithNUniqueLetters(const string&amp; s, int n,
+                                           const vector&lt;int&gt;&amp; allCount) {
+    int res = -1;
+    // the number of unique letters
+    int uniqueLetters = 0;
+    // the number of letters that have all their frequency in the substring
+    int lettersHavingAllFreq = 0;
+    vector&lt;int&gt; count(26);
+
+    for (int l = 0, r = 0; r &lt; s.length(); ++r) {
+      if (++count[s[r] - &#x27;a&#x27;] == 1)
+        ++uniqueLetters;
+      if (count[s[r] - &#x27;a&#x27;] == allCount[s[r] - &#x27;a&#x27;])
+        ++lettersHavingAllFreq;
+      while (uniqueLetters &gt; n) {
+        if (count[s[l] - &#x27;a&#x27;] == allCount[s[l] - &#x27;a&#x27;])
+          --lettersHavingAllFreq;
+        if (--count[s[l] - &#x27;a&#x27;] == 0)
+          --uniqueLetters;
+        ++l;
+      }
+      // Since both the number of unique letters and the number of letters
+      // having all their frequency are equal to n, this is a valid window.
+      // Implcit: uniqueLetters == n
+      if (lettersHavingAllFreq == n &amp;&amp; r - l + 1 &lt; s.length())
+        res = max(res, r - l + 1);
+    }
+
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxSubstringLength(String s) {
+    int ans = -1;
+    int count[] = new int[26];
+
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    for (int n = 1; n &lt;= 26; ++n)
+      ans = Math.max(ans, maxSubstringLengthWithNUniqueLetters(s, n, count));
+
+    return ans;
+  }
+
+  // Similar to 395. Longest Substring with At Least K Repeating Characters
+  private int maxSubstringLengthWithNUniqueLetters(final String s, int n, int[] allCount) {
+    int res = -1;
+    // the number of unique letters
+    int uniqueLetters = 0;
+    // the number of letters that have all their frequency in the substring
+    int lettersHavingAllFreq = 0;
+    int[] count = new int[26];
+
+    for (int l = 0, r = 0; r &lt; s.length(); ++r) {
+      if (++count[s.charAt(r) - &#x27;a&#x27;] == 1)
+        ++uniqueLetters;
+      if (count[s.charAt(r) - &#x27;a&#x27;] == allCount[s.charAt(r) - &#x27;a&#x27;])
+        ++lettersHavingAllFreq;
+      while (uniqueLetters &gt; n) {
+        if (count[s.charAt(l) - &#x27;a&#x27;] == allCount[s.charAt(l) - &#x27;a&#x27;])
+          --lettersHavingAllFreq;
+        if (--count[s.charAt(l) - &#x27;a&#x27;] == 0)
+          --uniqueLetters;
+        ++l;
+      }
+      // Since both the number of unique letters and the number of letters
+      // having all their frequency are equal to n, this is a valid window.
+      // Implcit: uniqueLetters == n
+      if (lettersHavingAllFreq == n &amp;&amp; r - l + 1 &lt; s.length())
+        res = Math.max(res, r - l + 1);
+    }
+
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxSubstringLength(self, s: str) -&gt; int:
+    allCount = collections.Counter(s)
+
+    # Similar to 395. Longest Substring with At Least K Repeating Characters
+    def maxSubstringLengthWithNUniqueLetters(n: int) -&gt; int:
+      res = -1
+      # the number of unique letters
+      uniqueLetters = 0
+      # the number of letters that have all their frequency in the substring
+      lettersHavingAllFreq = 0
+      count = collections.Counter()
+
+      l = 0
+      for r, c in enumerate(s):
+        count[c] += 1
+        if count[c] == 1:
+          uniqueLetters += 1
+        if count[c] == allCount[c]:
+          lettersHavingAllFreq += 1
+        while uniqueLetters &gt; n:
+          if count[s[l]] == allCount[s[l]]:
+            lettersHavingAllFreq -= 1
+          count[s[l]] -= 1
+          if count[s[l]] == 0:
+            uniqueLetters -= 1
+          l += 1
+        # Since both the number of unique letters and the number of letters
+        # having all their frequency are equal to n, this is a valid window.
+        # Implcit: uniqueLetters == n
+        if lettersHavingAllFreq == n and r - l + 1 &lt; len(s):
+          res = max(res, r - l + 1)
+
+      return res
+
+    return max(maxSubstringLengthWithNUniqueLetters(n)
+               for n in range(1, 27))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

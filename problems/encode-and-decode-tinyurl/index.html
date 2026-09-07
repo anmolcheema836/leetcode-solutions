@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encode and Decode TinyURL - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Encode and Decode TinyURL written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/encode-and-decode-tinyurl/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/game-play-analysis-iii/" class="btn">← Previous</a>
+            <span>Problem 535 of 3563</span>
+            <a href="/leetcode-solutions/problems/construct-binary-tree-from-string/" class="btn">Next →</a>
+        </div>
+        <h1>535. Encode and Decode TinyURL</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Encode and Decode TinyURL efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string encode(string longUrl) {
+    while (!urlToCode.contains(longUrl)) {
+      string code;
+      for (int i = 0; i &lt; 6; ++i)
+        code += alphabets[rand() % alphabets.size()];
+      if (!codeToUrl.contains(code)) {
+        codeToUrl[code] = longUrl;
+        urlToCode[longUrl] = code;
+        return &quot;http://tinyurl.com/&quot; + code;
+      }
+    }
+
+    throw;
+  }
+
+  string decode(string shortUrl) {
+    return codeToUrl[shortUrl.substr(19)];
+  }
+
+ private:
+  const string alphabets =
+      &quot;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&quot;;
+  unordered_map&lt;string, string&gt; urlToCode;
+  unordered_map&lt;string, string&gt; codeToUrl;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">public class Codec {
+  public String encode(String longUrl) {
+    while (!urlToCode.containsKey(longUrl)) {
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i &lt; 6; ++i) {
+        final char nextChar = alphabets.charAt(rand.nextInt(alphabets.length()));
+        sb.append(nextChar);
+      }
+      final String code = sb.toString();
+      if (!codeToUrl.containsKey(code)) {
+        codeToUrl.put(code, longUrl);
+        urlToCode.put(longUrl, code);
+        return &quot;http://tinyurl.com/&quot; + code;
+      }
+    }
+
+    throw new IllegalArgumentException();
+  }
+
+  public String decode(String shortUrl) {
+    return codeToUrl.get(shortUrl.substring(19));
+  }
+
+  private static final String alphabets =
+      &quot;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&quot;;
+  private Map&lt;String, String&gt; urlToCode = new HashMap&lt;&gt;();
+  private Map&lt;String, String&gt; codeToUrl = new HashMap&lt;&gt;();
+  private Random rand = new Random();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Codec:
+  alphabets = string.ascii_letters + &#x27;0123456789&#x27;
+  urlToCode = {}
+  codeToUrl = {}
+
+  def encode(self, longUrl: str) -&gt; str:
+    while longUrl not in self.urlToCode:
+      code = &#x27;&#x27;.join(random.choice(self.alphabets) for _ in range(6))
+      if code not in self.codeToUrl:
+        self.codeToUrl[code] = longUrl
+        self.urlToCode[longUrl] = code
+    return &#x27;http://tinyurl.com/&#x27; + self.urlToCode[longUrl]
+
+  def decode(self, shortUrl: str) -&gt; str:
+    return self.codeToUrl[shortUrl[-6:]]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

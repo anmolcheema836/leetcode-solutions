@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Product of the Length of Two Palindromic Substrings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Product of the Length of Two Palindromic Substrings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-product-of-the-length-of-two-palindromic-substrings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-total-space-wasted-with-k-resizing-operations/" class="btn">← Previous</a>
+            <span>Problem 1960 of 3563</span>
+            <a href="/leetcode-solutions/problems/check-if-string-is-a-prefix-of-array/" class="btn">Next →</a>
+        </div>
+        <h1>1960. Maximum Product of the Length of Two Palindromic Substrings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Product of the Length of Two Palindromic Substrings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxProduct(string s) {
+    const int n = s.length();
+    long ans = 1;
+    vector&lt;long&gt; pows{1};  // pows[i] := kBase^i % kHash
+    // hashL[i] = the hash of the first i letters of s, where hashL[i] =
+    // (26^(i - 1) * s[0] + 26^(i - 2) * s[1] + ... + s[i - 1]) % kHash
+    vector&lt;long&gt; hashL{0};
+    // hashR[i] = the hash of the last i letters of s, where hashR[i] =
+    // (26^(i - 1) * s[-1] + 26^(i - 2) * s[-2] + ... + s[-i]) % kHash
+    vector&lt;long&gt; hashR{0};
+    // maxLeft[i] := the maximum odd length of palindromes in s[0..i]
+    vector&lt;int&gt; maxLeft(n);
+    // maxRight[i] := the maximum odd length of palindromes in s[i..n - 1]
+    vector&lt;int&gt; maxRight(n);
+
+    for (int i = 0; i &lt; n; ++i)
+      pows.push_back(pows.back() * kBase % kHash);
+
+    for (int i = 0; i &lt; n; ++i)
+      hashL.push_back((hashL.back() * kBase + val(s[i])) % kHash);
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      hashR.push_back((hashR.back() * kBase + val(s[i])) % kHash);
+
+    ranges::reverse(hashR);
+
+    int maxLength = 1;
+    for (int r = 0; r &lt; n; ++r) {
+      const int l = (r - maxLength - 2) + 1;
+      if (l &gt;= 0 &amp;&amp; isPalindrome(l, r + 1, hashL, hashR, pows))
+        maxLength += 2;
+      maxLeft[r] = maxLength;
+    }
+
+    maxLength = 1;
+    for (int l = n - 1; l &gt;= 0; --l) {
+      const int r = (l + maxLength + 2) - 1;
+      if (r &lt; n &amp;&amp; isPalindrome(l, r + 1, hashL, hashR, pows))
+        maxLength += 2;
+      maxRight[l] = maxLength;
+    }
+
+    for (int i = 1; i &lt; n; ++i)
+      ans = max(ans, static_cast&lt;long&gt;(maxLeft[i - 1]) * maxRight[i]);
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kBase = 26;
+  static constexpr int kHash = 1&#x27;000&#x27;000&#x27;007;
+
+  static constexpr int val(char c) {
+    return c - &#x27;a&#x27;;
+  }
+
+  // Returns true if s[l..r) is a palindrome.
+  bool isPalindrome(int l, int r, const vector&lt;long&gt;&amp; hashL,
+                    const vector&lt;long&gt;&amp; hashR, const vector&lt;long&gt;&amp; pows) {
+    return getLeftRollingHash(l, r, hashL, pows) ==
+           getRightRollingHash(l, r, hashR, pows);
+  }
+
+  // Returns the left rolling hash of s[l..r).
+  long getLeftRollingHash(int l, int r, const vector&lt;long&gt;&amp; hashL,
+                          const vector&lt;long&gt;&amp; pows) {
+    const long h = (hashL[r] - hashL[l] * pows[r - l]) % kHash;
+    return h &lt; 0 ? h + kHash : h;
+  }
+
+  // Returns the right rolling hash of s[l..r).
+  long getRightRollingHash(int l, int r, const vector&lt;long&gt;&amp; hashR,
+                           const vector&lt;long&gt;&amp; pows) {
+    const long h = (hashR[l] - hashR[r] * pows[r - l]) % kHash;
+    return h &lt; 0 ? h + kHash : h;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxProduct(String s) {
+    final int n = s.length();
+    long ans = 1;
+    long[] pows = new long[n + 1]; // pows[i] := BASE^i % HASH
+    // hashL[i] = the hash of the first i letters of s, where hashL[i] =
+    // (26^(i - 1) * s[0] + 26^(i - 2) * s[1] + ... + s[i - 1]) % HASH
+    long[] hashL = new long[n + 1];
+    // hashR[i] = the hash of the last i letters of s, where hashR[i] =
+    // (26^(i - 1) * s[-1] + 26^(i - 2) * s[-2] + ... + s[-i]) % HASH
+    long[] hashR = new long[n + 1];
+    // maxLeft[i] := the maximum odd length of palindromes in s[0..i]
+    int[] maxLeft = new int[n];
+    // maxRight[i] := the maximum odd length of palindromes in s[i..n - 1]
+    int[] maxRight = new int[n];
+
+    pows[0] = 1;
+    for (int i = 1; i &lt;= n; ++i)
+      pows[i] = pows[i - 1] * BASE % HASH;
+
+    for (int i = 1; i &lt;= n; ++i)
+      hashL[i] = (hashL[i - 1] * BASE + val(s.charAt(i - 1))) % HASH;
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      hashR[i] = (hashR[i + 1] * BASE + val(s.charAt(i))) % HASH;
+
+    int maxLength = 1;
+    for (int r = 0; r &lt; n; ++r) {
+      final int l = (r - maxLength - 2) + 1;
+      if (l &gt;= 0 &amp;&amp; isPalindrome(l, r + 1, hashL, hashR, pows))
+        maxLength += 2;
+      maxLeft[r] = maxLength;
+    }
+
+    maxLength = 1;
+    for (int l = n - 1; l &gt;= 0; --l) {
+      final int r = (l + maxLength + 2) - 1;
+      if (r &lt; n &amp;&amp; isPalindrome(l, r + 1, hashL, hashR, pows))
+        maxLength += 2;
+      maxRight[l] = maxLength;
+    }
+
+    for (int i = 1; i &lt; n; ++i)
+      ans = Math.max(ans, (long) maxLeft[i - 1] * maxRight[i]);
+
+    return ans;
+  }
+
+  private static final int BASE = 26;
+  private static final int HASH = 1_000_000_007;
+
+  private static int val(char c) {
+    return c - &#x27;a&#x27;;
+  }
+
+  // Returns true if s[l..r) is a palindrome.
+  private boolean isPalindrome(int l, int r, long[] hashL, long[] hashR, long[] pows) {
+    return getLeftRollingHash(l, r, hashL, pows) == getRightRollingHash(l, r, hashR, pows);
+  }
+
+  // Returns the left rolling hash of s[l..r).
+  private long getLeftRollingHash(int l, int r, long[] hashL, long[] pows) {
+    final long h = (hashL[r] - hashL[l] * pows[r - l]) % HASH;
+    return h &lt; 0 ? h + HASH : h;
+  }
+
+  // Returns the right rolling hash of s[l..r).
+  private long getRightRollingHash(int l, int r, long[] hashR, long[] pows) {
+    final long h = (hashR[l] - hashR[r] * pows[r - l]) % HASH;
+    return h &lt; 0 ? h + HASH : h;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxProduct(self, s: str) -&gt; int:
+    BASE = 26
+    HASH = 1_000_000_007
+    n = len(s)
+    pows = [1]  # pows[i] := BASE^i % HASH
+    # hashL[i] = the hash of the first i letters of s, where hashL[i] =
+    # (26^(i - 1) * s[0] + 26^(i - 2) * s[1] + ... + s[i - 1]) % HASH
+    hashL = [0]
+    # hashR[i] = the hash of the last i letters of s, where hashR[i] =
+    # (26^(i - 1) * s[-1] + 26^(i - 2) * s[-2] + ... + s[-i]) % HASH
+    hashR = [0]
+    # maxLeft[i] := the maximum odd length of palindromes in s[0..i]
+    maxLeft = [0] * n
+    # maxRight[i] := the maximum odd length of palindromes in s[i..n - 1]
+    maxRight = [0] * n
+
+    def val(c: str) -&gt; int:
+      return ord(c) - ord(&#x27;a&#x27;)
+
+    for _ in range(n):
+      pows.append(pows[-1] * BASE % HASH)
+
+    for c in s:
+      hashL.append((hashL[-1] * BASE + val(c)) % HASH)
+
+    for c in reversed(s):
+      hashR.append((hashR[-1] * BASE + val(c)) % HASH)
+
+    hashR.reverse()
+
+    def getLeftRollingHash(l: int, r: int) -&gt; int:
+      &quot;&quot;&quot;Returns the left rolling hash of s[l..r).&quot;&quot;&quot;
+      h = (hashL[r] - hashL[l] * pows[r - l]) % HASH
+      return h + HASH if h &lt; 0 else h
+
+    def getRightRollingHash(l: int, r: int) -&gt; int:
+      &quot;&quot;&quot;Returns the right rolling hash of s[l..r).&quot;&quot;&quot;
+      h = (hashR[l] - hashR[r] * pows[r - l]) % HASH
+      return h + HASH if h &lt; 0 else h
+
+    def isPalindrome(l: int, r: int) -&gt; bool:
+      &quot;&quot;&quot;Returns True if s[l..r) is a palindrome.&quot;&quot;&quot;
+      return getLeftRollingHash(l, r) == getRightRollingHash(l, r)
+
+    maxLength = 1
+    for r in range(n):
+      l = (r - maxLength - 2) + 1
+      if l &gt;= 0 and isPalindrome(l, r + 1):
+        maxLength += 2
+      maxLeft[r] = maxLength
+
+    maxLength = 1
+    for l in reversed(range(n)):
+      r = (l + maxLength + 2) - 1
+      if r &lt; n and isPalindrome(l, r + 1):
+        maxLength += 2
+      maxRight[l] = maxLength
+
+    return max(maxLeft[i - 1] * maxRight[i] for i in range(1, n))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

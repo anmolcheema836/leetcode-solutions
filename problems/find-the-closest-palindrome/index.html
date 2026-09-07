@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Closest Palindrome - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Closest Palindrome written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-closest-palindrome/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/binary-tree-tilt/" class="btn">← Previous</a>
+            <span>Problem 564 of 3563</span>
+            <a href="/leetcode-solutions/problems/array-nesting/" class="btn">Next →</a>
+        </div>
+        <h1>564. Find the Closest Palindrome</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Closest Palindrome efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string nearestPalindromic(string n) {
+    const auto&amp; [prevPalindrome, nextPalindrome] = getPalindromes(n);
+    return abs(prevPalindrome - stol(n)) &lt;= abs(nextPalindrome - stol(n))
+               ? to_string(prevPalindrome)
+               : to_string(nextPalindrome);
+  }
+
+ private:
+  // Returns the two closest palindromes to the given number.
+  pair&lt;long, long&gt; getPalindromes(const string&amp; s) {
+    const long num = stol(s);
+    const int n = s.length();
+    pair&lt;long, long&gt; palindromes;
+    const string half = s.substr(0, (n + 1) / 2);
+    const string reversedHalf = reversed(half.substr(0, n / 2));
+    const long candidate = stol(half + reversedHalf);
+
+    if (candidate &lt; num)
+      palindromes.first = candidate;
+    else {
+      const string prevHalf = to_string(stol(half) - 1);
+      const string reversedPrevHalf = reversed(prevHalf.substr(0, n / 2));
+      if (n % 2 == 0 &amp;&amp; stol(prevHalf) == 0)
+        palindromes.first = 9;
+      else if (n % 2 == 0 &amp;&amp; prevHalf == &quot;9&quot;)
+        palindromes.first = stol(prevHalf + &#x27;9&#x27; + reversedPrevHalf);
+      else
+        palindromes.first = stol(prevHalf + reversedPrevHalf);
+    }
+
+    if (candidate &gt; num)
+      palindromes.second = candidate;
+    else {
+      const string&amp; nextHalf = to_string(stol(half) + 1);
+      const string&amp; reversedNextHalf = reversed(nextHalf.substr(0, n / 2));
+      palindromes.second = stol(nextHalf + reversedNextHalf);
+    }
+
+    return palindromes;
+  }
+
+  string reversed(const string&amp; s) {
+    return {s.rbegin(), s.rend()};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String nearestPalindromic(String n) {
+    final long[] palindromes = getPalindromes(n);
+    return Math.abs(palindromes[0] - Long.parseLong(n)) &lt;=
+            Math.abs(palindromes[1] - Long.parseLong(n))
+        ? String.valueOf(palindromes[0])
+        : String.valueOf(palindromes[1]);
+  }
+
+  // Returns the two closest palindromes to the given number.
+  private long[] getPalindromes(final String s) {
+    final long num = Long.parseLong(s);
+    final int n = s.length();
+    long[] palindromes = new long[2];
+    final String half = s.substring(0, (n + 1) / 2);
+    final String reversedHalf = new StringBuilder(half.substring(0, n / 2)).reverse().toString();
+    final long candidate = Long.parseLong(half + reversedHalf);
+
+    if (candidate &lt; num)
+      palindromes[0] = candidate;
+    else {
+      final String prevHalf = String.valueOf(Long.parseLong(half) - 1);
+      final String reversedPrevHalf =
+          new StringBuilder(prevHalf.substring(0, Math.min(prevHalf.length(), n / 2)))
+              .reverse()
+              .toString();
+      if (n % 2 == 0 &amp;&amp; Long.parseLong(prevHalf) == 0)
+        palindromes[0] = 9;
+      else if (n % 2 == 0 &amp;&amp; prevHalf.equals(&quot;9&quot;))
+        palindromes[0] = Long.parseLong(prevHalf + &#x27;9&#x27; + reversedPrevHalf);
+      else
+        palindromes[0] = Long.parseLong(prevHalf + reversedPrevHalf);
+    }
+
+    if (candidate &gt; num)
+      palindromes[1] = candidate;
+    else {
+      final String nextHalf = String.valueOf(Long.parseLong(half) + 1);
+      final String reversedNextHalf =
+          new StringBuilder(nextHalf.substring(0, n / 2)).reverse().toString();
+      palindromes[1] = Long.parseLong(nextHalf + reversedNextHalf);
+    }
+
+    return palindromes;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def nearestPalindromic(self, n: str) -&gt; str:
+    prevPalindrome, nextPalindrome = self._getPalindromes(n)
+    return (str(prevPalindrome)
+            if abs(prevPalindrome - int(n)) &lt;= abs(nextPalindrome - int(n))
+            else str(nextPalindrome))
+
+  def _getPalindromes(self, s: str) -&gt; tuple[str, str]:
+    &quot;&quot;&quot;Returns the two closest palindromes to the given number.&quot;&quot;&quot;
+    num = int(s)
+    sz = len(s)
+    palindromes = []
+    half = s[0:(sz + 1) // 2]
+    reversedHalf = half[:sz // 2][::-1]
+    candidate = int(half + reversedHalf)
+
+    if candidate &lt; num:
+      palindromes.append(candidate)
+    else:
+      prevHalf = str(int(half) - 1)
+      reversedPrevHalf = prevHalf[:sz // 2][::-1]
+      if sz % 2 == 0 and int(prevHalf) == 0:
+        palindromes.append(9)
+      elif sz % 2 == 0 and prevHalf == &#x27;9&#x27;:
+        palindromes.append(int(prevHalf + &#x27;9&#x27; + reversedPrevHalf))
+      else:
+        palindromes.append(int(prevHalf + reversedPrevHalf))
+
+    if candidate &gt; num:
+      palindromes.append(candidate)
+    else:
+      nextHalf = str(int(half) + 1)
+      reversedNextHalf = nextHalf[:sz // 2][::-1]
+      palindromes.append(int(nextHalf + reversedNextHalf))
+
+    return palindromes</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

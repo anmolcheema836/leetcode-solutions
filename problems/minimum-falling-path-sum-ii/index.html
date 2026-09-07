@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Falling Path Sum II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Falling Path Sum II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-falling-path-sum-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/remove-covered-intervals/" class="btn">← Previous</a>
+            <span>Problem 1289 of 3563</span>
+            <a href="/leetcode-solutions/problems/convert-binary-number-in-a-linked-list-to-integer/" class="btn">Next →</a>
+        </div>
+        <h1>1289. Minimum Falling Path Sum II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Falling Path Sum II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minFallingPathSum(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int n = grid.size();
+
+    for (int i = 1; i &lt; n; ++i) {
+      const vector&lt;pair&lt;int, int&gt;&gt; twoMinNumAndIndexs =
+          getTwoMinNumAndIndexs(grid[i - 1]);
+      const auto&amp; [firstMinNum, firstMinIndex] = twoMinNumAndIndexs[0];
+      const auto&amp; [secondMinNum, _] = twoMinNumAndIndexs[1];
+      for (int j = 0; j &lt; n; ++j)
+        if (j == firstMinIndex)
+          grid[i][j] += secondMinNum;
+        else
+          grid[i][j] += firstMinNum;
+    }
+
+    return ranges::min(grid.back());
+  }
+
+ private:
+  vector&lt;pair&lt;int, int&gt;&gt; getTwoMinNumAndIndexs(const vector&lt;int&gt;&amp; A) {
+    vector&lt;pair&lt;int, int&gt;&gt; numAndIndexs;
+    for (int i = 0; i &lt; A.size(); ++i)
+      numAndIndexs.emplace_back(A[i], i);
+    ranges::sort(numAndIndexs);
+    return {numAndIndexs[0], numAndIndexs[1]};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minFallingPathSum(int[][] grid) {
+    final int n = grid.length;
+
+    for (int i = 1; i &lt; n; ++i) {
+      Pair&lt;Integer, Integer&gt;[] twoMinNumAndIndexes = getTwoMinNumAndIndexes(grid[i - 1]);
+      final int firstMinNum = twoMinNumAndIndexes[0].getKey();
+      final int firstMinIndex = twoMinNumAndIndexes[0].getValue();
+      final int secondMinNum = twoMinNumAndIndexes[1].getKey();
+      for (int j = 0; j &lt; n; ++j)
+        if (j == firstMinIndex)
+          grid[i][j] += secondMinNum;
+        else
+          grid[i][j] += firstMinNum;
+    }
+
+    return Arrays.stream(grid[n - 1]).min().getAsInt();
+  }
+
+  private Pair&lt;Integer, Integer&gt;[] getTwoMinNumAndIndexes(int[] arr) {
+    List&lt;Pair&lt;Integer, Integer&gt;&gt; numAndIndexes = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; arr.length; ++i)
+      numAndIndexes.add(new Pair&lt;&gt;(arr[i], i));
+    Collections.sort(numAndIndexes, Comparator.comparingInt(Pair::getKey));
+    return new Pair[] {numAndIndexes.get(0), numAndIndexes.get(1)};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minFallingPathSum(self, grid: list[list[int]]) -&gt; int:
+    n = len(grid)
+
+    for i in range(1, n):
+      (firstMinNum, firstMinIndex), (secondMinNum, _) = sorted(
+          {(a, i) for i, a in enumerate(grid[i - 1])})[:2]
+      for j in range(n):
+        if j == firstMinIndex:
+          grid[i][j] += secondMinNum
+        else:
+          grid[i][j] += firstMinNum
+
+    return min(grid[-1])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

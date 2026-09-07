@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Stream as Disjoint Intervals - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Data Stream as Disjoint Intervals written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/data-stream-as-disjoint-intervals/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/android-unlock-patterns/" class="btn">← Previous</a>
+            <span>Problem 352 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-snake-game/" class="btn">Next →</a>
+        </div>
+        <h1>352. Data Stream as Disjoint Intervals</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Data Stream as Disjoint Intervals efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class SummaryRanges {
+ public:
+  void addNum(int val) {
+    if (intervals.contains(val))
+      return;
+
+    const int lo = lowerKey(val);
+    const int hi = higherKey(val);
+
+    // {lo, intervals[lo][1]} + val + {hi, intervals[hi][1]} = {lo,
+    // intervals[hi][1]}
+    if (lo &gt;= 0 &amp;&amp; hi &gt;= 0 &amp;&amp; intervals[lo][1] + 1 == val &amp;&amp; val + 1 == hi) {
+      intervals[lo][1] = intervals[hi][1];
+      intervals.erase(hi);
+      // {lo, intervals[lo][1]} + val = {lo, val}
+      // Prevent adding duplicate entry by using &#x27;&gt;=&#x27; instead of &#x27;==&#x27;.
+    } else if (lo &gt;= 0 &amp;&amp; intervals[lo][1] + 1 &gt;= val) {
+      intervals[lo][1] = max(intervals[lo][1], val);
+    } else if (hi &gt;= 0 &amp;&amp; val + 1 == hi) {
+      // val + {hi, intervals[hi][1]} = {val, intervals[hi][1]}
+      intervals[val] = {val, intervals[hi][1]};
+      intervals.erase(hi);
+    } else {
+      intervals[val] = {val, val};
+    }
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; getIntervals() {
+    vector&lt;vector&lt;int&gt;&gt; res;
+    for (const auto&amp; [_, interval] : intervals)
+      res.push_back(interval);
+    return res;
+  }
+
+ private:
+  map&lt;int, vector&lt;int&gt;&gt; intervals;  // {start: (start, end)}
+
+  // Returns the maximum key in `intervals` &lt; `key`.
+  int lowerKey(int key) {
+    auto it = intervals.lower_bound(key);
+    if (it == intervals.begin())
+      return -1;
+    return (--it)-&gt;first;
+  }
+
+  // Returns the minimum key in `intervals` &gt; `key`.
+  int higherKey(int key) {
+    const auto it = intervals.upper_bound(key);
+    if (it == intervals.cend())
+      return -1;
+    return it-&gt;first;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class SummaryRanges {
+  public void addNum(int val) {
+    if (intervals.containsKey(val))
+      return;
+
+    // the maximum key in `intervals` &lt; `key`
+    final Integer lo = intervals.lowerKey(val);
+    // the minimum key in `intervals` &gt; `key`
+    final Integer hi = intervals.higherKey(val);
+
+    // {lo, intervals.get(lo)[1]} + val + {hi, intervals.get(hi)[1]} = {lo, intervals.get(hi)[1]}
+    if (lo != null &amp;&amp; hi != null &amp;&amp; intervals.get(lo)[1] + 1 == val &amp;&amp; val + 1 == hi) {
+      intervals.get(lo)[1] = intervals.get(hi)[1];
+      intervals.remove(hi);
+      // {lo, intervals.get(lo)[1]} + val = {lo, val}
+      // Prevent adding duplicate entry by using &#x27;&gt;=&#x27; instead of &#x27;==&#x27;.
+    } else if (lo != null &amp;&amp; intervals.get(lo)[1] + 1 &gt;= val) {
+      intervals.get(lo)[1] = Math.max(intervals.get(lo)[1], val);
+      // val + {hi, intervals.get(hi)[1]} = {val, intervals.get(hi)[1]}
+    } else if (hi != null &amp;&amp; val + 1 == hi) {
+      intervals.put(val, new int[] {val, intervals.get(hi)[1]});
+      intervals.remove(hi);
+    } else {
+      intervals.put(val, new int[] {val, val});
+    }
+  }
+
+  public int[][] getIntervals() {
+    return intervals.values().stream().toArray(int[][] ::new);
+  }
+
+  // {start: (start, end)}
+  private TreeMap&lt;Integer, int[]&gt; intervals = new TreeMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedDict
+
+
+class SummaryRanges:
+  def __init__(self):
+    self.intervals = SortedDict()  # {start: (start, end)}
+
+  def addNum(self, val: int) -&gt; None:
+    if val in self.intervals:
+      return
+
+    lo = self._lowerKey(val)
+    hi = self._higherKey(val)
+
+    # {lo, map[lo][1]} + val + {hi, map[hi][1]} = {lo, map[hi][1]}
+    if lo &gt;= 0 and hi &gt;= 0 and self.intervals[lo][1] + 1 == val and val + 1 == hi:
+      self.intervals[lo][1] = self.intervals[hi][1]
+      del self.intervals[hi]
+      # {lo, map[lo][1]} + val = {lo, val}
+      # Prevent adding duplicate entry by using &#x27;&gt;=&#x27; instead of &#x27;==&#x27;.
+    elif lo &gt;= 0 and self.intervals[lo][1] + 1 &gt;= val:
+      self.intervals[lo][1] = max(self.intervals[lo][1], val)
+    elif hi &gt;= 0 and val + 1 == hi:
+      # val + {hi, map[hi][1]} = {val, map[hi][1]}
+      self.intervals[val] = [val, self.intervals[hi][1]]
+      del self.intervals[hi]
+    else:
+      self.intervals[val] = [val, val]
+
+  def getIntervals(self) -&gt; list[list[int]]:
+    return list(self.intervals.values())
+
+  def _lowerKey(self, key: int):
+    &quot;&quot;&quot;Returns the maximum key in `self.intervals` &lt; `key`.&quot;&quot;&quot;
+    i = self.intervals.bisect_left(key)
+    if i == 0:
+      return -1
+    return self.intervals.peekitem(i - 1)[0]
+
+  def _higherKey(self, key: int):
+    &quot;&quot;&quot;Returns the minimum key in `self.intervals` &lt; `key`.&quot;&quot;&quot;
+    i = self.intervals.bisect_right(key)
+    if i == len(self.intervals):
+      return -1
+    return self.intervals.peekitem(i)[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

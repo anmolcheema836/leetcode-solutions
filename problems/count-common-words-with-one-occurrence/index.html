@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Common Words With One Occurrence - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Common Words With One Occurrence written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-common-words-with-one-occurrence/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/drop-type-1-orders-for-customers-with-type-0-orders/" class="btn">← Previous</a>
+            <span>Problem 2085 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-number-of-food-buckets-to-feed-the-hamsters/" class="btn">Next →</a>
+        </div>
+        <h1>2085. Count Common Words With One Occurrence</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Common Words With One Occurrence efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countWords(vector&lt;string&gt;&amp; words1, vector&lt;string&gt;&amp; words2) {
+    unordered_map&lt;string, int&gt; count;
+
+    for (const string&amp; word : words1)
+      ++count[word];
+
+    for (const string&amp; word : words2)
+      if (const auto it = count.find(word);
+          it != count.cend() &amp;&amp; it-&gt;second &lt; 2)
+        --it-&gt;second;
+
+    return ranges::count_if(
+        count, [](const pair&lt;string, int&gt;&amp; c) { return c.second == 0; });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countWords(String[] words1, String[] words2) {
+    Map&lt;String, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final String word : words1)
+      count.merge(word, 1, Integer::sum);
+
+    for (final String word : words2)
+      if (count.containsKey(word) &amp;&amp; count.get(word) &lt; 2)
+        count.merge(word, -1, Integer::sum);
+
+    return (int) count.values().stream().filter(v -&gt; v == 0).count();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countWords(self, words1: list[str], words2: list[str]) -&gt; int:
+    count = collections.Counter(words1)
+
+    for word in words2:
+      if word in count and count[word] &lt; 2:
+        count[word] -= 1
+
+    return sum(value == 0 for value in count.values())</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

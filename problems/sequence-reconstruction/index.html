@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Reconstruction - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sequence Reconstruction written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sequence-reconstruction/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/string-compression/" class="btn">← Previous</a>
+            <span>Problem 444 of 3563</span>
+            <a href="/leetcode-solutions/problems/add-two-numbers-ii/" class="btn">Next →</a>
+        </div>
+        <h1>444. Sequence Reconstruction</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sequence Reconstruction efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool sequenceReconstruction(vector&lt;int&gt;&amp; org, vector&lt;vector&lt;int&gt;&gt;&amp; seqs) {
+    if (seqs.empty())
+      return false;
+
+    const int n = org.size();
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    vector&lt;int&gt; inDegrees(n);
+
+    // Build the graph.
+    for (const vector&lt;int&gt;&amp; seq : seqs) {
+      if (seq.size() == 1 &amp;&amp; seq[0] &lt; 1 || seq[0] &gt; n)
+        return false;
+      for (int i = 0; i + 1 &lt; seq.size(); ++i) {
+        const int u = seq[i];
+        const int v = seq[i + 1];
+        if (u &lt; 1 || u &gt; n || v &lt; 1 || v &gt; n)
+          return false;
+        graph[u - 1].push_back(v - 1);
+        ++inDegrees[v - 1];
+      }
+    }
+
+    // Perform topological sorting.
+    queue&lt;int&gt; q;
+
+    for (int i = 0; i &lt; n; ++i)
+      if (inDegrees[i] == 0)
+        q.push(i);
+
+    int i = 0;  // org&#x27;s index
+
+    while (!q.empty()) {
+      if (q.size() &gt; 1)
+        return false;
+      const int u = q.front();
+      q.pop();
+      if (u != org[i] - 1)
+        return false;
+      ++i;
+      for (const int v : graph[u])
+        if (--inDegrees[v] == 0)
+          q.push(v);
+    }
+
+    return i == n;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean sequenceReconstruction(int[] org, List&lt;List&lt;Integer&gt;&gt; seqs) {
+    if (seqs.isEmpty())
+      return false;
+
+    final int n = org.length;
+    List&lt;Integer&gt;[] graph = new List[n];
+    int[] inDegrees = new int[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    // Build the graph.
+    for (List&lt;Integer&gt; seq : seqs) {
+      if (seq.size() == 1 &amp;&amp; seq.get(0) &lt; 1 || seq.get(0) &gt; n)
+        return false;
+      for (int i = 0; i + 1 &lt; seq.size(); ++i) {
+        final int u = seq.get(i);
+        final int v = seq.get(i + 1);
+        if (u &lt; 1 || u &gt; n || v &lt; 1 || v &gt; n)
+          return false;
+        graph[u - 1].add(v - 1);
+        ++inDegrees[v - 1];
+      }
+    }
+
+    // Perform topological sorting.
+    Queue&lt;Integer&gt; q = IntStream.range(0, n)
+                           .filter(i -&gt; inDegrees[i] == 0)
+                           .boxed()
+                           .collect(Collectors.toCollection(ArrayDeque::new));
+
+    int i = 0; // org&#x27;s index
+
+    while (!q.isEmpty()) {
+      if (q.size() &gt; 1)
+        return false;
+      final int u = q.poll();
+      if (u != org[i] - 1)
+        return false;
+      ++i;
+      for (final int v : graph[u])
+        if (--inDegrees[v] == 0)
+          q.offer(v);
+    }
+
+    return i == n;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def sequenceReconstruction(
+      self,
+      org: list[int],
+      seqs: list[list[int]],
+  ) -&gt; bool:
+    if not seqs:
+      return False
+
+    n = len(org)
+    graph = [[] for _ in range(n)]
+    inDegrees = [0] * n
+
+    # Build the graph.
+    for seq in seqs:
+      if len(seq) == 1 and seq[0] &lt; 1 or seq[0] &gt; n:
+        return False
+      for u, v in zip(seq, seq[1:]):
+        if u &lt; 1 or u &gt; n or v &lt; 1 or v &gt; n:
+          return False
+        graph[u - 1].append(v - 1)
+        inDegrees[v - 1] += 1
+
+    # Perform topological sorting.
+    q = collections.deque([i for i, d in enumerate(inDegrees) if d == 0])
+    i = 0  # org&#x27;s index
+
+    while q:
+      if len(q) &gt; 1:
+        return False
+      u = q.popleft()
+      if u != org[i] - 1:
+        return False
+      i += 1
+      for v in graph[u]:
+        inDegrees[v] -= 1
+        if inDegrees[v] == 0:
+          q.append(v)
+
+    return i == n</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

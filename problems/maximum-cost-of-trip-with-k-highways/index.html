@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Cost of Trip With K Highways - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Cost of Trip With K Highways written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-cost-of-trip-with-k-highways/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-path-with-different-adjacent-characters/" class="btn">← Previous</a>
+            <span>Problem 2247 of 3563</span>
+            <a href="/leetcode-solutions/problems/intersection-of-multiple-arrays/" class="btn">Next →</a>
+        </div>
+        <h1>2247. Maximum Cost of Trip With K Highways</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Cost of Trip With K Highways efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximumCost(int n, vector&lt;vector&lt;int&gt;&gt;&amp; highways, int k) {
+    if (k + 1 &gt; n)
+      return -1;
+
+    int ans = -1;
+    vector&lt;vector&lt;int&gt;&gt; mem(n, vector&lt;int&gt;(1 &lt;&lt; n, -1));
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; h : highways) {
+      const int u = h[0];
+      const int v = h[1];
+      const int w = h[2];
+      graph[u].emplace_back(v, w);
+      graph[v].emplace_back(u, w);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      ans = max(ans, maximumCost(graph, i, 1 &lt;&lt; i, k, mem));
+
+    return ans;
+  }
+
+ private:
+  // Returns the maximum cost of trip starting from u, where `mask` is the
+  // bitmask of the visited cities.
+  int maximumCost(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int u,
+                  unsigned mask, int k, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (popcount(mask) == k + 1)
+      return 0;
+    if (mem[u][mask] != -1)
+      return mem[u][mask];
+
+    int res = -1;
+    for (const auto&amp; [v, w] : graph[u]) {
+      if (mask &gt;&gt; v &amp; 1)
+        continue;
+      const int nextCost = maximumCost(graph, v, mask | 1 &lt;&lt; v, k, mem);
+      if (nextCost != -1)
+        res = max(res, w + nextCost);
+    }
+
+    return mem[u][mask] = res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximumCost(int n, int[][] highways, int k) {
+    if (k + 1 &gt; n)
+      return -1;
+
+    int ans = -1;
+    Integer[][] mem = new Integer[n][1 &lt;&lt; n];
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] h : highways) {
+      final int u = h[0];
+      final int v = h[1];
+      final int w = h[2];
+      graph[u].add(new Pair&lt;&gt;(v, w));
+      graph[v].add(new Pair&lt;&gt;(u, w));
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      ans = Math.max(ans, maximumCost(graph, i, 1 &lt;&lt; i, k, mem));
+
+    return ans;
+  }
+
+  // Returns the maximum cost of trip starting from u, where `mask` is the
+  // bitmask of the visited cities.
+  private int maximumCost(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int u, int mask, int k,
+                          Integer[][] mem) {
+    if (Integer.bitCount(mask) == k + 1)
+      return 0;
+    if (mem[u][mask] != null)
+      return mem[u][mask];
+
+    int res = -1;
+    for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final int w = pair.getValue();
+      if ((mask &gt;&gt; v &amp; 1) == 1)
+        continue;
+      final int nextCost = maximumCost(graph, v, mask | 1 &lt;&lt; v, k, mem);
+      if (nextCost != -1)
+        res = Math.max(res, w + nextCost);
+    }
+
+    return mem[u][mask] = res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumCost(self, n: int, highways: list[list[int]], k: int) -&gt; int:
+    if k + 1 &gt; n:
+      return -1
+
+    graph = [[] for _ in range(n)]
+
+    for u, v, w in highways:
+      graph[u].append((v, w))
+      graph[v].append((u, w))
+
+    @functools.lru_cache(None)
+    def dp(u: int, mask: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the maximum cost of trip starting from u, where `mask` is the
+      bitmask of the visited cities.
+      &quot;&quot;&quot;
+      if mask.bit_count() == k + 1:
+        return 0
+
+      res = -1
+      for v, w in graph[u]:
+        if mask &gt;&gt; v &amp; 1:
+          continue
+        nextCost = dp(v, mask | 1 &lt;&lt; v)
+        if nextCost != -1:
+          res = max(res, w + nextCost)
+      return res
+
+    return max(dp(i, 1 &lt;&lt; i) for i in range(n))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

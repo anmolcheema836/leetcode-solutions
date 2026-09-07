@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alien Dictionary - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Alien Dictionary written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/alien-dictionary/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/missing-number/" class="btn">← Previous</a>
+            <span>Problem 269 of 3563</span>
+            <a href="/leetcode-solutions/problems/closest-binary-search-tree-value/" class="btn">Next →</a>
+        </div>
+        <h1>269. Alien Dictionary</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Alien Dictionary efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string alienOrder(vector&lt;string&gt;&amp; words) {
+    unordered_map&lt;char, unordered_set&lt;char&gt;&gt; graph;
+    vector&lt;int&gt; inDegrees(26);
+    buildGraph(graph, words, inDegrees);
+    return topology(graph, inDegrees);
+  }
+
+ private:
+  void buildGraph(unordered_map&lt;char, unordered_set&lt;char&gt;&gt;&amp; graph,
+                  const vector&lt;string&gt;&amp; words, vector&lt;int&gt;&amp; inDegrees) {
+    // Create a node for each character in each word.
+    for (const string&amp; word : words)
+      for (const char c : word)
+        if (!graph.contains(c))
+          graph[c] = unordered_set&lt;char&gt;();
+
+    for (int i = 1; i &lt; words.size(); ++i) {
+      const string&amp; first = words[i - 1];
+      const string&amp; second = words[i];
+      const int length = min(first.length(), second.length());
+      for (int j = 0; j &lt; length; ++j) {
+        const char u = first[j];
+        const char v = second[j];
+        if (u != v) {
+          if (!graph[u].contains(v)) {
+            graph[u].insert(v);
+            ++inDegrees[v - &#x27;a&#x27;];
+          }
+          break;  // The order of characters after this are meaningless.
+        }
+        // e.g. first = &quot;ab&quot;, second = &quot;a&quot; -&gt; invalid
+        if (j == length - 1 &amp;&amp; first.length() &gt; second.length()) {
+          graph.clear();
+          return;
+        }
+      }
+    }
+  }
+
+  string topology(unordered_map&lt;char, unordered_set&lt;char&gt;&gt;&amp; graph,
+                  vector&lt;int&gt;&amp; inDegrees) {
+    string s;
+    queue&lt;char&gt; q;
+
+    for (const auto&amp; [c, _] : graph)
+      if (inDegrees[c - &#x27;a&#x27;] == 0)
+        q.push(c);
+
+    while (!q.empty()) {
+      const char u = q.front();
+      q.pop();
+      s += u;
+      for (const char v : graph[u])
+        if (--inDegrees[v - &#x27;a&#x27;] == 0)
+          q.push(v);
+    }
+
+    // e.g. words = [&quot;z&quot;, &quot;x&quot;, &quot;y&quot;, &quot;x&quot;]
+    return s.length() == graph.size() ? s : &quot;&quot;;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String alienOrder(String[] words) {
+    Map&lt;Character, Set&lt;Character&gt;&gt; graph = new HashMap&lt;&gt;();
+    int[] inDegrees = new int[26];
+    buildGraph(graph, words, inDegrees);
+    return topology(graph, inDegrees);
+  }
+
+  private void buildGraph(Map&lt;Character, Set&lt;Character&gt;&gt; graph, String[] words, int[] inDegrees) {
+    // Create a node for each character in each word.
+    for (final String word : words)
+      for (final char c : word.toCharArray())
+        graph.putIfAbsent(c, new HashSet&lt;&gt;());
+
+    for (int i = 1; i &lt; words.length; ++i) {
+      final String first = words[i - 1];
+      final String second = words[i];
+      final int length = Math.min(first.length(), second.length());
+      for (int j = 0; j &lt; length; ++j) {
+        final char u = first.charAt(j);
+        final char v = second.charAt(j);
+        if (u != v) {
+          if (!graph.get(u).contains(v)) {
+            graph.get(u).add(v);
+            ++inDegrees[v - &#x27;a&#x27;];
+          }
+          break; // The order of characters after this are meaningless.
+        }
+        // e.g. first = &quot;ab&quot;, second = &quot;a&quot; -&gt; invalid
+        if (j == length - 1 &amp;&amp; first.length() &gt; second.length()) {
+          graph.clear();
+          return;
+        }
+      }
+    }
+  }
+
+  private String topology(Map&lt;Character, Set&lt;Character&gt;&gt; graph, int[] inDegrees) {
+    StringBuilder sb = new StringBuilder();
+    Queue&lt;Character&gt; q = graph.keySet()
+                             .stream()
+                             .filter(c -&gt; inDegrees[c - &#x27;a&#x27;] == 0)
+                             .collect(Collectors.toCollection(ArrayDeque::new));
+
+    while (!q.isEmpty()) {
+      final char u = q.poll();
+      sb.append(u);
+      for (final char v : graph.get(u))
+        if (--inDegrees[v - &#x27;a&#x27;] == 0)
+          q.offer(v);
+    }
+
+    // e.g. words = [&quot;z&quot;, &quot;x&quot;, &quot;y&quot;, &quot;x&quot;]
+    return sb.length() == graph.size() ? sb.toString() : &quot;&quot;;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def alienOrder(self, words: list[str]) -&gt; str:
+    graph = {}
+    inDegrees = [0] * 26
+
+    self._buildGraph(graph, words, inDegrees)
+    return self._topology(graph, inDegrees)
+
+  def _buildGraph(
+      self,
+      graph: dict[str, set[str]],
+      words: list[str],
+      inDegrees: list[int],
+  ) -&gt; None:
+    # Create a node for each character in each word.
+    for word in words:
+      for c in word:
+        if c not in graph:
+          graph[c] = set()
+
+    for first, second in zip(words, words[1:]):
+      length = min(len(first), len(second))
+      for j in range(length):
+        u = first[j]
+        v = second[j]
+        if u != v:
+          if v not in graph[u]:
+            graph[u].add(v)
+            inDegrees[ord(v) - ord(&#x27;a&#x27;)] += 1
+          break  # The order of characters after this are meaningless.
+        # First = &#x27;ab&#x27;, second = &#x27;a&#x27; . invalid
+        if j == length - 1 and len(first) &gt; len(second):
+          graph.clear()
+          return
+
+  def _topology(self, graph: dict[str, set[str]], inDegrees: list[int]) -&gt; str:
+    s = &#x27;&#x27;
+    q = collections.deque()
+
+    for c in graph:
+      if inDegrees[ord(c) - ord(&#x27;a&#x27;)] == 0:
+        q.append(c)
+
+    while q:
+      u = q.pop()
+      s += u
+      for v in graph[u]:
+        inDegrees[ord(v) - ord(&#x27;a&#x27;)] -= 1
+        if inDegrees[ord(v) - ord(&#x27;a&#x27;)] == 0:
+          q.append(v)
+
+    # Words = [&#x27;z&#x27;, &#x27;x&#x27;, &#x27;y&#x27;, &#x27;x&#x27;]
+    return s if len(s) == len(graph) else &#x27;&#x27;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Random Point in a Circle - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Generate Random Point in a Circle written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/generate-random-point-in-a-circle/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/total-hamming-distance/" class="btn">← Previous</a>
+            <span>Problem 478 of 3563</span>
+            <a href="/leetcode-solutions/problems/largest-palindrome-product/" class="btn">Next →</a>
+        </div>
+        <h1>478. Generate Random Point in a Circle</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Generate Random Point in a Circle efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  Solution(double radius, double x_center, double y_center)
+      : radius(radius), x_center(x_center), y_center(y_center) {}
+
+  vector&lt;double&gt; randPoint() {
+    const double length = sqrt(distribution(generator)) * radius;
+    const double degree = distribution(generator) * 2 * M_PI;
+    const double x = x_center + length * cos(degree);
+    const double y = y_center + length * sin(degree);
+    return {x, y};
+  }
+
+ private:
+  const double radius;
+  const double x_center;
+  const double y_center;
+  default_random_engine generator;
+  uniform_real_distribution&lt;double&gt; distribution =
+      uniform_real_distribution&lt;double&gt;(0.0, 1.0);
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public Solution(double radius, double x_center, double y_center) {
+    this.radius = radius;
+    this.x_center = x_center;
+    this.y_center = y_center;
+  }
+
+  public double[] randPoint() {
+    final double length = Math.sqrt(Math.random()) * radius;
+    final double degree = Math.random() * 2 * Math.PI;
+    final double x = x_center + length * Math.cos(degree);
+    final double y = y_center + length * Math.sin(degree);
+    return new double[] {x, y};
+  }
+
+  private double radius;
+  private double x_center;
+  private double y_center;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def __init__(self, radius: float, x_center: float, y_center: float):
+    self.radius = radius
+    self.x_center = x_center
+    self.y_center = y_center
+
+  def randPoint(self) -&gt; list[float]:
+    length = math.sqrt(random.uniform(0, 1)) * self.radius
+    degree = random.uniform(0, 1) * 2 * math.pi
+    x = self.x_center + length * math.cos(degree)
+    y = self.y_center + length * math.sin(degree)
+    return [x, y]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

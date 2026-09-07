@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Separate Squares II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Separate Squares II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/separate-squares-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/separate-squares-i/" class="btn">← Previous</a>
+            <span>Problem 3454 of 3563</span>
+            <a href="/leetcode-solutions/problems/shortest-matching-substring/" class="btn">Next →</a>
+        </div>
+        <h1>3454. Separate Squares II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Separate Squares II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class SegmentTree {
+ public:
+  explicit SegmentTree(const vector&lt;int&gt;&amp; xs)
+      : xs(xs), n(xs.size() - 1), coveredCount(4 * n), coveredWidth(4 * n) {}
+
+  // Adds val to the range [i, j].
+  void add(int i, int j, int val) {
+    add(0, 0, n - 1, i, j, val);
+  }
+
+  // Returns the covered width of xs[0..n - 1].
+  int getCoveredWidth() const {
+    return coveredWidth[0];
+  }
+
+ private:
+  const int n;  // the number of segments (|xs| - 1)
+  vector&lt;int&gt; xs;
+  vector&lt;int&gt; coveredCount;
+  vector&lt;int&gt; coveredWidth;
+
+  void add(int treeIndex, int lo, int hi, int i, int j, int val) {
+    if (j &lt;= xs[lo] || xs[hi + 1] &lt;= i)
+      return;
+    if (i &lt;= xs[lo] &amp;&amp; xs[hi + 1] &lt;= j) {
+      coveredCount[treeIndex] += val;
+    } else {
+      const int mid = (lo + hi) / 2;
+      add(2 * treeIndex + 1, lo, mid, i, j, val);
+      add(2 * treeIndex + 2, mid + 1, hi, i, j, val);
+    }
+    if (coveredCount[treeIndex] &gt; 0) {
+      coveredWidth[treeIndex] = xs[hi + 1] - xs[lo];
+    } else if (lo == hi) {
+      coveredWidth[treeIndex] = 0;
+    } else {
+      coveredWidth[treeIndex] =
+          coveredWidth[2 * treeIndex + 1] + coveredWidth[2 * treeIndex + 2];
+    }
+  }
+};
+
+class Solution {
+ public:
+  double separateSquares(vector&lt;vector&lt;int&gt;&gt;&amp; squares) {
+    vector&lt;tuple&lt;int, int, int, int&gt;&gt; events;  // (y, delta, xl, xr)
+    set&lt;int&gt; xs;
+
+    for (const vector&lt;int&gt;&amp; square : squares) {
+      const int x = square[0];
+      const int y = square[1];
+      const int l = square[2];
+      events.emplace_back(y, 1, x, x + l);
+      events.emplace_back(y + l, -1, x, x + l);
+      xs.insert(x);
+      xs.insert(x + l);
+    }
+
+    ranges::sort(events);
+
+    const double halfArea = getArea(events, xs) / 2.0;
+    long area = 0;
+    int prevY = 0;
+    SegmentTree tree({xs.begin(), xs.end()});
+
+    for (const auto&amp; [y, delta, xl, xr] : events) {
+      const int coveredWidth = tree.getCoveredWidth();
+      const long areaGain = coveredWidth * static_cast&lt;long&gt;(y - prevY);
+      if (area + areaGain &gt;= halfArea)
+        return prevY + (halfArea - area) / coveredWidth;
+      area += areaGain;
+      tree.add(xl, xr, delta);
+      prevY = y;
+    }
+
+    throw;
+  }
+
+ private:
+  // Returns the total area of the rectangles.
+  long getArea(const vector&lt;tuple&lt;int, int, int, int&gt;&gt;&amp; events,
+               const set&lt;int&gt;&amp; xs) {
+    long totalArea = 0;
+    int prevY = 0;
+    SegmentTree tree({xs.begin(), xs.end()});
+    for (const auto&amp; [y, delta, xl, xr] : events) {
+      totalArea += tree.getCoveredWidth() * static_cast&lt;long&gt;(y - prevY);
+      tree.add(xl, xr, delta);
+      prevY = y;
+    }
+    return totalArea;
+  }
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Stepping Numbers in Range - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Stepping Numbers in Range written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-stepping-numbers-in-range/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/shortest-string-that-contains-three-strings/" class="btn">← Previous</a>
+            <span>Problem 2801 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-k-th-lucky-number/" class="btn">Next →</a>
+        </div>
+        <h1>2801. Count Stepping Numbers in Range</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Stepping Numbers in Range efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countSteppingNumbers(string low, string high) {
+    const string lowWithLeadingZeros =
+        string(high.length() - low.length(), &#x27;0&#x27;) + low;
+    vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt; mem(
+        high.length(), vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;(
+                           11, vector&lt;vector&lt;int&gt;&gt;(2, vector&lt;int&gt;(2, -1))));
+    return count(lowWithLeadingZeros, high, 0, 10, /*isLeadingZero=*/true, true,
+                 true, mem);
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  // Returns the number of valid integers, considering the i-th digit, where
+  // `prevDigit` is the previous digit, `tight1` indicates if the current
+  // digit is tightly bound for `low`, and `tight2` indicates if the current
+  // digit is tightly bound for `high`.
+  int count(const string&amp; low, const string&amp; high, int i, int prevDigit,
+            bool isLeadingZero, bool tight1, bool tight2,
+            vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;&amp; mem) {
+    if (i == high.length())
+      return 1;
+    if (mem[i][prevDigit][tight1][tight2] != -1)
+      return mem[i][prevDigit][tight1][tight2];
+
+    int res = 0;
+    const int minDigit = tight1 ? low[i] - &#x27;0&#x27; : 0;
+    const int maxDigit = tight2 ? high[i] - &#x27;0&#x27; : 9;
+
+    for (int d = minDigit; d &lt;= maxDigit; ++d) {
+      const bool nextTight1 = tight1 &amp;&amp; (d == minDigit);
+      const bool nextTight2 = tight2 &amp;&amp; (d == maxDigit);
+      if (isLeadingZero)
+        // Can place any digit in [minDigit, maxDigit].
+        res += count(low, high, i + 1, d, isLeadingZero &amp;&amp; d == 0, nextTight1,
+                     nextTight2, mem);
+      else if (abs(d - prevDigit) == 1)
+        // Can only place prevDigit - 1 or prevDigit + 1.
+        res += count(low, high, i + 1, d, false, nextTight1, nextTight2, mem);
+      res %= kMod;
+    }
+
+    return mem[i][prevDigit][tight1][tight2] = res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countSteppingNumbers(String low, String high) {
+    final String lowWithLeadingZeros =
+        String.valueOf(&#x27;0&#x27;).repeat(high.length() - low.length()) + low;
+    Integer[][][][] mem = new Integer[high.length()][11][2][2];
+    return count(lowWithLeadingZeros, high, 0, 10, /*isLeadingZero=*/true, true, true, mem);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  // Returns the number of valid integers, considering the i-th digit, where
+  // `prevDigit` is the previous digit, `tight1` indicates if the current
+  // digit is tightly bound for `low`, and `tight2` indicates if the current
+  // digit is tightly bound for `high`.
+  private int count(final String low, final String high, int i, int prevDigit,
+                    boolean isLeadingZero, boolean tight1, boolean tight2, Integer[][][][] mem) {
+    if (i == high.length())
+      return 1;
+    if (mem[i][prevDigit][tight1 ? 1 : 0][tight2 ? 1 : 0] != null)
+      return mem[i][prevDigit][tight1 ? 1 : 0][tight2 ? 1 : 0];
+
+    int res = 0;
+    final int minDigit = tight1 ? low.charAt(i) - &#x27;0&#x27; : 0;
+    final int maxDigit = tight2 ? high.charAt(i) - &#x27;0&#x27; : 9;
+
+    for (int d = minDigit; d &lt;= maxDigit; ++d) {
+      final boolean nextTight1 = tight1 &amp;&amp; (d == minDigit);
+      final boolean nextTight2 = tight2 &amp;&amp; (d == maxDigit);
+      if (isLeadingZero)
+        // Can place any digit in [minDigit, maxDigit].
+        res += count(low, high, i + 1, d, isLeadingZero &amp;&amp; d == 0, nextTight1, nextTight2, mem);
+      else if (Math.abs(d - prevDigit) == 1)
+        // Can only place prevDigit - 1 or prevDigit + 1.
+        res += count(low, high, i + 1, d, false, nextTight1, nextTight2, mem);
+      res %= MOD;
+    }
+
+    return mem[i][prevDigit][tight1 ? 1 : 0][tight2 ? 1 : 0] = res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countSteppingNumbers(self, low: str, high: str) -&gt; int:
+    MOD = 1_000_000_007
+    low = &#x27;0&#x27; * (len(high) - len(low)) + low
+
+    @functools.lru_cache(None)
+    def dp(
+        i: int,
+        prevDigit: int,
+        isLeadingZero: bool,
+        tight1: bool,
+        tight2: bool,
+    ) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of valid integers, considering the i-th digit, where
+      `prevDigit` is the previous digit, `tight1` indicates if the current
+      digit is tightly bound for `low`, and `tight2` indicates if the current
+      digit is tightly bound for `high`.
+      &quot;&quot;&quot;
+      if i == len(high):
+        return 1
+
+      res = 0
+      minDigit = int(low[i]) if tight1 else 0
+      maxDigit = int(high[i]) if tight2 else 9
+
+      for d in range(minDigit, maxDigit + 1):
+        nextTight1 = tight1 and (d == minDigit)
+        nextTight2 = tight2 and (d == maxDigit)
+        if isLeadingZero:
+          # Can place any digit in [minDigit, maxDigit].
+          res += dp(i + 1, d, isLeadingZero and d ==
+                    0, nextTight1, nextTight2)
+        elif abs(d - prevDigit) == 1:
+          res += dp(i + 1, d, False, nextTight1, nextTight2)
+        res %= MOD
+
+      return res
+
+    return dp(0, -1, True, True, True)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

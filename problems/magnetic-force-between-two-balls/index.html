@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetic Force Between Two Balls - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Magnetic Force Between Two Balls written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/magnetic-force-between-two-balls/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-operations-to-make-array-equal/" class="btn">← Previous</a>
+            <span>Problem 1552 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-number-of-days-to-eat-n-oranges/" class="btn">Next →</a>
+        </div>
+        <h1>1552. Magnetic Force Between Two Balls</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Magnetic Force Between Two Balls efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxDistance(vector&lt;int&gt;&amp; position, int m) {
+    ranges::sort(position);
+
+    int l = 1;
+    int r = position.back() - position.front();
+
+    while (l &lt; r) {
+      const int mid = r - (r - l) / 2;
+      if (numBalls(position, mid) &gt;= m)  // There&#x27;re too many balls.
+        l = mid;
+      else  // There&#x27;re too few balls.
+        r = mid - 1;
+    }
+
+    return l;
+  }
+
+ private:
+  int numBalls(const vector&lt;int&gt;&amp; position, int force) {
+    int balls = 0;
+    int prevPosition = -force;
+    for (const int pos : position)
+      if (pos - prevPosition &gt;= force) {
+        ++balls;
+        prevPosition = pos;
+      }
+    return balls;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxDistance(int[] position, int m) {
+    Arrays.sort(position);
+
+    int l = 1;
+    int r = position[position.length - 1] - position[0];
+
+    while (l &lt; r) {
+      final int mid = r - (r - l) / 2;
+      if (numBalls(position, mid) &gt;= m) // There&#x27;re too many balls.
+        l = mid;
+      else // There&#x27;re too few balls.
+        r = mid - 1;
+    }
+
+    return l;
+  }
+
+  private int numBalls(int[] position, int force) {
+    int balls = 0;
+    int prevPosition = -force;
+    for (final int pos : position)
+      if (pos - prevPosition &gt;= force) {
+        balls++;
+        prevPosition = pos;
+      }
+    return balls;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxDistance(self, position: list[int], m: int) -&gt; int:
+    position.sort()
+
+    l = 1
+    r = position[-1] - position[0]
+
+    def numBalls(force: int) -&gt; int:
+      balls = 0
+      prevPosition = -force
+      for pos in position:
+        if pos - prevPosition &gt;= force:
+          balls += 1
+          prevPosition = pos
+      return balls
+
+    while l &lt; r:
+      mid = r - (r - l) // 2
+      if numBalls(mid) &gt;= m:
+        l = mid
+      else:
+        r = mid - 1
+
+    return l</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

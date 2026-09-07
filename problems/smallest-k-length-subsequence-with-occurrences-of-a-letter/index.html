@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallest K-Length Subsequence With Occurrences of a Letter - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Smallest K-Length Subsequence With Occurrences of a Letter written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/stone-game-ix/" class="btn">← Previous</a>
+            <span>Problem 2030 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-subarrays-with-more-ones-than-zeros/" class="btn">Next →</a>
+        </div>
+        <h1>2030. Smallest K-Length Subsequence With Occurrences of a Letter</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Smallest K-Length Subsequence With Occurrences of a Letter efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string smallestSubsequence(string s, int k, char letter, int repetition) {
+    string ans;
+    vector&lt;char&gt; stack;
+    int required = repetition;
+    int nLetters = ranges::count(s, letter);
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      const char c = s[i];
+      while (!stack.empty() &amp;&amp; stack.back() &gt; c &amp;&amp;
+             stack.size() + s.length() - i - 1 &gt;= k &amp;&amp;
+             (stack.back() != letter || nLetters &gt; required)) {
+        const char popped = stack.back();
+        stack.pop_back();
+        if (popped == letter)
+          ++required;
+      }
+      if (stack.size() &lt; k)
+        if (c == letter) {
+          stack.push_back(c);
+          --required;
+        } else if (k &gt; stack.size() + required) {
+          stack.push_back(c);
+        }
+      if (c == letter)
+        --nLetters;
+    }
+
+    for (const char c : stack)
+      ans += c;
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String smallestSubsequence(String s, int k, char letter, int repetition) {
+    StringBuilder sb = new StringBuilder();
+    Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;();
+    int required = repetition;
+    int nLetters = (int) s.chars().filter(c -&gt; c == letter).count();
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      final char c = s.charAt(i);
+      while (!stack.isEmpty() &amp;&amp; stack.peek() &gt; c &amp;&amp; stack.size() + s.length() - i - 1 &gt;= k &amp;&amp;
+             (stack.peek() != letter || nLetters &gt; required))
+        if (stack.pop() == letter)
+          ++required;
+      if (stack.size() &lt; k)
+        if (c == letter) {
+          stack.push(c);
+          --required;
+        } else if (k - stack.size() &gt; required) {
+          stack.push(c);
+        }
+      if (c == letter)
+        --nLetters;
+    }
+
+    for (final char c : stack)
+      sb.append(c);
+
+    return sb.reverse().toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def smallestSubsequence(
+      self,
+      s: str,
+      k: int,
+      letter: str,
+      repetition: int,
+  ) -&gt; str:
+    stack = []  # running string
+    required = repetition
+    nLetters = s.count(letter)
+
+    for i, c in enumerate(s):
+      # Make sure the length is sufficient:
+      # Len(stack) := the length of running string
+      # Len(s) - i := the length of remain chars
+      # -1 := we&#x27;re going to pop a char
+      while (stack and stack[-1] &gt; c
+              and len(stack) + len(s) - i - 1 &gt;= k
+              and (stack[-1] != letter or nLetters &gt; required)):
+        if stack.pop() == letter:
+          required += 1
+      if len(stack) &lt; k:
+        if c == letter:
+          stack.append(c)
+          required -= 1
+        elif k - len(stack) &gt; required:
+          stack.append(c)
+      if c == letter:
+        nLetters -= 1
+
+    return &#x27;&#x27;.join(stack)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

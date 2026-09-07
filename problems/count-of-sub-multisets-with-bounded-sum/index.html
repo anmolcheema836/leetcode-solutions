@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count of Sub-Multisets With Bounded Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count of Sub-Multisets With Bounded Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-of-sub-multisets-with-bounded-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-unequal-adjacent-groups-subsequence-ii/" class="btn">← Previous</a>
+            <span>Problem 2902 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-indices-with-index-and-value-difference-i/" class="btn">Next →</a>
+        </div>
+        <h1>2902. Count of Sub-Multisets With Bounded Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count of Sub-Multisets With Bounded Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countSubMultisets(vector&lt;int&gt;&amp; nums, int l, int r) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    // dp[i] := the number of submultisets of `nums` with sum i
+    vector&lt;long&gt; dp(r + 1);
+    dp[0] = 1;
+    unordered_map&lt;int, int&gt; count;
+
+    for (const int num : nums)
+      ++count[num];
+
+    const int zeros = count[0];
+    count.erase(0);
+
+    for (const auto&amp; [num, freq] : count) {
+      // stride[i] := dp[i] + dp[i - num] + dp[i - 2 * num] + ...
+      vector&lt;long&gt; stride = dp;
+      for (int i = num; i &lt;= r; ++i)
+        stride[i] += stride[i - num];
+      for (int i = r; i &gt; 0; --i)
+        if (i &gt;= num * (freq + 1))
+          // dp[i] + dp[i - num] + dp[i - freq * num]
+          dp[i] = (stride[i] - stride[i - num * (freq + 1)]) % kMod;
+        else
+          dp[i] = stride[i] % kMod;
+    }
+
+    long ans = 0;
+    for (int i = l; i &lt;= r; ++i)
+      ans = (ans + dp[i]) % kMod;
+    return ((zeros + 1) * ans) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countSubMultisets(List&lt;Integer&gt; nums, int l, int r) {
+    final int MOD = 1_000_000_007;
+    // dp[i] := the number of submultisets of `nums` with sum i
+    long[] dp = new long[r + 1];
+    dp[0] = 1;
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final int num : nums)
+      count.merge(num, 1, Integer::sum);
+
+    final int zeros = count.containsKey(0) ? count.remove(0) : 0;
+
+    for (Map.Entry&lt;Integer, Integer&gt; entry : count.entrySet()) {
+      final int num = entry.getKey();
+      final int freq = entry.getValue();
+      // stride[i] := dp[i] + dp[i - num] + dp[i - 2 * num] + ...
+      long[] stride = dp.clone();
+      for (int i = num; i &lt;= r; ++i)
+        stride[i] += stride[i - num];
+      for (int i = r; i &gt; 0; --i)
+        if (i &gt;= num * (freq + 1))
+          // dp[i] + dp[i - num] + dp[i - freq * num]
+          dp[i] = (stride[i] - stride[i - num * (freq + 1)]) % MOD;
+        else
+          dp[i] = stride[i] % MOD;
+    }
+
+    long ans = 0;
+    for (int i = l; i &lt;= r; ++i)
+      ans = (ans + dp[i]) % MOD;
+    return (int) (((zeros + 1) * ans) % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countSubMultisets(self, nums: list[int], l: int, r: int) -&gt; int:
+    MOD = 1_000_000_007
+    # dp[i] := the number of submultisets of `nums` with sum i
+    dp = [1] + [0] * r
+    count = collections.Counter(nums)
+    zeros = count.pop(0, 0)
+
+    for num, freq in count.items():
+      # stride[i] := dp[i] + dp[i - num] + dp[i - 2 * num] + ...
+      stride = dp.copy()
+      for i in range(num, r + 1):
+        stride[i] += stride[i - num]
+      for i in range(r, 0, -1):
+        if i &gt;= num * (freq + 1):
+          # dp[i] + dp[i - num] + dp[i - freq * num]
+          dp[i] = stride[i] - stride[i - num * (freq + 1)]
+        else:
+          dp[i] = stride[i]
+
+    return (zeros + 1) * sum(dp[l:r + 1]) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

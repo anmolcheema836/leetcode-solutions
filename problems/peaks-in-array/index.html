@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peaks in Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Peaks in Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/peaks-in-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-total-damage-with-spell-casting/" class="btn">← Previous</a>
+            <span>Problem 3187 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-top-scoring-students-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3187. Peaks in Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Peaks in Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class SegmentTree {
+ public:
+  explicit SegmentTree(const vector&lt;int&gt;&amp; peak) : n(peak.size()), tree(n * 4) {
+    build(peak, 0, 0, n - 1);
+  }
+
+  // Updates peak[i] to val.
+  void update(int i, int val) {
+    update(0, 0, n - 1, i, val);
+  }
+
+  // Returns sum(peak[i..j]).
+  int query(int i, int j) const {
+    return query(0, 0, n - 1, i, j);
+  }
+
+ private:
+  const int n;       // the size of the input array
+  vector&lt;int&gt; tree;  // the segment tree
+
+  void build(const vector&lt;int&gt;&amp; peak, int treeIndex, int lo, int hi) {
+    if (lo == hi) {
+      tree[treeIndex] = peak[lo];
+      return;
+    }
+    const int mid = (lo + hi) / 2;
+    build(peak, 2 * treeIndex + 1, lo, mid);
+    build(peak, 2 * treeIndex + 2, mid + 1, hi);
+    tree[treeIndex] = merge(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+  }
+
+  void update(int treeIndex, int lo, int hi, int i, int val) {
+    if (lo == hi) {
+      tree[treeIndex] = val;
+      return;
+    }
+    const int mid = (lo + hi) / 2;
+    if (i &lt;= mid)
+      update(2 * treeIndex + 1, lo, mid, i, val);
+    else
+      update(2 * treeIndex + 2, mid + 1, hi, i, val);
+    tree[treeIndex] = merge(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+  }
+
+  int query(int treeIndex, int lo, int hi, int i, int j) const {
+    if (i &lt;= lo &amp;&amp; hi &lt;= j)  // [lo, hi] lies completely inside [i, j].
+      return tree[treeIndex];
+    if (j &lt; lo || hi &lt; i)  // [lo, hi] lies completely outside [i, j].
+      return 0;
+    const int mid = (lo + hi) / 2;
+    return merge(query(treeIndex * 2 + 1, lo, mid, i, j),
+                 query(treeIndex * 2 + 2, mid + 1, hi, i, j));
+  }
+
+  int merge(int left, int right) const {
+    return left + right;
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; countOfPeaks(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const vector&lt;int&gt; peak = getPeak(nums);
+    vector&lt;int&gt; ans;
+    SegmentTree tree(peak);
+
+    for (const vector&lt;int&gt;&amp; query : queries)
+      if (query[0] == 1) {
+        const int l = query[1];
+        const int r = query[2];
+        ans.push_back(tree.query(l + 1, r - 1));
+      } else if (query[0] == 2) {
+        const int index = query[1];
+        const int val = query[2];
+        nums[index] = val;
+        tree.update(index, isPeak(nums, index));
+        if (index &gt; 0)
+          tree.update(index - 1, isPeak(nums, index - 1));
+        if (index + 1 &lt; nums.size())
+          tree.update(index + 1, isPeak(nums, index + 1));
+      }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; getPeak(const vector&lt;int&gt;&amp; nums) {
+    vector&lt;int&gt; peak(nums.size());
+    for (int i = 1; i + 1 &lt; nums.size(); ++i)
+      peak[i] = nums[i] &gt; nums[i - 1] &amp;&amp; nums[i] &gt; nums[i + 1];
+    return peak;
+  }
+
+  bool isPeak(const vector&lt;int&gt;&amp; nums, int i) {
+    return i &gt; 0 &amp;&amp; i + 1 &lt; nums.size() &amp;&amp; nums[i] &gt; nums[i - 1] &amp;&amp;
+           nums[i] &gt; nums[i + 1];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FenwickTree {
+  public FenwickTree(int n) {
+    sums = new int[n + 1];
+  }
+
+  public void add(int i, int delta) {
+    while (i &lt; sums.length) {
+      sums[i] += delta;
+      i += lowbit(i);
+    }
+  }
+
+  public int get(int i) {
+    int sum = 0;
+    while (i &gt; 0) {
+      sum += sums[i];
+      i -= lowbit(i);
+    }
+    return sum;
+  }
+
+  private int[] sums;
+
+  private static int lowbit(int i) {
+    return i &amp; -i;
+  }
+}
+
+class Solution {
+  public List&lt;Integer&gt; countOfPeaks(int[] nums, int[][] queries) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    int[] peak = getPeak(nums);
+    FenwickTree tree = new FenwickTree(peak.length);
+
+    for (int i = 0; i &lt; peak.length; ++i)
+      tree.add(i + 1, peak[i]);
+
+    // Update the peak array and Fenwick tree if the peak status of nums[i]
+    // changes.
+    for (int[] query : queries) {
+      if (query[0] == 1) {
+        final int l = query[1];
+        final int r = query[2];
+        ans.add(r - l &lt; 2 ? 0 : tree.get(r) - tree.get(l + 1));
+      } else if (query[0] == 2) {
+        final int index = query[1];
+        final int val = query[2];
+        nums[index] = val;
+        update(nums, peak, tree, index);
+        if (index &gt; 0)
+          update(nums, peak, tree, index - 1);
+        if (index + 1 &lt; nums.length)
+          update(nums, peak, tree, index + 1);
+      }
+    }
+
+    return ans;
+  }
+
+  private void update(int[] nums, int[] peak, FenwickTree tree, int i) {
+    final int newPeak = isPeak(nums, i) ? 1 : 0;
+    if (newPeak != peak[i]) {
+      tree.add(i + 1, newPeak - peak[i]);
+      peak[i] = newPeak;
+    }
+  }
+
+  private int[] getPeak(int[] nums) {
+    int[] peak = new int[nums.length];
+    for (int i = 1; i + 1 &lt; nums.length; i++)
+      peak[i] = nums[i] &gt; nums[i - 1] &amp;&amp; nums[i] &gt; nums[i + 1] ? 1 : 0;
+    return peak;
+  }
+
+  private boolean isPeak(int[] nums, int i) {
+    return i &gt; 0 &amp;&amp; i + 1 &lt; nums.length &amp;&amp; nums[i] &gt; nums[i - 1] &amp;&amp; nums[i] &gt; nums[i + 1];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class FenwickTree:
+  def __init__(self, n: int):
+    self.sums = [0] * (n + 1)
+
+  def add(self, i: int, delta: int) -&gt; None:
+    while i &lt; len(self.sums):
+      self.sums[i] += delta
+      i += FenwickTree.lowbit(i)
+
+  def get(self, i: int) -&gt; int:
+    summ = 0
+    while i &gt; 0:
+      summ += self.sums[i]
+      i -= FenwickTree.lowbit(i)
+    return summ
+
+  @staticmethod
+  def lowbit(i: int) -&gt; int:
+    return i &amp; -i
+
+
+class Solution:
+  def countOfPeaks(
+      self,
+      nums: list[int],
+      queries:
+      list[list[int]],
+  ) -&gt; list[int]:
+    ans = []
+    peak = [0] + [int(a &lt; b &gt; c)
+                  for a, b, c in zip(nums[:-2], nums[1:-1], nums[2:])] + [0]
+    tree = FenwickTree(len(peak))
+
+    for i, p in enumerate(peak):
+      tree.add(i + 1, p)
+
+    def update(i: int) -&gt; None:
+      &quot;&quot;&quot;
+      Update the peak array and Fenwick tree if the peak status of nums[i]
+      changes.
+      &quot;&quot;&quot;
+      newPeak = self._isPeak(nums, i)
+      if newPeak != peak[i]:
+        tree.add(i + 1, newPeak - peak[i])
+        peak[i] = newPeak
+
+    for query in queries:
+      if query[0] == 1:
+        l = query[1]
+        r = query[2]
+        ans.append(0 if r - l &lt; 2 else tree.get(r) - tree.get(l + 1))
+      elif query[0] == 2:
+        index = query[1]
+        val = query[2]
+        nums[index] = val
+        update(index)
+        if index &gt; 0:
+          update(index - 1)
+        if index + 1 &lt; len(nums):
+          update(index + 1)
+
+    return ans
+
+  def _isPeak(self, nums: list[int], i: int) -&gt; bool:
+    return i &gt; 0 and i + 1 &lt; len(nums) and nums[i - 1] &lt; nums[i] &gt; nums[i + 1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

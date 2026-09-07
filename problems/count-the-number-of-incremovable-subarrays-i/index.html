@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count the Number of Incremovable Subarrays I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count the Number of Incremovable Subarrays I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-the-number-of-incremovable-subarrays-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-coins-for-fruits-ii/" class="btn">← Previous</a>
+            <span>Problem 2970 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-polygon-with-the-largest-perimeter/" class="btn">Next →</a>
+        </div>
+        <h1>2970. Count the Number of Incremovable Subarrays I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count the Number of Incremovable Subarrays I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int incremovableSubarrayCount(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    const int startIndex = getStartIndexOfSuffix(nums);
+    // If the complete array is strictly increasing, the total number of ways we
+    // can remove elements equals the total number of possible subarrays.
+    if (startIndex == 0)
+      return n * (n + 1) / 2;
+
+    // The valid removals starting from nums[0] include nums[0..startIndex - 1],
+    // nums[0..startIndex], ..., nums[0..n).
+    int ans = n - startIndex + 1;
+
+    // Enumerate each prefix subarray that is strictly increasing.
+    for (int i = 0, j = startIndex; i &lt; startIndex; ++i) {
+      if (i &gt; 0 &amp;&amp; nums[i] &lt;= nums[i - 1])
+        break;
+      // Since nums[0..i] is strictly increasing, move j to the place such that
+      // nums[j] &gt; nums[i]. The valid removals will then be nums[i + 1..j - 1],
+      // nums[i + 1..j], ..., nums[i + 1..n).
+      while (j &lt; n &amp;&amp; nums[i] &gt;= nums[j])
+        ++j;
+      ans += n - j + 1;
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the start index i of the suffix subarray such that nums[i..n) is
+  // strictly increasing.
+  int getStartIndexOfSuffix(const vector&lt;int&gt;&amp; nums) {
+    for (int i = nums.size() - 2; i &gt;= 0; --i)
+      if (nums[i] &gt;= nums[i + 1])
+        return i + 1;
+    return 0;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int incremovableSubarrayCount(int[] nums) {
+    final int n = nums.length;
+    final int startIndex = getStartIndexOfSuffix(nums);
+    // If the complete array is strictly increasing, the total number of ways we
+    // can remove elements equals the total number of possible subarrays.
+    if (startIndex == 0)
+      return n * (n + 1) / 2;
+
+    // The valid removals starting from nums[0] include nums[0..startIndex - 1],
+    // nums[0..startIndex], ..., nums[0..n).
+    int ans = n - startIndex + 1;
+
+    // Enumerate each prefix subarray that is strictly increasing.
+    for (int i = 0, j = startIndex; i &lt; startIndex; ++i) {
+      if (i &gt; 0 &amp;&amp; nums[i] &lt;= nums[i - 1])
+        break;
+      // Since nums[0..i] is strictly increasing, move j to the place such that
+      // nums[j] &gt; nums[i]. The valid removals will then be nums[i + 1..j - 1],
+      // nums[i + 1..j], ..., nums[i + 1..n).
+      while (j &lt; n &amp;&amp; nums[i] &gt;= nums[j])
+        ++j;
+      ans += n - j + 1;
+    }
+
+    return ans;
+  }
+
+  // Returns the start index i of the suffix subarray such that nums[i..n) is
+  // strictly increasing.
+  private int getStartIndexOfSuffix(int[] nums) {
+    for (int i = nums.length - 2; i &gt;= 0; --i)
+      if (nums[i] &gt;= nums[i + 1])
+        return i + 1;
+    return 0;
+  }
+
+  private int firstGreater(int[] arr, int startIndex, int target) {
+    final int i = Arrays.binarySearch(arr, startIndex, arr.length, target + 1);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def incremovableSubarrayCount(self, nums: list[int]) -&gt; int:
+    n = len(nums)
+    startIndex = self._getStartIndexOfSuffix(nums)
+    # If the complete array is strictly increasing, the total number of ways we
+    # can remove elements equals the total number of possible subarrays.
+    if startIndex == 0:
+      return n * (n + 1) // 2
+
+    # The valid removals starting from nums[0] include nums[0..startIndex - 1],
+    # nums[0..startIndex], ..., nums[0..n).
+    ans = n - startIndex + 1
+
+    # Enumerate each prefix subarray that is strictly increasing.
+    j = startIndex
+    for i in range(startIndex):
+      if i &gt; 0 and nums[i] &lt;= nums[i - 1]:
+        break
+      # Since nums[0..i] is strictly increasing, move j to the place such that
+      # nums[j] &gt; nums[i]. The valid removals will then be nums[i + 1..j - 1],
+      # nums[i + 1..j], ..., nums[i + 1..n).
+      while j &lt; n and nums[i] &gt;= nums[j]:
+        j += 1
+      ans += n - j + 1
+
+    return ans
+
+  def _getStartIndexOfSuffix(self, nums: list[int]) -&gt; int:
+    for i in range(len(nums) - 2, -1, -1):
+      if nums[i] &gt;= nums[i + 1]:
+        return i + 1
+    return 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

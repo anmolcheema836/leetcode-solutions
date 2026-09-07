@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find if Array Can Be Sorted - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find if Array Can Be Sorted written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-if-array-can-be-sorted/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/divide-an-array-into-subarrays-with-minimum-cost-i/" class="btn">← Previous</a>
+            <span>Problem 3011 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimize-length-of-array-using-operations/" class="btn">Next →</a>
+        </div>
+        <h1>3011. Find if Array Can Be Sorted</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find if Array Can Be Sorted efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool canSortArray(vector&lt;int&gt;&amp; nums) {
+    // Divide the array into distinct segments where each segment is comprised
+    // of consecutive elements sharing an equal number of set bits. Ensure that
+    // for each segment, when moving from left to right, the maximum of a
+    // preceding segment is less than the minimum of the following segment.
+    int prevSetBits = 0;
+    int prevMax = INT_MIN;  // the maximum of the previous segment
+    int currMax = INT_MIN;  // the maximum of the current segment
+    int currMin = INT_MAX;  // the minimum of the current segment
+
+    for (const int num : nums) {
+      const int setBits = __builtin_popcount(num);
+      if (setBits != prevSetBits) {  // Start a new segment.
+        if (prevMax &gt; currMin)
+          return false;
+        prevSetBits = setBits;
+        prevMax = currMax;
+        currMax = num;
+        currMin = num;
+      } else {  // Continue with the current segment.
+        currMax = max(currMax, num);
+        currMin = min(currMin, num);
+      }
+    }
+
+    return prevMax &lt;= currMin;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean canSortArray(int[] nums) {
+    // Divide the array into distinct segments where each segment is comprised
+    // of consecutive elements sharing an equal number of set bits. Ensure that
+    // for each segment, when moving from left to right, the maximum of a
+    // preceding segment is less than the minimum of the following segment.
+    int prevSetBits = 0;
+    int prevMax = Integer.MIN_VALUE; // the maximum of the previous segment
+    int currMax = Integer.MIN_VALUE; // the maximum of the current segment
+    int currMin = Integer.MAX_VALUE; // the minimum of the current segment
+
+    for (final int num : nums) {
+      final int setBits = Integer.bitCount(num);
+      if (setBits != prevSetBits) { // Start a new segment.
+        if (prevMax &gt; currMin)
+          return false;
+        prevSetBits = setBits;
+        prevMax = currMax;
+        currMax = num;
+        currMin = num;
+      } else { // Continue with the current segment.
+        currMax = Math.max(currMax, num);
+        currMin = Math.min(currMin, num);
+      }
+    }
+
+    return prevMax &lt;= currMin;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def canSortArray(self, nums: list[int]) -&gt; int:
+    # Divide the array into distinct segments where each segment is comprised
+    # of consecutive elements sharing an equal number of set bits. Ensure that
+    # for each segment, when moving from left to right, the maximum of a
+    # preceding segment is less than the minimum of the following segment.
+    prevSetBits = 0
+    prevMax = -math.inf  # the maximum of the previous segment
+    currMax = -math.inf  # the maximum of the current segment
+    currMin = math.inf   # the minimum of the current segment
+
+    for num in nums:
+      setBits = num.bit_count()
+      if setBits != prevSetBits:  # Start a new segment.
+        if prevMax &gt; currMin:
+          return False
+        prevSetBits = setBits
+        prevMax = currMax
+        currMax = num
+        currMin = num
+      else:  # Continue with the current segment.
+        currMax = max(currMax, num)
+        currMin = min(currMin, num)
+
+    return prevMax &lt;= currMin</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

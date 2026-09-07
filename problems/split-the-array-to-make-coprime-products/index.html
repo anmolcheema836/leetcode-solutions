@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split the Array to Make Coprime Products - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Split the Array to Make Coprime Products written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/split-the-array-to-make-coprime-products/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/kth-largest-sum-in-a-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 2584 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-ways-to-earn-points/" class="btn">Next →</a>
+        </div>
+        <h1>2584. Split the Array to Make Coprime Products</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Split the Array to Make Coprime Products efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findValidSplit(vector&lt;int&gt;&amp; nums) {
+    unordered_map&lt;int, int&gt; leftPrimeFactors;
+    unordered_map&lt;int, int&gt; rightPrimeFactors;
+
+    for (const int num : nums)
+      for (const int primeFactor : getPrimeFactors(num))
+        ++rightPrimeFactors[primeFactor];
+
+    for (int i = 0; i &lt; nums.size() - 1; ++i) {
+      for (const int primeFactor : getPrimeFactors(nums[i])) {
+        if (--rightPrimeFactors[primeFactor] == 0) {
+          // rightPrimeFactors[primeFactor] == 0, so no need to track
+          // leftPrimeFactors[primeFactor].
+          rightPrimeFactors.erase(primeFactor);
+          leftPrimeFactors.erase(primeFactor);
+        } else {
+          // Otherwise, need to track leftPrimeFactors[primeFactor].
+          ++leftPrimeFactors[primeFactor];
+        }
+      }
+      if (leftPrimeFactors.empty())
+        return i;
+    }
+
+    return -1;
+  }
+
+ private:
+  // Gets the prime factors under sqrt(10^6).
+  vector&lt;int&gt; getPrimeFactors(int num) {
+    vector&lt;int&gt; primeFactors;
+    for (int divisor = 2; divisor &lt;= min(1000, num); ++divisor)
+      if (num % divisor == 0) {
+        primeFactors.push_back(divisor);
+        while (num % divisor == 0)
+          num /= divisor;
+      }
+    // Handle the case that `num` contains a prime factor &gt; 1000.
+    if (num &gt; 1)
+      primeFactors.push_back(num);
+    return primeFactors;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findValidSplit(int[] nums) {
+    Map&lt;Integer, Integer&gt; leftPrimeFactors = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; rightPrimeFactors = new HashMap&lt;&gt;();
+
+    for (final int num : nums)
+      for (final int primeFactor : getPrimeFactors(num))
+        rightPrimeFactors.merge(primeFactor, 1, Integer::sum);
+
+    for (int i = 0; i &lt; nums.length - 1; ++i) {
+      for (final int primeFactor : getPrimeFactors(nums[i])) {
+        rightPrimeFactors.merge(primeFactor, -1, Integer::sum);
+        if (rightPrimeFactors.get(primeFactor) == 0) {
+          // rightPrimeFactors[primeFactor] == 0, so no need to track
+          // leftPrimeFactors[primeFactor].
+          rightPrimeFactors.remove(primeFactor);
+          leftPrimeFactors.remove(primeFactor);
+        } else {
+          // Otherwise, need to track leftPrimeFactors[primeFactor].
+          leftPrimeFactors.merge(primeFactor, 1, Integer::sum);
+        }
+      }
+      if (leftPrimeFactors.isEmpty())
+        return i;
+    }
+
+    return -1;
+  }
+
+  // Gets the prime factors under sqrt(10^6).
+  private List&lt;Integer&gt; getPrimeFactors(int num) {
+    List&lt;Integer&gt; primeFactors = new ArrayList&lt;&gt;();
+    for (int divisor = 2; divisor &lt;= Math.min(1000, num); ++divisor)
+      if (num % divisor == 0) {
+        primeFactors.add(divisor);
+        while (num % divisor == 0)
+          num /= divisor;
+      }
+    // Handle the case that `num` contains a prime factor &gt; 1000.
+    if (num &gt; 1)
+      primeFactors.add(num);
+    return primeFactors;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findValidSplit(self, nums: list[int]) -&gt; int:
+    leftPrimeFactors = collections.Counter()
+    rightPrimeFactors = collections.Counter()
+
+    def getPrimeFactors(num: int) -&gt; list[int]:
+      &quot;&quot;&quot;Gets the prime factors under sqrt(10^6).&quot;&quot;&quot;
+      primeFactors = []
+      for divisor in range(2, min(1000, num) + 1):
+        if num % divisor == 0:
+          primeFactors.append(divisor)
+          while num % divisor == 0:
+            num //= divisor
+      # Handle the case that `num` contains a prime factor &gt; 1000.
+      if num &gt; 1:
+        primeFactors.append(num)
+      return primeFactors
+
+    for num in nums:
+      for primeFactor in getPrimeFactors(num):
+        rightPrimeFactors[primeFactor] += 1
+
+    for i in range(len(nums) - 1):
+      for primeFactor in getPrimeFactors(nums[i]):
+        rightPrimeFactors[primeFactor] -= 1
+        if rightPrimeFactors[primeFactor] == 0:
+          # rightPrimeFactors[primeFactor] == 0, so no need to track
+          # leftPrimeFactors[primeFactor].
+          del rightPrimeFactors[primeFactor]
+          del leftPrimeFactors[primeFactor]
+        else:
+          # Otherwise, need to track leftPrimeFactors[primeFactor].
+          leftPrimeFactors[primeFactor] += 1
+      if not leftPrimeFactors:
+        return i
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

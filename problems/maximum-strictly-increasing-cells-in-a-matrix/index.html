@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Strictly Increasing Cells in a Matrix - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Strictly Increasing Cells in a Matrix written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-strictly-increasing-cells-in-a-matrix/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-to-make-all-characters-equal/" class="btn">← Previous</a>
+            <span>Problem 2713 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-shortest-path-with-k-hops/" class="btn">Next →</a>
+        </div>
+        <h1>2713. Maximum Strictly Increasing Cells in a Matrix</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Strictly Increasing Cells in a Matrix efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxIncreasingCells(vector&lt;vector&lt;int&gt;&gt;&amp; mat) {
+    const int m = mat.size();
+    const int n = mat[0].size();
+    // rows[i] := the maximum path length for the i-th row
+    vector&lt;int&gt; rows(m);
+    // cols[j] := the maximum path length for the j-th column
+    vector&lt;int&gt; cols(n);
+    unordered_map&lt;int, vector&lt;pair&lt;int, int&gt;&gt;&gt; valToIndices;
+    // maxPathLength[i][j] := the maximum path length from mat[i][j]
+    vector&lt;vector&lt;int&gt;&gt; maxPathLength(m, vector&lt;int&gt;(n));
+    // Sort all the unique values in the matrix in non-increasing order.
+    set&lt;int, greater&lt;&gt;&gt; decreasingSet;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        valToIndices[mat[i][j]].emplace_back(i, j);
+        decreasingSet.insert(mat[i][j]);
+      }
+
+    for (const int val : decreasingSet) {
+      for (const auto&amp; [i, j] : valToIndices[val])
+        maxPathLength[i][j] = max(rows[i], cols[j]) + 1;
+      for (const auto&amp; [i, j] : valToIndices[val]) {
+        rows[i] = max(rows[i], maxPathLength[i][j]);
+        cols[j] = max(cols[j], maxPathLength[i][j]);
+      }
+    }
+
+    return max(ranges::max(rows), ranges::max(cols));
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxIncreasingCells(int[][] mat) {
+    final int m = mat.length;
+    final int n = mat[0].length;
+    // rows[i] := the maximum path length for the i-th row
+    int[] rows = new int[m];
+    // cols[j] := the maximum path length for the j-th column
+    int[] cols = new int[n];
+    Map&lt;Integer, ArrayList&lt;Pair&lt;Integer, Integer&gt;&gt;&gt; valToIndices = new HashMap&lt;&gt;();
+    // maxPathLength[i][j] := the maximum path length from mat[i][j]
+    int[][] maxPathLength = new int[m][n];
+    // Sort all the unique values in the matrix in non-increasing order.
+    TreeSet&lt;Integer&gt; decreasingSet = new TreeSet&lt;&gt;(Comparator.reverseOrder());
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        final int val = mat[i][j];
+        valToIndices.putIfAbsent(val, new ArrayList&lt;&gt;());
+        valToIndices.get(val).add(new Pair&lt;&gt;(i, j));
+        decreasingSet.add(val);
+      }
+
+    for (final int val : decreasingSet) {
+      for (Pair&lt;Integer, Integer&gt; pair : valToIndices.get(val)) {
+        final int i = pair.getKey();
+        final int j = pair.getValue();
+        maxPathLength[i][j] = Math.max(rows[i], cols[j]) + 1;
+      }
+      for (Pair&lt;Integer, Integer&gt; pair : valToIndices.get(val)) {
+        final int i = pair.getKey();
+        final int j = pair.getValue();
+        rows[i] = Math.max(rows[i], maxPathLength[i][j]);
+        cols[j] = Math.max(cols[j], maxPathLength[i][j]);
+      }
+    }
+
+    return Math.max(Arrays.stream(rows).max().getAsInt(), //
+                    Arrays.stream(cols).max().getAsInt());
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxIncreasingCells(self, mat: list[list[int]]) -&gt; int:
+    m = len(mat)
+    n = len(mat[0])
+    rows = [0] * m  # rows[i] := the maximum path length for the i-th row
+    cols = [0] * n  # cols[j] := the maximum path length for the j-th column
+    valToIndices = collections.defaultdict(list)
+    # maxPathLength[i][j] := the maximum path length from mat[i][j]
+    maxPathLength = [[0] * n for _ in range(m)]
+    # Sort all the unique values in the matrix in non-increasing order.
+    decreasingSet = set()
+
+    for i in range(m):
+      for j in range(n):
+        val = mat[i][j]
+        valToIndices[val].append((i, j))
+        decreasingSet.add(val)
+
+    for val in sorted(decreasingSet, reverse=True):
+      for i, j in valToIndices[val]:
+        maxPathLength[i][j] = max(rows[i], cols[j]) + 1
+      for i, j in valToIndices[val]:
+        rows[i] = max(rows[i], maxPathLength[i][j])
+        cols[j] = max(cols[j], maxPathLength[i][j])
+
+    return max(max(rows), max(cols))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

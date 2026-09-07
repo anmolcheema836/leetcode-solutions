@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Amount After Two Days of Conversions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize Amount After Two Days of Conversions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-amount-after-two-days-of-conversions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/button-with-longest-push-time/" class="btn">← Previous</a>
+            <span>Problem 3387 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-beautiful-splits-in-an-array/" class="btn">Next →</a>
+        </div>
+        <h1>3387. Maximize Amount After Two Days of Conversions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize Amount After Two Days of Conversions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  double maxAmount(string initialCurrency, vector&lt;vector&lt;string&gt;&gt;&amp; pairs1,
+                   vector&lt;double&gt;&amp; rates1, vector&lt;vector&lt;string&gt;&gt;&amp; pairs2,
+                   vector&lt;double&gt;&amp; rates2) {
+    // dp[currency] := the maximum amount of money to convert to `currency`
+    unordered_map&lt;string, double&gt; dp{{initialCurrency, 1}};
+    bellman(dp, pairs1, rates1);
+    bellman(dp, pairs2, rates2);
+    return dp[initialCurrency];
+  }
+
+ private:
+  void bellman(unordered_map&lt;string, double&gt;&amp; dp,
+               const vector&lt;vector&lt;string&gt;&gt;&amp; pairs,
+               const vector&lt;double&gt;&amp; rates) {
+    for (int relax = 0; relax &lt; pairs.size(); ++relax)
+      for (int i = 0; i &lt; pairs.size(); ++i) {
+        const string start = pairs[i][0];
+        const string target = pairs[i][1];
+        dp[target] = max(dp[target], dp[start] * rates[i]);
+        dp[start] = max(dp[start], dp[target] / rates[i]);
+      }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double maxAmount(String initialCurrency, List&lt;List&lt;String&gt;&gt; pairs1, double[] rates1,
+                          List&lt;List&lt;String&gt;&gt; pairs2, double[] rates2) {
+    // dp[currency] := the maximum amount of money to convert to `currency`
+    Map&lt;String, Double&gt; dp = new HashMap&lt;&gt;();
+    dp.put(initialCurrency, 1.0);
+    bellman(dp, pairs1, rates1);
+    bellman(dp, pairs2, rates2);
+    return dp.get(initialCurrency);
+  }
+
+  private void bellman(Map&lt;String, Double&gt; dp, List&lt;List&lt;String&gt;&gt; pairs, double[] rates) {
+    for (int relax = 0; relax &lt; pairs.size(); ++relax)
+      for (int i = 0; i &lt; pairs.size(); ++i) {
+        final String start = pairs.get(i).get(0);
+        final String target = pairs.get(i).get(1);
+        dp.merge(target, dp.getOrDefault(start, 0.0) * rates[i], Double::max);
+        dp.merge(start, dp.getOrDefault(target, 0.0) / rates[i], Double::max);
+      }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxAmount(
+      self,
+      initialCurrency: str,
+      pairs1: list[list[str]],
+      rates1: list[float],
+      pairs2: list[list[str]],
+      rates2: list[float]
+  ) -&gt; float:
+    # dp[currency] := the maximum amount of money to convert to `currency`
+    dp: dict[str, float] = collections.defaultdict(float)
+    dp[initialCurrency] = 1.0
+    self._bellman(dp, pairs1, rates1)
+    self._bellman(dp, pairs2, rates2)
+    return dp[initialCurrency]
+
+  def _bellman(
+      self,
+      dp: dict[str, float],
+      pairs: list[list[str]],
+      rates: list[float]
+  ) -&gt; None:
+    for _ in range(len(pairs)):
+      for (start, target), rate in zip(pairs, rates):
+        dp[target] = max(dp[target], dp[start] * rate)
+        dp[start] = max(dp[start], dp[target] / rate)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Servers That Handled Most Number of Requests - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Servers That Handled Most Number of Requests written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-servers-that-handled-most-number-of-requests/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-valid-matrix-given-row-and-column-sums/" class="btn">← Previous</a>
+            <span>Problem 1606 of 3563</span>
+            <a href="/leetcode-solutions/problems/sellers-with-no-sales/" class="btn">Next →</a>
+        </div>
+        <h1>1606. Find Servers That Handled Most Number of Requests</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Servers That Handled Most Number of Requests efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; busiestServers(int k, vector&lt;int&gt;&amp; arrival, vector&lt;int&gt;&amp; load) {
+    vector&lt;int&gt; ans;
+    vector&lt;int&gt; times(k);
+    set&lt;int&gt; idleServers;
+    // (endTime, server)
+    priority_queue&lt;pair&lt;int, int&gt;, vector&lt;pair&lt;int, int&gt;&gt;, greater&lt;&gt;&gt; minHeap;
+
+    for (int i = 0; i &lt; k; ++i)
+      idleServers.insert(i);
+
+    for (int i = 0; i &lt; arrival.size(); ++i) {
+      // Pop all the servers that are available now.
+      while (!minHeap.empty() &amp;&amp; minHeap.top().first &lt;= arrival[i]) {
+        idleServers.insert(minHeap.top().second);
+        minHeap.pop();
+      }
+      // Get the next available server.
+      const int server = getNextAvailableServer(idleServers, i, k);
+      if (server == -1)
+        continue;
+      ++times[server];
+      minHeap.emplace(arrival[i] + load[i], server);
+      idleServers.erase(server);
+    }
+
+    const int busiest = ranges::max(times);
+    for (int i = 0; i &lt; k; ++i)
+      if (times[i] == busiest)
+        ans.push_back(i);
+    return ans;
+  }
+
+ private:
+  int getNextAvailableServer(const set&lt;int&gt;&amp; idleServers, int ithRequest,
+                             int k) {
+    if (idleServers.empty())
+      return -1;
+    const auto it = idleServers.lower_bound(ithRequest % k);
+    return it == idleServers.cend() ? *idleServers.begin() : *it;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; busiestServers(int k, int[] arrival, int[] load) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    int[] times = new int[k];
+    TreeSet&lt;Integer&gt; idleServers = new TreeSet&lt;&gt;();
+    // (endTime, server)
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; minHeap =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair::getKey));
+
+    for (int i = 0; i &lt; k; ++i)
+      idleServers.add(i);
+
+    for (int i = 0; i &lt; arrival.length; ++i) {
+      // Pop all the servers that are available now.
+      while (!minHeap.isEmpty() &amp;&amp; minHeap.peek().getKey() &lt;= arrival[i]) {
+        idleServers.add(minHeap.peek().getValue());
+        minHeap.poll();
+      }
+      // Get the next available server.
+      final int server = getNextAvailableServer(idleServers, i, k);
+      if (server == -1)
+        continue;
+      ++times[server];
+      minHeap.offer(new Pair&lt;&gt;(arrival[i] + load[i], server));
+      idleServers.remove(server);
+    }
+
+    final int busiest = Arrays.stream(times).max().getAsInt();
+    for (int i = 0; i &lt; k; ++i)
+      if (times[i] == busiest)
+        ans.add(i);
+    return ans;
+  }
+
+  private int getNextAvailableServer(TreeSet&lt;Integer&gt; idleServers, int ithRequest, int k) {
+    if (idleServers.isEmpty())
+      return -1;
+    Integer server = idleServers.ceiling(ithRequest % k);
+    return server == null ? idleServers.first() : server;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Parser - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Mini Parser written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/mini-parser/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/shuffle-an-array/" class="btn">← Previous</a>
+            <span>Problem 385 of 3563</span>
+            <a href="/leetcode-solutions/problems/lexicographical-numbers/" class="btn">Next →</a>
+        </div>
+        <h1>385. Mini Parser</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Mini Parser efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  NestedInteger deserialize(string s) {
+    if (s[0] != &#x27;[&#x27;)
+      return NestedInteger(stoi(s));
+
+    stack&lt;NestedInteger&gt; stack;
+    int start;  // the start index of a number
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      switch (s[i]) {
+        case &#x27;[&#x27;:
+          stack.push(NestedInteger());
+          start = i + 1;
+          break;
+        case &#x27;,&#x27;:
+          if (i &gt; start) {
+            const int num = stoi(s.substr(start, i));
+            stack.top().add(NestedInteger(num));
+          }
+          start = i + 1;
+          break;
+        case &#x27;]&#x27;:
+          NestedInteger popped = stack.top();
+          stack.pop();
+          if (i &gt; start) {
+            const int num = stoi(s.substr(start, i));
+            popped.add(NestedInteger(num));
+          }
+          if (stack.empty())
+            return popped;
+          else
+            stack.top().add(popped);
+          start = i + 1;
+          break;
+      }
+    }
+
+    throw;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public NestedInteger deserialize(String s) {
+    if (s.charAt(0) != &#x27;[&#x27;)
+      return new NestedInteger(Integer.parseInt(s));
+
+    Deque&lt;NestedInteger&gt; stack = new ArrayDeque&lt;&gt;();
+    int start; // the start index of a number
+
+    for (int i = 0; i &lt; s.length(); ++i)
+      switch (s.charAt(i)) {
+        case &#x27;[&#x27;:
+          stack.push(new NestedInteger());
+          start = i + 1;
+          break;
+        case &#x27;,&#x27;:
+          if (i &gt; start) {
+            final int num = Integer.parseInt(s.substring(start, i));
+            stack.peek().add(new NestedInteger(num));
+          }
+          start = i + 1;
+          break;
+        case &#x27;]&#x27;:
+          NestedInteger popped = stack.pop();
+          if (i &gt; start) {
+            final int num = Integer.parseInt(s.substring(start, i));
+            popped.add(new NestedInteger(num));
+          }
+          if (!stack.isEmpty())
+            stack.peek().add(popped);
+          else
+            return popped;
+          start = i + 1;
+          break;
+      }
+
+    throw new IllegalArgumentException();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def deserialize(self, s: str) -&gt; NestedInteger:
+    if s[0] != &#x27;[&#x27;:
+      return NestedInteger(int(s))
+
+    stack = []
+
+    for i, c in enumerate(s):
+      if c == &#x27;[&#x27;:
+        stack.append(NestedInteger())
+        start = i + 1
+      elif c == &#x27;,&#x27;:
+        if i &gt; start:
+          num = int(s[start:i])
+          stack[-1].add(NestedInteger(num))
+        start = i + 1
+      elif c == &#x27;]&#x27;:
+        popped = stack.pop()
+        if i &gt; start:
+          num = int(s[start:i])
+          popped.add(NestedInteger(num))
+        if stack:
+          stack[-1].add(popped)
+        else:
+          return popped
+        start = i + 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

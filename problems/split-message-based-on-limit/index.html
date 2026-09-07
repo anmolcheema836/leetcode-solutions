@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Message Based on Limit - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Split Message Based on Limit written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/split-message-based-on-limit/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/most-profitable-path-in-a-tree/" class="btn">← Previous</a>
+            <span>Problem 2468 of 3563</span>
+            <a href="/leetcode-solutions/problems/convert-the-temperature/" class="btn">Next →</a>
+        </div>
+        <h1>2468. Split Message Based on Limit</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Split Message Based on Limit efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; splitMessage(string message, int limit) {
+    const int kMessageLength = message.length();
+    int b = 1;
+    // the total length of a: initialized with the length of &quot;1&quot;
+    int aLength = sz(1);
+
+    // the total length of b := b * sz(b)
+    // The total length of &quot;&lt;/&gt;&quot; := b * 3
+    while (b * limit &lt; b * (sz(b) + 3) + aLength + kMessageLength) {
+      // If the length of the last suffix &quot;&lt;b/b&gt;&quot; := sz(b) * 2 + 3 &gt;= limit,
+      // then it&#x27;s impossible that the length of &quot;*&lt;b/b&gt;&quot; &lt;= limit.
+      if (sz(b) * 2 + 3 &gt;= limit)
+        return {};
+      aLength += sz(++b);
+    }
+
+    vector&lt;string&gt; ans;
+
+    for (int i = 0, a = 1; a &lt;= b; ++a) {
+      // the length of &quot;&lt;a/b&gt;&quot; := sz(a) + sz(b) + 3
+      const int j = limit - (sz(a) + sz(b) + 3);
+      ans.push_back(message.substr(i, j) + &quot;&lt;&quot; + to_string(a) + &quot;/&quot; +
+                    to_string(b) + &quot;&gt;&quot;);
+      i += j;
+    }
+
+    return ans;
+  }
+
+ private:
+  int sz(int num) {
+    return to_string(num).length();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String[] splitMessage(String message, int limit) {
+    final int MESSAGE_LENGTH = message.length();
+    int b = 1;
+    // the total length of a: initialized with the length of &quot;1&quot;
+    int aLength = sz(1);
+
+    // the total length of b := b * sz(b)
+    // The total length of &quot;&lt;/&gt;&quot; := b * 3
+    while (b * limit &lt; b * (sz(b) + 3) + aLength + MESSAGE_LENGTH) {
+      // If the length of the last suffix &quot;&lt;b/b&gt;&quot; := sz(b) * 2 + 3 &gt;= limit,
+      // then it&#x27;s impossible that the length of &quot;*&lt;b/b&gt;&quot; &lt;= limit.
+      if (sz(b) * 2 + 3 &gt;= limit)
+        return new String[] {};
+      aLength += sz(++b);
+    }
+
+    String[] ans = new String[b];
+
+    for (int i = 0, a = 1; a &lt;= b; ++a) {
+      // the length of &quot;&lt;a/b&gt;&quot; := sz(a) + sz(b) + 3
+      final int j = limit - (sz(a) + sz(b) + 3);
+      ans[a - 1] = message.substring(i, Math.min(message.length(), i + j)) + &quot;&lt;&quot; +
+                   String.valueOf(a) + &quot;/&quot; + String.valueOf(b) + &quot;&gt;&quot;;
+      i += j;
+    }
+
+    return ans;
+  }
+
+  private int sz(int num) {
+    return String.valueOf(num).length();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def splitMessage(self, message: str, limit: int) -&gt; list[str]:
+    MESSAGE_LENGTH = len(message)
+
+    def sz(num: int):
+      return len(str(num))
+
+    b = 1
+    # the total length of a: initialized with the length of &quot;1&quot;
+    aLength = sz(1)
+
+    # the total length of b := b * sz(b)
+    # The total length of &quot;&lt;/&gt;&quot; := b * 3
+    while b * limit &lt; b * (sz(b) + 3) + aLength + MESSAGE_LENGTH:
+      # If the length of the last suffix &quot;&lt;b/b&gt;&quot; := sz(b) * 2 + 3 &gt;= limit,
+      # then it&#x27;s impossible that the length of &quot;*&lt;b/b&gt;&quot; &lt;= limit.
+      if sz(b) * 2 + 3 &gt;= limit:
+        return []
+      b += 1
+      aLength += sz(b)
+
+    ans = []
+
+    i = 0
+    for a in range(1, b + 1):
+      # the length of &quot;&lt;a/b&gt;&quot; := sz(a) + sz(b) + 3
+      j = limit - (sz(a) + sz(b) + 3)
+      ans.append(f&#x27;{message[i:i + j]}&lt;{a}/{b}&gt;&#x27;)
+      i += j
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

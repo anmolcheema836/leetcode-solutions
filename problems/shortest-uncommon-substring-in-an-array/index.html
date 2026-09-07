@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Uncommon Substring in an Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shortest Uncommon Substring in an Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shortest-uncommon-substring-in-an-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximize-happiness-of-selected-children/" class="btn">← Previous</a>
+            <span>Problem 3076 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-strength-of-k-disjoint-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>3076. Shortest Uncommon Substring in an Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shortest Uncommon Substring in an Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; shortestSubstrings(vector&lt;string&gt;&amp; arr) {
+    vector&lt;string&gt; ans;
+    unordered_map&lt;string, int&gt; count;
+
+    for (const string&amp; s : arr) {
+      add(s, count);
+    }
+
+    for (const string&amp; s : arr) {
+      remove(s, count);
+      ans.push_back(getMinSub(s, count));
+      add(s, count);
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;string&gt; getSubstrings(const string&amp; s) {
+    vector&lt;string&gt; substrings;
+    for (int i = 0; i &lt; s.length(); ++i)
+      for (int j = i + 1; j &lt;= s.length(); ++j)
+        substrings.push_back(s.substr(i, j - i));
+    return substrings;
+  }
+
+  void add(const string&amp; s, unordered_map&lt;string, int&gt;&amp; count) {
+    for (const string&amp; sub : getSubstrings(s))
+      ++count[sub];
+  }
+
+  void remove(const string&amp; s, unordered_map&lt;string, int&gt;&amp; count) {
+    for (const string&amp; sub : getSubstrings(s))
+      --count[sub];
+  }
+
+  string getMinSub(const string&amp; s, const unordered_map&lt;string, int&gt;&amp; count) {
+    string minSub;
+    for (const string&amp; sub : getSubstrings(s)) {
+      if (count.at(sub) &gt; 0)
+        continue;
+      if (minSub.empty() || sub.length() &lt; minSub.length() ||
+          sub.length() == minSub.length() &amp;&amp; sub &lt; minSub)
+        minSub = sub;
+    }
+    return minSub;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String[] shortestSubstrings(String[] arr) {
+    String[] ans = new String[arr.length];
+    Map&lt;String, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; arr.length; ++i)
+      add(arr[i], count);
+
+    for (int i = 0; i &lt; arr.length; ++i) {
+      remove(arr[i], count);
+      ans[i] = getMinSub(arr[i], count);
+      add(arr[i], count);
+    }
+
+    return ans;
+  }
+
+  private List&lt;String&gt; getSubstrings(String s) {
+    List&lt;String&gt; substrings = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; s.length(); ++i)
+      for (int j = i + 1; j &lt;= s.length(); ++j)
+        substrings.add(s.substring(i, j));
+    return substrings;
+  }
+
+  private void add(final String s, Map&lt;String, Integer&gt; count) {
+    for (final String sub : getSubstrings(s))
+      count.merge(sub, 1, Integer::sum);
+  }
+
+  private void remove(String s, Map&lt;String, Integer&gt; count) {
+    for (final String sub : getSubstrings(s))
+      count.merge(sub, -1, Integer::sum);
+  }
+
+  private String getMinSub(String s, Map&lt;String, Integer&gt; count) {
+    String minSub = &quot;&quot;;
+    for (final String sub : getSubstrings(s)) {
+      if (count.get(sub) &gt; 0)
+        continue;
+      if (minSub.equals(&quot;&quot;) || sub.length() &lt; minSub.length() ||
+          sub.length() == minSub.length() &amp;&amp; sub.compareTo(minSub) &lt; 0)
+        minSub = sub;
+    }
+    return minSub;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def shortestSubstrings(self, arr: list[str]) -&gt; list[str]:
+    ans = []
+    count = collections.Counter()
+
+    def getSubstrings(s: str) -&gt; Iterator[str]:
+      for i in range(len(s)):
+        for j in range(i + 1, len(s) + 1):
+          yield s[i:j]
+
+    def add(s: str) -&gt; None:
+      &quot;&quot;&quot;Adds all substrings of s to `count`.&quot;&quot;&quot;
+      for sub in getSubstrings(s):
+        count[sub] += 1
+
+    def remove(s: str) -&gt; None:
+      &quot;&quot;&quot;Removes all substrings of s from `count`.&quot;&quot;&quot;
+      for sub in getSubstrings(s):
+        count[sub] -= 1
+
+    def getMinSub(s: str) -&gt; str:
+      minSub = &#x27;&#x27;
+      for sub in getSubstrings(s):
+        if count[sub] &gt; 0:
+          continue
+        if minSub == (&#x27;&#x27; or
+                      len(sub) &lt; len(minSub) or
+                      len(sub) == len(minSub) and sub &lt; minSub):
+          minSub = sub
+      return minSub
+
+    for s in arr:
+      add(s)
+
+    for s in arr:
+      remove(s)
+      ans.append(getMinSub(s))
+      add(s)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

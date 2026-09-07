@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Sum of Squared Difference - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Sum of Squared Difference written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-sum-of-squared-difference/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/the-latest-time-to-catch-a-bus/" class="btn">← Previous</a>
+            <span>Problem 2333 of 3563</span>
+            <a href="/leetcode-solutions/problems/subarray-with-elements-greater-than-varying-threshold/" class="btn">Next →</a>
+        </div>
+        <h1>2333. Minimum Sum of Squared Difference</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Sum of Squared Difference efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minSumSquareDiff(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2, int k1,
+                             int k2) {
+    const vector&lt;int&gt; diff = getDiff(nums1, nums2);
+    int k = k1 + k2;
+    if (accumulate(diff.begin(), diff.end(), 0L) &lt;= k)
+      return 0;
+
+    unordered_map&lt;int, int&gt; count;
+    priority_queue&lt;pair&lt;int, int&gt;&gt; maxHeap;  // (num, freq)
+
+    for (const int d : diff)
+      if (d != 0)
+        ++count[d];
+
+    for (const auto&amp; [num, freq] : count)
+      maxHeap.emplace(num, freq);
+
+    while (k &gt; 0) {
+      const auto [maxNum, maxNumFreq] = maxHeap.top();
+      maxHeap.pop();
+      // Buck decrease in this turn
+      const int numDecreased = min(k, maxNumFreq);
+      k -= numDecreased;
+      if (maxNumFreq &gt; numDecreased)
+        maxHeap.emplace(maxNum, maxNumFreq - numDecreased);
+      if (!maxHeap.empty() &amp;&amp; maxHeap.top().first + 1 == maxNum) {
+        const auto [secondMaxNum, secondMaxNumFreq] = maxHeap.top();
+        maxHeap.pop();
+        maxHeap.emplace(secondMaxNum, secondMaxNumFreq + numDecreased);
+      } else if (maxNum &gt; 1) {
+        maxHeap.emplace(maxNum - 1, numDecreased);
+      }
+    }
+
+    long ans = 0;
+    while (!maxHeap.empty()) {
+      const auto [num, freq] = maxHeap.top();
+      maxHeap.pop();
+      ans += static_cast&lt;long&gt;(num) * num * freq;
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; getDiff(const vector&lt;int&gt;&amp; nums1, const vector&lt;int&gt;&amp; nums2) {
+    vector&lt;int&gt; diff;
+    for (int i = 0; i &lt; nums1.size(); ++i)
+      diff.push_back(abs(nums1[i] - nums2[i]));
+    return diff;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minSumSquareDiff(int[] nums1, int[] nums2, int k1, int k2) {
+    int[] diff = getDiff(nums1, nums2);
+    int k = k1 + k2;
+    if (Arrays.stream(diff).asLongStream().sum() &lt;= k)
+      return 0;
+
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+    // (num, freq)
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; maxHeap =
+        new PriorityQueue&lt;&gt;(Comparator.comparing(Pair::getKey, Comparator.reverseOrder()));
+
+    for (final int d : diff)
+      if (d != 0)
+        count.merge(d, 1, Integer::sum);
+
+    for (Map.Entry&lt;Integer, Integer&gt; entry : count.entrySet())
+      maxHeap.offer(new Pair&lt;&gt;(entry.getKey(), entry.getValue()));
+
+    while (k &gt; 0) {
+      Pair&lt;Integer, Integer&gt; pair = maxHeap.poll();
+      final int maxNum = pair.getKey();
+      final int maxNumFreq = pair.getValue();
+      // Buck decrease in this turn
+      final int numDecreased = Math.min(k, maxNumFreq);
+      k -= numDecreased;
+      if (maxNumFreq &gt; numDecreased)
+        maxHeap.offer(new Pair&lt;&gt;(maxNum, maxNumFreq - numDecreased));
+      if (!maxHeap.isEmpty() &amp;&amp; maxHeap.peek().getKey() + 1 == maxNum) {
+        Pair&lt;Integer, Integer&gt; secondNode = maxHeap.poll();
+        final int secondMaxNum = secondNode.getKey();
+        final int secondMaxNumFreq = secondNode.getValue();
+        maxHeap.offer(new Pair&lt;&gt;(secondMaxNum, secondMaxNumFreq + numDecreased));
+      } else if (maxNum &gt; 1) {
+        maxHeap.offer(new Pair&lt;&gt;(maxNum - 1, numDecreased));
+      }
+    }
+
+    long ans = 0;
+    while (!maxHeap.isEmpty()) {
+      Pair&lt;Integer, Integer&gt; pair = maxHeap.poll();
+      final int num = pair.getKey();
+      final int freq = pair.getValue();
+      ans += (long) num * num * freq;
+    }
+
+    return ans;
+  }
+
+  private int[] getDiff(int[] nums1, int[] nums2) {
+    int[] diff = new int[nums1.length];
+    for (int i = 0; i &lt; nums1.length; ++i)
+      diff[i] = Math.abs(nums1[i] - nums2[i]);
+    return diff;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

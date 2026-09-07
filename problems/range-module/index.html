@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Range Module - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Range Module written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/range-module/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/" class="btn">← Previous</a>
+            <span>Problem 715 of 3563</span>
+            <a href="/leetcode-solutions/problems/max-stack/" class="btn">Next →</a>
+        </div>
+        <h1>715. Range Module</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Range Module efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class RangeModule {
+ public:
+  void addRange(int left, int right) {
+    const auto [l, r] = getOverlapRanges(left, right);
+    if (l == r) {            // There&#x27;s no overlap.
+      ranges[left] = right;  // Add a new range.
+      return;
+    }
+
+    auto last = r;
+    const int newLeft = min(l-&gt;first, left);
+    const int newRight = max((--last)-&gt;second, right);
+    ranges.erase(l, r);
+    ranges[newLeft] = newRight;  // Add a new range.
+  }
+
+  bool queryRange(int left, int right) {
+    auto it = ranges.upper_bound(left);
+    return it != ranges.begin() &amp;&amp; (--it)-&gt;second &gt;= right;
+  }
+
+  void removeRange(int left, int right) {
+    const auto [l, r] = getOverlapRanges(left, right);
+    if (l == r)  // There&#x27;s no overlap.
+      return;
+
+    auto last = r;
+    const int newLeft = min(l-&gt;first, left);
+    const int newRight = max((--last)-&gt;second, right);
+    ranges.erase(l, r);
+    // Add new ranges if needed.
+    if (newLeft &lt; left)
+      ranges[newLeft] = left;
+    if (right &lt; newRight)
+      ranges[right] = newRight;
+  }
+
+ private:
+  using IT = map&lt;int, int&gt;::iterator;
+  map&lt;int, int&gt; ranges;
+
+  pair&lt;IT, IT&gt; getOverlapRanges(int left, int right) {
+    // Point to the first element with `second` &gt;= `left`.
+    IT l = ranges.upper_bound(left);
+    // Point to the first element with `first` &gt; `right`.
+    IT r = ranges.upper_bound(right);
+    if (l != ranges.begin() &amp;&amp; (--l)-&gt;second &lt; left)
+      ++l;
+    return {l, r};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class RangeModule {
+  public void addRange(int left, int right) {
+    Integer l = ranges.floorKey(left);
+    Integer r = ranges.floorKey(right);
+
+    if (l != null &amp;&amp; ranges.get(l) &gt;= left)
+      left = l;
+    if (r != null &amp;&amp; ranges.get(r) &gt; right)
+      right = ranges.get(r);
+
+    ranges.subMap(left, right).clear();
+    ranges.put(left, right);
+  }
+
+  public boolean queryRange(int left, int right) {
+    Integer l = ranges.floorKey(left);
+    return l == null ? false : ranges.get(l) &gt;= right;
+  }
+
+  public void removeRange(int left, int right) {
+    Integer l = ranges.floorKey(left);
+    Integer r = ranges.floorKey(right);
+
+    if (r != null &amp;&amp; ranges.get(r) &gt; right)
+      ranges.put(right, ranges.get(r));
+    if (l != null &amp;&amp; ranges.get(l) &gt; left)
+      ranges.put(l, left);
+
+    ranges.subMap(left, right).clear();
+  }
+
+  private TreeMap&lt;Integer, Integer&gt; ranges = new TreeMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class RangeModule:
+  def __init__(self):
+    self.A = []
+
+  def addRange(self, left: int, right: int) -&gt; None:
+    i = bisect_left(self.A, left)
+    j = bisect_right(self.A, right)
+    self.A[i:j] = [left] * (i % 2 == 0) + [right] * (j % 2 == 0)
+
+  def queryRange(self, left: int, right: int) -&gt; bool:
+    i = bisect_right(self.A, left)
+    j = bisect_left(self.A, right)
+    return i == j and i % 2 == 1
+
+  def removeRange(self, left: int, right: int) -&gt; None:
+    i = bisect_left(self.A, left)
+    j = bisect_right(self.A, right)
+    self.A[i:j] = [left] * (i % 2 == 1) + [right] * (j % 2 == 1)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

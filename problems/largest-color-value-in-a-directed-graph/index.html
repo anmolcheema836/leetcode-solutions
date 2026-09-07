@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Color Value in a Directed Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Largest Color Value in a Directed Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/largest-color-value-in-a-directed-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-subarray-min-product/" class="btn">← Previous</a>
+            <span>Problem 1857 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-word-with-all-prefixes/" class="btn">Next →</a>
+        </div>
+        <h1>1857. Largest Color Value in a Directed Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Largest Color Value in a Directed Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int largestPathValue(string colors, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    const int n = colors.length();
+    int ans = 0;
+    int processed = 0;
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    vector&lt;int&gt; inDegrees(n);
+    queue&lt;int&gt; q;
+    vector&lt;vector&lt;int&gt;&gt; count(n, vector&lt;int&gt;(26));
+
+    // Build the graph.
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      ++inDegrees[v];
+    }
+
+    // Perform topological sorting.
+    for (int i = 0; i &lt; n; ++i)
+      if (inDegrees[i] == 0)
+        q.push(i);
+
+    while (!q.empty()) {
+      const int out = q.front();
+      q.pop();
+      ++processed;
+      ans = max(ans, ++count[out][colors[out] - &#x27;a&#x27;]);
+      for (const int in : graph[out]) {
+        for (int i = 0; i &lt; 26; ++i)
+          count[in][i] = max(count[in][i], count[out][i]);
+        if (--inDegrees[in] == 0)
+          q.push(in);
+      }
+    }
+
+    return processed == n ? ans : -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int largestPathValue(String colors, int[][] edges) {
+    final int n = colors.length();
+    int ans = 0;
+    int processed = 0;
+    List&lt;Integer&gt;[] graph = new List[n];
+    int[] inDegrees = new int[n];
+    int[][] count = new int[n][26];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    // Build the graph.
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      ++inDegrees[v];
+    }
+
+    // Perform topological sorting.
+    Queue&lt;Integer&gt; q = IntStream.range(0, n)
+                           .filter(i -&gt; inDegrees[i] == 0)
+                           .boxed()
+                           .collect(Collectors.toCollection(ArrayDeque::new));
+
+    while (!q.isEmpty()) {
+      final int out = q.poll();
+      ++processed;
+      ans = Math.max(ans, ++count[out][colors.charAt(out) - &#x27;a&#x27;]);
+      for (final int in : graph[out]) {
+        for (int i = 0; i &lt; 26; ++i)
+          count[in][i] = Math.max(count[in][i], count[out][i]);
+        if (--inDegrees[in] == 0)
+          q.offer(in);
+      }
+    }
+
+    return processed == n ? ans : -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestPathValue(self, colors: str, edges: list[list[int]]) -&gt; int:
+    n = len(colors)
+    ans = 0
+    processed = 0
+    graph = [[] for _ in range(n)]
+    inDegrees = [0] * n
+    q = collections.deque()
+    count = [[0] * 26 for _ in range(n)]
+
+    # Build the graph.
+    for u, v in edges:
+      graph[u].append(v)
+      inDegrees[v] += 1
+
+    # Vpology
+    for i, degree in enumerate(inDegrees):
+      if degree == 0:
+        q.append(i)
+
+    while q:
+      u = q.popleft()
+      processed += 1
+      count[u][ord(colors[u]) - ord(&#x27;a&#x27;)] += 1
+      ans = max(ans, count[u][ord(colors[u]) - ord(&#x27;a&#x27;)])
+      for v in graph[u]:
+        for i in range(26):
+          count[v][i] = max(count[v][i], count[u][i])
+        inDegrees[v] -= 1
+        if inDegrees[v] == 0:
+          q.append(v)
+
+    return ans if processed == n else -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

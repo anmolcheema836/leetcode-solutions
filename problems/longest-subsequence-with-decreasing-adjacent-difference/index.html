@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Subsequence With Decreasing Adjacent Difference - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Subsequence With Decreasing Adjacent Difference written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-subsequence-with-decreasing-adjacent-difference/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-task-manager/" class="btn">← Previous</a>
+            <span>Problem 3409 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-subarray-sum-after-removing-all-occurrences-of-one-element/" class="btn">Next →</a>
+        </div>
+        <h1>3409. Longest Subsequence With Decreasing Adjacent Difference</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Subsequence With Decreasing Adjacent Difference efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int longestSubsequence(vector&lt;int&gt;&amp; nums) {
+    const int mx = ranges::max(nums);
+    // dp[num][diff] := the length of the longest subsequence ending in `num`
+    // s.t. the last absolute difference between consecutive elements is `diff`
+    vector&lt;vector&lt;int&gt;&gt; dp(mx + 1, vector&lt;int&gt;(mx + 1));
+
+    for (const int num : nums) {
+      for (int prev = 1; prev &lt;= mx; ++prev) {
+        const int diff = abs(num - prev);
+        dp[num][diff] = max(dp[num][diff], dp[prev][diff] + 1);
+      }
+      // dp[num][diff] := max(dp[num][j]), where j &gt;= diff
+      for (int j = mx - 1; j &gt;= 0; --j)
+        dp[num][j] = max(dp[num][j], dp[num][j + 1]);
+    }
+
+    return ranges::max_element(dp, ranges::less{}, [](const vector&lt;int&gt;&amp; row) {
+      return row[0];
+    })-&gt;at(0);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int longestSubsequence(int[] nums) {
+    final int mx = Arrays.stream(nums).max().getAsInt();
+    // dp[num][diff] := the length of the longest subsequence ending in `num`
+    // s.t. the last absolute difference between consecutive elements is `diff`
+    int[][] dp = new int[mx + 1][mx + 1];
+
+    for (final int num : nums) {
+      for (int prev = 1; prev &lt;= mx; ++prev) {
+        final int diff = Math.abs(num - prev);
+        dp[num][diff] = Math.max(dp[num][diff], dp[prev][diff] + 1);
+      }
+      // dp[num][diff] := max(dp[num][j]), where j &gt;= diff
+      for (int j = mx - 1; j &gt;= 0; --j)
+        dp[num][j] = Math.max(dp[num][j], dp[num][j + 1]);
+    }
+
+    return Arrays.stream(dp).mapToInt(row -&gt; row[0]).max().getAsInt();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestSubsequence(self, nums: list[int]) -&gt; int:
+    mx = max(nums)
+    # dp[num][diff] := the length of the longest subsequence ending in `num`
+    # s.t. the last absolute difference between consecutive elements is `diff`
+    dp = [[0] * (mx + 1) for _ in range(mx + 1)]
+
+    for num in nums:
+      for prev in range(1, mx + 1):
+        diff = abs(num - prev)
+        dp[num][diff] = max(dp[num][diff], dp[prev][diff] + 1)
+      # dp[num][diff] := max(dp[num][j]) for j &gt;= diff
+      for j in range(mx - 1, -1, -1):
+        dp[num][j] = max(dp[num][j], dp[num][j + 1])
+
+    return max(map(max, dp))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicographically Smallest String After Applying Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Lexicographically Smallest String After Applying Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/lexicographically-smallest-string-after-applying-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-substring-between-two-equal-characters/" class="btn">← Previous</a>
+            <span>Problem 1625 of 3563</span>
+            <a href="/leetcode-solutions/problems/best-team-with-no-conflicts/" class="btn">Next →</a>
+        </div>
+        <h1>1625. Lexicographically Smallest String After Applying Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Lexicographically Smallest String After Applying Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string findLexSmallestString(string s, int a, int b) {
+    string ans = s;
+
+    dfs(s, a, b, {}, ans);
+
+    return ans;
+  }
+
+ private:
+  void dfs(string s, int a, int b, unordered_set&lt;string&gt;&amp;&amp; seen, string&amp; ans) {
+    if (seen.contains(s))
+      return;
+
+    seen.insert(s);
+    ans = min(ans, s);
+
+    dfs(add(s, a), a, b, std::move(seen), ans);
+    dfs(rotate(s, b), a, b, std::move(seen), ans);
+  }
+
+  string add(string&amp; s, int a) {
+    for (int i = 1; i &lt; s.length(); i += 2)
+      s[i] = &#x27;0&#x27; + (s[i] - &#x27;0&#x27; + a) % 10;
+    return s;
+  }
+
+  string rotate(const string&amp; s, int b) {
+    const int n = s.length();
+    return s.substr(n - b, n) + s.substr(0, n - b);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String findLexSmallestString(String s, int a, int b) {
+    ans = s;
+
+    dfs(s, a, b, new HashSet&lt;&gt;());
+
+    return ans;
+  }
+
+  private String ans;
+
+  private void dfs(String s, int a, int b, Set&lt;String&gt; seen) {
+    if (seen.contains(s))
+      return;
+
+    seen.add(s);
+    if (ans.compareTo(s) &gt; 0)
+      ans = s;
+
+    dfs(add(s, a), a, b, seen);
+    dfs(rotate(s, b), a, b, seen);
+  }
+
+  private String add(final String s, int a) {
+    StringBuilder sb = new StringBuilder(s);
+    for (int i = 1; i &lt; sb.length(); i += 2)
+      sb.setCharAt(i, (char) (&#x27;0&#x27; + (s.charAt(i) - &#x27;0&#x27; + a) % 10));
+    return sb.toString();
+  }
+
+  private String rotate(final String s, int b) {
+    final int n = s.length();
+    return s.substring(n - b, n) + s.substring(0, n - b);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

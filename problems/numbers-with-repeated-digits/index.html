@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numbers With Repeated Digits - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Numbers With Repeated Digits written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/numbers-with-repeated-digits/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/capacity-to-ship-packages-within-d-days/" class="btn">← Previous</a>
+            <span>Problem 1012 of 3563</span>
+            <a href="/leetcode-solutions/problems/partition-array-into-three-parts-with-equal-sum/" class="btn">Next →</a>
+        </div>
+        <h1>1012. Numbers With Repeated Digits</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Numbers With Repeated Digits efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numDupDigitsAtMostN(int n) {
+    return n - countSpecialNumbers(n);
+  }
+
+ private:
+  // Same as 2376. Count Special Integers
+  int countSpecialNumbers(int n) {
+    const int digitSize = log10(n) + 1;
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; mem(
+        digitSize + 1, vector&lt;vector&lt;int&gt;&gt;(1 &lt;&lt; 10, vector&lt;int&gt;(2, -1)));
+    return count(to_string(n), 0, 0, true, mem) - 1;  // - 0;
+  }
+
+ private:
+  // Returns the number of special integers, considering the i-th digit, where
+  // `used` is the bitmask of the used digits, and `tight` indicates if the
+  // current digit is tightly bound.
+  int count(const string&amp; s, int i, int used, bool tight,
+            vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&amp; mem) {
+    if (i == s.length())
+      return 1;
+    if (mem[i][used][tight] != -1)
+      return mem[i][used][tight];
+
+    int res = 0;
+    const int maxDigit = tight ? s[i] - &#x27;0&#x27; : 9;
+
+    for (int d = 0; d &lt;= maxDigit; ++d) {
+      // `d` is used.
+      if (used &gt;&gt; d &amp; 1)
+        continue;
+      // Use `d` now.
+      const bool nextTight = tight &amp;&amp; (d == maxDigit);
+      if (used == 0 &amp;&amp; d == 0)  // Don&#x27;t count leading 0s as used.
+        res += count(s, i + 1, used, nextTight, mem);
+      else
+        res += count(s, i + 1, used | 1 &lt;&lt; d, nextTight, mem);
+    }
+
+    return mem[i][used][tight] = res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numDupDigitsAtMostN(int n) {
+    return n - countSpecialNumbers(n);
+  }
+
+  // Same as 2376. Count Special Integers
+  private int countSpecialNumbers(int n) {
+    final int digitSize = (int) Math.log10(n) + 1;
+    Integer[][][] mem = new Integer[digitSize + 1][1 &lt;&lt; 10][2];
+    return count(String.valueOf(n), 0, 0, true, mem) - 1; // - 0;
+  }
+
+  // Returns the number of special integers, considering the i-th digit, where
+  // `used` is the bitmask of the used digits, and `tight` indicates if the
+  // current digit is tightly bound.
+  private int count(final String s, int i, int used, boolean tight, Integer[][][] mem) {
+    if (i == s.length())
+      return 1;
+    if (mem[i][used][tight ? 1 : 0] != null)
+      return mem[i][used][tight ? 1 : 0];
+
+    int res = 0;
+    final int maxDigit = tight ? s.charAt(i) - &#x27;0&#x27; : 9;
+
+    for (int d = 0; d &lt;= maxDigit; ++d) {
+      // `d` is used.
+      if ((used &gt;&gt; d &amp; 1) == 1)
+        continue;
+      // Use `d` now.
+      final boolean nextTight = tight &amp;&amp; (d == maxDigit);
+      if (used == 0 &amp;&amp; d == 0) // Don&#x27;t count leading 0s as used.
+        res += count(s, i + 1, used, nextTight, mem);
+      else
+        res += count(s, i + 1, used | 1 &lt;&lt; d, nextTight, mem);
+    }
+
+    return mem[i][used][tight ? 1 : 0] = res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numDupDigitsAtMostN(self, n: int) -&gt; int:
+    return n - self._countSpecialNumbers(n)
+
+  # Same as 2376. Count Special Integers
+  def _countSpecialNumbers(self, n: int) -&gt; int:
+    s = str(n)
+
+    @functools.lru_cache(None)
+    def dp(i: int, used: int, tight: bool) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of special integers, considering the i-th digit, where
+      `used` is the bitmask of the used digits, and `tight` indicates if the
+      current digit is tightly bound.
+      &quot;&quot;&quot;
+      if i == len(s):
+        return 1
+
+      res = 0
+      maxDigit = int(s[i]) if tight else 9
+
+      for d in range(maxDigit + 1):
+        # `d` is used.
+        if used &gt;&gt; d &amp; 1:
+          continue
+        # Use `d` now.
+        nextTight = tight and (d == maxDigit)
+        if used == 0 and d == 0:  # Don&#x27;t count leading 0s as used.
+          res += dp(i + 1, used, nextTight)
+        else:
+          res += dp(i + 1, used | 1 &lt;&lt; d, nextTight)
+
+      return res
+
+    return dp(0, 0, True) - 1  # - 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

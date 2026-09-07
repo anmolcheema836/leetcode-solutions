@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Array Strictly Increasing - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Make Array Strictly Increasing written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/make-array-strictly-increasing/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-subarray-sum-with-one-deletion/" class="btn">← Previous</a>
+            <span>Problem 1187 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-bounded-blocking-queue/" class="btn">Next →</a>
+        </div>
+        <h1>1187. Make Array Strictly Increasing</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Make Array Strictly Increasing efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int makeArrayIncreasing(vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2) {
+    // dp[i] := the minimum steps to reach i at previous round
+    unordered_map&lt;int, int&gt; dp{{-1, 0}};
+
+    ranges::sort(arr2);
+
+    for (const int a : arr1) {
+      unordered_map&lt;int, int&gt; newDp;
+      for (const auto&amp; [val, steps] : dp) {
+        // It&#x27;s possible to use the value in the arr1.
+        if (a &gt; val)
+          newDp[a] = min(newDp.contains(a) ? newDp[a] : INT_MAX, steps);
+        // Also try the value in the arr2.
+        if (const auto it = ranges::upper_bound(arr2, val); it != arr2.cend())
+          newDp[*it] =
+              min(newDp.contains(*it) ? newDp[*it] : INT_MAX, steps + 1);
+      }
+      if (newDp.empty())
+        return -1;
+      dp = std::move(newDp);
+    }
+
+    int ans = INT_MAX;
+    for (const auto&amp; [_, steps] : dp)
+      ans = min(ans, steps);
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int makeArrayIncreasing(int[] arr1, int[] arr2) {
+    // dp[i] := the minimum steps to reach i at previous round
+    Map&lt;Integer, Integer&gt; dp = new HashMap&lt;&gt;();
+    dp.put(-1, 0);
+
+    Arrays.sort(arr2);
+
+    for (final int a : arr1) {
+      Map&lt;Integer, Integer&gt; newDp = new HashMap&lt;&gt;();
+      for (final int val : dp.keySet()) {
+        final int steps = dp.get(val);
+        // It&#x27;s possible to use the value in the arr1.
+        if (a &gt; val)
+          newDp.put(a, Math.min(newDp.getOrDefault(a, Integer.MAX_VALUE), steps));
+        // Also try the value in the arr2.
+        final int i = firstGreater(arr2, val);
+        if (i &lt; arr2.length)
+          newDp.put(arr2[i], Math.min(newDp.getOrDefault(arr2[i], Integer.MAX_VALUE), steps + 1));
+      }
+      if (newDp.isEmpty())
+        return -1;
+      dp = newDp;
+    }
+
+    return Collections.min(dp.values());
+  }
+
+  private int firstGreater(int[] arr, int target) {
+    final int i = Arrays.binarySearch(arr, target + 1);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def makeArrayIncreasing(self, arr1: list[int], arr2: list[int]) -&gt; int:
+    # dp[i] := the minimum steps to reach i at previous round
+    dp = {-1: 0}
+
+    arr2.sort()
+
+    for a in arr1:
+      newDp = collections.defaultdict(lambda: math.inf)
+      for val, steps in dp.items():
+        # It&#x27;s possible to use the value in the arr1.
+        if a &gt; val:
+          newDp[a] = min(newDp[a], steps)
+        # Also try the value in the arr2.
+        i = bisect_right(arr2, val)
+        if i &lt; len(arr2):
+          newDp[arr2[i]] = min(newDp[arr2[i]], steps + 1)
+      if not newDp:
+        return -1
+      dp = newDp
+
+    return min(dp.values())</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

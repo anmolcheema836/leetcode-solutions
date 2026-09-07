@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max Points on a Line - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Max Points on a Line written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/max-points-on-a-line/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sort-list/" class="btn">← Previous</a>
+            <span>Problem 149 of 3563</span>
+            <a href="/leetcode-solutions/problems/evaluate-reverse-polish-notation/" class="btn">Next →</a>
+        </div>
+        <h1>149. Max Points on a Line</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Max Points on a Line efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxPoints(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    int ans = 0;
+
+    for (int i = 0; i &lt; points.size(); ++i) {
+      unordered_map&lt;pair&lt;int, int&gt;, int, PairHash&gt; slopeCount;
+      const vector&lt;int&gt; p1{points[i]};
+      int samePoints = 1;
+      int maxPoints = 0;  // the maximum number of points with the same slope
+      for (int j = i + 1; j &lt; points.size(); ++j) {
+        const vector&lt;int&gt; p2{points[j]};
+        if (p1 == p2)
+          ++samePoints;
+        else
+          maxPoints = max(maxPoints, ++slopeCount[getSlope(p1, p2)]);
+      }
+      ans = max(ans, samePoints + maxPoints);
+    }
+
+    return ans;
+  }
+
+ private:
+  pair&lt;int, int&gt; getSlope(const vector&lt;int&gt;&amp; p, const vector&lt;int&gt;&amp; q) {
+    const int dx = p[0] - q[0];
+    const int dy = p[1] - q[1];
+    if (dx == 0)
+      return {0, p[0]};
+    if (dy == 0)
+      return {p[1], 0};
+    const int d = __gcd(dx, dy);
+    return {dx / d, dy / d};
+  }
+
+  struct PairHash {
+    size_t operator()(const pair&lt;int, int&gt;&amp; p) const {
+      return p.first ^ p.second;
+    }
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxPoints(int[][] points) {
+    int ans = 0;
+
+    for (int i = 0; i &lt; points.length; ++i) {
+      Map&lt;Pair&lt;Integer, Integer&gt;, Integer&gt; slopeCount = new HashMap&lt;&gt;();
+      int[] p1 = points[i];
+      int samePoints = 1;
+      int maxPoints = 0; // the maximum number of points with the same slope
+      for (int j = i + 1; j &lt; points.length; ++j) {
+        int[] p2 = points[j];
+        if (p1[0] == p2[0] &amp;&amp; p1[1] == p2[1])
+          ++samePoints;
+        else {
+          Pair&lt;Integer, Integer&gt; slope = getSlope(p1, p2);
+          slopeCount.merge(slope, 1, Integer::sum);
+          maxPoints = Math.max(maxPoints, slopeCount.get(slope));
+        }
+      }
+      ans = Math.max(ans, samePoints + maxPoints);
+    }
+
+    return ans;
+  }
+
+  private Pair&lt;Integer, Integer&gt; getSlope(int[] p, int[] q) {
+    final int dx = p[0] - q[0];
+    final int dy = p[1] - q[1];
+    if (dx == 0)
+      return new Pair&lt;&gt;(0, p[0]);
+    if (dy == 0)
+      return new Pair&lt;&gt;(p[1], 0);
+    final int d = gcd(dx, dy);
+    return new Pair&lt;&gt;(dx / d, dy / y);
+  }
+
+  private int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxPoints(self, points: list[list[int]]) -&gt; int:
+    ans = 0
+
+    def gcd(a: int, b: int) -&gt; int:
+      return a if b == 0 else gcd(b, a % b)
+
+    def getSlope(p: list[int], q: list[int]) -&gt; tuple[int, int]:
+      dx = p[0] - q[0]
+      dy = p[1] - q[1]
+      if dx == 0:
+        return (0, p[0])
+      if dy == 0:
+        return (p[1], 0)
+      d = gcd(dx, dy)
+      return (dx // d, dy // d)
+
+    for i, p in enumerate(points):
+      slopeCount = collections.defaultdict(int)
+      samePoints = 1
+      maxPoints = 0  # the maximum number of points with the same slope
+      for j in range(i + 1, len(points)):
+        q = points[j]
+        if p == q:
+          samePoints += 1
+        else:
+          slope = getSlope(p, q)
+          slopeCount[slope] += 1
+          maxPoints = max(maxPoints, slopeCount[slope])
+      ans = max(ans, samePoints + maxPoints)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

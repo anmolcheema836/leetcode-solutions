@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Array into Fibonacci Sequence - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Split Array into Fibonacci Sequence written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/split-array-into-fibonacci-sequence/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/keys-and-rooms/" class="btn">← Previous</a>
+            <span>Problem 842 of 3563</span>
+            <a href="/leetcode-solutions/problems/guess-the-word/" class="btn">Next →</a>
+        </div>
+        <h1>842. Split Array into Fibonacci Sequence</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Split Array into Fibonacci Sequence efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; splitIntoFibonacci(string num) {
+    vector&lt;int&gt; ans;
+    dfs(num, 0, ans);
+    return ans;
+  }
+
+ private:
+  bool dfs(const string&amp; num, int s, vector&lt;int&gt;&amp; ans) {
+    if (s == num.length() &amp;&amp; ans.size() &gt;= 3)
+      return true;
+
+    for (int i = s; i &lt; num.length(); ++i) {
+      if (num[s] == &#x27;0&#x27; &amp;&amp; i &gt; s)
+        break;
+      const long val = stol(num.substr(s, i + 1 - s));
+      if (val &gt; INT_MAX)
+        break;
+      if (ans.size() &gt;= 2 &amp;&amp;
+          val &gt; ans[ans.size() - 2] + static_cast&lt;long&gt;(ans.back()))
+        break;
+      if (ans.size() &lt;= 1 ||
+          val == ans[ans.size() - 2] + static_cast&lt;long&gt;(ans.back())) {
+        ans.push_back(val);
+        if (dfs(num, i + 1, ans))
+          return true;
+        ans.pop_back();
+      }
+    }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; splitIntoFibonacci(String num) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    dfs(num, 0, ans);
+    return ans;
+  }
+
+  private boolean dfs(final String num, int s, List&lt;Integer&gt; ans) {
+    if (s == num.length() &amp;&amp; ans.size() &gt;= 3)
+      return true;
+
+    for (int i = s; i &lt; num.length(); ++i) {
+      if (num.charAt(s) == &#x27;0&#x27; &amp;&amp; i &gt; s)
+        break;
+      final long val = Long.valueOf(num.substring(s, i + 1));
+      if (val &gt; Integer.MAX_VALUE)
+        break;
+      if (ans.size() &gt;= 2 &amp;&amp; val &gt; ans.get(ans.size() - 2) + ans.get(ans.size() - 1))
+        break;
+      if (ans.size() &lt;= 1 || val == ans.get(ans.size() - 2) + ans.get(ans.size() - 1)) {
+        ans.add((int) val);
+        if (dfs(num, i + 1, ans))
+          return true;
+        ans.remove(ans.size() - 1);
+      }
+    }
+
+    return false;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

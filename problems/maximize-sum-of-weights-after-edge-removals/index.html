@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Sum of Weights after Edge Removals - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize Sum of Weights after Edge Removals written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-sum-of-weights-after-edge-removals/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-array-sum/" class="btn">← Previous</a>
+            <span>Problem 3367 of 3563</span>
+            <a href="/leetcode-solutions/problems/first-letter-capitalization/" class="btn">Next →</a>
+        </div>
+        <h1>3367. Maximize Sum of Weights after Edge Removals</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize Sum of Weights after Edge Removals efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maximizeSumOfWeights(vector&lt;vector&lt;int&gt;&gt;&amp; edges, int k) {
+    const int n = edges.size() + 1;
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int w = edge[2];
+      graph[u].emplace_back(v, w);
+      graph[v].emplace_back(u, w);
+    }
+
+    return dfs(graph, 0, -1, k).second;
+  }
+
+  // Returns
+  // (the weight sum of the subtree rooted at u with at most k - 1 children,
+  //  the weight sum of the subtree rooted at u with at most k children).
+  pair&lt;long, long&gt; dfs(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int u,
+                       int prev, int k) {
+    long weightSum = 0;
+    priority_queue&lt;long&gt; diffs;
+
+    for (const auto&amp; [v, w] : graph[u]) {
+      if (v == prev)
+        continue;
+      const auto [subK1, subK] = dfs(graph, v, u, k);
+      weightSum += subK;
+      // If picking (u, v) makes the sum larger, we should pick it.
+      diffs.push(max(0L, subK1 - subK + w));
+    }
+
+    long topK1 = 0;
+    long topK = 0;
+
+    for (int i = 0; i &lt; k &amp;&amp; !diffs.empty(); ++i) {
+      if (i &lt; k - 1)
+        topK1 += diffs.top();
+      topK += diffs.top();
+      diffs.pop();
+    }
+
+    return {weightSum + topK1, weightSum + topK};
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maximizeSumOfWeights(int[][] edges, int k) {
+    final int n = edges.length + 1;
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      final int w = edge[2];
+      graph[u].add(new Pair&lt;&gt;(v, w));
+      graph[v].add(new Pair&lt;&gt;(u, w));
+    }
+
+    return dfs(graph, 0, -1, k).getValue();
+  }
+
+  // Returns
+  // (the weight sum of the subtree rooted at u with at most k - 1 children,
+  //  the weight sum of the subtree rooted at u with at most k children).
+  private Pair&lt;Long, Long&gt; dfs(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int u, int prev, int k) {
+    long weightSum = 0;
+    Queue&lt;Long&gt; diffs = new PriorityQueue&lt;&gt;(Collections.reverseOrder());
+
+    for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final int w = pair.getValue();
+      if (v == prev)
+        continue;
+      Pair&lt;Long, Long&gt; subResult = dfs(graph, v, u, k);
+      final long subK1 = subResult.getKey();
+      final long subK = subResult.getValue();
+      weightSum += subK;
+      // If picking (u, v) makes the sum larger, we should pick it.
+      diffs.offer(Math.max(0L, subK1 - subK + w));
+    }
+
+    long topK1 = 0;
+    long topK = 0;
+
+    for (int i = 0; i &lt; k &amp;&amp; !diffs.isEmpty(); ++i) {
+      if (i &lt; k - 1)
+        topK1 += diffs.peek();
+      topK += diffs.poll();
+    }
+
+    return new Pair&lt;&gt;(weightSum + topK1, weightSum + topK);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximizeSumOfWeights(self, edges: list[list[int]], k: int) -&gt; int:
+    graph = [[] for _ in range(len(edges) + 1)]
+
+    for u, v, w in edges:
+      graph[u].append((v, w))
+      graph[v].append((u, w))
+
+    def dfs(u: int, prev: int) -&gt; tuple[int, int]:
+      &quot;&quot;&quot;
+      Returns
+      (the weight sum of the subtree rooted at u with at most k - 1 children,
+       the weight sum of the subtree rooted at u with at most k children).
+      &quot;&quot;&quot;
+      weightSum = 0
+      diffs = []
+      for v, w in graph[u]:
+        if v == prev:
+          continue
+        subK1, subK = dfs(v, u)
+        weightSum += subK
+        # If picking (u, v) makes the sum larger, we should pick it.
+        diffs.append(max(0, subK1 - subK + w))
+      return (weightSum + sum(heapq.nlargest(k - 1, diffs)),
+              weightSum + sum(heapq.nlargest(k, diffs)))
+
+    return dfs(0, -1)[1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove All Ones With Row and Column Flips II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Remove All Ones With Row and Column Flips II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/remove-all-ones-with-row-and-column-flips-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-winning-streak/" class="btn">← Previous</a>
+            <span>Problem 2174 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-change-in-global-rankings/" class="btn">Next →</a>
+        </div>
+        <h1>2174. Remove All Ones With Row and Column Flips II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Remove All Ones With Row and Column Flips II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int removeOnes(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    const int maxMask = 1 &lt;&lt; m * n;
+    // dp[i] := the minimum number of operations to remove all 1s from the grid,
+    // where `i` is the bitmask of the state of the grid
+    vector&lt;int&gt; dp(maxMask, INT_MAX / 2);
+    dp[0] = 0;
+
+    for (int mask = 0; mask &lt; maxMask; ++mask)
+      for (int i = 0; i &lt; m; ++i)
+        for (int j = 0; j &lt; n; ++j)
+          if (grid[i][j] == 1) {
+            int newMask = mask;
+            // Set the cells in the same row with 0.
+            for (int k = 0; k &lt; n; ++k)
+              newMask &amp;= ~(1 &lt;&lt; i * n + k);
+            // Set the cells in the same column with 0.
+            for (int k = 0; k &lt; m; ++k)
+              newMask &amp;= ~(1 &lt;&lt; k * n + j);
+            dp[mask] = min(dp[mask], 1 + dp[newMask]);
+          }
+
+    return dp[encode(grid, m, n)];
+  }
+
+ private:
+  int encode(const vector&lt;vector&lt;int&gt;&gt;&amp; grid, int m, int n) {
+    int encoded = 0;
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j])
+          encoded |= 1 &lt;&lt; i * n + j;
+    return encoded;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int removeOnes(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    final int maxMask = 1 &lt;&lt; m * n;
+    // dp[i] := the minimum number of operations to remove all 1s from the grid,
+    // where `i` is the bitmask of the state of the grid
+    int[] dp = new int[1 &lt;&lt; m * n];
+    Arrays.fill(dp, Integer.MAX_VALUE / 2);
+    dp[0] = 0;
+
+    for (int mask = 0; mask &lt; maxMask; ++mask)
+      for (int i = 0; i &lt; m; ++i)
+        for (int j = 0; j &lt; n; ++j)
+          if (grid[i][j] == 1) {
+            int newMask = mask;
+            // Set the cells in the same row with 0.
+            for (int k = 0; k &lt; n; ++k)
+              newMask &amp;= ~(1 &lt;&lt; i * n + k);
+            // Set the cells in the same column with 0.
+            for (int k = 0; k &lt; m; ++k)
+              newMask &amp;= ~(1 &lt;&lt; k * n + j);
+            dp[mask] = Math.min(dp[mask], 1 + dp[newMask]);
+          }
+
+    return dp[encode(grid, m, n)];
+  }
+
+  private int encode(int[][] grid, int m, int n) {
+    int encoded = 0;
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 1)
+          encoded |= 1 &lt;&lt; i * n + j;
+    return encoded;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def removeOnes(self, grid: list[list[int]]) -&gt; int:
+    m = len(grid)
+    n = len(grid[0])
+    maxMask = 1 &lt;&lt; m * n
+    # dp[i] := the minimum number of operations to remove all 1s from the grid,
+    # where `i` is the bitmask of the state of the grid
+    dp = [math.inf] * maxMask
+    dp[0] = 0
+
+    for mask in range(maxMask):
+      for i in range(m):
+        for j in range(n):
+          if grid[i][j] == 1:
+            newMask = mask
+            # Set the cells in the same row with 0.
+            for k in range(n):
+              newMask &amp;= ~(1 &lt;&lt; i * n + k)
+            # Set the cells in the same column with 0.
+            for k in range(m):
+              newMask &amp;= ~(1 &lt;&lt; k * n + j)
+            dp[mask] = min(dp[mask], 1 + dp[newMask])
+
+    return dp[self.encode(grid, m, n)]
+
+  def encode(self, grid: list[list[int]], m: int, n: int) -&gt; int:
+    encoded = 0
+    for i in range(m):
+      for j in range(n):
+        if grid[i][j]:
+          encoded |= 1 &lt;&lt; i * n + j
+    return encoded</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

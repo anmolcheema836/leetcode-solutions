@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String to Integer (atoi) - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for String to Integer (atoi) written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/string-to-integer-atoi/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/reverse-integer/" class="btn">← Previous</a>
+            <span>Problem 8 of 3563</span>
+            <a href="/leetcode-solutions/problems/palindrome-number/" class="btn">Next →</a>
+        </div>
+        <h1>8. String to Integer (atoi)</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve String to Integer (atoi) efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int myAtoi(string s) {
+    trim(s);
+    if (s.empty())
+      return 0;
+
+    const int sign = s[0] == &#x27;-&#x27; ? -1 : 1;
+    if (s[0] == &#x27;+&#x27; || s[0] == &#x27;-&#x27;)
+      s = s.substr(1);
+
+    long num = 0;
+
+    for (const char c : s) {
+      if (!isdigit(c))
+        break;
+      num = num * 10 + (c - &#x27;0&#x27;);
+      if (sign * num &lt; INT_MIN)
+        return INT_MIN;
+      if (sign * num &gt; INT_MAX)
+        return INT_MAX;
+    }
+
+    return sign * num;
+  }
+
+ private:
+  void trim(string&amp; s) {
+    s.erase(0, s.find_first_not_of(&#x27; &#x27;));
+    s.erase(s.find_last_not_of(&#x27; &#x27;) + 1);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int myAtoi(String s) {
+    s = s.strip();
+    if (s.isEmpty())
+      return 0;
+
+    final int sign = s.charAt(0) == &#x27;-&#x27; ? -1 : 1;
+    if (s.charAt(0) == &#x27;+&#x27; || s.charAt(0) == &#x27;-&#x27;)
+      s = s.substring(1);
+
+    long num = 0;
+
+    for (final char c : s.toCharArray()) {
+      if (!Character.isDigit(c))
+        break;
+      num = num * 10 + (c - &#x27;0&#x27;);
+      if (sign * num &lt;= Integer.MIN_VALUE)
+        return Integer.MIN_VALUE;
+      if (sign * num &gt;= Integer.MAX_VALUE)
+        return Integer.MAX_VALUE;
+    }
+
+    return sign * (int) num;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def myAtoi(self, s: str) -&gt; int:
+    s = s.strip()
+    if not s:
+      return 0
+
+    sign = -1 if s[0] == &#x27;-&#x27; else 1
+    if s[0] in {&#x27;-&#x27;, &#x27;+&#x27;}:
+      s = s[1:]
+
+    num = 0
+
+    for c in s:
+      if not c.isdigit():
+        break
+      num = num * 10 + int(c)
+      if sign * num &lt;= -2**31:
+        return -2**31
+      if sign * num &gt;= 2**31 - 1:
+        return 2**31 - 1
+
+    return sign * num</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

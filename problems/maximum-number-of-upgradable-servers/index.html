@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Upgradable Servers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Upgradable Servers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-upgradable-servers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-number-of-ways-to-reach-the-k-th-stair/" class="btn">← Previous</a>
+            <span>Problem 3155 of 3563</span>
+            <a href="/leetcode-solutions/problems/employee-task-duration-and-concurrent-tasks/" class="btn">Next →</a>
+        </div>
+        <h1>3155. Maximum Number of Upgradable Servers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Upgradable Servers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; maxUpgrades(vector&lt;int&gt;&amp; count, vector&lt;int&gt;&amp; upgrade,
+                          vector&lt;int&gt;&amp; sell, vector&lt;int&gt;&amp; money) {
+    // If there&#x27;s enough money, upgrade all servers; otherwise, optimize by
+    // upgrading x servers. We have x * upgrade &lt;= money + (count - x) * sell.
+    // Therefore, x = (money + count * sell) / (sell + upgrade).
+    vector&lt;int&gt; ans;
+    for (int i = 0; i &lt; count.size(); ++i)
+      ans.push_back(min(
+          count[i],
+          static_cast&lt;int&gt;((money[i] + static_cast&lt;long&gt;(count[i]) * sell[i]) /
+                           (sell[i] + upgrade[i]))));
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maxUpgrades(int[] count, int[] upgrade, int[] sell, int[] money) {
+    // If there&#x27;s enough money, upgrade all servers; otherwise, optimize by
+    // upgrading x servers. We have x * upgrade &lt;= money + (count - x) * sell.
+    // Therefore, x = (money + count * sell) / (sell + upgrade).
+    int[] ans = new int[count.length];
+    for (int i = 0; i &lt; count.length; ++i)
+      ans[i] = Math.min(count[i], //
+                        (int) ((money[i] + 1L * count[i] * sell[i]) / (sell[i] + upgrade[i])));
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxUpgrades(
+      self,
+      count: list[int],
+      upgrade: list[int],
+      sell: list[int],
+      money: list[int],
+  ) -&gt; list[int]:
+    # If there&#x27;s enough money, upgrade all servers; otherwise, optimize by
+    # upgrading x servers. We have x * upgrade &lt;= money + (count - x) * sell.
+    # Therefore, x = (money + count * sell) / (sell + upgrade).
+    return [min(c, (m + c * s) // (s + u))
+            for c, u, s, m in zip(count, upgrade, sell, money)]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

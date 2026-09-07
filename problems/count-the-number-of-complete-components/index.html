@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count the Number of Complete Components - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count the Number of Complete Components written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-the-number-of-complete-components/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-of-moves-in-a-grid/" class="btn">← Previous</a>
+            <span>Problem 2685 of 3563</span>
+            <a href="/leetcode-solutions/problems/immediate-food-delivery-iii/" class="btn">Next →</a>
+        </div>
+        <h1>2685. Count the Number of Complete Components</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count the Number of Complete Components efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), rank(n), nodeCount(n, 1), edgeCount(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    ++edgeCount[i];
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+      edgeCount[j] += edgeCount[i];
+      nodeCount[j] += nodeCount[i];
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+      edgeCount[i] += edgeCount[j];
+      nodeCount[i] += nodeCount[j];
+    } else {
+      id[i] = j;
+      edgeCount[j] += edgeCount[i];
+      nodeCount[j] += nodeCount[i];
+      ++rank[j];
+    }
+  }
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+
+  bool isComplete(int u) {
+    return nodeCount[u] * (nodeCount[u] - 1) / 2 == edgeCount[u];
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; rank;
+  vector&lt;int&gt; nodeCount;
+  vector&lt;int&gt; edgeCount;
+};
+
+class Solution {
+ public:
+  int countCompleteComponents(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    int ans = 0;
+    UnionFind uf(n);
+    unordered_set&lt;int&gt; parents;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      uf.unionByRank(u, v);
+    }
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int parent = uf.find(i);
+      if (parents.insert(parent).second &amp;&amp; uf.isComplete(parent))
+        ++ans;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    id = new int[n];
+    rank = new int[n];
+    nodeCount = new int[n];
+    edgeCount = new int[n];
+    for (int i = 0; i &lt; n; ++i) {
+      id[i] = i;
+      nodeCount[i] = 1;
+    }
+  }
+
+  public void unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    ++edgeCount[i];
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+      edgeCount[j] += edgeCount[i];
+      nodeCount[j] += nodeCount[i];
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+      edgeCount[i] += edgeCount[j];
+      nodeCount[i] += nodeCount[j];
+    } else {
+      id[i] = j;
+      edgeCount[j] += edgeCount[i];
+      nodeCount[j] += nodeCount[i];
+      ++rank[j];
+    }
+  }
+
+  public int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+
+  public boolean isComplete(int u) {
+    return nodeCount[u] * (nodeCount[u] - 1) / 2 == edgeCount[u];
+  }
+
+  private int[] id;
+  private int[] rank;
+  private int[] nodeCount;
+  private int[] edgeCount;
+}
+
+class Solution {
+  public int countCompleteComponents(int n, int[][] edges) {
+    int ans = 0;
+    UnionFind uf = new UnionFind(n);
+    Set&lt;Integer&gt; parents = new HashSet&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      uf.unionByRank(u, v);
+    }
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int parent = uf.find(i);
+      if (parents.add(parent) &amp;&amp; uf.isComplete(parent))
+        ++ans;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.id = list(range(n))
+    self.rank = [0] * n
+    self.nodeCount = [1] * n
+    self.edgeCount = [0] * n
+
+  def unionByRank(self, u: int, v: int) -&gt; None:
+    i = self.find(u)
+    j = self.find(v)
+    self.edgeCount[i] += 1
+    if i == j:
+      return
+    if self.rank[i] &lt; self.rank[j]:
+      self.id[i] = j
+      self.edgeCount[j] += self.edgeCount[i]
+      self.nodeCount[j] += self.nodeCount[i]
+    elif self.rank[i] &gt; self.rank[j]:
+      self.id[j] = i
+      self.edgeCount[i] += self.edgeCount[j]
+      self.nodeCount[i] += self.nodeCount[j]
+    else:
+      self.id[i] = j
+      self.edgeCount[j] += self.edgeCount[i]
+      self.nodeCount[j] += self.nodeCount[i]
+      self.rank[j] += 1
+
+  def find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self.find(self.id[u])
+    return self.id[u]
+
+  def isComplete(self, u):
+    return self.nodeCount[u] * (self.nodeCount[u] - 1) // 2 == self.edgeCount[u]
+
+
+class Solution:
+  def countCompleteComponents(self, n: int, edges: list[list[int]]) -&gt; int:
+    ans = 0
+    uf = UnionFind(n)
+    parents = set()
+
+    for u, v in edges:
+      uf.unionByRank(u, v)
+
+    for i in range(n):
+      parent = uf.find(i)
+      if parent not in parents and uf.isComplete(parent):
+        ans += 1
+        parents.add(parent)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

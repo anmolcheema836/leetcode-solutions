@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Lexicographically Smallest Array by Swapping Elements - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Make Lexicographically Smallest Array by Swapping Elements written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/make-lexicographically-smallest-array-by-swapping-elements/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-beautiful-substrings-i/" class="btn">← Previous</a>
+            <span>Problem 2948 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-beautiful-substrings-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2948. Make Lexicographically Smallest Array by Swapping Elements</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Make Lexicographically Smallest Array by Swapping Elements efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; lexicographicallySmallestArray(vector&lt;int&gt;&amp; nums, int limit) {
+    vector&lt;int&gt; ans(nums.size());
+    // [[(num, index)]], where the difference between in each pair in each
+    // `[(num, index)]` group &lt;= `limit`
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; numAndIndexesGroups;
+
+    for (const pair&lt;int, int&gt;&amp; numAndIndex : getNumAndIndexes(nums))
+      if (numAndIndexesGroups.empty() ||
+          numAndIndex.first - numAndIndexesGroups.back().back().first &gt; limit) {
+        // Start a new group.
+        numAndIndexesGroups.push_back({numAndIndex});
+      } else {
+        // Append to the existing group.
+        numAndIndexesGroups.back().push_back(numAndIndex);
+      }
+
+    for (const vector&lt;pair&lt;int, int&gt;&gt;&amp; numAndIndexesGroup :
+         numAndIndexesGroups) {
+      vector&lt;int&gt; sortedNums;
+      vector&lt;int&gt; sortedIndices;
+      for (const auto&amp; [num, index] : numAndIndexesGroup) {
+        sortedNums.push_back(num);
+        sortedIndices.push_back(index);
+      }
+      ranges::sort(sortedIndices);
+      for (int i = 0; i &lt; sortedNums.size(); ++i)
+        ans[sortedIndices[i]] = sortedNums[i];
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;pair&lt;int, int&gt;&gt; getNumAndIndexes(const vector&lt;int&gt;&amp; nums) {
+    vector&lt;pair&lt;int, int&gt;&gt; numAndIndexes;
+    for (int i = 0; i &lt; nums.size(); ++i)
+      numAndIndexes.emplace_back(nums[i], i);
+    ranges::sort(numAndIndexes);
+    return numAndIndexes;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] lexicographicallySmallestArray(int[] nums, int limit) {
+    int[] ans = new int[nums.length];
+    List&lt;List&lt;Pair&lt;Integer, Integer&gt;&gt;&gt; numAndIndexesGroups = new ArrayList&lt;&gt;();
+
+    for (Pair&lt;Integer, Integer&gt; numAndIndex : getNumAndIndexes(nums))
+      if (numAndIndexesGroups.isEmpty() ||
+          numAndIndex.getKey() -
+                  numAndIndexesGroups.get(numAndIndexesGroups.size() - 1)
+                      .get(numAndIndexesGroups.get(numAndIndexesGroups.size() - 1).size() - 1)
+                      .getKey() &gt;
+              limit) {
+        // Start a new group.
+        numAndIndexesGroups.add(new ArrayList&lt;&gt;(List.of(numAndIndex)));
+      } else {
+        // Append to the existing group.
+        numAndIndexesGroups.get(numAndIndexesGroups.size() - 1).add(numAndIndex);
+      }
+
+    for (List&lt;Pair&lt;Integer, Integer&gt;&gt; numAndIndexesGroup : numAndIndexesGroups) {
+      List&lt;Integer&gt; sortedNums = new ArrayList&lt;&gt;();
+      List&lt;Integer&gt; sortedIndices = new ArrayList&lt;&gt;();
+      for (Pair&lt;Integer, Integer&gt; pair : numAndIndexesGroup) {
+        sortedNums.add(pair.getKey());
+        sortedIndices.add(pair.getValue());
+      }
+      sortedIndices.sort(null);
+      for (int i = 0; i &lt; sortedNums.size(); ++i) {
+        ans[sortedIndices.get(i)] = sortedNums.get(i);
+      }
+    }
+
+    return ans;
+  }
+
+  private Pair&lt;Integer, Integer&gt;[] getNumAndIndexes(int[] nums) {
+    Pair&lt;Integer, Integer&gt;[] numAndIndexes = new Pair[nums.length];
+    for (int i = 0; i &lt; nums.length; ++i)
+      numAndIndexes[i] = new Pair&lt;&gt;(nums[i], i);
+    Arrays.sort(numAndIndexes, Comparator.comparingInt(Pair::getKey));
+    return numAndIndexes;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def lexicographicallySmallestArray(
+      self,
+      nums: list[int],
+      limit: int,
+  ) -&gt; list[int]:
+    ans = [0] * len(nums)
+    numAndIndexes = sorted([(num, i) for i, num in enumerate(nums)])
+    # [[(num, index)]], where the difference between in each pair in each
+    # `[(num, index)]` group &lt;= `limit`
+    numAndIndexesGroups: list[list[tuple[int, int]]] = []
+
+    for numAndIndex in numAndIndexes:
+      if (not numAndIndexesGroups or
+              numAndIndex[0] - numAndIndexesGroups[-1][-1][0] &gt; limit):
+        # Start a new group.
+        numAndIndexesGroups.append([numAndIndex])
+      else:
+        # Append to the existing group.
+        numAndIndexesGroups[-1].append(numAndIndex)
+
+    for numAndIndexesGroup in numAndIndexesGroups:
+      sortedNums = [num for num, _ in numAndIndexesGroup]
+      sortedIndices = sorted([index for _, index in numAndIndexesGroup])
+      for num, index in zip(sortedNums, sortedIndices):
+        ans[index] = num
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

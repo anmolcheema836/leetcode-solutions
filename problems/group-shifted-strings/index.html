@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Shifted Strings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Group Shifted Strings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/group-shifted-strings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/strobogrammatic-number-iii/" class="btn">← Previous</a>
+            <span>Problem 249 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-univalue-subtrees/" class="btn">Next →</a>
+        </div>
+        <h1>249. Group Shifted Strings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Group Shifted Strings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;string&gt;&gt; groupStrings(vector&lt;string&gt;&amp; strings) {
+    vector&lt;vector&lt;string&gt;&gt; ans;
+    unordered_map&lt;string, vector&lt;string&gt;&gt; keyToStrings;
+
+    for (const string&amp; s : strings)
+      keyToStrings[getKey(s)].push_back(s);
+
+    for (const auto&amp; [_, strings] : keyToStrings)
+      ans.push_back(strings);
+
+    return ans;
+  }
+
+ private:
+  // Returns the key of &#x27;s&#x27; by pairwise calculation of differences.
+  // e.g. getKey(&quot;abc&quot;) -&gt; &quot;1,1&quot; because diff(a, b) = 1 and diff(b, c) = 1.
+  string getKey(const string&amp; s) {
+    string key;
+
+    for (int i = 1; i &lt; s.length(); ++i) {
+      const int diff = (s[i] - s[i - 1] + 26) % 26;
+      key += to_string(diff) + &quot;,&quot;;
+    }
+
+    return key;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;String&gt;&gt; groupStrings(String[] strings) {
+    Map&lt;String, List&lt;String&gt;&gt; keyToStrings = new HashMap&lt;&gt;();
+
+    for (final String s : strings)
+      keyToStrings.computeIfAbsent(getKey(s), k -&gt; new ArrayList&lt;&gt;()).add(s);
+
+    return new ArrayList&lt;&gt;(keyToStrings.values());
+  }
+
+  // Returns the key of &#x27;s&#x27; by pairwise calculation of differences.
+  // e.g. getKey(&quot;abc&quot;) -&gt; &quot;1,1&quot; because diff(a, b) = 1 and diff(b, c) = 1.
+  private String getKey(final String s) {
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 1; i &lt; s.length(); ++i) {
+      final int diff = (s.charAt(i) - s.charAt(i - 1) + 26) % 26;
+      sb.append(diff).append(&quot;,&quot;);
+    }
+
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def groupStrings(self, strings: list[str]) -&gt; list[list[str]]:
+    keyToStrings = collections.defaultdict(list)
+
+    def getKey(s: str) -&gt; str:
+      &quot;&quot;&quot;
+      Returns the key of &#x27;s&#x27; by pairwise calculation of differences.
+      e.g. getKey(&quot;abc&quot;) -&gt; &quot;1,1&quot; because diff(a, b) = 1 and diff(b, c) = 1.
+      &quot;&quot;&quot;
+      diffs = []
+
+      for i in range(1, len(s)):
+        diff = (ord(s[i]) - ord(s[i - 1]) + 26) % 26
+        diffs.append(str(diff))
+
+      return &#x27;,&#x27;.join(diffs)
+
+    for s in strings:
+      keyToStrings[getKey(s)].append(s)
+
+    return keyToStrings.values()</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

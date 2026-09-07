@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Magic Square - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Largest Magic Square written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/largest-magic-square/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-student-that-will-replace-the-chalk/" class="btn">← Previous</a>
+            <span>Problem 1895 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-to-change-the-final-value-of-expression/" class="btn">Next →</a>
+        </div>
+        <h1>1895. Largest Magic Square</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Largest Magic Square efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int largestMagicSquare(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    // prefixRow[i][j] := the sum of the first j numbers in the i-th row
+    vector&lt;vector&lt;int&gt;&gt; prefixRow(m, vector&lt;int&gt;(n + 1));
+    // prefixCol[i][j] := the sum of the first j numbers in the i-th column
+    vector&lt;vector&lt;int&gt;&gt; prefixCol(n, vector&lt;int&gt;(m + 1));
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        prefixRow[i][j + 1] = prefixRow[i][j] + grid[i][j];
+        prefixCol[j][i + 1] = prefixCol[j][i] + grid[i][j];
+      }
+
+    for (int k = min(m, n); k &gt;= 2; --k)
+      if (containsMagicSquare(grid, prefixRow, prefixCol, k))
+        return k;
+
+    return 1;
+  }
+
+ private:
+  // Returns true if the grid contains any magic square of size k x k.
+  bool containsMagicSquare(const vector&lt;vector&lt;int&gt;&gt;&amp; grid,
+                           const vector&lt;vector&lt;int&gt;&gt;&amp; prefixRow,
+                           const vector&lt;vector&lt;int&gt;&gt;&amp; prefixCol, int k) {
+    for (int i = 0; i + k - 1 &lt; grid.size(); ++i)
+      for (int j = 0; j + k - 1 &lt; grid[0].size(); ++j)
+        if (isMagicSquare(grid, prefixRow, prefixCol, i, j, k))
+          return true;
+    return false;
+  }
+
+  // Returns true if grid[i..i + k)[j..j + k) is a magic square.
+  bool isMagicSquare(const vector&lt;vector&lt;int&gt;&gt;&amp; grid,
+                     const vector&lt;vector&lt;int&gt;&gt;&amp; prefixRow,
+                     const vector&lt;vector&lt;int&gt;&gt;&amp; prefixCol, int i, int j,
+                     int k) {
+    int diag = 0;
+    int antiDiag = 0;
+    for (int d = 0; d &lt; k; ++d) {
+      diag += grid[i + d][j + d];
+      antiDiag += grid[i + d][j + k - 1 - d];
+    }
+    if (diag != antiDiag)
+      return false;
+    for (int d = 0; d &lt; k; ++d) {
+      if (getSum(prefixRow, i + d, j, j + k - 1) != diag)
+        return false;
+      if (getSum(prefixCol, j + d, i, i + k - 1) != diag)
+        return false;
+    }
+    return true;
+  }
+
+  // Returns sum(grid[i][l..r]) or sum(grid[l..r][i]).
+  int getSum(const vector&lt;vector&lt;int&gt;&gt;&amp; prefix, int i, int l, int r) {
+    return prefix[i][r + 1] - prefix[i][l];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int largestMagicSquare(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    // prefixRow[i][j] := the sum of the first j numbers in the i-th row
+    int[][] prefixRow = new int[m][n + 1];
+    // prefixCol[i][j] := the sum of the first j numbers in the i-th column
+    int[][] prefixCol = new int[n][m + 1];
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        prefixRow[i][j + 1] = prefixRow[i][j] + grid[i][j];
+        prefixCol[j][i + 1] = prefixCol[j][i] + grid[i][j];
+      }
+
+    for (int k = Math.min(m, n); k &gt;= 2; --k)
+      if (containsMagicSquare(grid, prefixRow, prefixCol, k))
+        return k;
+
+    return 1;
+  }
+
+  // Returns true if the grid contains any magic square of size k x k.
+  private boolean containsMagicSquare(int[][] grid, int[][] prefixRow, int[][] prefixCol, int k) {
+    for (int i = 0; i + k - 1 &lt; grid.length; ++i)
+      for (int j = 0; j + k - 1 &lt; grid[0].length; ++j)
+        if (isMagicSquare(grid, prefixRow, prefixCol, i, j, k))
+          return true;
+    return false;
+  }
+
+  // Returns true if grid[i..i + k)[j..j + k) is a magic square.
+  private boolean isMagicSquare(int[][] grid, int[][] prefixRow, int[][] prefixCol, int i, int j,
+                                int k) {
+    int diag = 0;
+    int antiDiag = 0;
+    for (int d = 0; d &lt; k; ++d) {
+      diag += grid[i + d][j + d];
+      antiDiag += grid[i + d][j + k - 1 - d];
+    }
+    if (diag != antiDiag)
+      return false;
+    for (int d = 0; d &lt; k; ++d) {
+      if (getSum(prefixRow, i + d, j, j + k - 1) != diag)
+        return false;
+      if (getSum(prefixCol, j + d, i, i + k - 1) != diag)
+        return false;
+    }
+    return true;
+  }
+
+  // Returns sum(grid[i][l..r]) or sum(grid[l..r][i]).
+  private int getSum(int[][] prefix, int i, int l, int r) {
+    return prefix[i][r + 1] - prefix[i][l];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestMagicSquare(self, grid: list[list[int]]) -&gt; int:
+    m = len(grid)
+    n = len(grid[0])
+    # prefixRow[i][j] := the sum of the first j numbers in the i-th row
+    prefixRow = [[0] * (n + 1) for _ in range(m)]
+    # prefixCol[i][j] := the sum of the first j numbers in the i-th column
+    prefixCol = [[0] * (m + 1) for _ in range(n)]
+
+    for i in range(m):
+      for j in range(n):
+        prefixRow[i][j + 1] = prefixRow[i][j] + grid[i][j]
+        prefixCol[j][i + 1] = prefixCol[j][i] + grid[i][j]
+
+    def isMagicSquare(i: int, j: int, k: int) -&gt; bool:
+      &quot;&quot;&quot;Returns True if grid[i..i + k)[j..j + k) is a magic square.&quot;&quot;&quot;
+      diag, antiDiag = 0, 0
+      for d in range(k):
+        diag += grid[i + d][j + d]
+        antiDiag += grid[i + d][j + k - 1 - d]
+      if diag != antiDiag:
+        return False
+      for d in range(k):
+        if self._getSum(prefixRow, i + d, j, j + k - 1) != diag:
+          return False
+        if self._getSum(prefixCol, j + d, i, i + k - 1) != diag:
+          return False
+      return True
+
+    def containsMagicSquare(k: int) -&gt; bool:
+      &quot;&quot;&quot;Returns True if the grid contains any magic square of size k x k.&quot;&quot;&quot;
+      for i in range(m - k + 1):
+        for j in range(n - k + 1):
+          if isMagicSquare(i, j, k):
+            return True
+      return False
+
+    for k in range(min(m, n), 1, -1):
+      if containsMagicSquare(k):
+        return k
+
+    return 1
+
+  def _getSum(self, prefix: list[list[int]], i: int, l: int, r: int) -&gt; int:
+    &quot;&quot;&quot;Returns sum(grid[i][l..r]) or sum(grid[l..r][i]).&quot;&quot;&quot;
+    return prefix[i][r + 1] - prefix[i][l]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

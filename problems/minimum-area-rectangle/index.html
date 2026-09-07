@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Area Rectangle - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Area Rectangle written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-area-rectangle/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/range-sum-of-bst/" class="btn">← Previous</a>
+            <span>Problem 939 of 3563</span>
+            <a href="/leetcode-solutions/problems/distinct-subsequences-ii/" class="btn">Next →</a>
+        </div>
+        <h1>939. Minimum Area Rectangle</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Area Rectangle efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minAreaRect(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    int ans = INT_MAX;
+    unordered_map&lt;int, unordered_set&lt;int&gt;&gt; xToYs;
+
+    for (const vector&lt;int&gt;&amp; p : points)
+      xToYs[p[0]].insert(p[1]);
+
+    for (int i = 1; i &lt; points.size(); ++i)
+      for (int j = 0; j &lt; i; ++j) {
+        const vector&lt;int&gt;&amp; p = points[i];
+        const vector&lt;int&gt;&amp; q = points[j];
+        if (p[0] == q[0] || p[1] == q[1])
+          continue;
+        if (xToYs[p[0]].contains(q[1]) &amp;&amp; xToYs[q[0]].contains(p[1]))
+          ans = min(ans, abs(p[0] - q[0]) * abs(p[1] - q[1]));
+      }
+
+    return ans == INT_MAX ? 0 : ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minAreaRect(int[][] points) {
+    int ans = Integer.MAX_VALUE;
+    Map&lt;Integer, Set&lt;Integer&gt;&gt; xToYs = new HashMap&lt;&gt;();
+
+    for (int[] p : points) {
+      xToYs.putIfAbsent(p[0], new HashSet&lt;&gt;());
+      xToYs.get(p[0]).add(p[1]);
+    }
+
+    for (int i = 1; i &lt; points.length; ++i)
+      for (int j = 0; j &lt; i; ++j) {
+        int[] p = points[i];
+        int[] q = points[j];
+        if (p[0] == q[0] || p[1] == q[1])
+          continue;
+        if (xToYs.get(p[0]).contains(q[1]) &amp;&amp; xToYs.get(q[0]).contains(p[1]))
+          ans = Math.min(ans, Math.abs(p[0] - q[0]) * Math.abs(p[1] - q[1]));
+      }
+
+    return ans == Integer.MAX_VALUE ? 0 : ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minAreaRect(self, points: list[list[int]]) -&gt; int:
+    ans = math.inf
+    xToYs = collections.defaultdict(set)
+
+    for x, y in points:
+      xToYs[x].add(y)
+
+    for i in range(len(points)):
+      for j in range(i):
+        x1, y1 = points[i]
+        x2, y2 = points[j]
+        if x1 == x2 or y1 == y2:
+          continue
+        if y2 in xToYs[x1] and y1 in xToYs[x2]:
+          ans = min(ans, abs(x1 - x2) * abs(y1 - y2))
+
+    return ans if ans &lt; math.inf else 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

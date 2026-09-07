@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Binary Tree From Descriptions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Create Binary Tree From Descriptions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/create-binary-tree-from-descriptions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/append-k-integers-with-minimal-sum/" class="btn">← Previous</a>
+            <span>Problem 2196 of 3563</span>
+            <a href="/leetcode-solutions/problems/replace-non-coprime-numbers-in-array/" class="btn">Next →</a>
+        </div>
+        <h1>2196. Create Binary Tree From Descriptions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Create Binary Tree From Descriptions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  TreeNode* createBinaryTree(vector&lt;vector&lt;int&gt;&gt;&amp; descriptions) {
+    unordered_map&lt;TreeNode*, TreeNode*&gt; childToParent;
+    unordered_map&lt;int, TreeNode*&gt; valToNode;
+
+    for (const vector&lt;int&gt;&amp; d : descriptions) {
+      const int p = d[0];
+      const int c = d[1];
+      const bool isLeft = d[2];
+      TreeNode* parent = valToNode.contains(p)
+                             ? valToNode[p]
+                             : (valToNode[p] = new TreeNode(p));
+      TreeNode* child = valToNode.contains(c)
+                            ? valToNode[c]
+                            : (valToNode[c] = new TreeNode(c));
+      childToParent[child] = parent;
+      if (isLeft)
+        parent-&gt;left = child;
+      else
+        parent-&gt;right = child;
+    }
+
+    // Pick a random node and traverse upwardly.
+    TreeNode* root = childToParent.begin()-&gt;second;
+    while (childToParent.contains(root))
+      root = childToParent[root];
+    return root;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public TreeNode createBinaryTree(int[][] descriptions) {
+    Map&lt;TreeNode, TreeNode&gt; childToParent = new HashMap&lt;&gt;();
+    Map&lt;Integer, TreeNode&gt; valToNode = new HashMap&lt;&gt;();
+
+    for (int[] d : descriptions) {
+      final int p = d[0];
+      final int c = d[1];
+      final int isLeft = d[2];
+      TreeNode parent = valToNode.getOrDefault(p, new TreeNode(p));
+      TreeNode child = valToNode.getOrDefault(c, new TreeNode(c));
+      valToNode.put(p, parent);
+      valToNode.put(c, child);
+      childToParent.put(child, parent);
+      if (isLeft == 1)
+        parent.left = child;
+      else
+        parent.right = child;
+    }
+
+    // Pick a random node and traverse upwardly.
+    TreeNode root = childToParent.keySet().iterator().next();
+    while (childToParent.containsKey(root))
+      root = childToParent.get(root);
+    return root;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def createBinaryTree(self, descriptions: list[list[int]]) -&gt; TreeNode | None:
+    children = set()
+    valToNode = {}
+
+    for p, c, isLeft in descriptions:
+      parent = valToNode.setdefault(p, TreeNode(p))
+      child = valToNode.setdefault(c, TreeNode(c))
+      if isLeft:
+        parent.left = child
+      else:
+        parent.right = child
+      children.add(c)
+
+    root = (set(valToNode) - set(children)).pop()
+    return valToNode[root]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

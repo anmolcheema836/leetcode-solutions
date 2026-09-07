@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construct String with Minimum Cost (Easy) - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Construct String with Minimum Cost (Easy) written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/construct-string-with-minimum-cost-easy/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/premier-league-table-ranking-ii/" class="btn">← Previous</a>
+            <span>Problem 3253 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-power-of-k-size-subarrays-i/" class="btn">Next →</a>
+        </div>
+        <h1>3253. Construct String with Minimum Cost (Easy)</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Construct String with Minimum Cost (Easy) efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumCost(string target, vector&lt;string&gt;&amp; words, vector&lt;int&gt;&amp; costs) {
+    const int n = target.length();
+    // dp[i] := the minimum cost to construct target[0..i)
+    vector&lt;int&gt; dp(n + 1, INT_MAX);
+    dp[0] = 0;
+
+    for (int i = 1; i &lt;= n; ++i)
+      for (int j = 0; j &lt; words.size(); ++j)
+        if (i &gt;= words[j].length() &amp;&amp;
+            target.substr(i - words[j].length(), words[j].length()) ==
+                words[j] &amp;&amp;
+            dp[i - words[j].length()] != INT_MAX)
+          dp[i] = min(dp[i], dp[i - words[j].length()] + costs[j]);
+
+    return dp[n] == INT_MAX ? -1 : dp[n];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumCost(String target, String[] words, int[] costs) {
+    final int n = target.length();
+    // dp[i] := the minimum cost to construct target[0..i)
+    int[] dp = new int[n + 1];
+    Arrays.fill(dp, Integer.MAX_VALUE);
+    dp[0] = 0;
+
+    for (int i = 1; i &lt;= n; ++i)
+      for (int j = 0; j &lt; words.length; ++j)
+        if (i &gt;= words[j].length() &amp;&amp; //
+            target.substring(i - words[j].length(), i).equals(words[j]) &amp;&amp;
+            dp[i - words[j].length()] != Integer.MAX_VALUE)
+          dp[i] = Math.min(dp[i], dp[i - words[j].length()] + costs[j]);
+
+    return dp[n] == Integer.MAX_VALUE ? -1 : dp[n];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumCost(self, target: str, words: list[str], costs: list[int]) -&gt; int:
+    n = len(target)
+    # dp[i] := the minimum cost to construct target[0:i]
+    dp = [0] + [math.inf] * n
+
+    for i in range(1, n + 1):
+      for j, (word, cost) in enumerate(zip(words, costs)):
+        if (i &gt;= len(word) and
+            target[i - len(word):i] == word and
+                dp[i - len(word)] != math.inf):
+          dp[i] = min(dp[i], dp[i - len(word)] + cost)
+
+    return dp[n] if dp[n] != math.inf else -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Number of Good Subsets - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Number of Good Subsets written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-number-of-good-subsets/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/operations-on-tree/" class="btn">← Previous</a>
+            <span>Problem 1994 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-special-quadruplets/" class="btn">Next →</a>
+        </div>
+        <h1>1994. The Number of Good Subsets</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Number of Good Subsets efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numberOfGoodSubsets(vector&lt;int&gt;&amp; nums) {
+    const vector&lt;int&gt; primes{2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    const int n = 1 &lt;&lt; primes.size();
+    const int maxNum = ranges::max(nums);
+    vector&lt;long&gt; dp(n);
+    vector&lt;int&gt; count(maxNum + 1);
+
+    dp[0] = 1;
+
+    for (const int num : nums)
+      ++count[num];
+
+    for (int num = 2; num &lt;= maxNum; ++num) {
+      if (count[num] == 0)
+        continue;
+      if (num % 4 == 0 || num % 9 == 0 || num % 25 == 0)
+        continue;
+      const int numPrimesMask = getPrimesMask(num, primes);
+      for (int primesMask = 0; primesMask &lt; n; ++primesMask) {
+        if ((primesMask &amp; numPrimesMask) &gt; 0)
+          continue;
+        const int nextPrimesMask = primesMask | numPrimesMask;
+        dp[nextPrimesMask] += dp[primesMask] * count[num];
+        dp[nextPrimesMask] %= kMod;
+      }
+    }
+
+    return modPow(2, count[1]) *
+           (accumulate(dp.begin() + 1, dp.end(), 0L) % kMod) % kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  int getPrimesMask(int num, const vector&lt;int&gt;&amp; primes) {
+    int primesMask = 0;
+    for (int i = 0; i &lt; primes.size(); ++i)
+      if (num % primes[i] == 0)
+        primesMask |= 1 &lt;&lt; i;
+    return primesMask;
+  }
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numberOfGoodSubsets(int[] nums) {
+    final int[] primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    final int n = 1 &lt;&lt; primes.length;
+    final int maxNum = Arrays.stream(nums).max().getAsInt();
+    long[] dp = new long[n];
+    int[] count = new int[maxNum + 1];
+
+    dp[0] = 1;
+
+    for (final int num : nums)
+      ++count[num];
+
+    for (int num = 2; num &lt;= maxNum; ++num) {
+      if (count[num] == 0)
+        continue;
+      if (num % 4 == 0 || num % 9 == 0 || num % 25 == 0)
+        continue;
+      final int numPrimesMask = getPrimesMask(num, primes);
+      for (int primesMask = 0; primesMask &lt; n; ++primesMask) {
+        if ((primesMask &amp; numPrimesMask) &gt; 0)
+          continue;
+        final int nextPrimesMask = primesMask | numPrimesMask;
+        dp[nextPrimesMask] += dp[primesMask] * count[num];
+        dp[nextPrimesMask] %= MOD;
+      }
+    }
+
+    return (int) (modPow(2, count[1]) * ((Arrays.stream(dp).sum() - 1) % MOD) % MOD);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private int getPrimesMask(int num, int[] primes) {
+    int primesMask = 0;
+    for (int i = 0; i &lt; primes.length; ++i)
+      if (num % primes[i] == 0)
+        primesMask |= 1 &lt;&lt; i;
+    return primesMask;
+  }
+
+  private long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x, n - 1) % MOD;
+    return modPow(x * x % MOD, n / 2);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numberOfGoodSubsets(self, nums: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+    n = 1 &lt;&lt; len(primes)
+    # dp[i] := the number of good subsets with set of primes = i bit mask
+    dp = [1] + [0] * (n - 1)
+    count = collections.Counter(nums)
+
+    for num, freq in count.items():
+      if num == 1:
+        continue
+      if any(num % squared == 0 for squared in [4, 9, 25]):
+        continue
+      numPrimesMask = sum(1 &lt;&lt; i
+                          for i, prime in enumerate(primes)
+                          if num % prime == 0)
+      for primesMask in range(n):
+        # Skip since there&#x27;re commen set of primes (becomes invalid subset)
+        if primesMask &amp; numPrimesMask &gt; 0:
+          continue
+        nextPrimesMask = numPrimesMask | primesMask
+        dp[nextPrimesMask] += dp[primesMask] * freq
+        dp[nextPrimesMask] %= MOD
+
+    return (1 &lt;&lt; count[1]) * sum(dp[1:]) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

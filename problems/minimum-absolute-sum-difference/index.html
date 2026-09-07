@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Absolute Sum Difference - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Absolute Sum Difference written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-absolute-sum-difference/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/finding-the-users-active-minutes/" class="btn">← Previous</a>
+            <span>Problem 1818 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-different-subsequences-gcds/" class="btn">Next →</a>
+        </div>
+        <h1>1818. Minimum Absolute Sum Difference</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Absolute Sum Difference efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minAbsoluteSumDiff(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    long sumDiff = 0;
+    long maxDecrement = 0;
+    set&lt;int&gt; sorted(nums1.begin(), nums1.end());
+
+    for (int i = 0; i &lt; nums1.size(); ++i) {
+      const long currDiff = abs(nums1[i] - nums2[i]);
+      sumDiff += currDiff;
+      const auto it = sorted.lower_bound(nums2[i]);
+      if (it != sorted.begin())
+        maxDecrement = max(maxDecrement, currDiff - abs(*prev(it) - nums2[i]));
+      if (it != sorted.end())
+        maxDecrement = max(maxDecrement, currDiff - abs(*it - nums2[i]));
+    }
+
+    return (sumDiff - maxDecrement) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+    final int MOD = 1_000_000_007;
+    long sumDiff = 0;
+    long maxDecrement = 0;
+    TreeSet&lt;Integer&gt; sorted = new TreeSet&lt;&gt;();
+
+    for (final int num : nums1)
+      sorted.add(num);
+
+    for (int i = 0; i &lt; nums1.length; ++i) {
+      final long currDiff = (long) Math.abs(nums1[i] - nums2[i]);
+      sumDiff += currDiff;
+      Integer ceiling = sorted.ceiling(nums2[i]);
+      Integer floor = sorted.floor(nums2[i]);
+      if (ceiling != null)
+        maxDecrement = Math.max(maxDecrement, currDiff - (long) Math.abs(ceiling - nums2[i]));
+      if (floor != null)
+        maxDecrement = Math.max(maxDecrement, currDiff - (long) Math.abs(floor - nums2[i]));
+    }
+
+    return (int) ((sumDiff - maxDecrement) % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minAbsoluteSumDiff(self, nums1: list[int], nums2: list[int]) -&gt; int:
+    ans = math.inf
+    diffs = [abs(a - b) for a, b in zip(nums1, nums2)]
+    sumDiff = sum(diffs)
+
+    nums1.sort()
+
+    for num, diff in zip(nums2, diffs):
+      i = bisect.bisect_left(nums1, num)
+      if i &gt; 0:
+        ans = min(ans, sumDiff - diff + abs(num - nums1[i - 1]))
+      if i &lt; len(nums1):
+        ans = min(ans, sumDiff - diff + abs(num - nums1[i]))
+
+    return ans % 1_000_000_007</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

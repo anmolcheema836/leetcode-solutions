@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiply Two Polynomials - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Multiply Two Polynomials written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/multiply-two-polynomials/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/equal-sum-grid-partition-ii/" class="btn">← Previous</a>
+            <span>Problem 3549 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-index-with-digit-sum-equal-to-index/" class="btn">Next →</a>
+        </div>
+        <h1>3549. Multiply Two Polynomials</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Multiply Two Polynomials efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;long long&gt; multiply(vector&lt;int&gt;&amp; poly1, vector&lt;int&gt;&amp; poly2) {
+    const unsigned n1 = poly1.size();
+    const unsigned n2 = poly2.size();
+    const unsigned n = n1 + n2 - 1;
+    const unsigned sz = 1 &lt;&lt; std::bit_width(n - 1);
+
+    // Prepare input arrays for FFT.
+    vector&lt;complex&lt;double&gt;&gt; a(sz);
+    vector&lt;complex&lt;double&gt;&gt; b(sz);
+
+    // Copy polynomial coefficients to complex arrays.
+    for (int i = 0; i &lt; n1; ++i)
+      a[i] = poly1[i];
+
+    for (int i = 0; i &lt; n2; ++i)
+      b[i] = poly2[i];
+
+    // Transform polynomials to frequency domain.
+    fft(a, false);
+    fft(b, false);
+
+    // Multiply in frequency domain.
+    for (int i = 0; i &lt; sz; ++i)
+      a[i] *= b[i];
+
+    // Transform back to coefficient domain.
+    fft(a, true);
+
+    // Extract real parts as polynomial coefficients.
+    vector&lt;long long&gt; ans(n);
+
+    for (int i = 0; i &lt; n; ++i)
+      ans[i] = round(a[i].real());
+
+    return ans;
+  }
+
+ private:
+  // Fast Fourier Transform.
+  void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a, bool inverse) {
+    const unsigned n = a.size();
+
+    // Bit-reversal permutation.
+    for (int i = 1, j = 0; i &lt; n; ++i) {
+      int bit = n &gt;&gt; 1;
+      for (; j &amp; bit; bit &gt;&gt;= 1)
+        j ^= bit;
+      j ^= bit;
+      if (i &lt; j)
+        swap(a[i], a[j]);
+    }
+
+    // FFT computation.
+    for (int len = 2; len &lt;= n; len *= 2) {
+      const double angle = 2 * M_PI / len * (inverse ? -1 : 1);
+      const complex&lt;double&gt; w_len(cos(angle), sin(angle));
+      for (int i = 0; i &lt; n; i += len) {
+        complex&lt;double&gt; w(1);
+        for (int j = 0; j &lt; len / 2; ++j) {
+          const complex&lt;double&gt; u = a[i + j];
+          const complex&lt;double&gt; v = a[i + j + len / 2] * w;
+          a[i + j] = u + v;
+          a[i + j + len / 2] = u - v;
+          w *= w_len;
+        }
+      }
+    }
+
+    // Normalize if inverse transform.
+    if (inverse)
+      for (complex&lt;double&gt;&amp; x : a)
+        x /= n;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Complex {
+  public double real;
+  public double imag;
+
+  public Complex(double real, double imag) {
+    this.real = real;
+    this.imag = imag;
+  }
+
+  public Complex add(Complex other) {
+    return new Complex(this.real + other.real, this.imag + other.imag);
+  }
+
+  public Complex subtract(Complex other) {
+    return new Complex(this.real - other.real, this.imag - other.imag);
+  }
+
+  public Complex multiply(Complex other) {
+    return new Complex(this.real * other.real - this.imag * other.imag,
+                       this.real * other.imag + this.imag * other.real);
+  }
+
+  public Complex divide(double scalar) {
+    return new Complex(this.real / scalar, this.imag / scalar);
+  }
+}
+
+class Solution {
+  public long[] multiply(int[] poly1, int[] poly2) {
+    final int n1 = poly1.length;
+    final int n2 = poly2.length;
+    final int n = n1 + n2 - 1;
+    final int sz = 1 &lt;&lt; bitLength(n - 1);
+
+    // Prepare input arrays for FFT.
+    Complex[] a = new Complex[sz];
+    Complex[] b = new Complex[sz];
+
+    // Initialize arrays with Complex objects
+    for (int i = 0; i &lt; sz; ++i) {
+      a[i] = new Complex(0, 0);
+      b[i] = new Complex(0, 0);
+    }
+
+    // Copy polynomial coefficients to complex arrays.
+    for (int i = 0; i &lt; n1; ++i)
+      a[i] = new Complex(poly1[i], 0);
+
+    for (int i = 0; i &lt; n2; ++i)
+      b[i] = new Complex(poly2[i], 0);
+
+    // Transform polynomials to frequency domain.
+    fft(a, false);
+    fft(b, false);
+
+    // Multiply in frequency domain.
+    for (int i = 0; i &lt; sz; ++i)
+      a[i] = a[i].multiply(b[i]);
+
+    // Transform back to coefficient domain.
+    fft(a, true);
+
+    // Extract real parts as polynomial coefficients.
+    long[] ans = new long[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      ans[i] = Math.round(a[i].real);
+
+    return ans;
+  }
+
+  private void fft(Complex[] a, boolean inverse) {
+    final int n = a.length;
+
+    // Bit-reversal permutation.
+    for (int i = 1, j = 0; i &lt; n; ++i) {
+      int bit = n &gt;&gt; 1;
+      for (; (j &amp; bit) != 0; bit &gt;&gt;= 1)
+        j ^= bit;
+      j ^= bit;
+      if (i &lt; j)
+        swap(a, i, j);
+    }
+
+    // FFT computation.
+    for (int len = 2; len &lt;= n; len *= 2) {
+      final double angle = 2 * Math.PI / len * (inverse ? -1 : 1);
+      final Complex wLen = new Complex(Math.cos(angle), Math.sin(angle));
+      for (int i = 0; i &lt; n; i += len) {
+        Complex w = new Complex(1, 0);
+        for (int j = 0; j &lt; len / 2; ++j) {
+          final Complex u = a[i + j];
+          final Complex v = a[i + j + len / 2].multiply(w);
+          a[i + j] = u.add(v);
+          a[i + j + len / 2] = u.subtract(v);
+          w = w.multiply(wLen);
+        }
+      }
+    }
+
+    // Normalize if inverse transform.
+    if (inverse)
+      for (int i = 0; i &lt; n; ++i)
+        a[i] = a[i].divide(n);
+  }
+
+  private void swap(Complex[] a, int i, int j) {
+    Complex temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+  }
+
+  private int bitLength(int n) {
+    return Integer.SIZE - Integer.numberOfLeadingZeros(n);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from numpy import array, round
+from numpy.fft import fft, ifft
+
+
+class Solution:
+  def multiply(self, poly1: list[int], poly2: list[int]) -&gt; list[int]:
+    n1 = len(poly1)
+    n2 = len(poly2)
+    n = n1 + n2 - 1
+    sz = 1 &lt;&lt; (n - 1).bit_length()
+    arr1 = array(poly1 + [0] * (sz - n1))
+    arr2 = array(poly2 + [0] * (sz - n2))
+    ans = ifft(fft(arr1) * fft(arr2))
+    return round(ans).astype(int).tolist()[:n]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

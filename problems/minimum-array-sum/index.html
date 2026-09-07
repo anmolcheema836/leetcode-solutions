@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Array Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Array Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-array-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/rearrange-k-substrings-to-form-target-string/" class="btn">← Previous</a>
+            <span>Problem 3366 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-sum-of-weights-after-edge-removals/" class="btn">Next →</a>
+        </div>
+        <h1>3366. Minimum Array Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Array Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minArraySum(vector&lt;int&gt;&amp; nums, int k, int op1, int op2) {
+    const int n = nums.size();
+    // dp[i][j][k] := the minimum sum of nums[i..n - 1] with j operations of op1
+    // and k operations of op2
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(
+        n + 1, vector&lt;vector&lt;int&gt;&gt;(op1 + 1, vector&lt;int&gt;(op2 + 1, INT_MAX)));
+
+    // Base case: When index reaches the end of the array, the result is 0.
+    for (int i = 0; i &lt;= op1; ++i)
+      for (int j = 0; j &lt;= op2; ++j)
+        dp[n][i][j] = 0;
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      for (int o1 = 0; o1 &lt;= op1; ++o1)
+        for (int o2 = 0; o2 &lt;= op2; ++o2) {
+          int sum = nums[i] + dp[i + 1][o1][o2];
+          if (o1 &gt; 0)
+            sum = min(sum, (nums[i] + 1) / 2 + dp[i + 1][o1 - 1][o2]);
+          if (o2 &gt; 0 &amp;&amp; nums[i] &gt;= k)
+            sum = min(sum, nums[i] - k + dp[i + 1][o1][o2 - 1]);
+          if (o1 &gt; 0 &amp;&amp; o2 &gt; 0) {
+            if ((nums[i] + 1) / 2 &gt;= k)
+              sum = min(sum, (nums[i] + 1) / 2 - k + dp[i + 1][o1 - 1][o2 - 1]);
+            if (nums[i] &gt;= k)
+              sum = min(sum, (nums[i] - k + 1) / 2 + dp[i + 1][o1 - 1][o2 - 1]);
+          }
+          dp[i][o1][o2] = sum;
+        }
+
+    return dp[0][op1][op2];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minArraySum(int[] nums, int k, int op1, int op2) {
+    final int n = nums.length;
+    // dp[i][j][k] := the minimum sum of nums[i..n - 1] with j operations of op1
+    // and k operations of op2
+    int[][][] dp = new int[n + 1][op1 + 1][op2 + 1];
+
+    Arrays.stream(dp).forEach(
+        A -&gt; Arrays.stream(A).forEach(B -&gt; Arrays.fill(B, Integer.MAX_VALUE)));
+
+    // Base case: When index reaches the end of the array, the result is 0.
+    for (int i = 0; i &lt;= op1; ++i)
+      for (int j = 0; j &lt;= op2; ++j)
+        dp[n][i][j] = 0;
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      for (int o1 = 0; o1 &lt;= op1; ++o1)
+        for (int o2 = 0; o2 &lt;= op2; ++o2) {
+          int sum = nums[i] + dp[i + 1][o1][o2];
+          if (o1 &gt; 0)
+            sum = Math.min(sum, (nums[i] + 1) / 2 + dp[i + 1][o1 - 1][o2]);
+          if (o2 &gt; 0 &amp;&amp; nums[i] &gt;= k)
+            sum = Math.min(sum, nums[i] - k + dp[i + 1][o1][o2 - 1]);
+          if (o1 &gt; 0 &amp;&amp; o2 &gt; 0) {
+            if ((nums[i] + 1) / 2 &gt;= k)
+              sum = Math.min(sum, (nums[i] + 1) / 2 - k + dp[i + 1][o1 - 1][o2 - 1]);
+            if (nums[i] &gt;= k)
+              sum = Math.min(sum, (nums[i] - k + 1) / 2 + dp[i + 1][o1 - 1][o2 - 1]);
+          }
+          dp[i][o1][o2] = sum;
+        }
+
+    return dp[0][op1][op2];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minArraySum(self, nums: list[int], k: int, op1: int, op2: int) -&gt; int:
+    n = len(nums)
+    # dp[i][j][k] := the minimum sum of nums[i..n - 1] with j operations of op1
+    # and k operations of op2
+    dp = [[[math.inf] * (op2 + 1)
+          for _ in range(op1 + 1)]
+          for _ in range(n + 1)]
+
+    # Base case: When index reaches the end of the array, the result is 0.
+    for i in range(op1 + 1):
+      for j in range(op2 + 1):
+        dp[n][i][j] = 0
+
+    for i in range(n - 1, -1, -1):
+      for o1 in range(op1 + 1):
+        for o2 in range(op2 + 1):
+          summ = nums[i] + dp[i + 1][o1][o2]
+          if o1 &gt; 0:
+            summ = min(summ, (nums[i] + 1) // 2 + dp[i + 1][o1 - 1][o2])
+          if o2 &gt; 0 and nums[i] &gt;= k:
+            summ = min(summ, nums[i] - k + dp[i + 1][o1][o2 - 1])
+          if o1 &gt; 0 and o2 &gt; 0:
+            if (nums[i] + 1) // 2 &gt;= k:
+              summ = min(summ,
+                         (nums[i] + 1) // 2 - k + dp[i + 1][o1 - 1][o2 - 1])
+            if nums[i] &gt;= k:
+              summ = min(summ,
+                         (nums[i] - k + 1) // 2 + dp[i + 1][o1 - 1][o2 - 1])
+          dp[i][o1][o2] = summ
+
+    return dp[0][op1][op2]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count The Repetitions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count The Repetitions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-the-repetitions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/optimal-account-balancing/" class="btn">← Previous</a>
+            <span>Problem 466 of 3563</span>
+            <a href="/leetcode-solutions/problems/unique-substrings-in-wraparound-string/" class="btn">Next →</a>
+        </div>
+        <h1>466. Count The Repetitions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count The Repetitions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Record {
+  int count;
+  int nextIndex;
+};
+
+class Solution {
+ public:
+  int getMaxRepetitions(string s1, int n1, string s2, int n2) {
+    // records[i].count := the number of times that s2 starting from index i has
+    // been fully matched with s1
+    // records[i].nextIndex := the next index in s2 to be matched after
+    // completing a full match starting from index i
+    vector&lt;Record&gt; records;
+
+    for (int i = 0; i &lt; s2.length(); ++i) {
+      int count = 0;
+      int nextIndex = i;
+      for (const char c : s1)
+        if (s2[nextIndex] == c)
+          if (++nextIndex == s2.length()) {  // There&#x27;s a match.
+            ++count;
+            nextIndex = 0;
+          }
+      records.emplace_back(count, nextIndex);
+    }
+
+    int matches = 0;  // the number of matches between `s1` x n1 and `s2`
+    int i = 0;        // the index in `s2` to start matching
+
+    while (n1-- &gt; 0) {
+      matches += records[i].count;
+      i = records[i].nextIndex;
+    }
+
+    return matches / n2;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int getMaxRepetitions(String s1, int n1, String s2, int n2) {
+    record Record(int count, int nextIndex) {}
+    // records[i].count := the number of times that s2 starting from index i has
+    // been fully matched with s1
+    // records[i].nextIndex := the next index in s2 to be matched after
+    // completing a full match starting from index i
+    List&lt;Record&gt; records = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; s2.length(); ++i) {
+      int count = 0;
+      int nextIndex = i;
+      for (final char c : s1.toCharArray())
+        if (s2.charAt(nextIndex) == c)
+          if (++nextIndex == s2.length()) { // There&#x27;s a match.
+            ++count;
+            nextIndex = 0;
+          }
+      records.add(new Record(count, nextIndex));
+    }
+
+    int matches = 0; // the number of matches between `s1` x n1 and `s2`
+    int i = 0;       // the index in `s2` to start matching
+
+    while (n1-- &gt; 0) {
+      matches += records.get(i).count;
+      i = records.get(i).nextIndex;
+    }
+
+    return matches / n2;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Record:
+  count: int
+  nextIndex: int
+
+
+class Solution:
+  def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -&gt; int:
+    # records[i].count := the number of times that s2 starting from index i has
+    # been fully matched with s1
+    # records[i].nextIndex := the next index in s2 to be matched after
+    # completing a full match starting from index i
+    records = []
+
+    for nextIndex in range(len(s2)):
+      count = 0
+      for c in s1:
+        if s2[nextIndex] == c:
+          nextIndex += 1
+          if nextIndex == len(s2):  # There&#x27;s a match.
+            count += 1
+            nextIndex = 0
+      records.append(Record(count, nextIndex))
+
+    matches = 0  # the number of matches between `s1` x n1 and `s2`
+    i = 0  # the index in `s2` to start matching
+
+    for _ in range(n1):
+      matches += records[i].count
+      i = records[i].nextIndex
+
+    return matches // n2</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

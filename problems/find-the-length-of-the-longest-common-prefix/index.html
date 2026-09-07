@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Length of the Longest Common Prefix - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Length of the Longest Common Prefix written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-length-of-the-longest-common-prefix/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-prefix-and-suffix-pairs-i/" class="btn">← Previous</a>
+            <span>Problem 3043 of 3563</span>
+            <a href="/leetcode-solutions/problems/most-frequent-prime/" class="btn">Next →</a>
+        </div>
+        <h1>3043. Find the Length of the Longest Common Prefix</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Length of the Longest Common Prefix efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  TrieNode() : children(10) {}
+};
+
+class Trie {
+ public:
+  void insert(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;0&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        node-&gt;children[i] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[i];
+    }
+  }
+
+  int search(const string&amp; word) {
+    int prefixLength = 0;
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;0&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        break;
+      node = node-&gt;children[i];
+      ++prefixLength;
+    }
+    return prefixLength;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+};
+
+class Solution {
+ public:
+  int longestCommonPrefix(vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2) {
+    int ans = 0;
+    Trie trie;
+
+    for (const int num : arr1)
+      trie.insert(to_string(num));
+
+    for (const int num : arr2)
+      ans = max(ans, trie.search(to_string(num)));
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[10];
+}
+
+class Trie {
+  public void insert(final String word) {
+    TrieNode node = root;
+    for (final char c : word.toCharArray()) {
+      final int i = c - &#x27;0&#x27;;
+      if (node.children[i] == null)
+        node.children[i] = new TrieNode();
+      node = node.children[i];
+    }
+  }
+
+  public int search(final String word) {
+    int prefixLength = 0;
+    TrieNode node = root;
+    for (final char c : word.toCharArray()) {
+      final int i = c - &#x27;0&#x27;;
+      if (node.children[i] == null)
+        break;
+      node = node.children[i];
+      ++prefixLength;
+    }
+    return prefixLength;
+  }
+
+  private TrieNode root = new TrieNode();
+}
+
+class Solution {
+  public int longestCommonPrefix(int[] arr1, int[] arr2) {
+    int ans = 0;
+    Trie trie = new Trie();
+
+    for (final int num : arr1)
+      trie.insert(Integer.toString(num));
+
+    for (final int num : arr2)
+      ans = Math.max(ans, trie.search(Integer.toString(num)));
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+
+
+class Trie:
+  def __init__(self):
+    self.root = TrieNode()
+
+  def insert(self, word: str) -&gt; None:
+    node: TrieNode = self.root
+    for c in word:
+      node = node.children.setdefault(c, TrieNode())
+    node.isWord = True
+
+  def search(self, word: str) -&gt; int:
+    prefixLength = 0
+    node = self.root
+    for c in word:
+      if c not in node.children:
+        break
+      node = node.children[c]
+      prefixLength += 1
+    return prefixLength
+
+
+class Solution:
+  def longestCommonPrefix(self, arr1: list[int], arr2: list[int]) -&gt; int:
+    trie = Trie()
+
+    for num in arr1:
+      trie.insert(str(num))
+
+    return max(trie.search(str(num)) for num in arr2)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

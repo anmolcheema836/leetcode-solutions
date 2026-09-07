@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Almost Equal Pairs I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Almost Equal Pairs I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-almost-equal-pairs-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/final-array-state-after-k-multiplication-operations-i/" class="btn">← Previous</a>
+            <span>Problem 3265 of 3563</span>
+            <a href="/leetcode-solutions/problems/final-array-state-after-k-multiplication-operations-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3265. Count Almost Equal Pairs I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Almost Equal Pairs I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countPairs(vector&lt;int&gt;&amp; nums) {
+    int ans = 0;
+    unordered_map&lt;int, int&gt; count;
+    const int maxLen = to_string(ranges::max(nums)).length();
+
+    for (const int num : nums) {
+      const string digits =
+          string(maxLen - to_string(num).length(), &#x27;0&#x27;) + to_string(num);
+      for (const int swap : getSwaps(digits))
+        ans += count[swap];
+      ++count[num];
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns all possible numbers after 1 swap.
+  unordered_set&lt;int&gt; getSwaps(const string&amp; digits) {
+    const int n = digits.length();
+    unordered_set&lt;int&gt; swaps{{stoi(digits)}};
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        string newDigits = digits;
+        swap(newDigits[i], newDigits[j]);
+        swaps.insert(stoi(newDigits));
+      }
+
+    return swaps;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countPairs(int[] nums) {
+    int ans = 0;
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+    final int maxLen = String.valueOf(Arrays.stream(nums).max().getAsInt()).length();
+
+    for (final int num : nums) {
+      final String digits = String.format(&quot;%0&quot; + maxLen + &quot;d&quot;, num);
+      for (final int swap : getSwaps(digits))
+        ans += count.getOrDefault(swap, 0);
+      count.merge(num, 1, Integer::sum);
+    }
+
+    return ans;
+  }
+
+  // Returns all possible numbers after 1 swap.
+  private Set&lt;Integer&gt; getSwaps(final String digits) {
+    final int n = digits.length();
+    Set&lt;Integer&gt; swaps = new HashSet&lt;&gt;(Arrays.asList(Integer.parseInt(digits)));
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        char[] newDigits = digits.toCharArray();
+        char temp = newDigits[i];
+        newDigits[i] = newDigits[j];
+        newDigits[j] = temp;
+        swaps.add(Integer.parseInt(new String(newDigits)));
+      }
+
+    return swaps;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countPairs(self, nums: list[int]) -&gt; int:
+    ans = 0
+    count = collections.Counter()
+    maxLen = len(str(max(nums)))
+
+    for num in nums:
+      digits = list(str(num).zfill(maxLen))
+      for swap in self._getSwaps(digits):
+        ans += count[swap]
+      count[num] += 1
+
+    return ans
+
+  def _getSwaps(self, digits: str) -&gt; set[int]:
+    &quot;&quot;&quot;Returns all possible numbers after 1 swap.&quot;&quot;&quot;
+    n = len(digits)
+    swaps = set([int(&#x27;&#x27;.join(digits))])
+
+    for i, j in itertools.combinations(range(n), 2):
+      newDigits = digits[:]
+      newDigits[i], newDigits[j] = newDigits[j], newDigits[i]
+      swaps.add(int(&#x27;&#x27;.join(newDigits)))
+
+    return swaps</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

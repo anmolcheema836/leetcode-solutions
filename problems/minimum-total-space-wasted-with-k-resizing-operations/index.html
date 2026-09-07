@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Total Space Wasted With K Resizing Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Total Space Wasted With K Resizing Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-total-space-wasted-with-k-resizing-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-if-move-is-legal/" class="btn">← Previous</a>
+            <span>Problem 1959 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-product-of-the-length-of-two-palindromic-substrings/" class="btn">Next →</a>
+        </div>
+        <h1>1959. Minimum Total Space Wasted With K Resizing Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Total Space Wasted With K Resizing Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minSpaceWastedKResizing(vector&lt;int&gt;&amp; nums, int k) {
+    vector&lt;vector&lt;int&gt;&gt; mem(nums.size(), vector&lt;int&gt;(k + 1, -1));
+    return minSpaceWasted(nums, 0, k, mem);
+  }
+
+ private:
+  static constexpr int kMax = 200&#x27;000&#x27;000;
+
+  // Returns the minimum space wasted for nums[i..n) if you can resize k times.
+  int minSpaceWasted(const vector&lt;int&gt;&amp; nums, int i, int k,
+                     vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i == nums.size())
+      return 0;
+    if (k == -1)
+      return kMax;
+    if (mem[i][k] != -1)
+      return mem[i][k];
+
+    int res = kMax;
+    int sum = 0;
+    int maxNum = nums[i];
+
+    for (int j = i; j &lt; nums.size(); ++j) {
+      sum += nums[j];
+      maxNum = max(maxNum, nums[j]);
+      const int wasted = maxNum * (j - i + 1) - sum;
+      res = min(res, minSpaceWasted(nums, j + 1, k - 1, mem) + wasted);
+    }
+
+    return mem[i][k] = res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minSpaceWastedKResizing(int[] nums, int k) {
+    Integer[][] mem = new Integer[nums.length][k + 1];
+    return minSpaceWasted(nums, 0, k, mem);
+  }
+
+  private static final int MAX = 200_000_000;
+
+  // Returns the minimum space wasted for nums[i..n) if you can resize k times.
+  private int minSpaceWasted(int[] nums, int i, int k, Integer[][] mem) {
+    if (i == nums.length)
+      return 0;
+    if (k == -1)
+      return MAX;
+    if (mem[i][k] != null)
+      return mem[i][k];
+
+    int res = MAX;
+    int sum = 0;
+    int maxNum = nums[i];
+
+    for (int j = i; j &lt; nums.length; ++j) {
+      sum += nums[j];
+      maxNum = Math.max(maxNum, nums[j]);
+      final int wasted = maxNum * (j - i + 1) - sum;
+      res = Math.min(res, minSpaceWasted(nums, j + 1, k - 1, mem) + wasted);
+    }
+
+    return mem[i][k] = res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minSpaceWastedKResizing(self, nums: list[int], k: int) -&gt; int:
+    MAX = 200_000_000
+
+    @functools.lru_cache(None)
+    def dp(i: int, k: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the minimum space wasted for nums[i..n) if you can resize k times.
+      &quot;&quot;&quot;
+      if i == len(nums):
+        return 0
+      if k == -1:
+        return MAX
+
+      res = MAX
+      summ = 0
+      maxNum = nums[i]
+
+      for j in range(i, len(nums)):
+        summ += nums[j]
+        maxNum = max(maxNum, nums[j])
+        wasted = maxNum * (j - i + 1) - summ
+        res = min(res, dp(j + 1, k - 1) + wasted)
+
+      return res
+
+    return dp(0, k)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

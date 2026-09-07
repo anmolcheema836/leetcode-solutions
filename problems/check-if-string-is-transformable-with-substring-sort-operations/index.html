@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check If String Is Transformable With Substring Sort Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check If String Is Transformable With Substring Sort Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-string-is-transformable-with-substring-sort-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/min-cost-to-connect-all-points/" class="btn">← Previous</a>
+            <span>Problem 1585 of 3563</span>
+            <a href="/leetcode-solutions/problems/binary-search-tree-iterator-ii/" class="btn">Next →</a>
+        </div>
+        <h1>1585. Check If String Is Transformable With Substring Sort Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check If String Is Transformable With Substring Sort Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isTransformable(string s, string t) {
+    if (getCount(s) != getCount(t))
+      return false;
+
+    vector&lt;queue&lt;int&gt;&gt; positions(10);
+
+    for (int i = 0; i &lt; s.length(); ++i)
+      positions[s[i] - &#x27;0&#x27;].push(i);
+
+    // For each digit in `t`, check if we can put this digit in `s` at the same
+    // position as `t`. Ensure that all the left digits are equal to or greater
+    // than it. This is because the only operation we can perform is sorting in
+    // ascending order. If there is a digit to the left that is smaller than it,
+    // we can never move it to the same position as in `t`. However, if all the
+    // digits to its left are equal to or greater than it, we can move it one
+    // position to the left until it reaches the same position as in `t`.
+    for (const char c : t) {
+      const int d = c - &#x27;0&#x27;;
+      const int front = positions[d].front();
+      positions[d].pop();
+      for (int smaller = 0; smaller &lt; d; ++smaller)
+        if (!positions[smaller].empty() &amp;&amp; positions[smaller].front() &lt; front)
+          return false;
+    }
+    return true;
+  }
+
+ private:
+  vector&lt;int&gt; getCount(const string&amp; s) {
+    vector&lt;int&gt; count(10);
+    for (const char c : s)
+      ++count[c - &#x27;0&#x27;];
+    return count;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isTransformable(String s, String t) {
+    if (!Arrays.equals(getCount(s), getCount(t)))
+      return false;
+
+    Queue&lt;Integer&gt;[] positions = new Queue[10];
+    for (int i = 0; i &lt; 10; i++)
+      positions[i] = new LinkedList&lt;&gt;();
+
+    for (int i = 0; i &lt; s.length(); i++)
+      positions[s.charAt(i) - &#x27;0&#x27;].offer(i);
+
+    // For each digit in `t`, check if we can put this digit in `s` at the same
+    // position as `t`. Ensure that all the left digits are equal to or greater
+    // than it. This is because the only operation we can perform is sorting in
+    // ascending order. If there is a digit to the left that is smaller than it,
+    // we can never move it to the same position as in `t`. However, if all the
+    // digits to its left are equal to or greater than it, we can move it one
+    // position to the left until it reaches the same position as in `t`.
+    for (final char c : t.toCharArray()) {
+      final int d = c - &#x27;0&#x27;;
+      final int front = positions[d].poll();
+      for (int smaller = 0; smaller &lt; d; ++smaller)
+        if (!positions[smaller].isEmpty() &amp;&amp; positions[smaller].peek() &lt; front)
+          return false;
+    }
+
+    return true;
+  }
+
+  private int[] getCount(String s) {
+    int[] count = new int[10];
+    for (char c : s.toCharArray())
+      count[c - &#x27;0&#x27;]++;
+    return count;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isTransformable(self, s: str, t: str) -&gt; bool:
+    if collections.Counter(s) != collections.Counter(t):
+      return False
+
+    positions = [collections.deque() for _ in range(10)]
+
+    for i, c in enumerate(s):
+      positions[int(c)].append(i)
+
+    # For each digit in `t`, check if we can put this digit in `s` at the same
+    # position as `t`. Ensure that all the left digits are equal to or greater
+    # than it. This is because the only operation we can perform is sorting in
+    # ascending order. If there is a digit to the left that is smaller than it,
+    # we can never move it to the same position as in `t`. However, if all the
+    # digits to its left are equal to or greater than it, we can move it one
+    # position to the left until it reaches the same position as in `t`.
+    for c in t:
+      d = int(c)
+      front = positions[d].popleft()
+      for smaller in range(d):
+        if positions[smaller] and positions[smaller][0] &lt; front:
+          return False
+
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Moves to Pick K Ones - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Moves to Pick K Ones written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-moves-to-pick-k-ones/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-deletions-to-make-string-k-special/" class="btn">← Previous</a>
+            <span>Problem 3086 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-trending-hashtags/" class="btn">Next →</a>
+        </div>
+        <h1>3086. Minimum Moves to Pick K Ones</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Moves to Pick K Ones efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minimumMoves(vector&lt;int&gt;&amp; nums, int k, int maxChanges) {
+    // Dylan has two actions for collecting &#x27;1&#x27;s in a sequence:
+    // Action 1: Put a &#x27;1&#x27; next to him and pick it up.
+    //           The cost is 2.
+    // Action 2: Swap a &#x27;1&#x27; towards him and collect it.
+    //           The cost equals the distance to the &#x27;1&#x27;.
+    //
+    // To minimize the swapping cost, Dylan can use a sliding window strategy,
+    // selecting the optimal position (middle &#x27;1&#x27; in the window) for efficient
+    // collection. The window&#x27;s size is crucial:
+
+    // The minimum window size: min(0, k - maxChanges), ensuring the window
+    // isn&#x27;t too small.
+    // The maximum window size: min(k, minOnesByTwo + 3, the number of ones),
+    // preventing overly ambitious swaps.
+    //
+    // Note that if needing to move a &#x27;1&#x27; beyond `minOnesByTwo + 3`, it&#x27;s
+    // cheaper to use Action 1.
+
+    // At most three indices, (dylanIndex - 1, dylanIndex, dylanIndex + 1), have
+    // a distance &lt;= 1 from dylanIndex, implying that we&#x27;ll be taking at most
+    // `maxOnesByTwo + 3` using Action 2. Any more Action 2 is not optimal and
+    // should be replaced with Action 1.
+    constexpr int kNumOfIndicesWithinOneDistance = 3;
+    long ans = LONG_MAX;
+    vector&lt;int&gt; oneIndices;  // the indices of 1s
+    vector&lt;long&gt; prefix{0};  // the accumulated indices of 1s
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      if (nums[i] == 1)
+        oneIndices.push_back(i);
+
+    for (const int oneIndex : oneIndices)
+      prefix.push_back(prefix.back() + oneIndex);
+
+    const int minOnesByTwo = max(0, k - maxChanges);
+    const int maxOnesByTwo =
+        min({k, minOnesByTwo + kNumOfIndicesWithinOneDistance,
+             static_cast&lt;int&gt;(oneIndices.size())});
+
+    for (int onesByTwo = minOnesByTwo; onesByTwo &lt;= maxOnesByTwo; ++onesByTwo)
+      for (int l = 0; l + onesByTwo &lt; prefix.size(); ++l) {
+        const int r = l + onesByTwo;  // Collect 1s in oneIndices[l - 1..r - 1].
+        const long cost1 = (k - onesByTwo) * 2;
+        const long cost2 = (prefix[r] - prefix[(l + r) / 2]) -
+                           (prefix[(l + r + 1) / 2] - prefix[l]);
+        ans = min(ans, cost1 + cost2);
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minimumMoves(int[] nums, int k, int maxChanges) {
+    // Dylan has two actions for collecting &#x27;1&#x27;s in a sequence:
+    // Action 1: Put a &#x27;1&#x27; next to him and pick it up.
+    //           The cost is 2.
+    // Action 2: Swap a &#x27;1&#x27; towards him and collect it.
+    //           The cost equals the distance to the &#x27;1&#x27;.
+    //
+    // To minimize the swapping cost, Dylan can use a sliding window strategy,
+    // selecting the optimal position (middle &#x27;1&#x27; in the window) for efficient
+    // collection. The window&#x27;s size is crucial:
+
+    // The minimum window size: min(0, k - maxChanges), ensuring the window
+    // isn&#x27;t too small.
+    // The maximum window size: min(k, minOnesByTwo + 3, the number of ones),
+    // preventing overly ambitious swaps.
+    //
+    // Note that if needing to move a &#x27;1&#x27; beyond `minOnesByTwo + 3`, it&#x27;s
+    // cheaper to use Action 1.
+
+    // At most three indices, (dylanIndex - 1, dylanIndex, dylanIndex + 1), have
+    // a distance &lt;= 1 from dylanIndex, implying that we&#x27;ll be taking at most
+    // `maxOnesByTwo + 3` using Action 2. Any more Action 2 is not optimal and
+    // should be replaced with Action 1.
+    final int NUM_OF_INDICES_WITHIN_ONE_DISTANCE = 3;
+    long ans = Long.MAX_VALUE;
+    List&lt;Integer&gt; oneIndices = new ArrayList&lt;&gt;(); // the indices of 1s
+    List&lt;Long&gt; prefix = new ArrayList&lt;&gt;();        // the accumulated indices of 1s
+    prefix.add(0L);
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      if (nums[i] == 1)
+        oneIndices.add(i);
+
+    for (final int oneIndex : oneIndices)
+      prefix.add(prefix.get(prefix.size() - 1) + oneIndex);
+
+    final int minOnesByTwo = Math.max(0, k - maxChanges);
+    final int maxOnesByTwo =
+        Math.min(k, Math.min(minOnesByTwo + NUM_OF_INDICES_WITHIN_ONE_DISTANCE, oneIndices.size()));
+
+    for (int onesByTwo = minOnesByTwo; onesByTwo &lt;= maxOnesByTwo; ++onesByTwo)
+      for (int l = 0; l + onesByTwo &lt; prefix.size(); ++l) {
+        final int r = l + onesByTwo; // Collect 1s in oneIndices[l - 1..r - 1].
+        final long cost1 = (k - onesByTwo) * 2;
+        final long cost2 = (prefix.get(r) - prefix.get((l + r) / 2)) -
+                           (prefix.get((l + r + 1) / 2) - prefix.get(l));
+        ans = Math.min(ans, cost1 + cost2);
+      }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumMoves(self, nums: list[int], k: int, maxChanges: int) -&gt; int:
+    # Dylan has two actions for collecting &#x27;1&#x27;s in a sequence:
+    # Action 1: Put a &#x27;1&#x27; next to him and pick it up.
+    #           The cost is 2.
+    # Action 2: Swap a &#x27;1&#x27; towards him and collect it.
+    #           The cost equals the distance to the &#x27;1&#x27;.
+    #
+    # To minimize the swapping cost, Dylan can use a sliding window strategy,
+    # selecting the optimal position (middle &#x27;1&#x27; in the window) for efficient
+    # collection. The window&#x27;s size is crucial:
+
+    # The minimum window size: min(0, k - maxChanges), ensuring the window
+    # isn&#x27;t too small.
+    # The maximum window size: min(k, minOnesByTwo + 3, the number of ones),
+    # preventing overly ambitious swaps.
+    #
+    # Note that if needing to move a &#x27;1&#x27; beyond `minOnesByTwo + 3`, it&#x27;s
+    # cheaper to use Action 1.
+
+    # At most three indices, (dylanIndex - 1, dylanIndex, dylanIndex + 1), have
+    # a distance &lt;= 1 from dylanIndex, implying that we&#x27;ll be taking at most
+    # `maxOnesByTwo + 3` using Action 2. Any more Action 2 is not optimal and
+    # should be replaced with Action 1.
+    NUM_OF_INDICES_WITHIN_ONE_DISTANCE = 3
+    ans = math.inf
+    oneIndices = [i for i, num in enumerate(nums) if num == 1]
+    prefix = list(itertools.accumulate(oneIndices, initial=0))
+
+    minOnesByTwo = max(0, k - maxChanges)
+    maxOnesByTwo = min(
+        k, minOnesByTwo + NUM_OF_INDICES_WITHIN_ONE_DISTANCE, len(oneIndices))
+
+    for onesByTwo in range(minOnesByTwo, maxOnesByTwo + 1):
+      for l in range(len(prefix) - onesByTwo):
+        r = l + onesByTwo  # Collect 1s in oneIndices[l - 1..r - 1].
+        cost1 = (k - onesByTwo) * 2
+        cost2 = ((prefix[r] - prefix[(l + r) // 2]) -
+                 (prefix[(l + r + 1) // 2] - prefix[l]))
+        ans = min(ans, cost1 + cost2)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

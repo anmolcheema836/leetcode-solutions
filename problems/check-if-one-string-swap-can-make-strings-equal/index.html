@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check if One String Swap Can Make Strings Equal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check if One String Swap Can Make Strings Equal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-one-string-swap-can-make-strings-equal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/primary-department-for-each-employee/" class="btn">← Previous</a>
+            <span>Problem 1790 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-center-of-star-graph/" class="btn">Next →</a>
+        </div>
+        <h1>1790. Check if One String Swap Can Make Strings Equal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check if One String Swap Can Make Strings Equal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 859. Buddy Strings
+  bool areAlmostEqual(string s1, string s2) {
+    vector&lt;int&gt; diffIndices;
+    for (int i = 0; i &lt; s1.length(); ++i)
+      if (s1[i] != s2[i])
+        diffIndices.push_back(i);
+    return diffIndices.empty() || (diffIndices.size() == 2 &amp;&amp;
+                                   s1[diffIndices[0]] == s2[diffIndices[1]] &amp;&amp;
+                                   s1[diffIndices[1]] == s2[diffIndices[0]]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean areAlmostEqual(String s1, String s2) {
+    List&lt;Integer&gt; diffIndices = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; s1.length(); ++i)
+      if (s1.charAt(i) != s2.charAt(i))
+        diffIndices.add(i);
+
+    return diffIndices.isEmpty() ||
+        (diffIndices.size() == 2 &amp;&amp;
+         s1.charAt(diffIndices.get(0)) == s2.charAt(diffIndices.get(1)) &amp;&amp;
+         s1.charAt(diffIndices.get(1)) == s2.charAt(diffIndices.get(0)));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 859. Buddy Strings
+  def areAlmostEqual(self, s1: str, s2: str) -&gt; bool:
+    diffIndices = [i for i, (a, b) in enumerate(zip(s1, s2))
+                   if a != b]
+    return not diffIndices or (len(diffIndices) == 2 and
+                               s1[diffIndices[0]] == s2[diffIndices[1]] and
+                               s1[diffIndices[1]] == s2[diffIndices[0]])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

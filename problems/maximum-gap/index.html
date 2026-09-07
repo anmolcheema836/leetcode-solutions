@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Gap - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Gap written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-gap/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/missing-ranges/" class="btn">← Previous</a>
+            <span>Problem 164 of 3563</span>
+            <a href="/leetcode-solutions/problems/compare-version-numbers/" class="btn">Next →</a>
+        </div>
+        <h1>164. Maximum Gap</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Gap efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Bucket {
+  int mn;
+  int mx;
+};
+
+class Solution {
+ public:
+  int maximumGap(vector&lt;int&gt;&amp; nums) {
+    if (nums.size() &lt; 2)
+      return 0;
+
+    const int mn = ranges::min(nums);
+    const int mx = ranges::max(nums);
+    if (mn == mx)
+      return 0;
+
+    const int gap = ceil((mx - mn) / (double)(nums.size() - 1));
+    const int bucketSize = (mx - mn) / gap + 1;
+    vector&lt;Bucket&gt; buckets(bucketSize, {INT_MAX, INT_MIN});
+
+    for (const int num : nums) {
+      const int i = (num - mn) / gap;
+      buckets[i].mn = min(buckets[i].mn, num);
+      buckets[i].mx = max(buckets[i].mx, num);
+    }
+
+    int ans = 0;
+    int prevMax = mn;
+
+    for (const Bucket&amp; bucket : buckets) {
+      if (bucket.mn == INT_MAX)
+        continue;  // empty bucket
+      ans = max(ans, bucket.mn - prevMax);
+      prevMax = bucket.mx;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Bucket {
+  public int mn;
+  public int mx;
+  public Bucket(int mn, int mx) {
+    this.mn = mn;
+    this.mx = mx;
+  }
+}
+
+class Solution {
+  public int maximumGap(int[] nums) {
+    if (nums.length &lt; 2)
+      return 0;
+
+    final int mn = Arrays.stream(nums).min().getAsInt();
+    final int mx = Arrays.stream(nums).max().getAsInt();
+    if (mn == mx)
+      return 0;
+
+    final int gap = (int) Math.ceil((double) (mx - mn) / (nums.length - 1));
+    final int bucketsLength = (mx - mn) / gap + 1;
+    Bucket[] buckets = new Bucket[bucketsLength];
+
+    for (int i = 0; i &lt; buckets.length; ++i)
+      buckets[i] = new Bucket(Integer.MAX_VALUE, Integer.MIN_VALUE);
+
+    for (final int num : nums) {
+      final int i = (num - mn) / gap;
+      buckets[i].mn = Math.min(buckets[i].mn, num);
+      buckets[i].mx = Math.max(buckets[i].mx, num);
+    }
+
+    int ans = 0;
+    int prevMax = mn;
+
+    for (final Bucket bucket : buckets) {
+      if (bucket.mn == Integer.MAX_VALUE) // empty bucket
+        continue;
+      ans = Math.max(ans, bucket.mn - prevMax);
+      prevMax = bucket.mx;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Bucket:
+  def __init__(self, mn: int, mx: int):
+    self.mn = mn
+    self.mx = mx
+
+
+class Solution:
+  def maximumGap(self, nums: list[int]) -&gt; int:
+    if len(nums) &lt; 2:
+      return 0
+
+    mn = min(nums)
+    mx = max(nums)
+    if mn == mx:
+      return 0
+
+    gap = math.ceil((mx - mn) / (len(nums) - 1))
+    bucketSize = (mx - mn) // gap + 1
+    buckets = [Bucket(math.inf, -math.inf) for _ in range(bucketSize)]
+
+    for num in nums:
+      i = (num - mn) // gap
+      buckets[i].mn = min(buckets[i].mn, num)
+      buckets[i].mx = max(buckets[i].mx, num)
+
+    ans = 0
+    prevMax = mn
+
+    for bucket in buckets:
+      if bucket.mn == math.inf:
+        continue  # empty bucket
+      ans = max(ans, bucket.mn - prevMax)
+      prevMax = bucket.mx
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

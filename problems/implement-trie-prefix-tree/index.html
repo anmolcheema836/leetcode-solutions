@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Trie (Prefix Tree) - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Implement Trie (Prefix Tree) written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/implement-trie-prefix-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/course-schedule/" class="btn">← Previous</a>
+            <span>Problem 208 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-size-subarray-sum/" class="btn">Next →</a>
+        </div>
+        <h1>208. Implement Trie (Prefix Tree)</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Implement Trie (Prefix Tree) efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  bool isWord = false;
+  TrieNode() : children(26) {}
+};
+
+class Trie {
+ public:
+  void insert(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        node-&gt;children[i] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[i];
+    }
+    node-&gt;isWord = true;
+  }
+
+  bool search(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = find(word);
+    return node &amp;&amp; node-&gt;isWord;
+  }
+
+  bool startsWith(const string&amp; prefix) {
+    return find(prefix) != nullptr;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+
+  shared_ptr&lt;TrieNode&gt; find(const string&amp; prefix) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : prefix) {
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        return nullptr;
+      node = node-&gt;children[i];
+    }
+    return node;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[26];
+  public boolean isWord = false;
+}
+
+class Trie {
+  public void insert(final String word) {
+    TrieNode node = root;
+    for (final char c : word.toCharArray()) {
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        node.children[i] = new TrieNode();
+      node = node.children[i];
+    }
+    node.isWord = true;
+  }
+
+  public boolean search(final String word) {
+    TrieNode node = find(word);
+    return node != null &amp;&amp; node.isWord;
+  }
+
+  public boolean startsWith(final String prefix) {
+    return find(prefix) != null;
+  }
+
+  private TrieNode root = new TrieNode();
+
+  private TrieNode find(final String prefix) {
+    TrieNode node = root;
+    for (final char c : prefix.toCharArray()) {
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        return null;
+      node = node.children[i];
+    }
+    return node;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+    self.isWord = False
+
+
+class Trie:
+  def __init__(self):
+    self.root = TrieNode()
+
+  def insert(self, word: str) -&gt; None:
+    node: TrieNode = self.root
+    for c in word:
+      node = node.children.setdefault(c, TrieNode())
+    node.isWord = True
+
+  def search(self, word: str) -&gt; bool:
+    node = self._find(word)
+    return node is not None and node.isWord
+
+  def startsWith(self, prefix: str) -&gt; bool:
+    return self._find(prefix) is not None
+
+  def _find(self, prefix: str) -&gt; TrieNode | None:
+    node: TrieNode = self.root
+    for c in prefix:
+      if c not in node.children:
+        return None
+      node = node.children[c]
+    return node</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

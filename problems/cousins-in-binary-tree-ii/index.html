@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cousins in Binary Tree II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Cousins in Binary Tree II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/cousins-in-binary-tree-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-score-of-all-prefixes-of-an-array/" class="btn">← Previous</a>
+            <span>Problem 2641 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-graph-with-shortest-path-calculator/" class="btn">Next →</a>
+        </div>
+        <h1>2641. Cousins in Binary Tree II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Cousins in Binary Tree II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  TreeNode* replaceValueInTree(TreeNode* root) {
+    vector&lt;int&gt; levelSums;
+    dfs(root, 0, levelSums);
+    return replace(root, 0, new TreeNode(0), levelSums);
+  }
+
+ private:
+  void dfs(TreeNode* root, int level, vector&lt;int&gt;&amp; levelSums) {
+    if (root == nullptr)
+      return;
+    if (levelSums.size() == level)
+      levelSums.push_back(0);
+    levelSums[level] += root-&gt;val;
+    dfs(root-&gt;left, level + 1, levelSums);
+    dfs(root-&gt;right, level + 1, levelSums);
+  }
+
+  TreeNode* replace(TreeNode* root, int level, TreeNode* curr,
+                    const vector&lt;int&gt;&amp; levelSums) {
+    const int nextLevel = level + 1;
+    const int nextLevelCousinsSum =
+        nextLevel &gt;= levelSums.size()
+            ? 0
+            : levelSums[nextLevel] -
+                  (root-&gt;left == nullptr ? 0 : root-&gt;left-&gt;val) -
+                  (root-&gt;right == nullptr ? 0 : root-&gt;right-&gt;val);
+    if (root-&gt;left != nullptr) {
+      curr-&gt;left = new TreeNode(nextLevelCousinsSum);
+      replace(root-&gt;left, level + 1, curr-&gt;left, levelSums);
+    }
+    if (root-&gt;right != nullptr) {
+      curr-&gt;right = new TreeNode(nextLevelCousinsSum);
+      replace(root-&gt;right, level + 1, curr-&gt;right, levelSums);
+    }
+    return curr;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public TreeNode replaceValueInTree(TreeNode root) {
+    List&lt;Integer&gt; levelSums = new ArrayList&lt;&gt;();
+    dfs(root, 0, levelSums);
+    return replace(root, 0, new TreeNode(0), levelSums);
+  }
+
+  private void dfs(TreeNode root, int level, List&lt;Integer&gt; levelSums) {
+    if (root == null)
+      return;
+    if (levelSums.size() == level)
+      levelSums.add(0);
+    levelSums.set(level, levelSums.get(level) + root.val);
+    dfs(root.left, level + 1, levelSums);
+    dfs(root.right, level + 1, levelSums);
+  }
+
+  private TreeNode replace(TreeNode root, int level, TreeNode curr, List&lt;Integer&gt; levelSums) {
+    final int nextLevel = level + 1;
+    final int nextLevelCousinsSum = nextLevel &gt;= levelSums.size()
+                                        ? 0
+                                        : levelSums.get(nextLevel) -
+                                              (root.left == null ? 0 : root.left.val) -
+                                              (root.right == null ? 0 : root.right.val);
+    if (root.left != null) {
+      curr.left = new TreeNode(nextLevelCousinsSum);
+      replace(root.left, level + 1, curr.left, levelSums);
+    }
+    if (root.right != null) {
+      curr.right = new TreeNode(nextLevelCousinsSum);
+      replace(root.right, level + 1, curr.right, levelSums);
+    }
+    return curr;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def replaceValueInTree(self, root: TreeNode | None) -&gt; TreeNode | None:
+    levelSums = []
+
+    def dfs(root: TreeNode | None, level: int) -&gt; None:
+      if not root:
+        return
+      if len(levelSums) == level:
+        levelSums.append(0)
+      levelSums[level] += root.val
+      dfs(root.left, level + 1)
+      dfs(root.right, level + 1)
+
+    def replace(
+        root: TreeNode | None,
+        level: int, curr: TreeNode | None,
+    ) -&gt; TreeNode | None:
+      nextLevel = level + 1
+      nextLevelCousinsSum = (
+          (levelSums[nextLevel] if nextLevel &lt; len(levelSums) else 0) -
+          (root.left.val if root.left else 0) -
+          (root.right.val if root.right else 0))
+      if root.left:
+        curr.left = TreeNode(nextLevelCousinsSum)
+        replace(root.left, level + 1, curr.left)
+      if root.right:
+        curr.right = TreeNode(nextLevelCousinsSum)
+        replace(root.right, level + 1, curr.right)
+      return curr
+
+    dfs(root, 0)
+    return replace(root, 0, TreeNode(0))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knight Probability in Chessboard - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Knight Probability in Chessboard written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/knight-probability-in-chessboard/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-univalue-path/" class="btn">← Previous</a>
+            <span>Problem 688 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-sum-of-3-non-overlapping-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>688. Knight Probability in Chessboard</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Knight Probability in Chessboard efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  double knightProbability(int n, int k, int row, int column) {
+    constexpr int kDirs[8][2] = {{1, 2},   {2, 1},   {2, -1}, {1, -2},
+                                 {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+    constexpr double kProb = 0.125;
+    // dp[i][j] := the probability to stand on (i, j)
+    vector&lt;vector&lt;double&gt;&gt; dp(n, vector&lt;double&gt;(n));
+    dp[row][column] = 1.0;
+
+    for (int move = 0; move &lt; k; ++move) {
+      vector&lt;vector&lt;double&gt;&gt; newDp(n, vector&lt;double&gt;(n));
+      for (int i = 0; i &lt; n; ++i)
+        for (int j = 0; j &lt; n; ++j)
+          if (dp[i][j] &gt; 0.0) {
+            for (const auto&amp; [dx, dy] : kDirs) {
+              const int x = i + dx;
+              const int y = j + dy;
+              if (x &lt; 0 || x &gt;= n || y &lt; 0 || y &gt;= n)
+                continue;
+              newDp[x][y] += dp[i][j] * kProb;
+            }
+          }
+      dp = std::move(newDp);
+    }
+
+    return accumulate(dp.begin(), dp.end(), 0.0,
+                      [](double acc, const vector&lt;double&gt;&amp; row) {
+      return acc + accumulate(row.begin(), row.end(), 0.0);
+    });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double knightProbability(int n, int k, int row, int column) {
+    final int[][] DIRS = {{1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+    final double PROB = 0.125;
+    // dp[i][j] := the probability to stand on (i, j)
+    double[][] dp = new double[n][n];
+    dp[row][column] = 1.0;
+
+    for (int move = 0; move &lt; k; ++move) {
+      double[][] newDp = new double[n][n];
+      for (int i = 0; i &lt; n; ++i)
+        for (int j = 0; j &lt; n; ++j)
+          if (dp[i][j] &gt; 0.0) {
+            for (int[] dir : DIRS) {
+              final int x = i + dir[0];
+              final int y = j + dir[1];
+              if (x &lt; 0 || x &gt;= n || y &lt; 0 || y &gt;= n)
+                continue;
+              newDp[x][y] += dp[i][j] * PROB;
+            }
+          }
+      dp = newDp;
+    }
+
+    return Arrays.stream(dp).flatMapToDouble(Arrays::stream).sum();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def knightProbability(self, n: int, k: int, row: int, column: int) -&gt; float:
+    DIRS = ((1, 2), (2, 1), (2, -1), (1, -2),
+            (-1, -2), (-2, -1), (-2, 1), (-1, 2))
+    # dp[i][j] := the probability to stand on (i, j)
+    dp = [[0] * n for _ in range(n)]
+    dp[row][column] = 1.0
+
+    for _ in range(k):
+      newDp = [[0] * n for _ in range(n)]
+      for i in range(n):
+        for j in range(n):
+          for dx, dy in DIRS:
+            x = i + dx
+            y = j + dy
+            if 0 &lt;= x &lt; n and 0 &lt;= y &lt; n:
+              newDp[i][j] += dp[x][y]
+      dp = newDp
+
+    return sum(map(sum, dp)) / 8**k</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amount of New Area Painted Each Day - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Amount of New Area Painted Each Day written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/amount-of-new-area-painted-each-day/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/groups-of-strings/" class="btn">← Previous</a>
+            <span>Problem 2158 of 3563</span>
+            <a href="/leetcode-solutions/problems/order-two-columns-independently/" class="btn">Next →</a>
+        </div>
+        <h1>2158. Amount of New Area Painted Each Day</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Amount of New Area Painted Each Day efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; amountPainted(vector&lt;vector&lt;int&gt;&gt;&amp; paint) {
+    map&lt;int, int&gt; intervals;
+    vector&lt;int&gt; result;
+
+    for (const vector&lt;int&gt;&amp; p : paint) {
+      int eraseLen = 0;
+      auto it = intervals.lower_bound(p[0]);
+      if (it != intervals.begin() &amp;&amp; prev(it)-&gt;second &gt;= p[0])
+        --it;
+      while (it != intervals.end() &amp;&amp; p[1] &gt;= it-&gt;first) {
+        eraseLen += it-&gt;second - it-&gt;first;
+        p[0] = min(p[0], it-&gt;first);
+        p[1] = max(p[1], it-&gt;second);
+        it = intervals.erase(it);
+      }
+      intervals.insert({p[0], p[1]});
+      result.push_back(p[1] - p[0] - eraseLen);
+    }
+
+    return result;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">enum Type { ENTERING, LEAVING }
+
+class Solution {
+  public int[] amountPainted(int[][] paint) {
+    record Event(int day, int index, Type type) {}
+    final int n = paint.length;
+    final int minDay = Arrays.stream(paint).mapToInt(x -&gt; x[0]).min().getAsInt();
+    final int maxDay = Arrays.stream(paint).mapToInt(x -&gt; x[1]).max().getAsInt();
+    int[] ans = new int[n];
+    // Stores the indices of paints that are available now.
+    TreeSet&lt;Integer&gt; runningIndices = new TreeSet&lt;&gt;();
+    List&lt;Event&gt; events = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int start = paint[i][0];
+      final int end = paint[i][1];
+      events.add(new Event(start, i, Type.ENTERING)); // 1 := entering
+      events.add(new Event(end, i, Type.LEAVING));    // -1 := leaving
+    }
+
+    Collections.sort(events, Comparator.comparingInt(Event::day));
+
+    int i = 0; // events&#x27; index
+    for (int day = minDay; day &lt; maxDay; ++day) {
+      while (i &lt; events.size() &amp;&amp; events.get(i).day == day) {
+        if (events.get(i).type == Type.ENTERING)
+          runningIndices.add(events.get(i).index);
+        else
+          runningIndices.remove(events.get(i).index);
+        ++i;
+      }
+      if (!runningIndices.isEmpty())
+        ++ans[runningIndices.first()];
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class Solution:
+  def amountPainted(self, paint: list[list[int]]) -&gt; list[int]:
+    minDay = min(s for s, e in paint)
+    maxDay = max(e for s, e in paint)
+    ans = [0] * len(paint)
+    # Stores the indices of paints that are available now.
+    runningIndices = SortedList()
+    events = []  # (day, index, type)
+
+    for i, (start, end) in enumerate(paint):
+      events.append((start, i, 1))  # 1 := entering
+      events.append((end, i, -1))  # -1 := leaving
+
+    events.sort()
+
+    i = 0  # events&#x27; index
+    for day in range(minDay, maxDay):
+      while i &lt; len(events) and events[i][0] == day:
+        day, index, type = events[i]
+        if type == 1:
+          runningIndices.add(index)
+        else:
+          runningIndices.remove(index)
+        i += 1
+      if runningIndices:
+        ans[runningIndices[0]] += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

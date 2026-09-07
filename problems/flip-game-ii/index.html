@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Game II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Flip Game II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/flip-game-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/flip-game/" class="btn">← Previous</a>
+            <span>Problem 294 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-median-from-data-stream/" class="btn">Next →</a>
+        </div>
+        <h1>294. Flip Game II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Flip Game II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool canWin(string currentState) {
+    const auto it = mem.find(currentState);
+    if (it == mem.cend())
+      return it-&gt;second;
+
+    // If any of currentState[i:i + 2] == &quot;++&quot; and your friend can&#x27;t win after
+    // changing currentState[i:i + 2] to &quot;--&quot; (or &quot;-&quot;), then you can win.
+    for (int i = 0; i + 1 &lt; currentState.length(); ++i)
+      if (currentState[i] == &#x27;+&#x27; &amp;&amp; currentState[i + 1] == &#x27;+&#x27; &amp;&amp;
+          !canWin(currentState.substr(0, i) + &#x27;-&#x27; + currentState.substr(i + 2)))
+        return mem[currentState] = true;
+
+    return mem[currentState] = false;
+  }
+
+ private:
+  unordered_map&lt;string, bool&gt; mem;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean canWin(String currentState) {
+    if (mem.containsKey(currentState))
+      mem.get(currentState);
+
+    // If any of currentState[i:i + 2] == &quot;++&quot; and your friend can&#x27;t win after
+    // changing currentState[i:i + 2] to &quot;--&quot; (or &quot;-&quot;), then you can win.
+    for (int i = 0; i + 1 &lt; currentState.length(); ++i)
+      if (currentState.charAt(i) == &#x27;+&#x27; &amp;&amp; currentState.charAt(i + 1) == &#x27;+&#x27; &amp;&amp;
+          !canWin(currentState.substring(0, i) + &quot;-&quot; + currentState.substring(i + 2))) {
+        mem.put(currentState, true);
+        return true;
+      }
+
+    mem.put(currentState, false);
+    return false;
+  }
+
+  private Map&lt;String, Boolean&gt; mem = new HashMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  @functools.lru_cache(None)
+  def canWin(self, currentState: str) -&gt; bool:
+    # If any of currentState[i:i + 2] == &quot;++&quot; and your friend can&#x27;t win after
+    # changing currentState[i:i + 2] to &quot;--&quot; (or &quot;-&quot;), then you can win.
+    return any(True
+               for i, (a, b) in enumerate(zip(currentState, currentState[1:]))
+               if a == &#x27;+&#x27; and b == &#x27;+&#x27; and
+               not self.canWin(currentState[:i] + &#x27;-&#x27; + currentState[i + 2:]))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

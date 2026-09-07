@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Array State After K Multiplication Operations II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Final Array State After K Multiplication Operations II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/final-array-state-after-k-multiplication-operations-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-almost-equal-pairs-i/" class="btn">← Previous</a>
+            <span>Problem 3266 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-almost-equal-pairs-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3266. Final Array State After K Multiplication Operations II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Final Array State After K Multiplication Operations II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; getFinalState(vector&lt;int&gt;&amp; nums, int k, int multiplier) {
+    if (multiplier == 1)
+      return nums;
+
+    const int n = nums.size();
+    const int maxNum = ranges::max(nums);
+    vector&lt;int&gt; ans(n);
+    using P = pair&lt;int, int&gt;;  // (nums[i], i)
+    priority_queue&lt;P, vector&lt;P&gt;, greater&lt;&gt;&gt; minHeap;
+
+    for (int i = 0; i &lt; n; ++i)
+      minHeap.emplace(nums[i], i);
+
+    // Keep multiplying the minimum number as close as possible to the maximum
+    // number in the array. After that, stop multiplying the minimum number
+    // because it will be greater than the maximum number in the array and break
+    // the circularity.
+    while (k &gt; 0 &amp;&amp;
+           static_cast&lt;long&gt;(minHeap.top().first) * multiplier &lt;= maxNum) {
+      const auto [num, i] = minHeap.top();
+      minHeap.pop();
+      minHeap.emplace(num * multiplier, i);
+      --k;
+    }
+
+    vector&lt;pair&lt;int, int&gt;&gt; sortedIndexedNums;
+    while (!minHeap.empty())
+      sortedIndexedNums.push_back(minHeap.top()), minHeap.pop();
+
+    const int multipliesPerNum = k / n;
+    const int remainingK = k % n;
+
+    // Evenly distribute the remaining multiplications to each number by using
+    // fast exponentiation.
+    for (auto&amp; [num, _] : sortedIndexedNums)
+      num = (num * modPow(multiplier, multipliesPerNum)) % kMod;
+
+    // Distribute the remaining multiplications to the minimum `remainingK`
+    // numbers.
+    for (int i = 0; i &lt; remainingK; ++i)
+      sortedIndexedNums[i].first =
+          (static_cast&lt;long&gt;(sortedIndexedNums[i].first) * multiplier % kMod);
+
+    for (const auto&amp; [num, i] : sortedIndexedNums)
+      ans[i] = num;
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x, n - 1) % kMod;
+    return modPow(x * x % kMod, n / 2);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] getFinalState(int[] nums, int k, int multiplier) {
+    if (multiplier == 1)
+      return nums;
+
+    final int n = nums.length;
+    final int maxNum = Arrays.stream(nums).max().getAsInt();
+    int[] ans = new int[n];
+    // (nums[i], i)
+    Queue&lt;int[]&gt; minHeap = new PriorityQueue&lt;&gt;(
+        Comparator.comparingInt((int[] a) -&gt; a[0]).thenComparingInt((int[] a) -&gt; a[1]));
+
+    for (int i = 0; i &lt; n; ++i)
+      minHeap.offer(new int[] {nums[i], i});
+
+    // Keep multiplying the minimum number as close as possible to the maximum
+    // number in the array. After that, stop multiplying the minimum number
+    // because it will be greater than the maximum number in the array and break
+    // the circularity.
+    while (k &gt; 0 &amp;&amp; (long) minHeap.peek()[0] * multiplier &lt;= maxNum) {
+      final int num = minHeap.peek()[0];
+      final int i = minHeap.poll()[1];
+      minHeap.offer(new int[] {num * multiplier, i});
+      --k;
+    }
+
+    List&lt;int[]&gt; sortedIndexedNums = new ArrayList&lt;&gt;(minHeap);
+    Collections.sort(sortedIndexedNums,
+                     Comparator.comparingInt((int[] sortedIndexedNum) -&gt; sortedIndexedNum[0])
+                         .thenComparingInt((int[] sortedIndexedNum) -&gt; sortedIndexedNum[1]));
+
+    final int multipliesPerNum = k / n;
+    final int remainingK = k % n;
+
+    // Evenly distribute the remaining multiplications to each number by using
+    // fast exponentiation.
+    for (int[] indexedNums : sortedIndexedNums)
+      indexedNums[0] = (int) ((long) indexedNums[0] * modPow(multiplier, multipliesPerNum) % MOD);
+
+    // Distribute the remaining multiplications to the minimum `remainingK`
+    // numbers.
+    for (int i = 0; i &lt; remainingK; ++i)
+      sortedIndexedNums.get(i)[0] = (int) ((long) sortedIndexedNums.get(i)[0] * multiplier % MOD);
+
+    for (int[] indexedNums : sortedIndexedNums) {
+      final int num = indexedNums[0];
+      final int i = indexedNums[1];
+      ans[i] = num;
+    }
+
+    return ans;
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x, n - 1) % MOD;
+    return modPow(x * x % MOD, n / 2);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getFinalState(
+      self,
+      nums: list[int],
+      k: int,
+      multiplier: int
+  ) -&gt; list[int]:
+    if multiplier == 1:
+      return nums
+
+    MOD = 1_000_000_007
+    n = len(nums)
+    maxNum = max(nums)
+    ans = [0] * n
+    minHeap = [(num, i) for i, num in enumerate(nums)]
+
+    heapq.heapify(minHeap)
+
+    # Keep multiplying the minimum number as close as possible to the maximum
+    # number in the array. After that, stop multiplying the minimum number
+    # because it will be greater than the maximum number in the array and break
+    # the circularity.
+    while k &gt; 0 and minHeap[0][0] * multiplier &lt;= maxNum:
+      num, i = heapq.heappop(minHeap)
+      heapq.heappush(minHeap, (num * multiplier, i))
+      k -= 1
+
+    sortedIndexedNums = sorted(minHeap)
+    multipliesPerNum, remainingK = divmod(k, n)
+
+    # Evenly distribute the remaining multiplications to each number by using
+    # fast exponentiation.
+    for index, (num, i) in enumerate(sortedIndexedNums):
+      sortedIndexedNums[index] = (
+          sortedIndexedNums[index][0] *
+          pow(multiplier, multipliesPerNum, MOD) % MOD, i)
+
+    # Distribute the remaining multiplications to the minimum `remainingK`
+    # numbers.
+    for index in range(remainingK):
+      sortedIndexedNums[index] = (
+          sortedIndexedNums[index][0] * multiplier % MOD,
+          sortedIndexedNums[index][1])
+
+    for num, i in sortedIndexedNums:
+      ans[i] = num
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Ways To Build Good Strings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Ways To Build Good Strings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-ways-to-build-good-strings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-distinct-averages/" class="btn">← Previous</a>
+            <span>Problem 2466 of 3563</span>
+            <a href="/leetcode-solutions/problems/most-profitable-path-in-a-tree/" class="btn">Next →</a>
+        </div>
+        <h1>2466. Count Ways To Build Good Strings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Ways To Build Good Strings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countGoodStrings(int low, int high, int zero, int one) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    int ans = 0;
+    // dp[i] := the number of good strings with length i
+    vector&lt;int&gt; dp(high + 1);
+    dp[0] = 1;
+
+    for (int i = 1; i &lt;= high; ++i) {
+      if (i &gt;= zero)
+        dp[i] = (dp[i] + dp[i - zero]) % kMod;
+      if (i &gt;= one)
+        dp[i] = (dp[i] + dp[i - one]) % kMod;
+      if (i &gt;= low)
+        ans = (ans + dp[i]) % kMod;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countGoodStrings(int low, int high, int zero, int one) {
+    final int MOD = 1_000_000_007;
+    int ans = 0;
+    // dp[i] := the number of good strings with length i
+    int[] dp = new int[high + 1];
+    dp[0] = 1;
+
+    for (int i = 1; i &lt;= high; ++i) {
+      if (i &gt;= zero)
+        dp[i] = (dp[i] + dp[i - zero]) % MOD;
+      if (i &gt;= one)
+        dp[i] = (dp[i] + dp[i - one]) % MOD;
+      if (i &gt;= low)
+        ans = (ans + dp[i]) % MOD;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countGoodStrings(self, low: int, high: int, zero: int, one: int) -&gt; int:
+    MOD = 1_000_000_007
+    ans = 0
+    # dp[i] := the number of good strings with length i
+    dp = [1] + [0] * high
+
+    for i in range(1, high + 1):
+      if i &gt;= zero:
+        dp[i] = (dp[i] + dp[i - zero]) % MOD
+      if i &gt;= one:
+        dp[i] = (dp[i] + dp[i - one]) % MOD
+      if i &gt;= low:
+        ans = (ans + dp[i]) % MOD
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

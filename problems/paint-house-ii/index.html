@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint House II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Paint House II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/paint-house-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/ugly-number-ii/" class="btn">← Previous</a>
+            <span>Problem 265 of 3563</span>
+            <a href="/leetcode-solutions/problems/palindrome-permutation/" class="btn">Next →</a>
+        </div>
+        <h1>265. Paint House II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Paint House II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minCostII(vector&lt;vector&lt;int&gt;&gt;&amp; costs) {
+    int prevIndex = -1;  // the previous minimum index
+    int prevMin1 = 0;    // the minimum cost so far
+    int prevMin2 = 0;    // the second minimum cost so far
+
+    for (const vector&lt;int&gt;&amp; cost : costs) {  // O(n)
+      // the painted index that will achieve the minimum cost after painting the
+      // current house
+      int index = -1;
+      // the minimum cost after painting the current house
+      int min1 = INT_MAX;
+      // the second minimum cost after painting the current house
+      int min2 = INT_MAX;
+      for (int i = 0; i &lt; cost.size(); ++i) {  // O(k)
+        const int theCost = cost[i] + (i == prevIndex ? prevMin2 : prevMin1);
+        if (theCost &lt; min1) {
+          index = i;
+          min2 = min1;
+          min1 = theCost;
+        } else if (theCost &lt; min2) {  // min1 &lt;= theCost &lt; min2
+          min2 = theCost;
+        }
+      }
+      prevIndex = index;
+      prevMin1 = min1;
+      prevMin2 = min2;
+    }
+
+    return prevMin1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minCostII(int[][] costs) {
+    int prevIndex = -1; // the previous minimum index
+    int prevMin1 = 0;   // the minimum cost so far
+    int prevMin2 = 0;   // the second minimum cost so far
+
+    for (int[] cost : costs) { // O(n)
+      // the painted index that will achieve the minimum cost after painting the
+      // current house
+      int index = -1;
+      // the minimum cost after painting the current house
+      int min1 = Integer.MAX_VALUE;
+      // the second minimum cost after painting the current house
+      int min2 = Integer.MAX_VALUE;
+      for (int i = 0; i &lt; cost.length; ++i) { // O(k)
+        final int theCost = cost[i] + (i == prevIndex ? prevMin2 : prevMin1);
+        if (theCost &lt; min1) {
+          index = i;
+          min2 = min1;
+          min1 = theCost;
+        } else if (theCost &lt; min2) { // min1 &lt;= theCost &lt; min2
+          min2 = theCost;
+        }
+      }
+      prevIndex = index;
+      prevMin1 = min1;
+      prevMin2 = min2;
+    }
+
+    return prevMin1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minCostII(self, costs: list[list[int]]) -&gt; int:
+    prevIndex = -1  # the previous minimum index
+    prevMin1 = 0  # the minimum cost so far
+    prevMin2 = 0  # the second minimum cost so far
+
+    for cost in costs:  # O(n)
+      # the painted index that will achieve the minimum cost after painting the
+      # current house
+      index = -1
+      # the minimum cost after painting the current house
+      min1 = math.inf
+      # the second minimum cost after painting the current house
+      min2 = math.inf
+      for i, cst in enumerate(cost):   # O(k)
+        theCost = cst + (prevMin2 if i == prevIndex else prevMin1)
+        if theCost &lt; min1:
+          index = i
+          min2 = min1
+          min1 = theCost
+        elif theCost &lt; min2:  # min1 &lt;= theCost &lt; min2
+          min2 = theCost
+
+      prevIndex = index
+      prevMin1 = min1
+      prevMin2 = min2
+
+    return prevMin1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

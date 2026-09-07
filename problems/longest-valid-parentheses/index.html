@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Valid Parentheses - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Valid Parentheses written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-valid-parentheses/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/next-permutation/" class="btn">← Previous</a>
+            <span>Problem 32 of 3563</span>
+            <a href="/leetcode-solutions/problems/search-in-rotated-sorted-array/" class="btn">Next →</a>
+        </div>
+        <h1>32. Longest Valid Parentheses</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Valid Parentheses efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int longestValidParentheses(string s) {
+    const string s2 = &quot;)&quot; + s;
+    // dp[i] := the length of the longest valid parentheses in the substring
+    // s2[1..i]
+    vector&lt;int&gt; dp(s2.length());
+
+    for (int i = 1; i &lt; s2.length(); ++i)
+      if (s2[i] == &#x27;)&#x27; &amp;&amp; s2[i - dp[i - 1] - 1] == &#x27;(&#x27;)
+        dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2] + 2;
+
+    return ranges::max(dp);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int longestValidParentheses(String s) {
+    final String s2 = &quot;)&quot; + s;
+    // dp[i] := the length of the longest valid parentheses in the substring
+    // s2[1..i]
+    int dp[] = new int[s2.length()];
+
+    for (int i = 1; i &lt; s2.length(); ++i)
+      if (s2.charAt(i) == &#x27;)&#x27; &amp;&amp; s2.charAt(i - dp[i - 1] - 1) == &#x27;(&#x27;)
+        dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2] + 2;
+
+    return Arrays.stream(dp).max().getAsInt();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestValidParentheses(self, s: str) -&gt; int:
+    s2 = &#x27;)&#x27; + s
+    # dp[i] := the length of the longest valid parentheses in the substring
+    # s2[1..i]
+    dp = [0] * len(s2)
+
+    for i in range(1, len(s2)):
+      if s2[i] == &#x27;)&#x27; and s2[i - dp[i - 1] - 1] == &#x27;(&#x27;:
+        dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2] + 2
+
+    return max(dp)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

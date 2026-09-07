@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Validator - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Tag Validator written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/tag-validator/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/n-ary-tree-postorder-traversal/" class="btn">← Previous</a>
+            <span>Problem 591 of 3563</span>
+            <a href="/leetcode-solutions/problems/fraction-addition-and-subtraction/" class="btn">Next →</a>
+        </div>
+        <h1>591. Tag Validator</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Tag Validator efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isValid(string code) {
+    if (code[0] != &#x27;&lt;&#x27; || code.back() != &#x27;&gt;&#x27;)
+      return false;
+
+    stack&lt;string&gt; stack;
+
+    for (int i = 0; i &lt; code.length(); ++i) {
+      int closeIndex = 0;
+      if (stack.empty() &amp;&amp; containsTag)
+        return false;
+      if (code[i] == &#x27;&lt;&#x27;) {
+        // It&#x27;s inside a tag, so check if it&#x27;s a cdata.
+        if (!stack.empty() &amp;&amp; code[i + 1] == &#x27;!&#x27;) {
+          closeIndex = code.find(&quot;]]&gt;&quot;, i + 2);
+          if (closeIndex == string::npos ||
+              !isValidCdata(code.substr(i + 2, closeIndex - i - 2)))
+            return false;
+        } else if (code[i + 1] == &#x27;/&#x27;) {  // the end tag
+          closeIndex = code.find(&#x27;&gt;&#x27;, i + 2);
+          if (closeIndex == string::npos ||
+              !isValidTagName(stack, code.substr(i + 2, closeIndex - i - 2),
+                              true))
+            return false;
+        } else {  // the start tag
+          closeIndex = code.find(&#x27;&gt;&#x27;, i + 1);
+          if (closeIndex == string::npos ||
+              !isValidTagName(stack, code.substr(i + 1, closeIndex - i - 1),
+                              false))
+            return false;
+        }
+        i = closeIndex;
+      }
+    }
+
+    return stack.empty() &amp;&amp; containsTag;
+  }
+
+ private:
+  bool containsTag = false;
+
+  bool isValidCdata(const string&amp; s) {
+    return s.find(&quot;[CDATA[&quot;) == 0;
+  }
+
+  bool isValidTagName(stack&lt;string&gt;&amp; stack, const string&amp; tagName,
+                      bool isEndTag) {
+    if (tagName.empty() || tagName.length() &gt; 9)
+      return false;
+
+    for (const char c : tagName)
+      if (!isupper(c))
+        return false;
+
+    if (isEndTag) {
+      if (stack.empty())
+        return false;
+      if (stack.top() != tagName)
+        return false;
+      stack.pop();
+      return true;
+    }
+
+    containsTag = true;
+    stack.push(tagName);
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isValid(String code) {
+    if (code.charAt(0) != &#x27;&lt;&#x27; || code.charAt(code.length() - 1) != &#x27;&gt;&#x27;)
+      return false;
+
+    Deque&lt;String&gt; stack = new ArrayDeque&lt;&gt;();
+
+    for (int i = 0; i &lt; code.length(); ++i) {
+      int closeIndex = 0;
+      if (stack.isEmpty() &amp;&amp; containsTag)
+        return false;
+      if (code.charAt(i) == &#x27;&lt;&#x27;) {
+        // It&#x27;s inside a tag, so check if it&#x27;s a cdata.
+        if (!stack.isEmpty() &amp;&amp; code.charAt(i + 1) == &#x27;!&#x27;) {
+          closeIndex = code.indexOf(&quot;]]&gt;&quot;, i + 2);
+          if (closeIndex &lt; 0 || !isValidCdata(code.substring(i + 2, closeIndex)))
+            return false;
+        } else if (code.charAt(i + 1) == &#x27;/&#x27;) { // the end tag
+          closeIndex = code.indexOf(&#x27;&gt;&#x27;, i + 2);
+          if (closeIndex &lt; 0 || !isValidTagName(stack, code.substring(i + 2, closeIndex), true))
+            return false;
+        } else { // the start tag
+          closeIndex = code.indexOf(&#x27;&gt;&#x27;, i + 1);
+          if (closeIndex &lt; 0 || !isValidTagName(stack, code.substring(i + 1, closeIndex), false))
+            return false;
+        }
+        i = closeIndex;
+      }
+    }
+
+    return stack.isEmpty() &amp;&amp; containsTag;
+  }
+
+  private boolean containsTag = false;
+
+  private boolean isValidCdata(final String s) {
+    return s.indexOf(&quot;[CDATA[&quot;) == 0;
+  }
+
+  private boolean isValidTagName(Deque&lt;String&gt; stack, String tagName, boolean isEndTag) {
+    if (tagName.isEmpty() || tagName.length() &gt; 9)
+      return false;
+
+    for (final char c : tagName.toCharArray())
+      if (!Character.isUpperCase(c))
+        return false;
+
+    if (isEndTag)
+      return !stack.isEmpty() &amp;&amp; stack.pop().equals(tagName);
+
+    containsTag = true;
+    stack.push(tagName);
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isValid(self, code: str) -&gt; bool:
+    if code[0] != &#x27;&lt;&#x27; or code[-1] != &#x27;&gt;&#x27;:
+      return False
+
+    containsTag = False
+    stack = []
+
+    def isValidCdata(s: str) -&gt; bool:
+      return s.find(&#x27;[CDATA[&#x27;) == 0
+
+    def isValidTagName(tagName: str, isEndTag: bool) -&gt; bool:
+      nonlocal containsTag
+      if not tagName or len(tagName) &gt; 9:
+        return False
+      if any(not c.isupper() for c in tagName):
+        return False
+
+      if isEndTag:
+        return stack and stack.pop() == tagName
+
+      containsTag = True
+      stack.append(tagName)
+      return True
+
+    i = 0
+    while i &lt; len(code):
+      if not stack and containsTag:
+        return False
+      if code[i] == &#x27;&lt;&#x27;:
+        # It&#x27;s inside a tag, so check if it&#x27;s a cdata.
+        if stack and code[i + 1] == &#x27;!&#x27;:
+          closeIndex = code.find(&#x27;]]&gt;&#x27;, i + 2)
+          if closeIndex == -1 or not isValidCdata(code[i + 2:closeIndex]):
+            return False
+        elif code[i + 1] == &#x27;/&#x27;:  # the end tag
+          closeIndex = code.find(&#x27;&gt;&#x27;, i + 2)
+          if closeIndex == -1 or not isValidTagName(
+                  code[i + 2: closeIndex],
+                  True):
+            return False
+        else:  # the start tag
+          closeIndex = code.find(&#x27;&gt;&#x27;, i + 1)
+          if closeIndex == -1 or not isValidTagName(
+                  code[i + 1: closeIndex],
+                  False):
+            return False
+        i = closeIndex
+      i += 1
+
+    return not stack and containsTag</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

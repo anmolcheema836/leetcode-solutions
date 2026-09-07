@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K Highest Ranked Items Within a Price Range - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for K Highest Ranked Items Within a Price Range written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/k-highest-ranked-items-within-a-price-range/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-the-hidden-sequences/" class="btn">← Previous</a>
+            <span>Problem 2146 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-ways-to-divide-a-long-corridor/" class="btn">Next →</a>
+        </div>
+        <h1>2146. K Highest Ranked Items Within a Price Range</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve K Highest Ranked Items Within a Price Range efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; highestRankedKItems(vector&lt;vector&lt;int&gt;&gt;&amp; grid,
+                                          vector&lt;int&gt;&amp; pricing,
+                                          vector&lt;int&gt;&amp; start, int k) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    const int m = grid.size();
+    const int n = grid[0].size();
+    const int low = pricing[0];
+    const int high = pricing[1];
+    const int row = start[0];
+    const int col = start[1];
+    vector&lt;vector&lt;int&gt;&gt; ans;
+
+    if (low &lt;= grid[row][col] &amp;&amp; grid[row][col] &lt;= high) {
+      ans.push_back({row, col});
+      if (k == 1)
+        return ans;
+    }
+
+    queue&lt;pair&lt;int, int&gt;&gt; q{{{row, col}}};
+    vector&lt;vector&lt;bool&gt;&gt; seen(m, vector&lt;bool&gt;(n));
+    seen[row][col] = true;  // Mark as visited.
+
+    while (!q.empty()) {
+      vector&lt;vector&lt;int&gt;&gt; neighbors;
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [i, j] = q.front();
+        q.pop();
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          if (!grid[x][y] || seen[x][y])
+            continue;
+          if (low &lt;= grid[x][y] &amp;&amp; grid[x][y] &lt;= high)
+            neighbors.push_back({x, y});
+          q.emplace(x, y);
+          seen[x][y] = true;
+        }
+      }
+      ranges::sort(neighbors, [&amp;](const vector&lt;int&gt;&amp; a, const vector&lt;int&gt;&amp; b) {
+        const int x1 = a[0];
+        const int y1 = a[1];
+        const int x2 = b[0];
+        const int y2 = b[1];
+        if (grid[x1][y1] != grid[x2][y2])
+          return grid[x1][y1] &lt; grid[x2][y2];
+        return x1 == x2 ? y1 &lt; y2 : x1 &lt; x2;
+      });
+      for (const vector&lt;int&gt;&amp; neighbor : neighbors) {
+        if (ans.size() &lt; k)
+          ans.push_back(neighbor);
+        if (ans.size() == k)
+          return ans;
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; highestRankedKItems(int[][] grid, int[] pricing, int[] start, int k) {
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int m = grid.length;
+    final int n = grid[0].length;
+    final int low = pricing[0];
+    final int high = pricing[1];
+    final int row = start[0];
+    final int col = start[1];
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+
+    if (low &lt;= grid[row][col] &amp;&amp; grid[row][col] &lt;= high) {
+      ans.add(Arrays.asList(row, col));
+      if (k == 1)
+        return ans;
+    }
+
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q = new ArrayDeque&lt;&gt;(List.of(new Pair&lt;&gt;(row, col)));
+    boolean[][] seen = new boolean[m][n];
+    seen[row][col] = true; // Mark as visited.
+
+    while (!q.isEmpty()) {
+      List&lt;List&lt;Integer&gt;&gt; neighbors = new ArrayList&lt;&gt;();
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int i = q.peek().getKey();
+        final int j = q.poll().getValue();
+        for (int[] dir : DIRS) {
+          final int x = i + dir[0];
+          final int y = j + dir[1];
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          if (grid[x][y] == 0 || seen[x][y])
+            continue;
+          if (low &lt;= grid[x][y] &amp;&amp; grid[x][y] &lt;= high)
+            neighbors.add(Arrays.asList(x, y));
+          q.offer(new Pair&lt;&gt;(x, y));
+          seen[x][y] = true;
+        }
+      }
+      Collections.sort(neighbors, new Comparator&lt;List&lt;Integer&gt;&gt;() {
+        @Override
+        public int compare(List&lt;Integer&gt; a, List&lt;Integer&gt; b) {
+          final int x1 = a.get(0);
+          final int y1 = a.get(1);
+          final int x2 = b.get(0);
+          final int y2 = b.get(1);
+          if (grid[x1][y1] != grid[x2][y2])
+            return grid[x1][y1] - grid[x2][y2];
+          return x1 == x2 ? y1 - y2 : x1 - x2;
+        }
+      });
+      for (List&lt;Integer&gt; neighbor : neighbors) {
+        if (ans.size() &lt; k)
+          ans.add(neighbor);
+        if (ans.size() == k)
+          return ans;
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def highestRankedKItems(
+      self,
+      grid: list[list[int]],
+      pricing: list[int],
+      start: list[int],
+      k: int
+  ) -&gt; list[list[int]]:
+    DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    m = len(grid)
+    n = len(grid[0])
+    low, high = pricing
+    row, col = start
+    ans = []
+
+    if low &lt;= grid[row][col] &lt;= high:
+      ans.append([row, col])
+      if k == 1:
+        return ans
+
+    q = collections.deque([(row, col)])
+    seen = {(row, col)}  # Mark as visited.
+
+    while q:
+      neighbors = []
+      for _ in range(len(q)):
+        i, j = q.popleft()
+        for t in range(4):
+          x = i + DIRS[t][0]
+          y = j + DIRS[t][1]
+          if x &lt; 0 or x == m or y &lt; 0 or y == n:
+            continue
+          if not grid[x][y] or (x, y) in seen:
+            continue
+          if low &lt;= grid[x][y] &lt;= high:
+            neighbors.append([x, y])
+          q.append((x, y))
+          seen.add((x, y))
+      neighbors.sort(key=lambda x: (grid[x[0]][x[1]], x[0], x[1]))
+      for neighbor in neighbors:
+        if len(ans) &lt; k:
+          ans.append(neighbor)
+        if len(ans) == k:
+          return ans
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

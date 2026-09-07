@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Execution of All Suffix Instructions Staying in a Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Execution of All Suffix Instructions Staying in a Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/execution-of-all-suffix-instructions-staying-in-a-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/a-number-after-a-double-reversal/" class="btn">← Previous</a>
+            <span>Problem 2120 of 3563</span>
+            <a href="/leetcode-solutions/problems/intervals-between-identical-elements/" class="btn">Next →</a>
+        </div>
+        <h1>2120. Execution of All Suffix Instructions Staying in a Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Execution of All Suffix Instructions Staying in a Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; executeInstructions(int n, vector&lt;int&gt;&amp; startPos, string s) {
+    const int m = s.length();
+    const int uMost = startPos[0] + 1;
+    const int dMost = n - startPos[0];
+    const int lMost = startPos[1] + 1;
+    const int rMost = n - startPos[1];
+    const unordered_map&lt;char, pair&lt;int, int&gt;&gt; moves{
+        {&#x27;L&#x27;, {0, -1}},
+        {&#x27;R&#x27;, {0, 1}},
+        {&#x27;U&#x27;, {-1, 0}},
+        {&#x27;D&#x27;, {1, 0}},
+    };
+
+    vector&lt;int&gt; ans(m);
+    unordered_map&lt;int, int&gt; reachX{{0, m}};
+    unordered_map&lt;int, int&gt; reachY{{0, m}};
+    int x = 0;
+    int y = 0;
+
+    for (int i = m - 1; i &gt;= 0; --i) {
+      const auto&amp; [dx, dy] = moves.at(s[i]);
+      x -= dx;
+      y -= dy;
+      reachX[x] = i;
+      reachY[y] = i;
+      int out = INT_MAX;
+      if (const auto it = reachX.find(x - uMost); it != reachX.cend())
+        out = min(out, it-&gt;second);
+      if (const auto it = reachX.find(x + dMost); it != reachX.cend())
+        out = min(out, it-&gt;second);
+      if (const auto it = reachY.find(y - lMost); it != reachY.cend())
+        out = min(out, it-&gt;second);
+      if (const auto it = reachY.find(y + rMost); it != reachY.cend())
+        out = min(out, it-&gt;second);
+      ans[i] = out == INT_MAX ? m - i : out - i - 1;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] executeInstructions(int n, int[] startPos, String s) {
+    final int m = s.length();
+    final int uMost = startPos[0] + 1;
+    final int dMost = n - startPos[0];
+    final int lMost = startPos[1] + 1;
+    final int rMost = n - startPos[1];
+    Map&lt;Character, Pair&lt;Integer, Integer&gt;&gt; moves = new HashMap&lt;&gt;();
+    moves.put(&#x27;L&#x27;, new Pair&lt;&gt;(0, -1));
+    moves.put(&#x27;R&#x27;, new Pair&lt;&gt;(0, 1));
+    moves.put(&#x27;U&#x27;, new Pair&lt;&gt;(-1, 0));
+    moves.put(&#x27;D&#x27;, new Pair&lt;&gt;(1, 0));
+
+    int[] ans = new int[m];
+    Map&lt;Integer, Integer&gt; reachX = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; reachY = new HashMap&lt;&gt;();
+    reachX.put(0, m);
+    reachY.put(0, m);
+    int x = 0;
+    int y = 0;
+
+    for (int i = m - 1; i &gt;= 0; --i) {
+      Pair&lt;Integer, Integer&gt; pair = moves.get(s.charAt(i));
+      final int dx = pair.getKey();
+      final int dy = pair.getValue();
+      x -= dx;
+      y -= dy;
+      reachX.put(x, i);
+      reachY.put(y, i);
+      final int out = Math.min(Math.min(reachX.getOrDefault(x - uMost, Integer.MAX_VALUE),
+                                        reachX.getOrDefault(x + dMost, Integer.MAX_VALUE)),
+                               Math.min(reachY.getOrDefault(y - lMost, Integer.MAX_VALUE),
+                                        reachY.getOrDefault(y + rMost, Integer.MAX_VALUE)));
+      ans[i] = out == Integer.MAX_VALUE ? m - i : out - i - 1;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def executeInstructions(
+      self,
+      n: int,
+      startPos: list[int],
+      s: str,
+  ) -&gt; list[int]:
+    moves = {&#x27;L&#x27;: (0, -1), &#x27;R&#x27;: (0, 1), &#x27;U&#x27;: (-1, 0), &#x27;D&#x27;: (1, 0)}
+    m = len(s)
+    uMost = startPos[0] + 1
+    dMost = n - startPos[0]
+    lMost = startPos[1] + 1
+    rMost = n - startPos[1]
+
+    ans = [0] * m
+    reach = {(0, None): m, (None, 0): m}
+    x = 0
+    y = 0
+
+    for i in reversed(range(m)):
+      dx, dy = moves[s[i]]
+      x -= dx
+      y -= dy
+      reach[(x, None)] = i
+      reach[(None, y)] = i
+      out = min(reach.get((x - uMost, None), math.inf),
+                reach.get((x + dMost, None), math.inf),
+                reach.get((None, y - lMost), math.inf),
+                reach.get((None, y + rMost), math.inf))
+      ans[i] = m - i if out == math.inf else out - i - 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

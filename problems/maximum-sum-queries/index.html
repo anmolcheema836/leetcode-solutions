@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Sum Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Sum Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-sum-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/collecting-chocolates/" class="btn">← Previous</a>
+            <span>Problem 2736 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-closest-marked-node/" class="btn">Next →</a>
+        </div>
+        <h1>2736. Maximum Sum Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Sum Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Pair {
+  int x;
+  int y;
+};
+
+struct IndexedQuery {
+  int queryIndex;
+  int minX;
+  int minY;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; maximumSumQueries(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2,
+                                vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const vector&lt;Pair&gt; pairs = getPairs(nums1, nums2);
+    vector&lt;int&gt; ans(queries.size());
+    vector&lt;pair&lt;int, int&gt;&gt; stack;  // [(y, x + y)]
+
+    int pairsIndex = 0;
+    for (const auto&amp; [queryIndex, minX, minY] : getIndexedQueries(queries)) {
+      while (pairsIndex &lt; pairs.size() &amp;&amp; pairs[pairsIndex].x &gt;= minX) {
+        const auto [x, y] = pairs[pairsIndex++];
+        // x + y is a better candidate. Given that x is decreasing, the
+        // condition &quot;x + y &gt;= stack.back().second&quot; suggests that y is
+        // relatively larger, thereby making it a better candidate.
+        while (!stack.empty() &amp;&amp; x + y &gt;= stack.back().second)
+          stack.pop_back();
+        if (stack.empty() || y &gt; stack.back().first)
+          stack.emplace_back(y, x + y);
+      }
+      const auto it = ranges::lower_bound(stack, pair&lt;int, int&gt;{minY, INT_MIN});
+      ans[queryIndex] = it == stack.end() ? -1 : it-&gt;second;
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;Pair&gt; getPairs(const vector&lt;int&gt;&amp; nums1, const vector&lt;int&gt;&amp; nums2) {
+    vector&lt;Pair&gt; pairs;
+    for (int i = 0; i &lt; nums1.size(); ++i)
+      pairs.push_back({nums1[i], nums2[i]});
+    ranges::sort(pairs, ranges::greater{},
+                 [](const Pair&amp; pair) { return pair.x; });
+    return pairs;
+  }
+
+  vector&lt;IndexedQuery&gt; getIndexedQueries(const vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;IndexedQuery&gt; indexedQueries;
+    for (int i = 0; i &lt; queries.size(); ++i)
+      indexedQueries.push_back({i, queries[i][0], queries[i][1]});
+    ranges::sort(indexedQueries,
+                 [](const IndexedQuery&amp; a, const IndexedQuery&amp; b) {
+      return a.minX &gt; b.minX;
+    });
+    return indexedQueries;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maximumSumQueries(int[] nums1, int[] nums2, int[][] queries) {
+    MyPair[] pairs = getPairs(nums1, nums2);
+    IndexedQuery[] indexedQueries = getIndexedQueries(queries);
+    int[] ans = new int[queries.length];
+    List&lt;Pair&lt;Integer, Integer&gt;&gt; stack = new ArrayList&lt;&gt;(); // [(y, x + y)]
+
+    int pairsIndex = 0;
+    for (IndexedQuery indexedQuery : indexedQueries) {
+      final int queryIndex = indexedQuery.queryIndex;
+      final int minX = indexedQuery.minX;
+      final int minY = indexedQuery.minY;
+      while (pairsIndex &lt; pairs.length &amp;&amp; pairs[pairsIndex].x &gt;= minX) {
+        MyPair pair = pairs[pairsIndex++];
+        // x + y is a better candidate. Given that x is decreasing, the
+        // condition &quot;x + y &gt;=  stack.get(stack.size() - 1).getValue()&quot; suggests
+        // that y is relatively larger, thereby making it a better candidate.
+        final int x = pair.x;
+        final int y = pair.y;
+        while (!stack.isEmpty() &amp;&amp; x + y &gt;= stack.get(stack.size() - 1).getValue())
+          stack.remove(stack.size() - 1);
+        if (stack.isEmpty() || y &gt; stack.get(stack.size() - 1).getKey())
+          stack.add(new Pair&lt;&gt;(y, x + y));
+      }
+      final int j = firstGreaterEqual(stack, minY);
+      ans[queryIndex] = j == stack.size() ? -1 : stack.get(j).getValue();
+    }
+
+    return ans;
+  }
+
+  private record MyPair(int x, int y){};
+  private record IndexedQuery(int queryIndex, int minX, int minY){};
+
+  private int firstGreaterEqual(List&lt;Pair&lt;Integer, Integer&gt;&gt; A, int target) {
+    int l = 0;
+    int r = A.size();
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (A.get(m).getKey() &gt;= target)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+
+  private MyPair[] getPairs(int[] nums1, int[] nums2) {
+    MyPair[] pairs = new MyPair[nums1.length];
+    for (int i = 0; i &lt; nums1.length; ++i)
+      pairs[i] = new MyPair(nums1[i], nums2[i]);
+    Arrays.sort(pairs, Comparator.comparing(MyPair::x, Comparator.reverseOrder()));
+    return pairs;
+  }
+
+  private IndexedQuery[] getIndexedQueries(int[][] queries) {
+    IndexedQuery[] indexedQueries = new IndexedQuery[queries.length];
+    for (int i = 0; i &lt; queries.length; ++i)
+      indexedQueries[i] = new IndexedQuery(i, queries[i][0], queries[i][1]);
+    Arrays.sort(indexedQueries,
+                Comparator.comparing(IndexedQuery::minX, Comparator.reverseOrder()));
+    return indexedQueries;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Pair:
+  x: int
+  y: int
+
+  def __iter__(self):
+    yield self.x
+    yield self.y
+
+
+@dataclass(frozen=True)
+class IndexedQuery:
+  queryIndex: int
+  minX: int
+  minY: int
+
+  def __iter__(self):
+    yield self.queryIndex
+    yield self.minX
+    yield self.minY
+
+
+class Solution:
+  def maximumSumQueries(
+      self,
+      nums1: list[int],
+      nums2: list[int],
+      queries: list[list[int]],
+  ) -&gt; list[int]:
+    pairs = sorted([Pair(nums1[i], nums2[i])
+                   for i in range(len(nums1))], key=lambda x: x.x, reverse=True)
+    ans = [0] * len(queries)
+    stack = []  # [(y, x + y)]
+
+    pairsIndex = 0
+    for queryIndex, minX, minY in sorted([IndexedQuery(i, query[0], query[1])
+                                          for i, query in enumerate(queries)],
+                                         key=lambda x: -x.minX):
+      while pairsIndex &lt; len(pairs) and pairs[pairsIndex].x &gt;= minX:
+        # x + y is a better candidate. Given that x is decreasing, the
+        # condition &quot;x + y &gt;= stack[-1][1]&quot; suggests that y is relatively
+        # larger, thereby making it a better candidate.
+        x, y = pairs[pairsIndex]
+        while stack and x + y &gt;= stack[-1][1]:
+          stack.pop()
+        if not stack or y &gt; stack[-1][0]:
+          stack.append((y, x + y))
+        pairsIndex += 1
+      j = self._firstGreaterEqual(stack, minY)
+      ans[queryIndex] = -1 if j == len(stack) else stack[j][1]
+
+    return ans
+
+  def _firstGreaterEqual(self, A: list[tuple[int, int]], target: int) -&gt; int:
+    l = 0
+    r = len(A)
+    while l &lt; r:
+      m = (l + r) // 2
+      if A[m][0] &gt;= target:
+        r = m
+      else:
+        l = m + 1
+    return l</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zigzag Iterator - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Zigzag Iterator written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/zigzag-iterator/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/wiggle-sort/" class="btn">← Previous</a>
+            <span>Problem 281 of 3563</span>
+            <a href="/leetcode-solutions/problems/expression-add-operators/" class="btn">Next →</a>
+        </div>
+        <h1>281. Zigzag Iterator</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Zigzag Iterator efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class ZigzagIterator {
+ public:
+  ZigzagIterator(vector&lt;int&gt;&amp; v1, vector&lt;int&gt;&amp; v2) {
+    if (!v1.empty())
+      q.emplace(v1.begin(), v1.end());
+    if (!v2.empty())
+      q.emplace(v2.begin(), v2.end());
+  }
+
+  int next() {
+    const auto [it, endIt] = q.front();
+    q.pop();
+    if (it + 1 != endIt)
+      q.emplace(it + 1, endIt);
+    return *it;
+  }
+
+  bool hasNext() {
+    return !q.empty();
+  }
+
+ private:
+  // {{ it, endIt }}
+  queue&lt;pair&lt;vector&lt;int&gt;::iterator, vector&lt;int&gt;::iterator&gt;&gt; q;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">public class ZigzagIterator {
+  public ZigzagIterator(List&lt;Integer&gt; v1, List&lt;Integer&gt; v2) {
+    if (!v1.isEmpty())
+      q.offer(v1.iterator());
+    if (!v2.isEmpty())
+      q.offer(v2.iterator());
+  }
+
+  public int next() {
+    final Iterator it = q.poll();
+    final int next = (int) it.next();
+    if (it.hasNext())
+      q.offer(it);
+    return next;
+  }
+
+  public boolean hasNext() {
+    return !q.isEmpty();
+  }
+
+  private Queue&lt;Iterator&gt; q = new ArrayDeque&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class ZigzagIterator:
+  def __init__(self, v1: list[int], v2: list[int]):
+    def vals():
+      for i in itertools.count():
+        for v in v1, v2:
+          if i &lt; len(v):
+            yield v[i]
+    self.vals = vals()
+    self.n = len(v1) + len(v2)
+
+  def next(self):
+    self.n -= 1
+    return next(self.vals)
+
+  def hasNext(self):
+    return self.n &gt; 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

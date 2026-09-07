@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Unguarded Cells in the Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Unguarded Cells in the Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-unguarded-cells-in-the-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-average-difference/" class="btn">← Previous</a>
+            <span>Problem 2257 of 3563</span>
+            <a href="/leetcode-solutions/problems/escape-the-spreading-fire/" class="btn">Next →</a>
+        </div>
+        <h1>2257. Count Unguarded Cells in the Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Unguarded Cells in the Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countUnguarded(int m, int n, vector&lt;vector&lt;int&gt;&gt;&amp; guards,
+                     vector&lt;vector&lt;int&gt;&gt;&amp; walls) {
+    int ans = 0;
+    vector&lt;vector&lt;char&gt;&gt; grid(m, vector&lt;char&gt;(n));
+    vector&lt;vector&lt;char&gt;&gt; left(m, vector&lt;char&gt;(n));
+    vector&lt;vector&lt;char&gt;&gt; right(m, vector&lt;char&gt;(n));
+    vector&lt;vector&lt;char&gt;&gt; up(m, vector&lt;char&gt;(n));
+    vector&lt;vector&lt;char&gt;&gt; down(m, vector&lt;char&gt;(n));
+
+    for (const vector&lt;int&gt;&amp; guard : guards)
+      grid[guard[0]][guard[1]] = &#x27;G&#x27;;
+
+    for (const vector&lt;int&gt;&amp; wall : walls)
+      grid[wall[0]][wall[1]] = &#x27;W&#x27;;
+
+    for (int i = 0; i &lt; m; ++i) {
+      char lastCell = 0;
+      for (int j = 0; j &lt; n; ++j)
+        recordOrFill(grid[i][j], lastCell, left[i][j]);
+      lastCell = 0;
+      for (int j = n - 1; j &gt;= 0; --j)
+        recordOrFill(grid[i][j], lastCell, right[i][j]);
+    }
+
+    for (int j = 0; j &lt; n; ++j) {
+      char lastCell = 0;
+      for (int i = 0; i &lt; m; ++i)
+        recordOrFill(grid[i][j], lastCell, up[i][j]);
+      lastCell = 0;
+      for (int i = m - 1; i &gt;= 0; --i)
+        recordOrFill(grid[i][j], lastCell, down[i][j]);
+    }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 0 &amp;&amp; left[i][j] != &#x27;G&#x27; &amp;&amp; right[i][j] != &#x27;G&#x27; &amp;&amp;
+            up[i][j] != &#x27;G&#x27; &amp;&amp; down[i][j] != &#x27;G&#x27;)
+          ++ans;
+
+    return ans;
+  }
+
+ private:
+  void recordOrFill(char currCell, char&amp; lastCell, char&amp; infoCell) {
+    if (currCell == &#x27;G&#x27; || currCell == &#x27;W&#x27;)
+      lastCell = currCell;
+    else
+      infoCell = lastCell;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countUnguarded(int m, int n, int[][] guards, int[][] walls) {
+    int ans = 0;
+    char[][] grid = new char[m][n];
+    char[][] left = new char[m][n];
+    char[][] right = new char[m][n];
+    char[][] up = new char[m][n];
+    char[][] down = new char[m][n];
+
+    for (int[] guard : guards)
+      grid[guard[0]][guard[1]] = &#x27;G&#x27;;
+
+    for (int[] wall : walls)
+      grid[wall[0]][wall[1]] = &#x27;W&#x27;;
+
+    for (int i = 0; i &lt; m; ++i) {
+      char lastCell = 0;
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == &#x27;G&#x27; || grid[i][j] == &#x27;W&#x27;)
+          lastCell = grid[i][j];
+        else
+          left[i][j] = lastCell;
+      lastCell = 0;
+      for (int j = n - 1; j &gt;= 0; --j)
+        if (grid[i][j] == &#x27;G&#x27; || grid[i][j] == &#x27;W&#x27;)
+          lastCell = grid[i][j];
+        else
+          right[i][j] = lastCell;
+    }
+
+    for (int j = 0; j &lt; n; ++j) {
+      char lastCell = 0;
+      for (int i = 0; i &lt; m; ++i)
+        if (grid[i][j] == &#x27;G&#x27; || grid[i][j] == &#x27;W&#x27;)
+          lastCell = grid[i][j];
+        else
+          up[i][j] = lastCell;
+      lastCell = 0;
+      for (int i = m - 1; i &gt;= 0; --i)
+        if (grid[i][j] == &#x27;G&#x27; || grid[i][j] == &#x27;W&#x27;)
+          lastCell = grid[i][j];
+        else
+          down[i][j] = lastCell;
+    }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 0 &amp;&amp; left[i][j] != &#x27;G&#x27; &amp;&amp; right[i][j] != &#x27;G&#x27; &amp;&amp; up[i][j] != &#x27;G&#x27; &amp;&amp;
+            down[i][j] != &#x27;G&#x27;)
+          ++ans;
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countUnguarded(
+      self,
+      m: int,
+      n: int,
+      guards: list[list[int]],
+      walls: list[list[int]],
+  ) -&gt; int:
+    ans = 0
+    grid = [[0] * n for _ in range(m)]
+    left = [[0] * n for _ in range(m)]
+    right = [[0] * n for _ in range(m)]
+    up = [[0] * n for _ in range(m)]
+    down = [[0] * n for _ in range(m)]
+
+    for row, col in guards:
+      grid[row][col] = &#x27;G&#x27;
+
+    for row, col in walls:
+      grid[row][col] = &#x27;W&#x27;
+
+    for i in range(m):
+      lastCell = 0
+      for j in range(n):
+        if grid[i][j] == &#x27;G&#x27; or grid[i][j] == &#x27;W&#x27;:
+          lastCell = grid[i][j]
+        else:
+          left[i][j] = lastCell
+      lastCell = 0
+      for j in range(n - 1, -1, -1):
+        if grid[i][j] == &#x27;G&#x27; or grid[i][j] == &#x27;W&#x27;:
+          lastCell = grid[i][j]
+        else:
+          right[i][j] = lastCell
+
+    for j in range(n):
+      lastCell = 0
+      for i in range(m):
+        if grid[i][j] == &#x27;G&#x27; or grid[i][j] == &#x27;W&#x27;:
+          lastCell = grid[i][j]
+        else:
+          up[i][j] = lastCell
+      lastCell = 0
+      for i in range(m - 1, -1, -1):
+        if grid[i][j] == &#x27;G&#x27; or grid[i][j] == &#x27;W&#x27;:
+          lastCell = grid[i][j]
+        else:
+          down[i][j] = lastCell
+
+    for i in range(m):
+      for j in range(n):
+        if (grid[i][j] == 0 and left[i][j] != &#x27;G&#x27; and right[i][j] != &#x27;G&#x27; and
+                up[i][j] != &#x27;G&#x27; and down[i][j] != &#x27;G&#x27;):
+          ans += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

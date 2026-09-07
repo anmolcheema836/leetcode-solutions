@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Path Cost in a Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Path Cost in a Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-path-cost-in-a-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/calculate-amount-paid-in-taxes/" class="btn">← Previous</a>
+            <span>Problem 2304 of 3563</span>
+            <a href="/leetcode-solutions/problems/fair-distribution-of-cookies/" class="btn">Next →</a>
+        </div>
+        <h1>2304. Minimum Path Cost in a Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Path Cost in a Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minPathCost(vector&lt;vector&lt;int&gt;&gt;&amp; grid, vector&lt;vector&lt;int&gt;&gt;&amp; moveCost) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    // dp[i][j] := the minimum cost to reach grid[i][j]
+    vector&lt;vector&lt;int&gt;&gt; dp(m, vector&lt;int&gt;(n, INT_MAX));
+    dp[0] = grid[0];
+
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int k = 0; k &lt; n; ++k)
+          dp[i][j] = min(dp[i][j], dp[i - 1][k] + moveCost[grid[i - 1][k]][j] +
+                                       grid[i][j]);
+
+    return ranges::min(dp.back());
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minPathCost(int[][] grid, int[][] moveCost) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    // dp[i][j] := the minimum cost to reach grid[i][j]
+    int[][] dp = new int[m][n];
+    Arrays.stream(dp).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE));
+    dp[0] = grid[0];
+
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int k = 0; k &lt; n; ++k)
+          dp[i][j] = Math.min(dp[i][j], dp[i - 1][k] + moveCost[grid[i - 1][k]][j] + grid[i][j]);
+
+    return Arrays.stream(dp[m - 1]).min().getAsInt();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minPathCost(
+      self,
+      grid: list[list[int]],
+      moveCost: list[list[int]],
+  ) -&gt; int:
+    m = len(grid)
+    n = len(grid[0])
+    # dp[i][j] := the minimum cost to reach grid[i][j]
+    dp = [[math.inf] * n for _ in range(m)]
+    dp[0] = grid[0]
+
+    for i in range(1, m):
+      for j in range(n):
+        for k in range(n):
+          dp[i][j] = min(dp[i][j], dp[i - 1][k] +
+                         moveCost[grid[i - 1][k]][j] + grid[i][j])
+
+    return min(dp[-1])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

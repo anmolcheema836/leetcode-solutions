@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Safest Path in a Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Safest Path in a Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-safest-path-in-a-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-if-it-is-possible-to-split-array/" class="btn">← Previous</a>
+            <span>Problem 2812 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-elegance-of-a-k-length-subsequence/" class="btn">Next →</a>
+        </div>
+        <h1>2812. Find the Safest Path in a Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Safest Path in a Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximumSafenessFactor(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const vector&lt;vector&lt;int&gt;&gt; distToThief = getDistToThief(grid);
+    int l = 0;
+    int r = grid.size() * 2;
+
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (hasValidPath(distToThief, m))
+        l = m + 1;
+      else
+        r = m;
+    }
+
+    return l - 1;
+  }
+
+ private:
+  static constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+  bool hasValidPath(const vector&lt;vector&lt;int&gt;&gt;&amp; distToThief, int safeness) {
+    if (distToThief[0][0] &lt; safeness)
+      return false;
+
+    const int n = distToThief.size();
+    queue&lt;pair&lt;int, int&gt;&gt; q{{{0, 0}}};
+    vector&lt;vector&lt;bool&gt;&gt; seen(n, vector&lt;bool&gt;(n));
+    seen[0][0] = true;
+
+    while (!q.empty()) {
+      const auto [i, j] = q.front();
+      q.pop();
+      if (distToThief[i][j] &lt; safeness)
+        continue;
+      if (i == n - 1 &amp;&amp; j == n - 1)
+        return true;
+      for (const auto&amp; [dx, dy] : kDirs) {
+        const int x = i + dx;
+        const int y = j + dy;
+        if (x &lt; 0 || x == n || y &lt; 0 || y == n)
+          continue;
+        if (seen[x][y])
+          continue;
+        q.emplace(x, y);
+        seen[x][y] = true;
+      }
+    }
+
+    return false;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; getDistToThief(const vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int n = grid.size();
+    vector&lt;vector&lt;int&gt;&gt; distToThief(n, vector&lt;int&gt;(n));
+    queue&lt;pair&lt;int, int&gt;&gt; q;
+    vector&lt;vector&lt;bool&gt;&gt; seen(n, vector&lt;bool&gt;(n));
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 1) {
+          q.emplace(i, j);
+          seen[i][j] = true;
+        }
+
+    for (int dist = 0; !q.empty(); ++dist) {
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [i, j] = q.front();
+        q.pop();
+        distToThief[i][j] = dist;
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (x &lt; 0 || x == n || y &lt; 0 || y == n)
+            continue;
+          if (seen[x][y])
+            continue;
+          q.emplace(x, y);
+          seen[x][y] = true;
+        }
+      }
+    }
+
+    return distToThief;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximumSafenessFactor(List&lt;List&lt;Integer&gt;&gt; grid) {
+    int[][] distToThief = getDistToThief(grid);
+    int l = 0;
+    int r = grid.size() * 2;
+
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (hasValidPath(distToThief, m))
+        l = m + 1;
+      else
+        r = m;
+    }
+
+    return l - 1;
+  }
+
+  private static final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+  private boolean hasValidPath(int[][] distToThief, int safeness) {
+    if (distToThief[0][0] &lt; safeness)
+      return false;
+
+    final int n = distToThief.length;
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q = new ArrayDeque&lt;&gt;(List.of(new Pair&lt;&gt;(0, 0)));
+    boolean[][] seen = new boolean[n][n];
+    seen[0][0] = true;
+
+    while (!q.isEmpty()) {
+      final int i = q.peek().getKey();
+      final int j = q.poll().getValue();
+      if (distToThief[i][j] &lt; safeness)
+        continue;
+      if (i == n - 1 &amp;&amp; j == n - 1)
+        return true;
+      for (int[] dir : DIRS) {
+        final int x = i + dir[0];
+        final int y = j + dir[1];
+        if (x &lt; 0 || x == n || y &lt; 0 || y == n)
+          continue;
+        if (seen[x][y])
+          continue;
+        q.offer(new Pair&lt;&gt;(x, y));
+        seen[x][y] = true;
+      }
+    }
+
+    return false;
+  }
+
+  private int[][] getDistToThief(List&lt;List&lt;Integer&gt;&gt; grid) {
+    final int n = grid.size();
+    int[][] distToThief = new int[n][n];
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q = new ArrayDeque&lt;&gt;();
+    boolean[][] seen = new boolean[n][n];
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid.get(i).get(j) == 1) {
+          q.offer(new Pair&lt;&gt;(i, j));
+          seen[i][j] = true;
+        }
+
+    for (int dist = 0; !q.isEmpty(); ++dist) {
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int i = q.peek().getKey();
+        final int j = q.poll().getValue();
+        distToThief[i][j] = dist;
+        for (int[] dir : DIRS) {
+          final int x = i + dir[0];
+          final int y = j + dir[1];
+          if (x &lt; 0 || x == n || y &lt; 0 || y == n)
+            continue;
+          if (seen[x][y])
+            continue;
+          q.offer(new Pair&lt;&gt;(x, y));
+          seen[x][y] = true;
+        }
+      }
+    }
+
+    return distToThief;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumSafenessFactor(self, grid: list[list[int]]) -&gt; int:
+    self.DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    n = len(grid)
+    distToThief = self._getDistToThief(grid)
+
+    def hasValidPath(safeness: int) -&gt; bool:
+      if distToThief[0][0] &lt; safeness:
+        return False
+
+      q = collections.deque([(0, 0)])
+      seen = {(0, 0)}
+
+      while q:
+        i, j = q.popleft()
+        if distToThief[i][j] &lt; safeness:
+          continue
+        if i == n - 1 and j == n - 1:
+          return True
+        for dx, dy in self.DIRS:
+          x = i + dx
+          y = j + dy
+          if x &lt; 0 or x == n or y &lt; 0 or y == n:
+            continue
+          if (x, y) in seen:
+            continue
+          q.append((x, y))
+          seen.add((x, y))
+
+      return False
+
+    return bisect.bisect_left(range(n * 2), True,
+                              key=lambda m: not hasValidPath(m)) - 1
+
+  def _getDistToThief(self, grid: list[list[int]]) -&gt; list[list[int]]:
+    n = len(grid)
+    distToThief = [[0] * n for _ in range(n)]
+    q = collections.deque()
+    seen = set()
+
+    for i in range(n):
+      for j in range(n):
+        if grid[i][j] == 1:
+          q.append((i, j))
+          seen.add((i, j))
+
+    dist = 0
+    while q:
+      for _ in range(len(q)):
+        i, j = q.popleft()
+        distToThief[i][j] = dist
+        for dx, dy in self.DIRS:
+          x = i + dx
+          y = j + dy
+          if x &lt; 0 or x == n or y &lt; 0 or y == n:
+            continue
+          if (x, y) in seen:
+            continue
+          q.append((x, y))
+          seen.add((x, y))
+      dist += 1
+
+    return distToThief</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

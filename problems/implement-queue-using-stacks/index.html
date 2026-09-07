@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Queue using Stacks - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Implement Queue using Stacks written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/implement-queue-using-stacks/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/power-of-two/" class="btn">← Previous</a>
+            <span>Problem 232 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-digit-one/" class="btn">Next →</a>
+        </div>
+        <h1>232. Implement Queue using Stacks</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Implement Queue using Stacks efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class MyQueue {
+ public:
+  void push(int x) {
+    input.push(x);
+  }
+
+  int pop() {
+    peek();
+    const int val = output.top();
+    output.pop();
+    return val;
+  }
+
+  int peek() {
+    if (output.empty())
+      while (!input.empty())
+        output.push(input.top()), input.pop();
+    return output.top();
+  }
+
+  bool empty() {
+    return input.empty() &amp;&amp; output.empty();
+  }
+
+ private:
+  stack&lt;int&gt; input;
+  stack&lt;int&gt; output;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class MyQueue {
+  public void push(int x) {
+    input.push(x);
+  }
+
+  public int pop() {
+    peek();
+    return output.pop();
+  }
+
+  public int peek() {
+    if (output.isEmpty())
+      while (!input.isEmpty())
+        output.push(input.pop());
+    return output.peek();
+  }
+
+  public boolean empty() {
+    return input.isEmpty() &amp;&amp; output.isEmpty();
+  }
+
+  private Deque&lt;Integer&gt; input = new ArrayDeque&lt;&gt;();
+  private Deque&lt;Integer&gt; output = new ArrayDeque&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class MyQueue:
+  def __init__(self):
+    self.input = []
+    self.output = []
+
+  def push(self, x: int) -&gt; None:
+    self.input.append(x)
+
+  def pop(self) -&gt; int:
+    self.peek()
+    return self.output.pop()
+
+  def peek(self) -&gt; int:
+    if not self.output:
+      while self.input:
+        self.output.append(self.input.pop())
+    return self.output[-1]
+
+  def empty(self) -&gt; bool:
+    return not self.input and not self.output</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

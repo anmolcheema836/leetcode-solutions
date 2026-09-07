@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game of Life - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Game of Life written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/game-of-life/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/unique-word-abbreviation/" class="btn">← Previous</a>
+            <span>Problem 289 of 3563</span>
+            <a href="/leetcode-solutions/problems/word-pattern/" class="btn">Next →</a>
+        </div>
+        <h1>289. Game of Life</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Game of Life efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  void gameOfLife(vector&lt;vector&lt;int&gt;&gt;&amp; board) {
+    const int m = board.size();
+    const int n = board[0].size();
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        int ones = 0;
+        for (int x = max(0, i - 1); x &lt; min(m, i + 2); ++x)
+          for (int y = max(0, j - 1); y &lt; min(n, j + 2); ++y)
+            ones += board[x][y] &amp; 1;
+        // Any live cell with two or three live neighbors lives on to the next
+        // generation.
+        if (board[i][j] == 1 &amp;&amp; (ones == 3 || ones == 4))
+          board[i][j] |= 0b10;
+        // Any dead cell with exactly three live neighbors becomes a live cell,
+        // as if by reproduction.
+        if (board[i][j] == 0 &amp;&amp; ones == 3)
+          board[i][j] |= 0b10;
+      }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        board[i][j] &gt;&gt;= 1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public void gameOfLife(int[][] board) {
+    final int m = board.length;
+    final int n = board[0].length;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        int ones = 0;
+        for (int x = Math.max(0, i - 1); x &lt; Math.min(m, i + 2); ++x)
+          for (int y = Math.max(0, j - 1); y &lt; Math.min(n, j + 2); ++y)
+            ones += board[x][y] &amp; 1;
+        // Any live cell with two or three live neighbors lives on to the next
+        // generation.
+        if (board[i][j] == 1 &amp;&amp; (ones == 3 || ones == 4))
+          board[i][j] |= 0b10;
+        // Any dead cell with exactly three live neighbors becomes a live cell,
+        // as if by reproduction.
+        if (board[i][j] == 0 &amp;&amp; ones == 3)
+          board[i][j] |= 0b10;
+      }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        board[i][j] &gt;&gt;= 1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def gameOfLife(self, board: list[list[int]]) -&gt; None:
+    m = len(board)
+    n = len(board[0])
+
+    for i in range(m):
+      for j in range(n):
+        ones = 0
+        for x in range(max(0, i - 1), min(m, i + 2)):
+          for y in range(max(0, j - 1), min(n, j + 2)):
+            ones += board[x][y] &amp; 1
+        # Any live cell with two or three live neighbors lives on to the next
+        # generation.
+        if board[i][j] == 1 and (ones == 3 or ones == 4):
+          board[i][j] |= 0b10
+        # Any dead cell with exactly three live neighbors becomes a live cell,
+        # as if by reproduction.
+        if board[i][j] == 0 and ones == 3:
+          board[i][j] |= 0b10
+
+    for i in range(m):
+      for j in range(n):
+        board[i][j] &gt;&gt;= 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

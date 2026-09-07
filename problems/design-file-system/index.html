@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design File System - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design File System written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-file-system/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/single-row-keyboard/" class="btn">← Previous</a>
+            <span>Problem 1166 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-to-connect-sticks/" class="btn">Next →</a>
+        </div>
+        <h1>1166. Design File System</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design File System efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  unordered_map&lt;string, shared_ptr&lt;TrieNode&gt;&gt; children;
+  int value;
+  TrieNode(int value) : value(value) {}
+};
+
+class FileSystem {
+ public:
+  bool createPath(string path, int value) {
+    const vector&lt;string&gt; subpaths = getSubpaths(path);
+    shared_ptr&lt;TrieNode&gt; node = root;
+
+    for (int i = 0; i &lt; subpaths.size() - 1; ++i) {
+      auto it = node-&gt;children.find(subpaths[i]);
+      if (it == node-&gt;children.end())
+        return false;
+      node = it-&gt;second;
+    }
+
+    if (node-&gt;children.contains(subpaths.back()))
+      return false;
+    node-&gt;children[subpaths.back()] = make_shared&lt;TrieNode&gt;(value);
+    return true;
+  }
+
+  int get(string path) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const string&amp; subpath : getSubpaths(path)) {
+      auto it = node-&gt;children.find(subpath);
+      if (it == node-&gt;children.end())
+        return -1;
+      node = it-&gt;second;
+    }
+    return node-&gt;value;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;(0);
+
+  vector&lt;string&gt; getSubpaths(const string&amp; path) {
+    vector&lt;string&gt; subpaths;
+    istringstream iss(path);
+    for (string subpath; getline(iss, subpath, &#x27;/&#x27;);)
+      if (!subpath.empty())
+        subpaths.push_back(subpath);
+    return subpaths;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public Map&lt;String, TrieNode&gt; children = new HashMap&lt;&gt;();
+  public int value;
+  public TrieNode(int value) {
+    this.value = value;
+  }
+}
+
+class FileSystem {
+  public boolean createPath(String path, int value) {
+    final String[] subpaths = path.split(&quot;/&quot;);
+    TrieNode node = root;
+
+    for (int i = 1; i &lt; subpaths.length - 1; ++i) {
+      if (!node.children.containsKey(subpaths[i]))
+        return false;
+      node = node.children.get(subpaths[i]);
+    }
+
+    final String lastSubpath = subpaths[subpaths.length - 1];
+    if (node.children.containsKey(lastSubpath))
+      return false;
+    node.children.put(lastSubpath, new TrieNode(value));
+    return true;
+  }
+
+  public int get(String path) {
+    final String[] subpaths = path.split(&quot;/&quot;);
+    TrieNode node = root;
+    for (int i = 1; i &lt; subpaths.length; ++i) {
+      if (!node.children.containsKey(subpaths[i]))
+        return -1;
+      node = node.children.get(subpaths[i]);
+    }
+    return node.value;
+  }
+
+  private TrieNode root = new TrieNode(0);
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self, value: int = 0):
+    self.children: dict[str, TrieNode] = {}
+    self.value = value
+
+
+class FileSystem:
+  def __init__(self):
+    self.root = TrieNode()
+
+  def createPath(self, path: str, value: int) -&gt; bool:
+    node: TrieNode = self.root
+    subpaths = path.split(&#x27;/&#x27;)
+
+    for i in range(1, len(subpaths) - 1):
+      if subpaths[i] not in node.children:
+        return False
+      node = node.children[subpaths[i]]
+
+    if subpaths[-1] in node.children:
+      return False
+    node.children[subpaths[-1]] = TrieNode(value)
+    return True
+
+  def get(self, path: str) -&gt; int:
+    node: TrieNode = self.root
+    for subpath in path.split(&#x27;/&#x27;)[1:]:
+      if subpath not in node.children:
+        return -1
+      node = node.children[subpath]
+    return node.value</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

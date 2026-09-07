@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Illumination - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Grid Illumination written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/grid-illumination/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-to-merge-stones/" class="btn">← Previous</a>
+            <span>Problem 1001 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-common-characters/" class="btn">Next →</a>
+        </div>
+        <h1>1001. Grid Illumination</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Grid Illumination efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; gridIllumination(int n, vector&lt;vector&lt;int&gt;&gt;&amp; lamps,
+                               vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;int&gt; ans;
+    unordered_map&lt;int, int&gt; rows;
+    unordered_map&lt;int, int&gt; cols;
+    unordered_map&lt;int, int&gt; diag1;
+    unordered_map&lt;int, int&gt; diag2;
+    unordered_set&lt;pair&lt;int, int&gt;, PairHash&gt; lampsSet;
+
+    for (const vector&lt;int&gt;&amp; lamp : lamps) {
+      const int i = lamp[0];
+      const int j = lamp[1];
+      if (lampsSet.insert({i, j}).second) {
+        ++rows[i];
+        ++cols[j];
+        ++diag1[i + j];
+        ++diag2[i - j];
+      }
+    }
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int i = query[0];
+      const int j = query[1];
+      if (rows[i] || cols[j] || diag1[i + j] || diag2[i - j]) {
+        ans.push_back(1);
+        for (int y = max(0, i - 1); y &lt; min(n, i + 2); ++y)
+          for (int x = max(0, j - 1); x &lt; min(n, j + 2); ++x)
+            if (lampsSet.erase({y, x})) {
+              --rows[y];
+              --cols[x];
+              --diag1[y + x];
+              --diag2[y - x];
+            }
+      } else {
+        ans.push_back(0);
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  struct PairHash {
+    size_t operator()(const pair&lt;int, int&gt;&amp; p) const {
+      return p.first ^ p.second;
+    }
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] gridIllumination(int n, int[][] lamps, int[][] queries) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;Integer, Integer&gt; rows = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; cols = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; diag1 = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; diag2 = new HashMap&lt;&gt;();
+    Set&lt;Long&gt; lampsSet = new HashSet&lt;&gt;();
+
+    for (int[] lamp : lamps) {
+      final int i = lamp[0];
+      final int j = lamp[1];
+      if (lampsSet.add(hash(i, j))) {
+        rows.merge(i, 1, Integer::sum);
+        cols.merge(j, 1, Integer::sum);
+        diag1.merge(i + j, 1, Integer::sum);
+        diag2.merge(i - j, 1, Integer::sum);
+      }
+    }
+
+    for (int[] query : queries) {
+      final int i = query[0];
+      final int j = query[1];
+      if (rows.getOrDefault(i, 0) &gt; 0 || cols.getOrDefault(j, 0) &gt; 0 ||
+          diag1.getOrDefault(i + j, 0) &gt; 0 || diag2.getOrDefault(i - j, 0) &gt; 0) {
+        ans.add(1);
+        for (int y = Math.max(0, i - 1); y &lt; Math.min(n, i + 2); ++y)
+          for (int x = Math.max(0, j - 1); x &lt; Math.min(n, j + 2); ++x)
+            if (lampsSet.remove(hash(y, x))) {
+              rows.merge(y, 1, Integer::sum);
+              cols.merge(x, 1, Integer::sum);
+              diag1.merge(y + x, 1, Integer::sum);
+              diag2.merge(y - x, 1, Integer::sum);
+            }
+      } else {
+        ans.add(0);
+      }
+    }
+
+    return ans.stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  private long hash(int i, int j) {
+    return ((long) i &lt;&lt; 32) + j;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def gridIllumination(
+      self,
+      n: int,
+      lamps: list[list[int]],
+      queries: list[list[int]],
+  ) -&gt; list[int]:
+    ans = []
+    rows = collections.Counter()
+    cols = collections.Counter()
+    diag1 = collections.Counter()
+    diag2 = collections.Counter()
+    lampsSet = set()
+
+    for i, j in lamps:
+      if (i, j) not in lampsSet:
+        lampsSet.add((i, j))
+        rows[i] += 1
+        cols[j] += 1
+        diag1[i + j] += 1
+        diag2[i - j] += 1
+
+    for i, j in queries:
+      if rows[i] or cols[j] or diag1[i + j] or diag2[i - j]:
+        ans.append(1)
+        for y in range(max(0, i - 1), min(n, i + 2)):
+          for x in range(max(0, j - 1), min(n, j + 2)):
+            if (y, x) in lampsSet:
+              lampsSet.remove((y, x))
+              rows[y] -= 1
+              cols[x] -= 1
+              diag1[y + x] -= 1
+              diag2[y - x] -= 1
+      else:
+        ans.append(0)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

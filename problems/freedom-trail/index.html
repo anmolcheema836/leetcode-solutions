@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freedom Trail - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Freedom Trail written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/freedom-trail/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-bottom-left-tree-value/" class="btn">← Previous</a>
+            <span>Problem 514 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-largest-value-in-each-tree-row/" class="btn">Next →</a>
+        </div>
+        <h1>514. Freedom Trail</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Freedom Trail efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findRotateSteps(string ring, string key) {
+    return dfs(ring, key, 0, {}) + key.length();
+  }
+
+ private:
+  // Returns the number of rotates of ring to match key[index..n).
+  int dfs(const string&amp; ring, const string&amp; key, int index,
+          unordered_map&lt;string, int&gt;&amp;&amp; mem) {
+    if (index == key.length())
+      return 0;
+    // Add the index to prevent duplication.
+    const string hashKey = ring + to_string(index);
+    if (const auto it = mem.find(hashKey); it != mem.cend())
+      return it-&gt;second;
+
+    int ans = INT_MAX;
+
+    // For each ring[i] == key[index], we rotate the ring to match the ring[i]
+    // with the key[index], then recursively match the newRing with the
+    // key[index + 1..n).
+    for (size_t i = 0; i &lt; ring.length(); ++i)
+      if (ring[i] == key[index]) {
+        const int minRotates = min(i, ring.length() - i);
+        const string&amp; newRing = ring.substr(i) + ring.substr(0, i);
+        const int remainingRotates =
+            dfs(newRing, key, index + 1, std::move(mem));
+        ans = min(ans, minRotates + remainingRotates);
+      }
+
+    return mem[hashKey] = ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findRotateSteps(String ring, String key) {
+    Map&lt;String, Integer&gt; mem = new HashMap&lt;&gt;();
+    return dfs(ring, key, 0, mem) + key.length();
+  }
+
+  // Returns the number of rotates of ring to match key[index..n).
+  private int dfs(final String ring, final String key, int index, Map&lt;String, Integer&gt; mem) {
+    if (index == key.length())
+      return 0;
+    // Add the index to prevent duplication.
+    final String hashKey = ring + index;
+    if (mem.containsKey(hashKey))
+      return mem.get(hashKey);
+
+    int ans = Integer.MAX_VALUE;
+
+    // For each ring[i] == key[index], we rotate the ring to match the ring[i]
+    // with the key[index], then recursively match the newRing with the
+    // key[index + 1..n).
+    for (int i = 0; i &lt; ring.length(); ++i)
+      if (ring.charAt(i) == key.charAt(index)) {
+        final int minRotates = Math.min(i, ring.length() - i);
+        final String newRing = ring.substring(i) + ring.substring(0, i);
+        final int remainingRotates = dfs(newRing, key, index + 1, mem);
+        ans = Math.min(ans, minRotates + remainingRotates);
+      }
+
+    mem.put(hashKey, ans);
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findRotateSteps(self, ring: str, key: str) -&gt; int:
+    @functools.lru_cache(None)
+    def dfs(ring: str, index: int) -&gt; int:
+      &quot;&quot;&quot;Returns the number of rotates of ring to match key[index..n).&quot;&quot;&quot;
+      if index == len(key):
+        return 0
+
+      ans = math.inf
+
+      # For each ring[i] == key[index], we rotate the ring to match the ring[i]
+      # with the key[index], then recursively match the newRing with the
+      # key[index + 1..n).
+      for i, r in enumerate(ring):
+        if r == key[index]:
+          minRotates = min(i, len(ring) - i)
+          newRing = ring[i:] + ring[:i]
+          remainingRotates = dfs(newRing, index + 1)
+          ans = min(ans, minRotates + remainingRotates)
+
+      return ans
+
+    return dfs(ring, 0) + len(key)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

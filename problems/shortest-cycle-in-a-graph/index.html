@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Cycle in a Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shortest Cycle in a Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shortest-cycle-in-a-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/make-k-subarray-sums-equal/" class="btn">← Previous</a>
+            <span>Problem 2608 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-longest-balanced-substring-of-a-binary-string/" class="btn">Next →</a>
+        </div>
+        <h1>2608. Shortest Cycle in a Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shortest Cycle in a Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findShortestCycle(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    int ans = kInf;
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      ans = min(ans, bfs(graph, i));
+
+    return ans == kInf ? -1 : ans;
+  }
+
+ private:
+  static constexpr int kInf = 1001;
+
+  // Returns the length of the minimum cycle by starting BFS from node `i`.
+  // Returns `kInf` if there&#x27;s no cycle.
+  int bfs(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int i) {
+    vector&lt;int&gt; dist(graph.size(), kInf);
+    queue&lt;int&gt; q{{i}};
+    dist[i] = 0;
+    while (!q.empty()) {
+      const int u = q.front();
+      q.pop();
+      for (const int v : graph[u]) {
+        if (dist[v] == kInf) {
+          dist[v] = dist[u] + 1;
+          q.push(v);
+        } else if (dist[v] + 1 != dist[u]) {  // v is not a parent u.
+          return dist[v] + dist[u] + 1;
+        }
+      }
+    }
+    return kInf;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findShortestCycle(int n, int[][] edges) {
+    int ans = INF;
+    List&lt;Integer&gt;[] graph = new List[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      ans = Math.min(ans, bfs(graph, i));
+
+    return ans == INF ? -1 : ans;
+  }
+
+  private static final int INF = 1001;
+
+  // Returns the length of the minimum cycle by starting BFS from node `i`.
+  // Returns `INF` if there&#x27;s no cycle.
+  private int bfs(List&lt;Integer&gt;[] graph, int i) {
+    int[] dist = new int[graph.length];
+    Arrays.fill(dist, INF);
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;(List.of(i));
+    dist[i] = 0;
+    while (!q.isEmpty()) {
+      final int u = q.poll();
+      for (final int v : graph[u]) {
+        if (dist[v] == INF) {
+          dist[v] = dist[u] + 1;
+          q.offer(v);
+        } else if (dist[v] + 1 != dist[u]) { // v is not a parent u.
+          return dist[v] + dist[u] + 1;
+        }
+      }
+    }
+    return INF;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findShortestCycle(self, n: int, edges: list[list[int]]) -&gt; int:
+    INF = 1001
+    ans = INF
+    graph = [[] for _ in range(n)]
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    def bfs(i: int) -&gt; int:
+      &quot;&quot;&quot;Returns the length of the minimum cycle by starting BFS from node `i`.
+
+      Returns `INF` if there&#x27;s no cycle.
+      &quot;&quot;&quot;
+      dist = [INF] * n
+      q = collections.deque([i])
+      dist[i] = 0
+      while q:
+        u = q.popleft()
+        for v in graph[u]:
+          if dist[v] == INF:
+            dist[v] = dist[u] + 1
+            q.append(v)
+          elif dist[v] + 1 != dist[u]:   # v is not a parent u.
+            return dist[v] + dist[u] + 1
+      return INF
+
+    ans = min(map(bfs, range(n)))
+    return -1 if ans == INF else ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

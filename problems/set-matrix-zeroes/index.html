@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Matrix Zeroes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Set Matrix Zeroes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/set-matrix-zeroes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/edit-distance/" class="btn">← Previous</a>
+            <span>Problem 73 of 3563</span>
+            <a href="/leetcode-solutions/problems/search-a-2d-matrix/" class="btn">Next →</a>
+        </div>
+        <h1>73. Set Matrix Zeroes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Set Matrix Zeroes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  void setZeroes(vector&lt;vector&lt;int&gt;&gt;&amp; matrix) {
+    const int m = matrix.size();
+    const int n = matrix[0].size();
+    bool shouldFillFirstRow = false;
+    bool shouldFillFirstCol = false;
+
+    for (int j = 0; j &lt; n; ++j)
+      if (matrix[0][j] == 0) {
+        shouldFillFirstRow = true;
+        break;
+      }
+
+    for (int i = 0; i &lt; m; ++i)
+      if (matrix[i][0] == 0) {
+        shouldFillFirstCol = true;
+        break;
+      }
+
+    // Store the information in the first row and the first column.
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 1; j &lt; n; ++j)
+        if (matrix[i][j] == 0) {
+          matrix[i][0] = 0;
+          matrix[0][j] = 0;
+        }
+
+    // Fill 0s for the matrix except the first row and the first column.
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 1; j &lt; n; ++j)
+        if (matrix[i][0] == 0 || matrix[0][j] == 0)
+          matrix[i][j] = 0;
+
+    // Fill 0s for the first row if needed.
+    if (shouldFillFirstRow)
+      for (int j = 0; j &lt; n; ++j)
+        matrix[0][j] = 0;
+
+    // Fill 0s for the first column if needed.
+    if (shouldFillFirstCol)
+      for (int i = 0; i &lt; m; ++i)
+        matrix[i][0] = 0;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public void setZeroes(int[][] matrix) {
+    final int m = matrix.length;
+    final int n = matrix[0].length;
+    boolean shouldFillFirstRow = false;
+    boolean shouldFillFirstCol = false;
+
+    for (int j = 0; j &lt; n; ++j)
+      if (matrix[0][j] == 0) {
+        shouldFillFirstRow = true;
+        break;
+      }
+
+    for (int i = 0; i &lt; m; ++i)
+      if (matrix[i][0] == 0) {
+        shouldFillFirstCol = true;
+        break;
+      }
+
+    // Store the information in the first row and the first column.
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 1; j &lt; n; ++j)
+        if (matrix[i][j] == 0) {
+          matrix[i][0] = 0;
+          matrix[0][j] = 0;
+        }
+
+    // Fill 0s for the matrix except the first row and the first column.
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 1; j &lt; n; ++j)
+        if (matrix[i][0] == 0 || matrix[0][j] == 0)
+          matrix[i][j] = 0;
+
+    // Fill 0s for the first row if needed.
+    if (shouldFillFirstRow)
+      for (int j = 0; j &lt; n; ++j)
+        matrix[0][j] = 0;
+
+    // Fill 0s for the first column if needed.
+    if (shouldFillFirstCol)
+      for (int i = 0; i &lt; m; ++i)
+        matrix[i][0] = 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def setZeroes(self, matrix: list[list[int]]) -&gt; None:
+    m = len(matrix)
+    n = len(matrix[0])
+    shouldFillFirstRow = 0 in matrix[0]
+    shouldFillFirstCol = 0 in list(zip(*matrix))[0]
+
+    # Store the information in the first row and the first column.
+    for i in range(1, m):
+      for j in range(1, n):
+        if matrix[i][j] == 0:
+          matrix[i][0] = 0
+          matrix[0][j] = 0
+
+    # Fill 0s for the matrix except the first row and the first column.
+    for i in range(1, m):
+      for j in range(1, n):
+        if matrix[i][0] == 0 or matrix[0][j] == 0:
+          matrix[i][j] = 0
+
+    # Fill 0s for the first row if needed.
+    if shouldFillFirstRow:
+      matrix[0] = [0] * n
+
+    # Fill 0s for the first column if needed.
+    if shouldFillFirstCol:
+      for row in matrix:
+        row[0] = 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count K-Subsequences of a String With Maximum Beauty - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count K-Subsequences of a String With Maximum Beauty written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-k-subsequences-of-a-string-with-maximum-beauty/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-sum-of-almost-unique-subarray/" class="btn">← Previous</a>
+            <span>Problem 2842 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-symmetric-integers/" class="btn">Next →</a>
+        </div>
+        <h1>2842. Count K-Subsequences of a String With Maximum Beauty</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count K-Subsequences of a String With Maximum Beauty efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countKSubsequencesWithMaxBeauty(string s, int k) {
+    unordered_map&lt;char, int&gt; count;
+    for (const char c : s)
+      ++count[c];
+    if (count.size() &lt; k)
+      return 0;
+
+    long ans = 1;
+
+    for (const auto&amp; [fc, numOfChars] : getFreqCountPairs(count)) {
+      if (numOfChars &gt;= k) {
+        ans *= nCk(numOfChars, k);
+        ans %= kMod;
+        return ans * modPow(fc, k) % kMod;
+      }
+      ans *= modPow(fc, numOfChars);
+      ans %= kMod;
+      k -= numOfChars;
+    }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  vector&lt;pair&lt;int, int&gt;&gt; getFreqCountPairs(
+      const unordered_map&lt;char, int&gt;&amp; count) {
+    unordered_map&lt;int, int&gt; freqCount;
+    for (const auto&amp; [_, value] : count)
+      ++freqCount[value];
+    vector&lt;pair&lt;int, int&gt;&gt; freqCountPairs;
+    for (const auto&amp; [fc, numOfChars] : freqCount)
+      freqCountPairs.emplace_back(fc, numOfChars);
+    ranges::sort(freqCountPairs, ranges::greater{},
+                 [](const pair&lt;int, int&gt;&amp; freqCountPair) {
+      return freqCountPair.first;
+    });
+    return freqCountPairs;
+  }
+
+  long nCk(int n, int k) {
+    long res = 1;
+    for (int i = 1; i &lt;= k; ++i)
+      res = res * (n - i + 1) / i;
+    return res;
+  }
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countKSubsequencesWithMaxBeauty(String s, int k) {
+    Map&lt;Character, Integer&gt; count = new HashMap&lt;&gt;();
+    for (final char c : s.toCharArray())
+      count.merge(c, 1, Integer::sum);
+    if (count.size() &lt; k)
+      return 0;
+
+    long ans = 1;
+
+    for (Pair&lt;Integer, Integer&gt; pair : getFreqCountPairs(count)) {
+      final int fc = pair.getKey();
+      final int numOfChars = pair.getValue();
+      if (numOfChars &gt;= k) {
+        ans *= nCk(numOfChars, k) * modPow(fc, k);
+        return (int) (ans % MOD);
+      }
+      ans *= modPow(fc, numOfChars);
+      ans %= MOD;
+      k -= numOfChars;
+    }
+
+    return (int) ans;
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private List&lt;Pair&lt;Integer, Integer&gt;&gt; getFreqCountPairs(Map&lt;Character, Integer&gt; count) {
+    // freqCount := (f(c), # of chars with f(c))
+    Map&lt;Integer, Integer&gt; freqCount = new HashMap&lt;&gt;();
+    for (final int value : count.values())
+      freqCount.merge(value, 1, Integer::sum);
+    List&lt;Pair&lt;Integer, Integer&gt;&gt; freqCountPairs = new ArrayList&lt;&gt;();
+    for (Map.Entry&lt;Integer, Integer&gt; entry : freqCount.entrySet())
+      freqCountPairs.add(new Pair&lt;&gt;(entry.getKey(), entry.getValue()));
+    freqCountPairs.sort((a, b) -&gt; b.getKey().compareTo(a.getKey()));
+    return freqCountPairs;
+  }
+
+  private long nCk(int n, int k) {
+    long res = 1;
+    for (int i = 1; i &lt;= k; ++i)
+      res = res * (n - i + 1) / i;
+    return res;
+  }
+
+  private int modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return (int) (x * modPow(x % MOD, (n - 1)) % MOD);
+    return modPow(x * x % MOD, (n / 2)) % MOD;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countKSubsequencesWithMaxBeauty(self, s: str, k: int) -&gt; int:
+    MOD = 1_000_000_007
+    count = collections.Counter(s)
+    if len(count) &lt; k:
+      return 0
+
+    ans = 1
+    # freqCount := (f(c), # of chars with f(c))
+    freqCount = collections.Counter(count.values())
+
+    for fc, numOfChars in list(sorted(freqCount.items(), reverse=True)):
+      if numOfChars &gt;= k:
+        ans *= math.comb(numOfChars, k) * pow(fc, k, MOD)
+        return ans % MOD
+      ans *= pow(fc, numOfChars, MOD)
+      ans %= MOD
+      k -= numOfChars</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

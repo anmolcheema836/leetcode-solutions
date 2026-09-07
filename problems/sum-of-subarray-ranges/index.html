@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sum of Subarray Ranges - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sum of Subarray Ranges written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sum-of-subarray-ranges/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/rings-and-rods/" class="btn">← Previous</a>
+            <span>Problem 2104 of 3563</span>
+            <a href="/leetcode-solutions/problems/watering-plants-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2104. Sum of Subarray Ranges</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sum of Subarray Ranges efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long subArrayRanges(vector&lt;int&gt;&amp; nums) {
+    const auto [prevGt, nextGt] = getPrevNext(nums, less&lt;&gt;());
+    const auto [prevLt, nextLt] = getPrevNext(nums, greater&lt;&gt;());
+    long ans = 0;
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      ans += static_cast&lt;long&gt;(nums[i]) * (i - prevGt[i]) * (nextGt[i] - i);
+      ans -= static_cast&lt;long&gt;(nums[i]) * (i - prevLt[i]) * (nextLt[i] - i);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns `prev` and `next`, that store the indices of the nearest numbers
+  // that are smaller or larger than the current number depending on `op`.
+  pair&lt;vector&lt;int&gt;, vector&lt;int&gt;&gt; getPrevNext(
+      const vector&lt;int&gt;&amp; nums, const function&lt;bool(int, int)&gt;&amp; op) {
+    const int n = nums.size();
+    vector&lt;int&gt; prev(n, -1);
+    vector&lt;int&gt; next(n, n);
+    stack&lt;int&gt; stack;
+    for (int i = 0; i &lt; n; ++i) {
+      while (!stack.empty() &amp;&amp; op(nums[stack.top()], nums[i])) {
+        const int index = stack.top();
+        stack.pop();
+        next[index] = i;
+      }
+      if (!stack.empty())
+        prev[i] = stack.top();
+      stack.push(i);
+    }
+    return {prev, next};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long subArrayRanges(int[] nums) {
+    Pair&lt;int[], int[]&gt; gt = getPrevNext(nums, (a, b) -&gt; a &lt; b);
+    Pair&lt;int[], int[]&gt; lt = getPrevNext(nums, (a, b) -&gt; a &gt; b);
+    int[] prevGt = gt.getKey();
+    int[] nextGt = gt.getValue();
+    int[] prevLt = lt.getKey();
+    int[] nextLt = lt.getValue();
+    long ans = 0;
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      ans += (long) nums[i] * (i - prevGt[i]) * (nextGt[i] - i);
+      ans -= (long) nums[i] * (i - prevLt[i]) * (nextLt[i] - i);
+    }
+
+    return ans;
+  }
+
+  // Returns `prev` and `next`, that store the indices of the nearest numbers
+  // that are smaller or larger than the current number depending on `op`.
+  private Pair&lt;int[], int[]&gt; getPrevNext(int[] nums, BiFunction&lt;Integer, Integer, Boolean&gt; op) {
+    final int n = nums.length;
+    int[] prev = new int[n];
+    int[] next = new int[n];
+    Arrays.fill(prev, -1);
+    Arrays.fill(next, n);
+    Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; n; ++i) {
+      while (!stack.isEmpty() &amp;&amp; op.apply(nums[stack.peek()], nums[i]))
+        next[stack.pop()] = i;
+      if (!stack.isEmpty())
+        prev[i] = stack.peek();
+      stack.push(i);
+    }
+    return new Pair&lt;&gt;(prev, next);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def subArrayRanges(self, nums: list[int]) -&gt; int:
+    prevGt, nextGt = self._getPrevNext(nums, operator.lt)
+    prevLt, nextLt = self._getPrevNext(nums, operator.gt)
+    return sum(num * (i - prevGt[i]) * (nextGt[i] - i) -
+               num * (i - prevLt[i]) * (nextLt[i] - i)
+               for i, num in enumerate(nums))
+
+  def _getPrevNext(
+      self,
+      nums: list[int],
+      op: callable
+  ) -&gt; tuple[list[int], list[int]]:
+    &quot;&quot;&quot;
+    Returns `prev` and `next`, that store the indices of the nearest numbers
+    that are smaller or larger than the current number depending on `op`.
+    &quot;&quot;&quot;
+    n = len(nums)
+    prev = [-1] * n
+    next = [n] * n
+    stack = []
+    for i, num in enumerate(nums):
+      while stack and op(nums[stack[-1]], num):
+        next[stack.pop()] = i
+      if stack:
+        prev[i] = stack[-1]
+      stack.append(i)
+    return prev, next</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

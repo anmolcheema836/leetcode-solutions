@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Search Autocomplete System - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Search Autocomplete System written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-search-autocomplete-system/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-circular-deque/" class="btn">← Previous</a>
+            <span>Problem 642 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-average-subarray-i/" class="btn">Next →</a>
+        </div>
+        <h1>642. Design Search Autocomplete System</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Search Autocomplete System efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">Java</div>
+<div class="tab " onclick="switchTab(1)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-java">class TrieNode implements Comparable&lt;TrieNode&gt; {
+  public TrieNode[] children = new TrieNode[128];
+  public String s = null;
+  public int time = 0;
+  public List&lt;TrieNode&gt; top3 = new ArrayList&lt;&gt;();
+
+  public int compareTo(TrieNode o) {
+    if (this.time == o.time)
+      return this.s.compareTo(o.s);
+    return o.time - this.time;
+  }
+
+  public void update(TrieNode node) {
+    if (!this.top3.contains(node))
+      this.top3.add(node);
+    Collections.sort(top3);
+    if (top3.size() &gt; 3)
+      top3.remove(top3.size() - 1);
+  }
+}
+
+class AutocompleteSystem {
+  public AutocompleteSystem(String[] sentences, int[] times) {
+    for (int i = 0; i &lt; sentences.length; ++i)
+      insert(sentences[i], times[i]);
+  }
+
+  public List&lt;String&gt; input(char c) {
+    if (c == &#x27;#&#x27;) {
+      insert(sb.toString(), 1);
+      curr = root;
+      sb = new StringBuilder();
+      return new ArrayList&lt;&gt;();
+    }
+
+    sb.append(c);
+
+    if (curr != null)
+      curr = curr.children[c];
+    if (curr == null)
+      return new ArrayList&lt;&gt;();
+
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+
+    for (TrieNode node : curr.top3)
+      ans.add(node.s);
+
+    return ans;
+  }
+
+  private TrieNode root = new TrieNode();
+  private TrieNode curr = root;
+  private StringBuilder sb = new StringBuilder();
+
+  private void insert(final String s, int time) {
+    TrieNode node = root;
+    for (final char c : s.toCharArray()) {
+      if (node.children[c] == null)
+        node.children[c] = new TrieNode();
+      node = node.children[c];
+    }
+    node.s = s;
+    node.time += time;
+
+    // Walk the path again and update the node with leaf node
+    TrieNode leaf = node;
+    node = root;
+    for (final char c : s.toCharArray()) {
+      node = node.children[c];
+      node.update(leaf);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+    self.s: str | None = None
+    self.time = 0
+    self.top3: list[TrieNode] = []
+
+  def __lt__(self, other):
+    if self.time == other.time:
+      return self.s &lt; other.s
+    return self.time &gt; other.time
+
+  def update(self, node) -&gt; None:
+    if node not in self.top3:
+      self.top3.append(node)
+    self.top3.sort()
+    if len(self.top3) &gt; 3:
+      self.top3.pop()
+
+
+class AutocompleteSystem:
+  def __init__(self, sentences: list[str], times: list[int]):
+    self.root = TrieNode()
+    self.curr = self.root
+    self.s: list[str] = []
+
+    for sentence, time in zip(sentences, times):
+      self._insert(sentence, time)
+
+  def input(self, c: str) -&gt; list[str]:
+    if c == &#x27;#&#x27;:
+      self._insert(&#x27;&#x27;.join(self.s), 1)
+      self.curr = self.root
+      self.s = []
+      return []
+
+    self.s.append(c)
+
+    if self.curr:
+      self.curr = self.curr.children.get(c, None)
+    if not self.curr:
+      return []
+    return [node.s for node in self.curr.top3]
+
+  def _insert(self, sentence: str, time: int) -&gt; None:
+    node = self.root
+    for c in sentence:
+      node = node.children.setdefault(c, TrieNode())
+    node.s = sentence
+    node.time += time
+
+    leaf = node
+    node: TrieNode = self.root
+    for c in sentence:
+      node = node.children[c]
+      node.update(leaf)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

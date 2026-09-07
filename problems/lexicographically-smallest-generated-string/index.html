@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicographically Smallest Generated String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Lexicographically Smallest Generated String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/lexicographically-smallest-generated-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-k-subarrays-with-length-at-least-m/" class="btn">← Previous</a>
+            <span>Problem 3474 of 3563</span>
+            <a href="/leetcode-solutions/problems/dna-pattern-recognition/" class="btn">Next →</a>
+        </div>
+        <h1>3474. Lexicographically Smallest Generated String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Lexicographically Smallest Generated String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string generateString(string str1, string str2) {
+    const int n = str1.length();
+    const int m = str2.length();
+    const int sz = n + m - 1;
+    string ans(sz, &#x27;\0&#x27;);
+    vector&lt;bool&gt; modifiable(sz, true);
+
+    // 1. Handle all &#x27;T&#x27; positions first.
+    for (int i = 0; i &lt; n; ++i)
+      if (str1[i] == &#x27;T&#x27;)
+        for (int j = 0; j &lt; m; ++j) {
+          const int pos = i + j;
+          if (ans[pos] &amp;&amp; ans[pos] != str2[j])
+            return &quot;&quot;;
+          ans[pos] = str2[j];
+          modifiable[pos] = false;
+        }
+
+    // 2. Fill all remaining positions with &#x27;a&#x27;.
+    for (int i = 0; i &lt; sz; ++i)
+      if (ans[i] == &#x27;\0&#x27;)
+        ans[i] = &#x27;a&#x27;;
+
+    // 3. Handle all &#x27;F&#x27; positions.
+    for (int i = 0; i &lt; n; ++i)
+      if (str1[i] == &#x27;F&#x27; &amp;&amp; match(ans, i, str2)) {
+        const int modifiablePos = lastModifiablePosition(i, m, modifiable);
+        if (modifiablePos == -1)
+          return &quot;&quot;;
+        ans[modifiablePos] = &#x27;b&#x27;;
+        modifiable[modifiablePos] = false;
+      }
+
+    return ans;
+  }
+
+ private:
+  // Returns true if the substring of ans starting at `i` matches `s`.
+  bool match(string&amp; ans, int i, string&amp; s) {
+    for (int j = 0; j &lt; s.length(); ++j)
+      if (ans[i + j] != s[j])
+        return false;
+    return true;
+  }
+
+  // Finds the last modifiable position in the substring ans starting at `i`.
+  int lastModifiablePosition(int i, int m, vector&lt;bool&gt;&amp; modifiable) {
+    int modifiablePos = -1;
+    for (int j = 0; j &lt; m; ++j) {
+      const int pos = i + j;
+      if (modifiable[pos])
+        modifiablePos = pos;
+    }
+    return modifiablePos;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String generateString(String str1, String str2) {
+    final int n = str1.length();
+    final int m = str2.length();
+    final int sz = n + m - 1;
+    char[] ans = new char[sz];
+    boolean[] modifiable = new boolean[sz];
+    Arrays.fill(modifiable, true);
+
+    // 1. Handle all &#x27;T&#x27; positions first.
+    for (int i = 0; i &lt; n; ++i)
+      if (str1.charAt(i) == &#x27;T&#x27;)
+        for (int j = 0; j &lt; m; ++j) {
+          final int pos = i + j;
+          if (ans[pos] != 0 &amp;&amp; ans[pos] != str2.charAt(j))
+            return &quot;&quot;;
+          ans[pos] = str2.charAt(j);
+          modifiable[pos] = false;
+        }
+
+    // 2. Fill all remaining positions with &#x27;a&#x27;.
+    for (int i = 0; i &lt; sz; ++i)
+      if (ans[i] == 0)
+        ans[i] = &#x27;a&#x27;;
+
+    // 3. Handle all &#x27;F&#x27; positions.
+    for (int i = 0; i &lt; n; ++i)
+      if (str1.charAt(i) == &#x27;F&#x27; &amp;&amp; match(ans, i, str2)) {
+        final int modifiablePos = lastModifiablePosition(i, m, modifiable);
+        if (modifiablePos == -1)
+          return &quot;&quot;;
+        ans[modifiablePos] = &#x27;b&#x27;;
+        modifiable[modifiablePos] = false;
+      }
+
+    return new String(ans);
+  }
+
+  // Returns true if the substring of ans starting at `i` matches `s`.
+  private boolean match(char[] ans, int i, String s) {
+    for (int j = 0; j &lt; s.length(); ++j)
+      if (ans[i + j] != s.charAt(j))
+        return false;
+    return true;
+  }
+
+  // Finds the last modifiable position in the substring ans starting at `i`.
+  private int lastModifiablePosition(int i, int m, boolean[] modifiable) {
+    int modifiablePos = -1;
+    for (int j = 0; j &lt; m; ++j) {
+      final int pos = i + j;
+      if (modifiable[pos])
+        modifiablePos = pos;
+    }
+    return modifiablePos;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def generateString(self, str1: str, str2: str) -&gt; str:
+    n = len(str1)
+    m = len(str2)
+    sz = n + m - 1
+    ans = [None] * sz
+    modifiable = [True] * sz
+
+    # 1. Handle all &#x27;T&#x27; positions first.
+    for i, tf in enumerate(str1):
+      if tf == &#x27;T&#x27;:
+        for j, c in enumerate(str2):
+          pos = i + j
+          if ans[pos] and ans[pos] != c:
+            return &#x27;&#x27;
+          ans[pos] = c
+          modifiable[pos] = False
+
+    # 2. Fill all remaining positions with &#x27;a&#x27;.
+    for i in range(sz):
+      if not ans[i]:
+        ans[i] = &#x27;a&#x27;
+
+    # 3. Handle all &#x27;F&#x27; positions.
+    for i in range(n):
+      if str1[i] == &#x27;F&#x27; and self._match(ans, i, str2):
+        modifiablePos = self._lastModifiablePosition(i, m, modifiable)
+        if modifiablePos == -1:
+          return &#x27;&#x27;
+        ans[modifiablePos] = &#x27;b&#x27;
+        modifiable[modifiablePos] = False
+
+    return &#x27;&#x27;.join(ans)
+
+  def _match(self, ans: list, i: int, s: str) -&gt; bool:
+    &quot;&quot;&quot;Returns True if the substring of ans starting at `i` matches `s`.&quot;&quot;&quot;
+    for j, c in enumerate(s):
+      if ans[i + j] != c:
+        return False
+    return True
+
+  def _lastModifiablePosition(self, i: int, m: int, modifiable: list) -&gt; int:
+    &quot;&quot;&quot;
+    Finds the last modifiable position in the substring of ans starting at `i`.
+    &quot;&quot;&quot;
+    modifiablePos = -1
+    for j in range(m):
+      pos = i + j
+      if modifiable[pos]:
+        modifiablePos = pos
+    return modifiablePos</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Time to Eat All Grains - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Time to Eat All Grains written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-time-to-eat-all-grains/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/collect-coins-in-a-tree/" class="btn">← Previous</a>
+            <span>Problem 2604 of 3563</span>
+            <a href="/leetcode-solutions/problems/form-smallest-number-from-two-digit-arrays/" class="btn">Next →</a>
+        </div>
+        <h1>2604. Minimum Time to Eat All Grains</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Time to Eat All Grains efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumTime(vector&lt;int&gt;&amp; hens, vector&lt;int&gt;&amp; grains) {
+    ranges::sort(hens);
+    ranges::sort(grains);
+
+    const int maxPosition = max(ranges::max(hens), ranges::max(grains));
+    const int minPosition = min(ranges::min(hens), ranges::min(grains));
+    int l = 0;
+    int r = 1.5 * (maxPosition - minPosition);
+
+    while (l &lt; r) {
+      const int m = (l + static_cast&lt;long&gt;(r)) / 2;
+      if (canEat(hens, grains, m))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l;
+  }
+
+ private:
+  // Returns true if `hens` can eat all `grains` within `time`.
+  bool canEat(const vector&lt;int&gt;&amp; hens, const vector&lt;int&gt;&amp; grains, int time) {
+    int i = 0;  // grains[i] := next grain to be ate
+    for (const int hen : hens) {
+      int moves = time;
+      if (grains[i] &lt; hen) {
+        // `hen` needs go back to eat `grains[i]`.
+        const int leftMoves = hen - grains[i];
+        if (leftMoves &gt; time)
+          return false;
+        const int leftThenRight = time - 2 * leftMoves;
+        const int rightThenLeft = (time - leftMoves) / 2;
+        moves = max({0, leftThenRight, rightThenLeft});
+      }
+      i = ranges::upper_bound(grains, hen + moves) - grains.begin();
+      if (i == grains.size())
+        return true;
+    }
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumTime(int[] hens, int[] grains) {
+    Arrays.sort(hens);
+    Arrays.sort(grains);
+
+    final int maxPosition = Math.max(Arrays.stream(hens).max().getAsInt(), //
+                                     Arrays.stream(grains).max().getAsInt());
+    final int minPosition = Math.min(Arrays.stream(hens).min().getAsInt(), //
+                                     Arrays.stream(grains).min().getAsInt());
+    int l = 0;
+    int r = (int) (1.5 * (maxPosition - minPosition));
+
+    while (l &lt; r) {
+      final int m = (int) ((l + (long) r) / 2);
+      if (canEat(hens, grains, m))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return (int) l;
+  }
+
+  // Returns true if `hens` can eat all `grains` within `time`.
+  private boolean canEat(int[] hens, int[] grains, int time) {
+    int i = 0; // grains[i] := next grain to be ate
+    for (final int hen : hens) {
+      int rightMoves = time;
+      if (grains[i] &lt; hen) {
+        // `hen` needs go back to eat `grains[i]`.
+        final int leftMoves = hen - grains[i];
+        if (leftMoves &gt; time)
+          return false;
+        final int leftThenRight = time - 2 * leftMoves;
+        final int rightThenLeft = (time - leftMoves) / 2;
+        rightMoves = Math.max(0, Math.max(leftThenRight, rightThenLeft));
+      }
+      i = firstGreater(grains, hen + rightMoves);
+      if (i == grains.length)
+        return true;
+    }
+    return false;
+  }
+
+  private int firstGreater(int[] arr, int target) {
+    final int i = Arrays.binarySearch(arr, target + 1);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumTime(self, hens: list[int], grains: list[int]) -&gt; int:
+    hens.sort()
+    grains.sort()
+
+    def canEat(time: int) -&gt; bool:
+      &quot;&quot;&quot;Returns True if `hens` can eat all `grains` within `time`.&quot;&quot;&quot;
+      i = 0  # grains[i] := next grain to be ate
+      for hen in hens:
+        rightMoves = time
+        if grains[i] &lt; hen:
+          # `hen` needs go back to eat `grains[i]`.
+          leftMoves = hen - grains[i]
+          if leftMoves &gt; time:
+            return False
+          leftThenRight = time - 2 * leftMoves
+          rightThenLeft = (time - leftMoves) // 2
+          rightMoves = max(0, leftThenRight, rightThenLeft)
+        i = bisect.bisect_right(grains, hen + rightMoves)
+        if i == len(grains):
+          return True
+      return False
+
+    maxMoves = int(1.5 * (max(hens + grains) - min(hens + grains)))
+    return bisect.bisect_left(range(maxMoves), True, key=canEat)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

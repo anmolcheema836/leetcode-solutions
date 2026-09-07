@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fizz Buzz Multithreaded - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Fizz Buzz Multithreaded written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/fizz-buzz-multithreaded/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/tournament-winners/" class="btn">← Previous</a>
+            <span>Problem 1195 of 3563</span>
+            <a href="/leetcode-solutions/problems/how-many-apples-can-you-put-into-the-basket/" class="btn">Next →</a>
+        </div>
+        <h1>1195. Fizz Buzz Multithreaded</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Fizz Buzz Multithreaded efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">// LeetCode doesn&#x27;t support C++20 yet, so we don&#x27;t have std::counting_semaphore
+// or binary_semaphore.
+#include &lt;semaphore.h&gt;
+
+class FizzBuzz {
+ public:
+  FizzBuzz(int n) : n(n) {
+    sem_init(&amp;fizzSemaphore, /*pshared=*/0, /*value=*/0);
+    sem_init(&amp;buzzSemaphore, /*pshared=*/0, /*value=*/0);
+    sem_init(&amp;fizzbuzzSemaphore, /*pshared=*/0, /*value=*/0);
+    sem_init(&amp;numberSemaphore, /*pshared=*/0, /*value=*/1);
+  }
+
+  ~FizzBuzz() {
+    sem_destroy(&amp;fizzSemaphore);
+    sem_destroy(&amp;buzzSemaphore);
+    sem_destroy(&amp;fizzbuzzSemaphore);
+    sem_destroy(&amp;numberSemaphore);
+  }
+
+  // printFizz() outputs &quot;fizz&quot;.
+  void fizz(function&lt;void()&gt; printFizz) {
+    for (int i = 1; i &lt;= n; ++i)
+      if (i % 3 == 0 &amp;&amp; i % 15 != 0) {
+        sem_wait(&amp;fizzSemaphore);
+        printFizz();
+        sem_post(&amp;numberSemaphore);
+      }
+  }
+
+  // printBuzz() outputs &quot;buzz&quot;.
+  void buzz(function&lt;void()&gt; printBuzz) {
+    for (int i = 1; i &lt;= n; ++i)
+      if (i % 5 == 0 &amp;&amp; i % 15 != 0) {
+        sem_wait(&amp;buzzSemaphore);
+        printBuzz();
+        sem_post(&amp;numberSemaphore);
+      }
+  }
+
+  // printFizzBuzz() outputs &quot;fizzbuzz&quot;.
+  void fizzbuzz(function&lt;void()&gt; printFizzBuzz) {
+    for (int i = 1; i &lt;= n; ++i)
+      if (i % 15 == 0) {
+        sem_wait(&amp;fizzbuzzSemaphore);
+        printFizzBuzz();
+        sem_post(&amp;numberSemaphore);
+      }
+  }
+
+  // printNumber(x) outputs &quot;x&quot;, where x is an integer.
+  void number(function&lt;void(int)&gt; printNumber) {
+    for (int i = 1; i &lt;= n; ++i) {
+      sem_wait(&amp;numberSemaphore);
+      if (i % 15 == 0)
+        sem_post(&amp;fizzbuzzSemaphore);
+      else if (i % 3 == 0)
+        sem_post(&amp;fizzSemaphore);
+      else if (i % 5 == 0)
+        sem_post(&amp;buzzSemaphore);
+      else {
+        printNumber(i);
+        sem_post(&amp;numberSemaphore);
+      }
+    }
+  }
+
+ private:
+  const int n;
+  sem_t fizzSemaphore;
+  sem_t buzzSemaphore;
+  sem_t fizzbuzzSemaphore;
+  sem_t numberSemaphore;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FizzBuzz {
+  public FizzBuzz(int n) {
+    this.n = n;
+  }
+
+  // printFizz.run() outputs &quot;fizz&quot;.
+  public void fizz(Runnable printFizz) throws InterruptedException {
+    for (int i = 1; i &lt;= n; ++i)
+      if (i % 3 == 0 &amp;&amp; i % 15 != 0) {
+        fizzSemaphore.acquire();
+        printFizz.run();
+        numberSemaphore.release();
+      }
+  }
+
+  // printBuzz.run() outputs &quot;buzz&quot;.
+  public void buzz(Runnable printBuzz) throws InterruptedException {
+    for (int i = 1; i &lt;= n; ++i)
+      if (i % 5 == 0 &amp;&amp; i % 15 != 0) {
+        buzzSemaphore.acquire();
+        printBuzz.run();
+        numberSemaphore.release();
+      }
+  }
+
+  // printFizzBuzz.run() outputs &quot;fizzbuzz&quot;.
+  public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+    for (int i = 1; i &lt;= n; ++i)
+      if (i % 15 == 0) {
+        fizzbuzzSemaphore.acquire();
+        printFizzBuzz.run();
+        numberSemaphore.release();
+      }
+  }
+
+  // printNumber.accept(x) outputs &quot;x&quot;, where x is an integer.
+  public void number(IntConsumer printNumber) throws InterruptedException {
+    for (int i = 1; i &lt;= n; ++i) {
+      numberSemaphore.acquire();
+      if (i % 15 == 0)
+        fizzbuzzSemaphore.release();
+      else if (i % 3 == 0)
+        fizzSemaphore.release();
+      else if (i % 5 == 0)
+        buzzSemaphore.release();
+      else {
+        printNumber.accept(i);
+        numberSemaphore.release();
+      }
+    }
+  }
+
+  private int n;
+  private Semaphore fizzSemaphore = new Semaphore(0);
+  private Semaphore buzzSemaphore = new Semaphore(0);
+  private Semaphore fizzbuzzSemaphore = new Semaphore(0);
+  private Semaphore numberSemaphore = new Semaphore(1);
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from threading import Semaphore
+
+
+class FizzBuzz:
+  def __init__(self, n: int):
+    self.n = n
+    self.fizzSemaphore = Semaphore(0)
+    self.buzzSemaphore = Semaphore(0)
+    self.fizzbuzzSemaphore = Semaphore(0)
+    self.numberSemaphore = Semaphore(1)
+
+  # printFizz() outputs &quot;fizz&quot;
+  def fizz(self, printFizz: &#x27;Callable[[], None]&#x27;) -&gt; None:
+    for i in range(1, self.n + 1):
+      if i % 3 == 0 and i % 15 != 0:
+        self.fizzSemaphore.acquire()
+        printFizz()
+        self.numberSemaphore.release()
+
+  # printBuzz() outputs &quot;buzz&quot;
+  def buzz(self, printBuzz: &#x27;Callable[[], None]&#x27;) -&gt; None:
+    for i in range(1, self.n + 1):
+      if i % 5 == 0 and i % 15 != 0:
+        self.buzzSemaphore.acquire()
+        printBuzz()
+        self.numberSemaphore.release()
+
+  # printFizzBuzz() outputs &quot;fizzbuzz&quot;
+  def fizzbuzz(self, printFizzBuzz: &#x27;Callable[[], None]&#x27;) -&gt; None:
+    for i in range(1, self.n + 1):
+      if i % 15 == 0:
+        self.fizzbuzzSemaphore.acquire()
+        printFizzBuzz()
+        self.numberSemaphore.release()
+
+  # printNumber(x) outputs &quot;x&quot;, where x is an integer.
+  def number(self, printNumber: &#x27;Callable[[int], None]&#x27;) -&gt; None:
+    for i in range(1, self.n + 1):
+      self.numberSemaphore.acquire()
+      if i % 15 == 0:
+        self.fizzbuzzSemaphore.release()
+      elif i % 3 == 0:
+        self.fizzSemaphore.release()
+      elif i % 5 == 0:
+        self.buzzSemaphore.release()
+      else:
+        printNumber(i)
+        self.numberSemaphore.release()</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

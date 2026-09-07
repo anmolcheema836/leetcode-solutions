@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Employees to Be Invited to a Meeting - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Employees to Be Invited to a Meeting written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-employees-to-be-invited-to-a-meeting/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/destroying-asteroids/" class="btn">← Previous</a>
+            <span>Problem 2127 of 3563</span>
+            <a href="/leetcode-solutions/problems/remove-all-ones-with-row-and-column-flips/" class="btn">Next →</a>
+        </div>
+        <h1>2127. Maximum Employees to Be Invited to a Meeting</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Employees to Be Invited to a Meeting efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">enum class State { kInit, kVisiting, kVisited };
+
+class Solution {
+ public:
+  int maximumInvitations(vector&lt;int&gt;&amp; favorite) {
+    const int n = favorite.size();
+    int sumComponentsLength = 0;  // the component: a -&gt; b -&gt; c &lt;-&gt; x &lt;- y
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    vector&lt;int&gt; inDegrees(n);
+    vector&lt;int&gt; maxChainLength(n, 1);
+    queue&lt;int&gt; q;
+
+    // Build the graph.
+    for (int i = 0; i &lt; n; ++i) {
+      graph[i].push_back(favorite[i]);
+      ++inDegrees[favorite[i]];
+    }
+
+    // Perform topological sorting.
+    for (int i = 0; i &lt; n; ++i)
+      if (inDegrees[i] == 0)
+        q.push(i);
+
+    while (!q.empty()) {
+      const int u = q.front();
+      q.pop();
+      for (const int v : graph[u]) {
+        if (--inDegrees[v] == 0)
+          q.push(v);
+        maxChainLength[v] = max(maxChainLength[v], 1 + maxChainLength[u]);
+      }
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      if (favorite[favorite[i]] == i)
+        // i &lt;-&gt; favorite[i] (the cycle&#x27;s length = 2)
+        sumComponentsLength += maxChainLength[i] + maxChainLength[favorite[i]];
+
+    int maxCycleLength = 0;  // the cycle : a -&gt; b -&gt; c -&gt; a
+    vector&lt;int&gt; parent(n, -1);
+    vector&lt;bool&gt; seen(n);
+    vector&lt;State&gt; states(n);
+
+    for (int i = 0; i &lt; n; ++i)
+      if (!seen[i])
+        findCycle(graph, i, parent, seen, states, maxCycleLength);
+
+    return max(sumComponentsLength / 2, maxCycleLength);
+  }
+
+ private:
+  void findCycle(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, vector&lt;int&gt;&amp; parent,
+                 vector&lt;bool&gt;&amp; seen, vector&lt;State&gt;&amp; states,
+                 int&amp; maxCycleLength) {
+    seen[u] = true;
+    states[u] = State::kVisiting;
+
+    for (const int v : graph[u]) {
+      if (!seen[v]) {
+        parent[v] = u;
+        findCycle(graph, v, parent, seen, states, maxCycleLength);
+      } else if (states[v] == State::kVisiting) {
+        // Find the cycle&#x27;s length.
+        int curr = u;
+        int cycleLength = 1;
+        while (curr != v) {
+          curr = parent[curr];
+          ++cycleLength;
+        }
+        maxCycleLength = max(maxCycleLength, cycleLength);
+      }
+    }
+
+    states[u] = State::kVisited;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">enum State { INIT, VISITING, VISITED }
+
+class Solution {
+  public int maximumInvitations(int[] favorite) {
+    final int n = favorite.length;
+    int sumComponentsLength = 0; // the component: a -&gt; b -&gt; c &lt;-&gt; x &lt;- y
+    List&lt;Integer&gt;[] graph = new List[n];
+    int[] inDegrees = new int[n];
+    int[] maxChainLength = new int[n];
+    Arrays.fill(maxChainLength, 1);
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    // Build the graph.
+    for (int i = 0; i &lt; n; ++i) {
+      graph[i].add(favorite[i]);
+      ++inDegrees[favorite[i]];
+    }
+
+    // Perform topological sorting.
+    Queue&lt;Integer&gt; q = IntStream.range(0, n)
+                           .filter(i -&gt; inDegrees[i] == 0)
+                           .boxed()
+                           .collect(Collectors.toCollection(ArrayDeque::new));
+
+    while (!q.isEmpty()) {
+      final int u = q.poll();
+      for (final int v : graph[u]) {
+        if (--inDegrees[v] == 0)
+          q.offer(v);
+        maxChainLength[v] = Math.max(maxChainLength[v], 1 + maxChainLength[u]);
+      }
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      if (favorite[favorite[i]] == i)
+        // i &lt;-&gt; favorite[i] (the cycle&#x27;s length = 2)
+        sumComponentsLength += maxChainLength[i] + maxChainLength[favorite[i]];
+
+    int[] parent = new int[n];
+    Arrays.fill(parent, -1);
+    boolean[] seen = new boolean[n];
+    State[] states = new State[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      if (!seen[i])
+        findCycle(graph, i, parent, seen, states);
+
+    return Math.max(sumComponentsLength / 2, maxCycleLength);
+  }
+
+  private int maxCycleLength = 0; // the cycle : a -&gt; b -&gt; c -&gt; a
+
+  private void findCycle(List&lt;Integer&gt;[] graph, int u, int[] parent, boolean[] seen,
+                         State[] states) {
+    seen[u] = true;
+    states[u] = State.VISITING;
+
+    for (final int v : graph[u]) {
+      if (!seen[v]) {
+        parent[v] = u;
+        findCycle(graph, v, parent, seen, states);
+      } else if (states[v] == State.VISITING) {
+        // Find the cycle&#x27;s length.
+        int curr = u;
+        int cycleLength = 1;
+        while (curr != v) {
+          curr = parent[curr];
+          ++cycleLength;
+        }
+        maxCycleLength = Math.max(maxCycleLength, cycleLength);
+      }
+    }
+
+    states[u] = State.VISITED;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from enum import Enum
+
+
+class State(Enum):
+  INIT = 0
+  VISITING = 1
+  VISITED = 2
+
+
+class Solution:
+  def maximumInvitations(self, favorite: list[int]) -&gt; int:
+    n = len(favorite)
+    sumComponentsLength = 0  # the component: a -&gt; b -&gt; c &lt;-&gt; x &lt;- y
+    graph = [[] for _ in range(n)]
+    inDegrees = [0] * n
+    maxChainLength = [1] * n
+
+    # Build the graph.
+    for i, f in enumerate(favorite):
+      graph[i].append(f)
+      inDegrees[f] += 1
+
+    # Perform topological sorting.
+    q = collections.deque([i for i, d in enumerate(inDegrees) if d == 0])
+
+    while q:
+      u = q.popleft()
+      for v in graph[u]:
+        inDegrees[v] -= 1
+        if inDegrees[v] == 0:
+          q.append(v)
+        maxChainLength[v] = max(maxChainLength[v], 1 + maxChainLength[u])
+
+    for i in range(n):
+      if favorite[favorite[i]] == i:
+        # i &lt;-&gt; favorite[i] (the cycle&#x27;s length = 2)
+        sumComponentsLength += maxChainLength[i] + maxChainLength[favorite[i]]
+
+    maxCycleLength = 0  # Cycle: a -&gt; b -&gt; c -&gt; a
+    parent = [-1] * n
+    seen = set()
+    states = [State.INIT] * n
+
+    def findCycle(u: int) -&gt; None:
+      nonlocal maxCycleLength
+      seen.add(u)
+      states[u] = State.VISITING
+      for v in graph[u]:
+        if v not in seen:
+          parent[v] = u
+          findCycle(v)
+        elif states[v] == State.VISITING:
+          # Find the cycle&#x27;s length.
+          curr = u
+          cycleLength = 1
+          while curr != v:
+            curr = parent[curr]
+            cycleLength += 1
+          maxCycleLength = max(maxCycleLength, cycleLength)
+      states[u] = State.VISITED
+
+    for i in range(n):
+      if i not in seen:
+        findCycle(i)
+
+    return max(sumComponentsLength // 2, maxCycleLength)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construct 2D Grid Matching Graph Layout - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Construct 2D Grid Matching Graph Layout written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/construct-2d-grid-matching-graph-layout/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/remove-methods-from-project/" class="btn">← Previous</a>
+            <span>Problem 3311 of 3563</span>
+            <a href="/leetcode-solutions/problems/sorted-gcd-pair-queries/" class="btn">Next →</a>
+        </div>
+        <h1>3311. Construct 2D Grid Matching Graph Layout</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Construct 2D Grid Matching Graph Layout efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; constructGridLayout(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    // Randomly choose a node with the minimum degree as the corner.
+    const int corner =
+        ranges::min_element(graph, ranges::less{}, &amp;vector&lt;int&gt;::size) -
+        graph.begin();
+
+    vector&lt;bool&gt; seen(n);
+    seen[corner] = true;
+    const vector&lt;int&gt; firstRow = getFirstRow(graph, corner, seen);
+    const int cols = firstRow.size();
+    const int rows = n / cols;
+
+    vector&lt;vector&lt;int&gt;&gt; ans(rows, vector&lt;int&gt;(cols));
+    ans[0] = firstRow;
+
+    for (int i = 1; i &lt; rows; ++i)
+      for (int j = 0; j &lt; cols; ++j)
+        for (const int v : graph[ans[i - 1][j]])
+          if (!seen[v]) {
+            ans[i][j] = v;
+            seen[v] = true;
+            break;
+          }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; getFirstRow(vector&lt;vector&lt;int&gt;&gt;&amp; graph, int corner,
+                          vector&lt;bool&gt;&amp; seen) {
+    const int cornerDegree = graph[corner].size();
+    vector&lt;int&gt; row = {corner};
+
+    // Continue appending neighbors until we hit another corner.
+    while (row.size() == 1 || graph[row.back()].size() == cornerDegree + 1) {
+      // Sort neighbors by degree to prioritize smaller ones (shortest row built
+      // first).
+      vector&lt;int&gt;&amp; neighbors = graph[row.back()];
+      ranges::sort(neighbors, ranges::less{},
+                   [&amp;graph](int v) { return graph[v].size(); });
+      for (const int v : neighbors)
+        if (!seen[v] &amp;&amp; (graph[v].size() == cornerDegree ||
+                         graph[v].size() == cornerDegree + 1)) {
+          row.push_back(v);
+          seen[v] = true;
+          break;
+        }
+    }
+
+    return row;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] constructGridLayout(int n, int[][] edges) {
+    List&lt;Integer&gt;[] graph = new ArrayList[n];
+
+    for (int i = 0; i &lt; n; i++)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    // Randomly choose a node with the minimum degree as the corner.
+    int corner = 0;
+    for (int i = 1; i &lt; n; i++)
+      if (graph[i].size() &lt; graph[corner].size())
+        corner = i;
+
+    boolean[] seen = new boolean[n];
+    seen[corner] = true;
+    int[] firstRow = getFirstRow(graph, corner, seen);
+    int cols = firstRow.length;
+    int rows = n / cols;
+
+    int[][] ans = new int[rows][cols];
+    ans[0] = firstRow;
+
+    for (int i = 1; i &lt; rows; ++i)
+      for (int j = 0; j &lt; cols; ++j)
+        for (final int v : graph[ans[i - 1][j]])
+          if (!seen[v]) {
+            ans[i][j] = v;
+            seen[v] = true;
+            break;
+          }
+
+    return ans;
+  }
+
+  private int[] getFirstRow(List&lt;Integer&gt;[] graph, int corner, boolean[] seen) {
+    final int cornerDegree = graph[corner].size();
+    List&lt;Integer&gt; row = new ArrayList&lt;&gt;(List.of(corner));
+    // Continue appending neighbors until we hit another corner.
+    while (row.size() == 1 || graph[row.get(row.size() - 1)].size() == cornerDegree + 1) {
+      List&lt;Integer&gt; neighbors = graph[row.get(row.size() - 1)];
+      Collections.sort(neighbors, (a, b) -&gt; graph[a].size() - graph[b].size());
+      for (final int v : neighbors)
+        if (!seen[v] &amp;&amp; (graph[v].size() == cornerDegree || graph[v].size() == cornerDegree + 1)) {
+          row.add(v);
+          seen[v] = true;
+          break;
+        }
+    }
+    return row.stream().mapToInt(Integer::intValue).toArray();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def constructGridLayout(self, n: int, edges: list[list[int]]) -&gt; list[list[int]]:
+    graph = [[] for _ in range(n)]
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    # Randomly choose a node with the minimum degree as the corner.
+    corner = min(range(len(graph)), key=lambda x: len(graph[x]))
+
+    seen = {corner}
+    firstRow = self._getFirstRow(graph, corner, seen)
+    cols = len(firstRow)
+    rows = n // cols
+
+    ans = [[0] * cols for _ in range(rows)]
+    ans[0] = firstRow
+
+    for i in range(1, rows):
+      for j in range(cols):
+        for v in graph[ans[i - 1][j]]:
+          if v not in seen:
+            ans[i][j] = v
+            seen.add(v)
+            break
+
+    return ans
+
+  def _getFirstRow(
+      self,
+      graph: list[list[int]],
+      corner: int,
+      seen: set[int]
+  ) -&gt; list[int]:
+    cornerDegree = len(graph[corner])
+    row = [corner]
+    # Continue appending neighbors until we hit another corner.
+    while len(row) == 1 or len(graph[row[-1]]) == cornerDegree + 1:
+      # Sort neighbors by degree to prioritize smaller ones (shortest row built first).
+      graph[row[-1]].sort(key=lambda x: len(graph[x]))
+      for v in graph[row[-1]]:
+        if v not in seen and len(graph[v]) in (cornerDegree, cornerDegree + 1):
+          row.append(v)
+          seen.add(v)
+          break
+    return row</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

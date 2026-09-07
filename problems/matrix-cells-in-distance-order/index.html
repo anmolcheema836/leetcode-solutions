@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Cells in Distance Order - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Matrix Cells in Distance Order written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/matrix-cells-in-distance-order/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/two-city-scheduling/" class="btn">← Previous</a>
+            <span>Problem 1030 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-sum-of-two-non-overlapping-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>1030. Matrix Cells in Distance Order</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Matrix Cells in Distance Order efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; allCellsDistOrder(int rows, int cols, int rCenter,
+                                        int cCenter) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    vector&lt;vector&lt;int&gt;&gt; seen(rows, vector&lt;int&gt;(cols));
+    queue&lt;pair&lt;int, int&gt;&gt; q{{{rCenter, cCenter}}};
+    seen[rCenter][cCenter] = true;
+
+    while (!q.empty()) {
+      const auto [i, j] = q.front();
+      q.pop();
+      ans.push_back({i, j});
+      for (const auto&amp; [dx, dy] : kDirs) {
+        const int x = i + dx;
+        const int y = j + dy;
+        if (x &lt; 0 || x == rows || y &lt; 0 || y == cols)
+          continue;
+        if (seen[x][y])
+          continue;
+        seen[x][y] = true;
+        q.emplace(x, y);
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] allCellsDistOrder(int rows, int cols, int rCenter, int cCenter) {
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    List&lt;int[]&gt; ans = new ArrayList&lt;&gt;();
+    boolean[][] seen = new boolean[rows][cols];
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q = new LinkedList&lt;&gt;(Arrays.asList(new Pair&lt;&gt;(rCenter, cCenter)));
+    seen[rCenter][cCenter] = true;
+
+    while (!q.isEmpty()) {
+      final int i = q.peek().getKey();
+      final int j = q.poll().getValue();
+      ans.add(new int[] {i, j});
+      for (int[] dir : DIRS) {
+        final int x = i + dir[0];
+        final int y = j + dir[1];
+        if (x &lt; 0 || x == rows || y &lt; 0 || y == cols)
+          continue;
+        if (seen[x][y])
+          continue;
+        seen[x][y] = true;
+        q.offer(new Pair&lt;&gt;(x, y));
+      }
+    }
+
+    return ans.toArray(int[][] ::new);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def allCellsDistOrder(self, rows: int, cols: int, rCenter: int, cCenter: int) -&gt; list[list[int]]:
+    DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    ans = []
+    q = collections.deque([(rCenter, cCenter)])
+    seen = {(rCenter, cCenter)}
+
+    while q:
+      i, j = q.popleft()
+      ans.append([i, j])
+      for dx, dy in DIRS:
+        x = i + dx
+        y = j + dy
+        if x &lt; 0 or x == rows or y &lt; 0 or y == cols:
+          continue
+        if (x, y) in seen:
+          continue
+        seen.add((x, y))
+        q.append((x, y))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

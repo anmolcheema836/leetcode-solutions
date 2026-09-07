@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Fruits Harvested After at Most K Steps - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Fruits Harvested After at Most K Steps written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-fruits-harvested-after-at-most-k-steps/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/watering-plants-ii/" class="btn">← Previous</a>
+            <span>Problem 2106 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-unique-flavors-after-sharing-k-candies/" class="btn">Next →</a>
+        </div>
+        <h1>2106. Maximum Fruits Harvested After at Most K Steps</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Fruits Harvested After at Most K Steps efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxTotalFruits(vector&lt;vector&lt;int&gt;&gt;&amp; fruits, int startPos, int k) {
+    const int maxRight = max(startPos, fruits.back()[0]);
+    int ans = 0;
+    vector&lt;int&gt; amounts(1 + maxRight);
+    vector&lt;int&gt; prefix(2 + maxRight);
+
+    for (const vector&lt;int&gt;&amp; f : fruits)
+      amounts[f[0]] = f[1];
+
+    partial_sum(amounts.begin(), amounts.end(), prefix.begin() + 1);
+
+    auto getFruits = [&amp;](int leftSteps, int rightSteps) {
+      const int l = max(0, startPos - leftSteps);
+      const int r = min(maxRight, startPos + rightSteps);
+      return prefix[r + 1] - prefix[l];
+    };
+
+    // Go right first.
+    const int maxRightSteps = min(maxRight - startPos, k);
+    for (int rightSteps = 0; rightSteps &lt;= maxRightSteps; ++rightSteps) {
+      const int leftSteps = max(0, k - 2 * rightSteps);  // Turn left
+      ans = max(ans, getFruits(leftSteps, rightSteps));
+    }
+
+    // Go left first.
+    const int maxLeftSteps = min(startPos, k);
+    for (int leftSteps = 0; leftSteps &lt;= maxLeftSteps; ++leftSteps) {
+      const int rightSteps = max(0, k - 2 * leftSteps);  // Turn right
+      ans = max(ans, getFruits(leftSteps, rightSteps));
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxTotalFruits(int[][] fruits, int startPos, int k) {
+    final int maxRight = Math.max(startPos, fruits[fruits.length - 1][0]);
+    int ans = 0;
+    int[] amounts = new int[1 + maxRight];
+    int[] prefix = new int[2 + maxRight];
+
+    for (int[] f : fruits)
+      amounts[f[0]] = f[1];
+
+    for (int i = 0; i + 1 &lt; prefix.length; ++i)
+      prefix[i + 1] = prefix[i] + amounts[i];
+
+    // Go right first.
+    final int maxRightSteps = Math.min(maxRight - startPos, k);
+    for (int rightSteps = 0; rightSteps &lt;= maxRightSteps; ++rightSteps) {
+      final int leftSteps = Math.max(0, k - 2 * rightSteps); // Turn left
+      ans = Math.max(ans, getFruits(startPos, maxRight, leftSteps, rightSteps, prefix));
+    }
+
+    // Go left first.
+    final int maxLeftSteps = Math.min(startPos, k);
+    for (int leftSteps = 0; leftSteps &lt;= maxLeftSteps; ++leftSteps) {
+      final int rightSteps = Math.max(0, k - 2 * leftSteps); // Turn right
+      ans = Math.max(ans, getFruits(startPos, maxRight, leftSteps, rightSteps, prefix));
+    }
+
+    return ans;
+  }
+
+  private int getFruits(int startPos, int maxRight, int leftSteps, int rightSteps, int[] prefix) {
+    final int l = Math.max(0, startPos - leftSteps);
+    final int r = Math.min(maxRight, startPos + rightSteps);
+    return prefix[r + 1] - prefix[l];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxTotalFruits(
+      self,
+      fruits: list[list[int]],
+      startPos: int,
+      k: int,
+  ) -&gt; int:
+    ans = 0
+    maxRight = max(startPos, fruits[-1][0])
+    amounts = [0] * (1 + maxRight)
+    for position, amount in fruits:
+      amounts[position] = amount
+    prefix = list(itertools.accumulate(amounts, initial=0))
+
+    def getFruits(leftSteps: int, rightSteps: int) -&gt; int:
+      l = max(0, startPos - leftSteps)
+      r = min(maxRight, startPos + rightSteps)
+      return prefix[r + 1] - prefix[l]
+
+    # Go right first.
+    for rightSteps in range(min(maxRight - startPos, k) + 1):
+      leftSteps = max(0, k - 2 * rightSteps)  # Turn left
+      ans = max(ans, getFruits(leftSteps, rightSteps))
+
+    # Go left first.
+    for leftSteps in range(min(startPos, k) + 1):
+      rightSteps = max(0, k - 2 * leftSteps)  # Turn right
+      ans = max(ans, getFruits(leftSteps, rightSteps))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

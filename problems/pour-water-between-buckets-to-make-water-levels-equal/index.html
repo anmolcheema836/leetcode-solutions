@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pour Water Between Buckets to Make Water Levels Equal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Pour Water Between Buckets to Make Water Levels Equal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/pour-water-between-buckets-to-make-water-levels-equal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/earliest-possible-day-of-full-bloom/" class="btn">← Previous</a>
+            <span>Problem 2137 of 3563</span>
+            <a href="/leetcode-solutions/problems/divide-a-string-into-groups-of-size-k/" class="btn">Next →</a>
+        </div>
+        <h1>2137. Pour Water Between Buckets to Make Water Levels Equal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Pour Water Between Buckets to Make Water Levels Equal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  double equalizeWater(vector&lt;int&gt;&amp; buckets, int loss) {
+    constexpr double kErr = 1e-5;
+    const double kPercentage = (100 - loss) / (double)100;
+    double l = 0.0;
+    double r = ranges::max(buckets);
+
+    while (r - l &gt; kErr) {
+      const double m = (l + r) / 2;
+      if (canFill(buckets, m, kPercentage))
+        l = m;
+      else
+        r = m;
+    }
+
+    return l;
+  }
+
+ private:
+  bool canFill(const vector&lt;int&gt;&amp; buckets, double target, double kPercentage) {
+    double extra = 0.0;
+    double need = 0.0;
+    for (const int bucket : buckets)
+      if (bucket &gt; target)
+        extra += bucket - target;
+      else
+        need += target - bucket;
+    return extra * kPercentage &gt;= need;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double equalizeWater(int[] buckets, int loss) {
+    final double ERR = 1e-5;
+    final double PERCENTAGE = (100 - loss) / (double) 100;
+    double l = 0.0;
+    double r = Arrays.stream(buckets).max().getAsInt();
+
+    while (r - l &gt; ERR) {
+      final double m = (l + r) / 2;
+      if (canFill(buckets, m, PERCENTAGE))
+        l = m;
+      else
+        r = m;
+    }
+
+    return l;
+  }
+
+  private boolean canFill(int[] buckets, double target, double PERCENTAGE) {
+    double extra = 0.0;
+    double need = 0.0;
+    for (final int bucket : buckets)
+      if (bucket &gt; target)
+        extra += bucket - target;
+      else
+        need += target - bucket;
+    return extra * PERCENTAGE &gt;= need;
+  };
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def equalizeWater(self, buckets: list[int], loss: int) -&gt; float:
+    ERR = 1e-5
+    PERCENTAGE = (100 - loss) / 100
+    l = 0.0
+    r = max(buckets)
+
+    def canFill(target: float) -&gt; bool:
+      extra = 0
+      need = 0
+      for bucket in buckets:
+        if bucket &gt; target:
+          extra += bucket - target
+        else:
+          need += target - bucket
+      return extra * PERCENTAGE &gt;= need
+
+    while r - l &gt; ERR:
+      m = (l + r) / 2
+      if canFill(m):
+        l = m
+      else:
+        r = m
+
+    return l</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

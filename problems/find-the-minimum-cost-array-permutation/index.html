@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Minimum Cost Array Permutation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Minimum Cost Array Permutation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-minimum-cost-array-permutation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-difference-score-in-a-grid/" class="btn">← Previous</a>
+            <span>Problem 3149 of 3563</span>
+            <a href="/leetcode-solutions/problems/invalid-tweets-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3149. Find the Minimum Cost Array Permutation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Minimum Cost Array Permutation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; findPermutation(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    vector&lt;vector&lt;int&gt;&gt; mem(n, vector&lt;int&gt;(1 &lt;&lt; n));
+    // bestPick[last][mask] := the best pick, where `last` is the last chosen
+    // number and `mask` is the bitmask of the chosen numbers
+    vector&lt;vector&lt;int&gt;&gt; bestPick(n, vector&lt;int&gt;(1 &lt;&lt; n));
+
+    // Choose 0 as perm[0] since the score function is cyclic.
+    getScore(nums, /*last=*/0, /*mask=*/1, bestPick, mem);
+    return construct(bestPick);
+  }
+
+ private:
+  // Returns the minimum score, where `last` is the last chosen number and
+  // `mask` is the bitmask of the chosen numbers.
+  int getScore(const vector&lt;int&gt;&amp; nums, int last, unsigned mask,
+               vector&lt;vector&lt;int&gt;&gt;&amp; bestPick, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (popcount(mask) == nums.size())
+      return abs(last - nums[0]);  // |perm[n - 1] - nums[perm[0]]|
+    if (mem[last][mask] &gt; 0)
+      return mem[last][mask];
+
+    int minScore = INT_MAX;
+    for (int i = 1; i &lt; nums.size(); ++i) {
+      if (mask &gt;&gt; i &amp; 1)
+        continue;
+      const int nextMinScore =
+          abs(last - nums[i]) + getScore(nums, i, mask | 1 &lt;&lt; i, bestPick, mem);
+      if (nextMinScore &lt; minScore) {
+        minScore = nextMinScore;
+        bestPick[last][mask] = i;
+      }
+    }
+
+    return mem[last][mask] = minScore;
+  }
+
+  vector&lt;int&gt; construct(const vector&lt;vector&lt;int&gt;&gt;&amp; bestPick) {
+    vector&lt;int&gt; ans;
+    int last = 0;
+    int mask = 1;
+    for (int i = 0; i &lt; bestPick.size(); ++i) {
+      ans.push_back(last);
+      last = bestPick[last][mask];
+      mask |= 1 &lt;&lt; last;
+    }
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] findPermutation(int[] nums) {
+    final int n = nums.length;
+    int[][] mem = new int[n][1 &lt;&lt; n];
+    // bestPick[last][mask] := the best pick, where `last` is the last chosen
+    // number and `mask` is the bitmask of the chosen numbers
+    int[][] bestPick = new int[n][1 &lt;&lt; n];
+
+    // Choose 0 as perm[0] since the score function is cyclic.
+    getScore(nums, /*last=*/0, /*mask=*/1, bestPick, mem);
+    return construct(bestPick);
+  }
+
+  // Returns the minimum score, where `last` is the last chosen number and
+  // `mask` is the bitmask of the chosen numbers.
+  private int getScore(int[] nums, int last, int mask, int[][] bestPick, int[][] mem) {
+    if (Integer.bitCount(mask) == nums.length)
+      return Math.abs(last - nums[0]); // |perm[n - 1] - nums[perm[0]]|
+    if (mem[last][mask] &gt; 0)
+      return mem[last][mask];
+
+    int minScore = Integer.MAX_VALUE;
+    for (int i = 1; i &lt; nums.length; ++i) {
+      if ((mask &gt;&gt; i &amp; 1) == 1)
+        continue;
+      int nextMinScore = Math.abs(last - nums[i]) + getScore(nums, i, mask | 1 &lt;&lt; i, bestPick, mem);
+      if (nextMinScore &lt; minScore) {
+        minScore = nextMinScore;
+        bestPick[last][mask] = i;
+      }
+    }
+
+    return mem[last][mask] = minScore;
+  }
+
+  private int[] construct(int[][] bestPick) {
+    int[] ans = new int[bestPick.length];
+    int last = 0;
+    int mask = 1;
+    for (int i = 0; i &lt; bestPick.length; ++i) {
+      ans[i] = last;
+      last = bestPick[last][mask];
+      mask |= 1 &lt;&lt; last;
+    }
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findPermutation(self, nums: list[int]) -&gt; list[int]:
+    n = len(nums)
+    bestPick = [[0] * (1 &lt;&lt; n) for _ in range(n)]
+
+    @functools.lru_cache(None)
+    def getScore(last: int, mask: int) -&gt; int:
+      if mask.bit_count() == len(nums):
+        return abs(last - nums[0])
+
+      minScore = math.inf
+      for i in range(1, len(nums)):
+        if mask &gt;&gt; i &amp; 1:
+          continue
+        nextMinScore = abs(last - nums[i]) + getScore(i, mask | (1 &lt;&lt; i))
+        if nextMinScore &lt; minScore:
+          minScore = nextMinScore
+          bestPick[last][mask] = i
+
+      return minScore
+
+    getScore(0, 1)
+    return self._construct(bestPick)
+
+  def _construct(self, bestPick: list[list[int]]) -&gt; list[int]:
+    ans = []
+    last = 0
+    mask = 1
+    for _ in range(len(bestPick)):
+      ans.append(last)
+      last = bestPick[last][mask]
+      mask |= 1 &lt;&lt; last
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake in Matrix - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Snake in Matrix written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/snake-in-matrix/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-subsequences-with-odd-sum/" class="btn">← Previous</a>
+            <span>Problem 3248 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-the-number-of-good-nodes/" class="btn">Next →</a>
+        </div>
+        <h1>3248. Snake in Matrix</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Snake in Matrix efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int finalPositionOfSnake(int n, vector&lt;string&gt;&amp; commands) {
+    const unordered_map&lt;string, pair&lt;int, int&gt;&gt; directions = {
+        {&quot;UP&quot;, {-1, 0}},
+        {&quot;RIGHT&quot;, {0, 1}},
+        {&quot;DOWN&quot;, {1, 0}},
+        {&quot;LEFT&quot;, {0, -1}}};
+    int i = 0;
+    int j = 0;
+
+    for (const string&amp; command : commands) {
+      const auto&amp; [dx, dy] = directions.at(command);
+      i += dx;
+      j += dy;
+    }
+
+    return i * n + j;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int finalPositionOfSnake(int n, List&lt;String&gt; commands) {
+    Map&lt;String, int[]&gt; directions = Map.of(&quot;UP&quot;, new int[] {-1, 0},   //
+                                           &quot;RIGHT&quot;, new int[] {0, 1}, //
+                                           &quot;DOWN&quot;, new int[] {1, 0},  //
+                                           &quot;LEFT&quot;, new int[] {0, -1});
+    int i = 0;
+    int j = 0;
+
+    for (final String command : commands) {
+      int[] direction = directions.get(command);
+      i += direction[0];
+      j += direction[1];
+    }
+
+    return i * n + j;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def finalPositionOfSnake(self, n: int, commands: list[str]) -&gt; int:
+    directions = {
+        &quot;UP&quot;: (-1, 0),
+        &quot;RIGHT&quot;: (0, 1),
+        &quot;DOWN&quot;: (1, 0),
+        &quot;LEFT&quot;: (0, -1),
+    }
+    i = 0
+    j = 0
+
+    for command in commands:
+      dx, dy = directions[command]
+      i += dx
+      j += dy
+
+    return i * n + j</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

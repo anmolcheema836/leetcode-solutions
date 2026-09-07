@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Most Frequent Prime - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Most Frequent Prime written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/most-frequent-prime/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-length-of-the-longest-common-prefix/" class="btn">← Previous</a>
+            <span>Problem 3044 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-prefix-and-suffix-pairs-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3044. Most Frequent Prime</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Most Frequent Prime efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int mostFrequentPrime(vector&lt;vector&lt;int&gt;&gt;&amp; mat) {
+    constexpr int kDirs[8][2] = {{1, 0},  {1, -1}, {0, -1}, {-1, -1},
+                                 {-1, 0}, {-1, 1}, {0, 1},  {1, 1}};
+    const int m = mat.size();
+    const int n = mat[0].size();
+    int ans = -1;
+    int maxFreq = 0;
+    unordered_map&lt;int, int&gt; count;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (const auto&amp; [dx, dy] : kDirs) {
+          int num = 0;
+          for (int x = i, y = j; 0 &lt;= x &amp;&amp; x &lt; m &amp;&amp; 0 &lt;= y &amp;&amp; y &lt; n;
+               x += dx, y += dy) {
+            num = num * 10 + mat[x][y];
+            if (num &gt; 10 &amp;&amp; isPrime(num))
+              ++count[num];
+          }
+        }
+
+    for (const auto&amp; [prime, freq] : count)
+      if (freq &gt; maxFreq) {
+        ans = prime;
+        maxFreq = freq;
+      } else if (freq == maxFreq) {
+        ans = max(ans, prime);
+      }
+
+    return ans;
+  }
+
+ private:
+  bool isPrime(int num) {
+    for (int i = 2; i &lt; sqrt(num) + 1; ++i)
+      if (num % i == 0)
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int mostFrequentPrime(int[][] mat) {
+    final int[][] DIRS = {{1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+    final int m = mat.length;
+    final int n = mat[0].length;
+    int ans = -1;
+    int maxFreq = 0;
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int[] dir : DIRS) {
+          int num = 0;
+          int x = i;
+          int y = j;
+          while (0 &lt;= x &amp;&amp; x &lt; m &amp;&amp; 0 &lt;= y &amp;&amp; y &lt; n) {
+            num = num * 10 + mat[x][y];
+            if (num &gt; 10 &amp;&amp; isPrime(num))
+              count.merge(num, 1, Integer::sum);
+            x += dir[0];
+            y += dir[1];
+          }
+        }
+
+    for (Map.Entry&lt;Integer, Integer&gt; entry : count.entrySet()) {
+      final int prime = entry.getKey();
+      final int freq = entry.getValue();
+      if (freq &gt; maxFreq) {
+        ans = prime;
+        maxFreq = freq;
+      } else if (freq == maxFreq) {
+        ans = Math.max(ans, prime);
+      }
+    }
+
+    return ans;
+  }
+
+  private boolean isPrime(int num) {
+    for (int i = 2; i &lt; (int) Math.sqrt(num) + 1; ++i)
+      if (num % i == 0)
+        return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def mostFrequentPrime(self, mat: list[list[int]]) -&gt; int:
+    DIRS = ((1, 0), (1, -1), (0, -1), (-1, -1),
+            (-1, 0), (-1, 1), (0, 1), (1, 1))
+    m = len(mat)
+    n = len(mat[0])
+    count = collections.Counter()
+
+    def isPrime(num: int) -&gt; bool:
+      return not any(num % i == 0 for i in range(2, int(num**0.5 + 1)))
+
+    for i in range(m):
+      for j in range(n):
+        for dx, dy in DIRS:
+          num = 0
+          x = i
+          y = j
+          while 0 &lt;= x &lt; m and 0 &lt;= y &lt; n:
+            num = num * 10 + mat[x][y]
+            if num &gt; 10 and isPrime(num):
+              count[num] += 1
+            x += dx
+            y += dy
+
+    if not count.items():
+      return -1
+    return max(count.items(), key=lambda x: (x[1], x[0]))[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

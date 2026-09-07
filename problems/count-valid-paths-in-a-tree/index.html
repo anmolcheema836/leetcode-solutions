@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Valid Paths in a Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Valid Paths in a Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-valid-paths-in-a-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/beautiful-towers-ii/" class="btn">← Previous</a>
+            <span>Problem 2867 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-wording-game/" class="btn">Next →</a>
+        </div>
+        <h1>2867. Count Valid Paths in a Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Valid Paths in a Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long countPaths(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    long ans = 0;
+    const vector&lt;bool&gt; isPrime = sieveEratosthenes(n + 1);
+    vector&lt;vector&lt;int&gt;&gt; graph(n + 1);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    dfs(graph, 1, /*prev=*/-1, isPrime, ans);
+    return ans;
+  }
+
+ private:
+  pair&lt;long, long&gt; dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, int prev,
+                       const vector&lt;bool&gt;&amp; isPrime, long&amp; ans) {
+    long countZeroPrimePath = !isPrime[u];
+    long countOnePrimePath = isPrime[u];
+
+    for (const int v : graph[u]) {
+      if (v == prev)
+        continue;
+      const auto&amp; [countZeroPrimeChildPath, countOnePrimeChildPath] =
+          dfs(graph, v, u, isPrime, ans);
+      ans += countZeroPrimePath * countOnePrimeChildPath +
+             countOnePrimePath * countZeroPrimeChildPath;
+      if (isPrime[u]) {
+        countOnePrimePath += countZeroPrimeChildPath;
+      } else {
+        countZeroPrimePath += countZeroPrimeChildPath;
+        countOnePrimePath += countOnePrimeChildPath;
+      }
+    }
+
+    return {countZeroPrimePath, countOnePrimePath};
+  }
+
+  vector&lt;bool&gt; sieveEratosthenes(int n) {
+    vector&lt;bool&gt; isPrime(n, true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (isPrime[i])
+        for (int j = i * i; j &lt; n; j += i)
+          isPrime[j] = false;
+    return isPrime;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long countPaths(int n, int[][] edges) {
+    final boolean[] isPrime = sieveEratosthenes(n + 1);
+    List&lt;Integer&gt;[] graph = new List[n + 1];
+
+    for (int i = 1; i &lt;= n; ++i)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    dfs(graph, 1, /*prev=*/-1, isPrime);
+    return ans;
+  }
+
+  private long ans = 0;
+
+  private Pair&lt;Long, Long&gt; dfs(List&lt;Integer&gt;[] graph, int u, int prev, boolean[] isPrime) {
+    long countZeroPrimePath = isPrime[u] ? 0 : 1;
+    long countOnePrimePath = isPrime[u] ? 1 : 0;
+
+    for (final int v : graph[u]) {
+      if (v == prev)
+        continue;
+      Pair&lt;Long, Long&gt; pair = dfs(graph, v, u, isPrime);
+      final long countZeroPrimeChildPath = pair.getKey();
+      final long countOnePrimeChildPath = pair.getValue();
+      ans +=
+          countZeroPrimePath * countOnePrimeChildPath + countOnePrimePath * countZeroPrimeChildPath;
+      if (isPrime[u]) {
+        countOnePrimePath += countZeroPrimeChildPath;
+      } else {
+        countZeroPrimePath += countZeroPrimeChildPath;
+        countOnePrimePath += countOnePrimeChildPath;
+      }
+    }
+
+    return new Pair&lt;&gt;(countZeroPrimePath, countOnePrimePath);
+  }
+
+  private boolean[] sieveEratosthenes(int n) {
+    boolean[] isPrime = new boolean[n];
+    Arrays.fill(isPrime, true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (isPrime[i])
+        for (int j = i * i; j &lt; n; j += i)
+          isPrime[j] = false;
+    return isPrime;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countPaths(self, n: int, edges: list[list[int]]) -&gt; int:
+    ans = 0
+    isPrime = self._sieveEratosthenes(n + 1)
+    graph = [[] for _ in range(n + 1)]
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    def dfs(u: int, prev: int) -&gt; tuple[int, int]:
+      nonlocal ans
+      countZeroPrimePath = int(not isPrime[u])
+      countOnePrimePath = int(isPrime[u])
+
+      for v in graph[u]:
+        if v == prev:
+          continue
+        countZeroPrimeChildPath, countOnePrimeChildPath = dfs(v, u)
+        ans += (countZeroPrimePath * countOnePrimeChildPath +
+                countOnePrimePath * countZeroPrimeChildPath)
+        if isPrime[u]:
+          countOnePrimePath += countZeroPrimeChildPath
+        else:
+          countZeroPrimePath += countZeroPrimeChildPath
+          countOnePrimePath += countOnePrimeChildPath
+
+      return countZeroPrimePath, countOnePrimePath
+
+    dfs(1, -1)
+    return ans
+
+  def _sieveEratosthenes(self, n: int) -&gt; list[bool]:
+    isPrime = [True] * n
+    isPrime[0] = False
+    isPrime[1] = False
+    for i in range(2, int(n**0.5) + 1):
+      if isPrime[i]:
+        for j in range(i * i, n, i):
+          isPrime[j] = False
+    return isPrime</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

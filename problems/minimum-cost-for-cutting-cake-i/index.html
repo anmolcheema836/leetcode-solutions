@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost for Cutting Cake I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost for Cutting Cake I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-for-cutting-cake-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/delete-nodes-from-linked-list-present-in-array/" class="btn">← Previous</a>
+            <span>Problem 3218 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-for-cutting-cake-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3218. Minimum Cost for Cutting Cake I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost for Cutting Cake I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumCost(int m, int n, vector&lt;int&gt;&amp; horizontalCut,
+                  vector&lt;int&gt;&amp; verticalCut) {
+    int cost = 0;
+    int sumH = accumulate(horizontalCut.begin(), horizontalCut.end(), 0);
+    int sumV = accumulate(verticalCut.begin(), verticalCut.end(), 0);
+
+    ranges::sort(horizontalCut, greater&lt;&gt;());
+    ranges::sort(verticalCut, greater&lt;&gt;());
+
+    for (int i = 0, j = 0; i &lt; m - 1 &amp;&amp; j &lt; n - 1;)
+      if (horizontalCut[i] &gt; verticalCut[j]) {
+        cost += horizontalCut[i] + sumV;
+        sumH -= horizontalCut[i++];
+      } else {
+        cost += verticalCut[j] + sumH;
+        sumV -= verticalCut[j++];
+      }
+
+    return cost + sumH + sumV;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumCost(int m, int n, int[] horizontalCut, int[] verticalCut) {
+    int cost = 0;
+    int sumH = Arrays.stream(horizontalCut).sum();
+    int sumV = Arrays.stream(verticalCut).sum();
+
+    Arrays.sort(horizontalCut);
+    Arrays.sort(verticalCut);
+
+    for (int i = m - 2, j = n - 2; i &gt;= 0 &amp;&amp; j &gt;= 0;)
+      if (horizontalCut[i] &gt; verticalCut[j]) {
+        cost += horizontalCut[i] + sumV;
+        sumH -= horizontalCut[i--];
+      } else {
+        cost += verticalCut[j] + sumH;
+        sumV -= verticalCut[j--];
+      }
+
+    return cost + sumH + sumV;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumCost(
+      self,
+      m: int,
+      n: int,
+      horizontalCut: list[int],
+      verticalCut: list[int],
+  ) -&gt; int:
+    ans = 0
+    sumH = sum(horizontalCut)
+    sumV = sum(verticalCut)
+
+    horizontalCut.sort()
+    verticalCut.sort()
+
+    while horizontalCut and verticalCut:
+      if horizontalCut[-1] &gt; verticalCut[-1]:
+        ans += horizontalCut[-1] + sumV
+        sumH -= horizontalCut.pop()
+      else:
+        ans += verticalCut[-1] + sumH
+        sumV -= verticalCut.pop()
+
+    return ans + sumH + sumV</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

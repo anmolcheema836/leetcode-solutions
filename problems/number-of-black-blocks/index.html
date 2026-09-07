@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Black Blocks - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Black Blocks written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-black-blocks/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/partition-string-into-minimum-beautiful-substrings/" class="btn">← Previous</a>
+            <span>Problem 2768 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-maximum-achievable-number/" class="btn">Next →</a>
+        </div>
+        <h1>2768. Number of Black Blocks</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Black Blocks efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;long long&gt; countBlackBlocks(int m, int n,
+                                     vector&lt;vector&lt;int&gt;&gt;&amp; coordinates) {
+    vector&lt;long long&gt; ans(5);
+    // count[i * n + j] := the number of black cells in
+    // (i - 1, j - 1), (i - 1, j), (i, j - 1), (i, j)
+    unordered_map&lt;long, int&gt; count;
+
+    for (const vector&lt;int&gt;&amp; coordinate : coordinates) {
+      const int x = coordinate[0];
+      const int y = coordinate[1];
+      for (long i = x; i &lt; x + 2; ++i)
+        for (long j = y; j &lt; y + 2; ++j)
+          // 2 x 2 submatrix with right-bottom conner being (i, j) contains the
+          // current black cell (x, y).
+          if (i - 1 &gt;= 0 &amp;&amp; i &lt; m &amp;&amp; j - 1 &gt;= 0 &amp;&amp; j &lt; n)
+            ++count[i * n + j];
+    }
+
+    for (const auto&amp; [_, freq] : count)
+      ++ans[freq];
+
+    ans[0] = (m - 1L) * (n - 1) - accumulate(ans.begin(), ans.end(), 0L);
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long[] countBlackBlocks(int m, int n, int[][] coordinates) {
+    long[] ans = new long[5];
+    // count[i * n + j] := the number of black cells in
+    // (i - 1, j - 1), (i - 1, j), (i, j - 1), (i, j)
+    Map&lt;Long, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (int[] coordinate : coordinates) {
+      final int x = coordinate[0];
+      final int y = coordinate[1];
+      for (long i = x; i &lt; x + 2; ++i)
+        for (long j = y; j &lt; y + 2; ++j)
+          // 2 x 2 submatrix with right-bottom conner being (i, j) contains the
+          // current black cell (x, y).
+          if (i - 1 &gt;= 0 &amp;&amp; i &lt; m &amp;&amp; j - 1 &gt;= 0 &amp;&amp; j &lt; n)
+            count.merge(i * n + j, 1, Integer::sum);
+    }
+
+    for (final int freq : count.values())
+      ++ans[freq];
+
+    ans[0] = (m - 1L) * (n - 1) - Arrays.stream(ans).sum();
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countBlackBlocks(
+      self,
+      m: int,
+      n: int,
+      coordinates: list[list[int]],
+  ) -&gt; list[int]:
+    ans = [0] * 5
+    # count[i * n + j] := the number of black cells in
+    # (i - 1, j - 1), (i - 1, j), (i, j - 1), (i, j)
+    count = collections.Counter()
+
+    for x, y in coordinates:
+      for i in range(x, x + 2):
+        for j in range(y, y + 2):
+          # 2 x 2 submatrix with right-bottom conner being (i, j) contains the
+          # current black cell (x, y).
+          if 0 &lt; i &lt; m and 0 &lt; j &lt; n:
+            count[(i, j)] += 1
+
+    for freq in count.values():
+      ans[freq] += 1
+
+    ans[0] = (m - 1) * (n - 1) - sum(ans)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

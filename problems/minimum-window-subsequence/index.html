@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Window Subsequence - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Window Subsequence written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-window-subsequence/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-atoms/" class="btn">← Previous</a>
+            <span>Problem 727 of 3563</span>
+            <a href="/leetcode-solutions/problems/self-dividing-numbers/" class="btn">Next →</a>
+        </div>
+        <h1>727. Minimum Window Subsequence</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Window Subsequence efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string minWindow(string s1, string s2) {
+    const int m = s2.length();
+    const int n = s1.length();
+    // dp[i][j] := the start index (1-indexed) of the minimum window of s2[0..i)
+    // and s1[0..j).
+    vector&lt;vector&lt;int&gt;&gt; dp(m + 1, vector&lt;int&gt;(n + 1));
+
+    // Fill in the placeholder values.
+    for (int j = 0; j &lt;= n; ++j)
+      dp[0][j] = j + 1;
+
+    for (int i = 1; i &lt;= m; ++i)
+      for (int j = 1; j &lt;= n; ++j)
+        if (s2[i - 1] == s1[j - 1])
+          dp[i][j] = dp[i - 1][j - 1];
+        else
+          dp[i][j] = dp[i][j - 1];
+
+    int bestLeft = 0;
+    int minLength = INT_MAX;
+
+    for (int j = 1; j &lt;= n; ++j)
+      if (dp[m][j] &gt; 0 &amp;&amp; j - dp[m][j] + 1 &lt; minLength) {
+        bestLeft = dp[m][j] - 1;
+        minLength = j - dp[m][j] + 1;
+      }
+
+    return minLength == INT_MAX ? &quot;&quot; : s1.substr(bestLeft, minLength);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String minWindow(String s1, String s2) {
+    final int m = s2.length();
+    final int n = s1.length();
+    // dp[i][j] := the start index (1-indexed) of the minimum window of s2[0..i)
+    // and s1[0..j).
+    int[][] dp = new int[m + 1][n + 1];
+
+    // Fill in the placeholder values.
+    for (int j = 0; j &lt;= n; ++j)
+      dp[0][j] = j + 1;
+
+    for (int i = 1; i &lt;= m; ++i)
+      for (int j = 1; j &lt;= n; ++j)
+        if (s2.charAt(i - 1) == s1.charAt(j - 1))
+          dp[i][j] = dp[i - 1][j - 1];
+        else
+          dp[i][j] = dp[i][j - 1];
+
+    int bestLeft = 0;
+    int minLength = Integer.MAX_VALUE;
+
+    for (int j = 1; j &lt;= n; ++j)
+      if (dp[m][j] &gt; 0 &amp;&amp; j - dp[m][j] + 1 &lt; minLength) {
+        bestLeft = dp[m][j] - 1;
+        minLength = j - dp[m][j] + 1;
+      }
+
+    return minLength == Integer.MAX_VALUE ? &quot;&quot; : s1.substring(bestLeft, bestLeft + minLength);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using a Robot to Print the Lexicographically Smallest String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Using a Robot to Print the Lexicographically Smallest String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/using-a-robot-to-print-the-lexicographically-smallest-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-original-array-of-prefix-xor/" class="btn">← Previous</a>
+            <span>Problem 2434 of 3563</span>
+            <a href="/leetcode-solutions/problems/paths-in-matrix-whose-sum-is-divisible-by-k/" class="btn">Next →</a>
+        </div>
+        <h1>2434. Using a Robot to Print the Lexicographically Smallest String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Using a Robot to Print the Lexicographically Smallest String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string robotWithString(string s) {
+    string ans;
+    vector&lt;int&gt; count(26);
+    stack&lt;char&gt; stack;
+
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+
+    for (const char c : s) {
+      stack.push(c);
+      --count[c - &#x27;a&#x27;];
+      const char minChar = getMinChar(count);
+      while (!stack.empty() &amp;&amp; stack.top() &lt;= minChar)
+        ans += stack.top(), stack.pop();
+    }
+
+    while (!stack.empty())
+      ans += stack.top(), stack.pop();
+
+    return ans;
+  }
+
+ private:
+  char getMinChar(const vector&lt;int&gt;&amp; count) {
+    for (int i = 0; i &lt; 26; ++i)
+      if (count[i])
+        return &#x27;a&#x27; + i;
+    return &#x27;a&#x27;;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String robotWithString(String s) {
+    StringBuilder sb = new StringBuilder();
+    int[] count = new int[26];
+    Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;();
+
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    for (final char c : s.toCharArray()) {
+      stack.push(c);
+      --count[c - &#x27;a&#x27;];
+      final char minChar = getMinChar(count);
+      while (!stack.isEmpty() &amp;&amp; stack.peek() &lt;= minChar)
+        sb.append(stack.pop());
+    }
+
+    while (!stack.isEmpty())
+      sb.append(stack.pop());
+
+    return sb.toString();
+  }
+
+  private char getMinChar(int[] count) {
+    for (int i = 0; i &lt; 26; ++i)
+      if (count[i] &gt; 0)
+        return (char) (&#x27;a&#x27; + i);
+    return &#x27;a&#x27;;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def robotWithString(self, s: str) -&gt; str:
+    ans = []
+    count = collections.Counter(s)
+    stack = []
+
+    for c in s:
+      stack.append(c)
+      count[c] -= 1
+      minChar = self._getMinChar(count)
+      while stack and stack[-1] &lt;= minChar:
+        ans.append(stack.pop())
+
+    return &#x27;&#x27;.join(ans + stack[::-1])
+
+  def _getMinChar(self, count: list[int]) -&gt; str:
+    for c in string.ascii_lowercase:
+      if count[c]:
+        return c
+    return &#x27;a&#x27;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacific Atlantic Water Flow - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Pacific Atlantic Water Flow written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/pacific-atlantic-water-flow/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/partition-equal-subset-sum/" class="btn">← Previous</a>
+            <span>Problem 417 of 3563</span>
+            <a href="/leetcode-solutions/problems/sentence-screen-fitting/" class="btn">Next →</a>
+        </div>
+        <h1>417. Pacific Atlantic Water Flow</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Pacific Atlantic Water Flow efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; pacificAtlantic(vector&lt;vector&lt;int&gt;&gt;&amp; heights) {
+    const int m = heights.size();
+    const int n = heights[0].size();
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    vector&lt;vector&lt;bool&gt;&gt; seenP(m, vector&lt;bool&gt;(n));
+    vector&lt;vector&lt;bool&gt;&gt; seenA(m, vector&lt;bool&gt;(n));
+
+    for (int i = 0; i &lt; m; ++i) {
+      dfs(heights, i, 0, seenP);
+      dfs(heights, i, n - 1, seenA);
+    }
+
+    for (int j = 0; j &lt; n; ++j) {
+      dfs(heights, 0, j, seenP);
+      dfs(heights, m - 1, j, seenA);
+    }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (seenP[i][j] &amp;&amp; seenA[i][j])
+          ans.push_back({i, j});
+
+    return ans;
+  }
+
+ private:
+  void dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; heights, int i, int j,
+           vector&lt;vector&lt;bool&gt;&gt;&amp; seen, int h = 0) {
+    if (i &lt; 0 || i == heights.size() || j &lt; 0 || j == heights[0].size())
+      return;
+    if (seen[i][j] || heights[i][j] &lt; h)
+      return;
+
+    seen[i][j] = true;
+    dfs(heights, i + 1, j, seen, heights[i][j]);
+    dfs(heights, i - 1, j, seen, heights[i][j]);
+    dfs(heights, i, j + 1, seen, heights[i][j]);
+    dfs(heights, i, j - 1, seen, heights[i][j]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; pacificAtlantic(int[][] heights) {
+    final int m = heights.length;
+    final int n = heights[0].length;
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+    boolean[][] seenP = new boolean[m][n];
+    boolean[][] seenA = new boolean[m][n];
+
+    for (int i = 0; i &lt; m; ++i) {
+      dfs(heights, i, 0, 0, seenP);
+      dfs(heights, i, n - 1, 0, seenA);
+    }
+
+    for (int j = 0; j &lt; n; ++j) {
+      dfs(heights, 0, j, 0, seenP);
+      dfs(heights, m - 1, j, 0, seenA);
+    }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (seenP[i][j] &amp;&amp; seenA[i][j])
+          ans.add(new ArrayList&lt;&gt;(List.of(i, j)));
+
+    return ans;
+  }
+
+  private void dfs(final int[][] heights, int i, int j, int h, boolean[][] seen) {
+    if (i &lt; 0 || i == heights.length || j &lt; 0 || j == heights[0].length)
+      return;
+    if (seen[i][j] || heights[i][j] &lt; h)
+      return;
+
+    seen[i][j] = true;
+    dfs(heights, i + 1, j, heights[i][j], seen);
+    dfs(heights, i - 1, j, heights[i][j], seen);
+    dfs(heights, i, j + 1, heights[i][j], seen);
+    dfs(heights, i, j - 1, heights[i][j], seen);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def pacificAtlantic(self, heights: list[list[int]]) -&gt; list[list[int]]:
+    m = len(heights)
+    n = len(heights[0])
+    seenP = [[False] * n for _ in range(m)]
+    seenA = [[False] * n for _ in range(m)]
+
+    def dfs(i: int, j: int, h: int, seen: list[list[bool]]) -&gt; None:
+      if i &lt; 0 or i == m or j &lt; 0 or j == n:
+        return
+      if seen[i][j] or heights[i][j] &lt; h:
+        return
+
+      seen[i][j] = True
+      dfs(i + 1, j, heights[i][j], seen)
+      dfs(i - 1, j, heights[i][j], seen)
+      dfs(i, j + 1, heights[i][j], seen)
+      dfs(i, j - 1, heights[i][j], seen)
+
+    for i in range(m):
+      dfs(i, 0, 0, seenP)
+      dfs(i, n - 1, 0, seenA)
+
+    for j in range(n):
+      dfs(0, j, 0, seenP)
+      dfs(m - 1, j, 0, seenA)
+
+    return [[i, j]
+            for i in range(m)
+            for j in range(n)
+            if seenP[i][j] and seenA[i][j]]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

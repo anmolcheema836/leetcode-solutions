@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallest Rectangle Enclosing Black Pixels - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Smallest Rectangle Enclosing Black Pixels written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/smallest-rectangle-enclosing-black-pixels/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/remove-invalid-parentheses/" class="btn">← Previous</a>
+            <span>Problem 302 of 3563</span>
+            <a href="/leetcode-solutions/problems/range-sum-query-immutable/" class="btn">Next →</a>
+        </div>
+        <h1>302. Smallest Rectangle Enclosing Black Pixels</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Smallest Rectangle Enclosing Black Pixels efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minArea(vector&lt;vector&lt;char&gt;&gt;&amp; image, int x, int y) {
+    const int x1 = firstAnyOne(image, 0, x, &amp;rowAllZeros);
+    const int x2 = firstAllZeros(image, x + 1, image.size(), &amp;rowAllZeros);
+    const int y1 = firstAnyOne(image, 0, y, &amp;colAllZeros);
+    const int y2 = firstAllZeros(image, y + 1, image[0].size(), &amp;colAllZeros);
+    return (x2 - x1) * (y2 - y1);
+  }
+
+ private:
+  int firstAnyOne(const vector&lt;vector&lt;char&gt;&gt;&amp; image, int l, int r,
+                  function&lt;bool(const vector&lt;vector&lt;char&gt;&gt;&amp;, int)&gt; allZeros) {
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (allZeros(image, m))
+        l = m + 1;
+      else
+        r = m;
+    }
+    return l;
+  }
+
+  int firstAllZeros(const vector&lt;vector&lt;char&gt;&gt;&amp; image, int l, int r,
+                    function&lt;bool(const vector&lt;vector&lt;char&gt;&gt;&amp;, int)&gt; allZeros) {
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (allZeros(image, m))
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+
+  static bool rowAllZeros(const vector&lt;vector&lt;char&gt;&gt;&amp; image, int rowIndex) {
+    return all_of(image[rowIndex].cbegin(), image[rowIndex].cend(),
+                  [](int pixel) { return pixel == &#x27;0&#x27;; });
+  }
+
+  static bool colAllZeros(const vector&lt;vector&lt;char&gt;&gt;&amp; image, int colIndex) {
+    for (int i = 0; i &lt; image.size(); ++i)
+      if (image[i][colIndex] == &#x27;1&#x27;)
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minArea(char[][] image, int x, int y) {
+    this.image = image;
+    final int x1 = firstAnyOne(0, x, rowAllZeros);
+    final int x2 = firstAllZeros(x + 1, image.length, rowAllZeros);
+    final int y1 = firstAnyOne(0, y, colAllZeros);
+    final int y2 = firstAllZeros(y + 1, image[0].length, colAllZeros);
+    return (x2 - x1) * (y2 - y1);
+  }
+
+  private char[][] image;
+
+  private int firstAnyOne(int l, int r, Function&lt;Integer, Boolean&gt; allZeros) {
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (allZeros.apply(m))
+        l = m + 1;
+      else
+        r = m;
+    }
+    return l;
+  }
+
+  private int firstAllZeros(int l, int r, Function&lt;Integer, Boolean&gt; allZeros) {
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (allZeros.apply(m))
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+
+  Function&lt;Integer, Boolean&gt; rowAllZeros = new Function&lt;&gt;() {
+    public Boolean apply(Integer rowIndex) {
+      return new String(image[rowIndex]).chars().allMatch(pixel -&gt; pixel == &#x27;0&#x27;);
+    }
+  };
+
+  Function&lt;Integer, Boolean&gt; colAllZeros = new Function&lt;&gt;() {
+    public Boolean apply(Integer colIndex) {
+      for (int i = 0; i &lt; image.length; ++i)
+        if (image[i][colIndex] == &#x27;1&#x27;)
+          return false;
+      return true;
+    }
+  };
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minArea(self, image: list[list[str]], x: int, y: int) -&gt; int:
+    def firstAnyOne(l: int, r: int, allZeros: Callable[[int], bool]) -&gt; int:
+      while l &lt; r:
+        m = (l + r) // 2
+        if allZeros(m):
+          l = m + 1
+        else:
+          r = m
+      return l
+
+    def firstAllZeros(l: int, r: int, allZeros: Callable[[int], bool]) -&gt; int:
+      while l &lt; r:
+        m = (l + r) // 2
+        if allZeros(m):
+          r = m
+        else:
+          l = m + 1
+      return l
+
+    def colAllZeros(colIndex: int) -&gt; bool:
+      return all(pixel == &#x27;0&#x27; for pixel in list(zip(*image))[colIndex])
+
+    def rowAllZeros(rowIndex: int) -&gt; bool:
+      return all(pixel == &#x27;0&#x27; for pixel in image[rowIndex])
+
+    x1 = firstAnyOne(0, x, rowAllZeros)
+    x2 = firstAllZeros(x + 1, len(image), rowAllZeros)
+    y1 = firstAnyOne(0, y, colAllZeros)
+    y2 = firstAllZeros(y + 1, len(image[0]), colAllZeros)
+    return (x2 - x1) * (y2 - y1)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

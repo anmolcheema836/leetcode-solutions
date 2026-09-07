@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Substrings With Equal Digit Frequency - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Unique Substrings With Equal Digit Frequency written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/unique-substrings-with-equal-digit-frequency/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/" class="btn">← Previous</a>
+            <span>Problem 2168 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-operations-to-obtain-zero/" class="btn">Next →</a>
+        </div>
+        <h1>2168. Unique Substrings With Equal Digit Frequency</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Unique Substrings With Equal Digit Frequency efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int equalDigitFrequency(string s) {
+    vector&lt;vector&lt;int&gt;&gt; counts;  // counts[i] := the counter map of s[0..i]
+    vector&lt;int&gt; count(10);
+    vector&lt;long&gt; pows{1};  // pows[i] := kBase^i % kHash
+    // hash[i] = the hash of the first i letters of s, where hash[i] =
+    // (26^(i - 1) * s[0] + 26^(i - 2) * s[1] + ... + s[i - 1]) % kHash
+    vector&lt;long&gt; hash{0};
+    unordered_set&lt;int&gt; seen;
+
+    for (const char c : s) {
+      ++count[c - &#x27;0&#x27;];
+      counts.push_back(count);
+      pows.push_back(pows.back() * kBase % kHash);
+      hash.push_back((hash.back() * kBase + val(c)) % kHash);
+    }
+
+    for (int i = 0; i &lt; s.length(); ++i)
+      for (int j = i; j &lt; s.length(); ++j)
+        if (isSameFreq(counts, i, j))
+          seen.insert(getRollingHash(i, j + 1, hash, pows));
+
+    return seen.size();
+  }
+
+ private:
+  static constexpr int kMax = 1001;
+  static constexpr int kBase = 11;
+  static constexpr int kHash = 1&#x27;000&#x27;000&#x27;007;
+
+  static constexpr int val(char c) {
+    return c - &#x27;0&#x27; + 1;
+  }
+
+  // Returns true if s[i..j] has the same digit frequency.j
+  bool isSameFreq(const vector&lt;vector&lt;int&gt;&gt;&amp; counts, int i, int j) {
+    vector&lt;int&gt; count = counts[j];
+    if (i &gt; 0)
+      for (int num = 0; num &lt; 10; ++num)
+        count[num] -= counts[i - 1][num];
+    return equalFreq(count);
+  }
+
+  bool equalFreq(const vector&lt;int&gt;&amp; count) {
+    int minfreq = kMax;
+    int maxfreq = 0;
+    for (const int freq : count)
+      if (freq &gt; 0) {
+        minfreq = min(minfreq, freq);
+        maxfreq = max(maxfreq, freq);
+      }
+    return minfreq == maxfreq;
+  }
+
+  // Returns the rolling hash of s[l..r).
+  int getRollingHash(int l, int r, const vector&lt;long&gt;&amp; hash,
+                     const vector&lt;long&gt;&amp; pows) {
+    const long h = (hash[r] - hash[l] * pows[r - l]) % kHash;
+    return h &lt; 0 ? h + kHash : h;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int equalDigitFrequency(String s) {
+    final int n = s.length();
+    int[][] counts = new int[n][]; // counts[i] := the counter map of s[0..i]
+    int[] count = new int[10];
+    long[] pows = new long[n + 1]; // pows[i] := BASE^i % HASH
+    // hash[i] = the hash of the first i letters of s, where hash[i] =
+    // (26^(i - 1) * s[0] + 26^(i - 2) * s[1] + ... + s[i - 1]) % HASH
+    long[] hash = new long[n + 1];
+    Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+
+    pows[0] = 1;
+
+    for (int i = 0; i &lt; n; ++i) {
+      ++count[s.charAt(i) - &#x27;0&#x27;];
+      counts[i] = count.clone();
+      pows[i + 1] = pows[i] * BASE % HASH;
+      hash[i + 1] = (hash[i] * BASE + val(s.charAt(i))) % HASH;
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i; j &lt; n; ++j)
+        if (isSameFreq(counts, i, j))
+          seen.add(getRollingHash(i, j + 1, hash, pows));
+
+    return seen.size();
+  }
+
+  private static final int MAX = 1001;
+  private static final int BASE = 11;
+  private static final int HASH = 1_000_000_007;
+
+  private static int val(char c) {
+    return c - &#x27;0&#x27; + 1;
+  }
+
+  // Returns true if s[i..j] has the same digit frequency.j
+  private boolean isSameFreq(int[][] counts, int i, int j) {
+    int[] count = counts[j].clone();
+    if (i &gt; 0)
+      for (int num = 0; num &lt; 10; ++num)
+        count[num] -= counts[i - 1][num];
+    return equalFreq(count);
+  }
+
+  private boolean equalFreq(int[] count) {
+    int minfreq = MAX;
+    int maxfreq = 0;
+    for (final int freq : count)
+      if (freq &gt; 0) {
+        minfreq = Math.min(minfreq, freq);
+        maxfreq = Math.max(maxfreq, freq);
+      }
+    return minfreq == maxfreq;
+  }
+
+  // Returns the rolling hash of s[l..r).
+  private int getRollingHash(int l, int r, long[] hash, long[] pows) {
+    final long h = (hash[r] - hash[l] * pows[r - l]) % HASH;
+    return (int) (h &lt; 0 ? h + HASH : h);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def equalDigitFrequency(self, s: str) -&gt; int:
+    BASE = 11
+    HASH = 1_000_000_007
+    counts: list[dict] = []  # counts[i] := the counter map of s[0..i]
+    count = collections.Counter()
+    pows = [1]  # pows[i] := BASE^i % HASH
+    # hash[i] = the hash of the first i letters of s, where hash[i] =
+    # (26^(i - 1) * s[0] + 26^(i - 2) * s[1] + ... + s[i - 1]) % HASH
+    hash = [0]
+
+    def val(c: str) -&gt; int:
+      return int(c) + 1
+
+    for c in s:
+      count[c] += 1
+      counts.append(count.copy())
+      pows.append(pows[-1] * BASE % HASH)
+      hash.append((hash[-1] * BASE + val(c)) % HASH)
+
+    def getRollingHash(l: int, r: int) -&gt; int:
+      &quot;&quot;&quot;Returns the rolling hash of s[l..r).&quot;&quot;&quot;
+      h = (hash[r] - hash[l] * pows[r - l]) % HASH
+      return h + HASH if h &lt; 0 else h
+
+    return len({getRollingHash(i, j + 1)
+                for i in range(len(s))
+                for j in range(i, len(s))
+                if self._isSameFreq(counts, i, j)})
+
+  def _isSameFreq(self, counts: list[dict], i: int, j: int) -&gt; bool:
+    count = counts[j].copy()
+    if i &gt; 0:
+      for c, freq in counts[i - 1].items():
+        count[c] -= freq
+        if count[c] == 0:
+          del count[c]
+    return min(count.values()) == max(count.values())</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

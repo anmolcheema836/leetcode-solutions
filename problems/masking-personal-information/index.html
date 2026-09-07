@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masking Personal Information - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Masking Personal Information written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/masking-personal-information/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/positions-of-large-groups/" class="btn">← Previous</a>
+            <span>Problem 831 of 3563</span>
+            <a href="/leetcode-solutions/problems/flipping-an-image/" class="btn">Next →</a>
+        </div>
+        <h1>831. Masking Personal Information</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Masking Personal Information efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string maskPII(string s) {
+    const int atIndex = s.find(&#x27;@&#x27;);
+    if (atIndex != string::npos) {
+      ranges::transform(s, s.begin(), ::tolower);
+      return s.substr(0, 1) + &quot;*****&quot; + s.substr(atIndex - 1);
+    }
+
+    string ans;
+    for (const char c : s)
+      if (isdigit(c))
+        ans += c;
+
+    if (ans.length() == 10)
+      return &quot;***-***-&quot; + ans.substr(ans.length() - 4);
+    return &#x27;+&#x27; + string(ans.length() - 10, &#x27;*&#x27;) + &quot;-***-***-&quot; +
+           ans.substr(ans.length() - 4);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String maskPII(String s) {
+    final int atIndex = s.indexOf(&#x27;@&#x27;);
+    if (atIndex &gt; 0) {
+      s = s.toLowerCase();
+      return s.charAt(0) + &quot;*****&quot; + s.substring(atIndex - 1);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (final char c : s.toCharArray())
+      if (Character.isDigit(c))
+        sb.append(c);
+
+    if (sb.length() == 10)
+      return &quot;***-***-&quot; + sb.substring(sb.length() - 4).toString();
+    return &#x27;+&#x27; + &quot;*&quot;.repeat(sb.length() - 10) + &quot;-***-***-&quot; +
+        sb.substring(sb.length() - 4).toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maskPII(self, s: str) -&gt; str:
+    atIndex = s.find(&#x27;@&#x27;)
+    if atIndex != -1:
+      s = s.lower()
+      return s[0] + &#x27;*&#x27; * 5 + s[atIndex - 1:]
+
+    ans = &#x27;&#x27;.join(c for c in s if c.isdigit())
+
+    if len(ans) == 10:
+      return &#x27;***-***-&#x27; + ans[-4:]
+    return &#x27;+&#x27; + &#x27;*&#x27; * (len(ans) - 10) + &#x27;-***-***-&#x27; + ans[-4:]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

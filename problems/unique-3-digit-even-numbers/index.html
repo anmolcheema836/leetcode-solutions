@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique 3-Digit Even Numbers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Unique 3-Digit Even Numbers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/unique-3-digit-even-numbers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/analyze-organization-hierarchy/" class="btn">← Previous</a>
+            <span>Problem 3483 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-spreadsheet/" class="btn">Next →</a>
+        </div>
+        <h1>3483. Unique 3-Digit Even Numbers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Unique 3-Digit Even Numbers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int totalNumbers(vector&lt;int&gt;&amp; digits) {
+    unordered_set&lt;int&gt; nums;
+    vector&lt;int&gt; perm = digits;
+
+    ranges::sort(perm);
+
+    do {
+      const int a = perm[0];
+      const int b = perm[1];
+      const int c = perm[2];
+      if (a != 0 &amp;&amp; c % 2 == 0)
+        nums.insert(a * 100 + b * 10 + c);
+    } while (next_permutation(perm.begin(), perm.end()));
+
+    return nums.size();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int totalNumbers(int[] digits) {
+    Set&lt;Integer&gt; nums = new HashSet&lt;&gt;();
+    int[] perm = digits.clone();
+
+    Arrays.sort(perm);
+
+    do {
+      final int a = perm[0];
+      final int b = perm[1];
+      final int c = perm[2];
+      if (a != 0 &amp;&amp; c % 2 == 0) {
+        nums.add(a * 100 + b * 10 + c);
+      }
+    } while (nextPermutation(perm));
+
+    return nums.size();
+  }
+
+  private boolean nextPermutation(int[] nums) {
+    final int n = nums.length;
+
+    // From the back to the front, find the first num &lt; nums[i + 1].
+    int i;
+    for (i = n - 2; i &gt;= 0; --i)
+      if (nums[i] &lt; nums[i + 1])
+        break;
+
+    if (i &lt; 0)
+      return false;
+
+    // From the back to the front, find the first num &gt; nums[i] and swap it with
+    // nums[i].
+    for (int j = n - 1; j &gt; i; --j)
+      if (nums[j] &gt; nums[i]) {
+        swap(nums, i, j);
+        break;
+      }
+
+    // Reverse nums[i + 1..n - 1].
+    reverse(nums, i + 1, n - 1);
+    return true;
+  }
+
+  private void reverse(int[] nums, int l, int r) {
+    while (l &lt; r)
+      swap(nums, l++, r--);
+  }
+
+  private void swap(int[] nums, int i, int j) {
+    final int temp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = temp;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def totalNumbers(self, digits: list[int]) -&gt; int:
+    nums = set()
+
+    for a, b, c in itertools.permutations(digits, 3):
+      if a != 0 and c % 2 == 0:
+        nums.add(a * 100 + b * 10 + c)
+
+    return len(nums)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

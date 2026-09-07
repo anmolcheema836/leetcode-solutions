@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manhattan Distances of All Arrangements of Pieces - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Manhattan Distances of All Arrangements of Pieces written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/manhattan-distances-of-all-arrangements-of-pieces/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-special-path/" class="btn">← Previous</a>
+            <span>Problem 3426 of 3563</span>
+            <a href="/leetcode-solutions/problems/sum-of-variable-length-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>3426. Manhattan Distances of All Arrangements of Pieces</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Manhattan Distances of All Arrangements of Pieces efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int distanceSum(int m, int n, int k) {
+    // For each distance d, where 1 &lt; d &lt; m, there are `m - d` ways to choose
+    // the two columns that the two pieces are on. For each of the two pieces,
+    // there are `n` ways to choose the row that the piece is on.
+    // Therefore, the contribution of row differences is
+    //   sum(d * (m - d) * n^2), where 1 &lt; d &lt;= m - 1
+    // = n^2 * sum(d * m - d^2)
+    // = n^2 * (d * m * (m - 1) / 2 - m * (m - 1) * (2m - 1) / 6)
+    // = n^2 * (m^3 - m) / 6
+    // Similarly, the contribution of column differences is
+    //   m^2 * (n^3 - n) / 6
+    const int rowContrib = 1L * n * n * (1L * m * m * m - m) / 6 % kMod;
+    const int colContrib = 1L * m * m * (1L * n * n * n - n) / 6 % kMod;
+    return (rowContrib + colContrib) * nCk(m * n - 2, k - 2) % kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  long nCk(int n, int k) {
+    long res = 1;
+    for (int i = 1; i &lt;= k; ++i)
+      // By Fermat&#x27;s little theorem.
+      res = res * (n - i + 1) % kMod * modPow(i, kMod - 2) % kMod;
+    return res;
+  }
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int distanceSum(int m, int n, int k) {
+    final long rowContrib = 1L * n * n * (1L * m * m * m - m) / 6 % MOD;
+    final long colContrib = 1L * m * m * (1L * n * n * n - n) / 6 % MOD;
+    return (int) ((rowContrib + colContrib) % MOD * nCk(m * n - 2, k - 2) % MOD);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private long nCk(int n, int k) {
+    long res = 1;
+    for (int i = 1; i &lt;= k; ++i)
+      // By Fermat&#x27;s little theorem.
+      res = res * (n - i + 1) % MOD * modPow(i, MOD - 2) % MOD;
+    return res;
+  }
+
+  private long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x, n - 1) % MOD;
+    return modPow(x * x % MOD, n / 2);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def distanceSum(self, m: int, n: int, k: int) -&gt; int:
+    # For each distance d, where 1 &lt; d &lt; m, there are `m - d` ways to choose
+    # the two columns that the two pieces are on. For each of the two pieces,
+    # there are `n` ways to choose the row that the piece is on.
+    # Therefore, the contribution of row differences is
+    #   sum(d * (m - d) * n^2), where 1 &lt; d &lt;= m - 1
+    # = n^2 * sum(d * m - d^2)
+    # = n^2 * (d * m * (m - 1) / 2 - m * (m - 1) * (2m - 1) / 6)
+    # = n^2 * (m^3 - m) / 6
+    # Similarly, the contribution of column differences is
+    #   m^2 * (n^3 - n) / 6
+    MOD = 1_000_000_007
+    return (n**2 * (m**3 - m) // 6 +
+            m**2 * (n**3 - n) // 6) * math.comb(m * n - 2, k - 2) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

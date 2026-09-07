@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Bitset - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Bitset written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-bitset/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/smallest-value-of-the-rearranged-number/" class="btn">← Previous</a>
+            <span>Problem 2166 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/" class="btn">Next →</a>
+        </div>
+        <h1>2166. Design Bitset</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Bitset efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Bitset {
+ public:
+  Bitset(int size) : s(size, &#x27;0&#x27;), r(size, &#x27;1&#x27;) {}
+
+  void fix(int idx) {
+    if (s[idx] == &#x27;0&#x27;)
+      ++cnt;
+    s[idx] = &#x27;1&#x27;;
+    r[idx] = &#x27;0&#x27;;
+  }
+
+  void unfix(int idx) {
+    if (s[idx] == &#x27;1&#x27;)
+      --cnt;
+    s[idx] = &#x27;0&#x27;;
+    r[idx] = &#x27;1&#x27;;
+  }
+
+  void flip() {
+    swap(s, r);
+    cnt = s.length() - cnt;
+  }
+
+  bool all() {
+    return cnt == s.length();
+  }
+
+  bool one() {
+    return cnt;
+  }
+
+  int count() {
+    return cnt;
+  }
+
+  string toString() {
+    return s;
+  }
+
+ private:
+  string s;  // the original
+  string r;  // the reversed
+  int cnt = 0;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Bitset {
+  public Bitset(int size) {
+    for (int i = 0; i &lt; size; ++i) {
+      sb.append(&#x27;0&#x27;);
+      rb.append(&#x27;1&#x27;);
+    }
+  }
+
+  public void fix(int idx) {
+    if (sb.charAt(idx) == &#x27;0&#x27;)
+      ++cnt;
+    sb.setCharAt(idx, &#x27;1&#x27;);
+    rb.setCharAt(idx, &#x27;0&#x27;);
+  }
+
+  public void unfix(int idx) {
+    if (sb.charAt(idx) == &#x27;1&#x27;)
+      --cnt;
+    sb.setCharAt(idx, &#x27;0&#x27;);
+    rb.setCharAt(idx, &#x27;1&#x27;);
+  }
+
+  public void flip() {
+    StringBuilder temp = sb;
+    sb = rb;
+    rb = temp;
+    cnt = sb.length() - cnt;
+  }
+
+  public boolean all() {
+    return cnt == sb.length();
+  }
+
+  public boolean one() {
+    return cnt &gt; 0;
+  }
+
+  public int count() {
+    return cnt;
+  }
+
+  public String toString() {
+    return sb.toString();
+  }
+
+  private StringBuilder sb = new StringBuilder(); // the original
+  private StringBuilder rb = new StringBuilder(); // the reversed
+  private int cnt = 0;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Bitset:
+  def __init__(self, size: int):
+    self.s = [&#x27;0&#x27;] * size  # the original
+    self.r = [&#x27;1&#x27;] * size  # the reversed
+    self.cnt = 0
+
+  def fix(self, idx: int) -&gt; None:
+    if self.s[idx] == &#x27;0&#x27;:
+      self.cnt += 1
+    self.s[idx] = &#x27;1&#x27;
+    self.r[idx] = &#x27;0&#x27;
+
+  def unfix(self, idx: int) -&gt; None:
+    if self.s[idx] == &#x27;1&#x27;:
+      self.cnt -= 1
+    self.s[idx] = &#x27;0&#x27;
+    self.r[idx] = &#x27;1&#x27;
+
+  def flip(self) -&gt; None:
+    self.s, self.r = self.r, self.s
+    self.cnt = len(self.s) - self.cnt
+
+  def all(self) -&gt; bool:
+    return self.cnt == len(self.s)
+
+  def one(self) -&gt; bool:
+    return self.cnt
+
+  def count(self) -&gt; int:
+    return self.cnt
+
+  def toString(self) -&gt; str:
+    return &#x27;&#x27;.join(self.s)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

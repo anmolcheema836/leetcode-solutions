@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amount of Time for Binary Tree to Be Infected - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Amount of Time for Binary Tree to Be Infected written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/amount-of-time-for-binary-tree-to-be-infected/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-palindromic-number/" class="btn">← Previous</a>
+            <span>Problem 2385 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-k-sum-of-an-array/" class="btn">Next →</a>
+        </div>
+        <h1>2385. Amount of Time for Binary Tree to Be Infected</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Amount of Time for Binary Tree to Be Infected efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int amountOfTime(TreeNode* root, int start) {
+    int ans = -1;
+    const unordered_map&lt;int, vector&lt;int&gt;&gt; graph = getGraph(root);
+    queue&lt;int&gt; q{{start}};
+    unordered_set&lt;int&gt; seen{start};
+
+    for (; !q.empty(); ++ans) {
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const int u = q.front();
+        q.pop();
+        if (!graph.contains(u))
+          continue;
+        for (const int v : graph.at(u)) {
+          if (seen.contains(v))
+            continue;
+          q.push(v);
+          seen.insert(v);
+        }
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  unordered_map&lt;int, vector&lt;int&gt;&gt; getGraph(TreeNode* root) {
+    unordered_map&lt;int, vector&lt;int&gt;&gt; graph;
+    queue&lt;pair&lt;TreeNode*, int&gt;&gt; q{{{root, -1}}};  // (node, parent)
+
+    while (!q.empty()) {
+      const auto [node, parent] = q.front();
+      q.pop();
+      if (parent != -1) {
+        graph[parent].push_back(node-&gt;val);
+        graph[node-&gt;val].push_back(parent);
+      }
+      if (node-&gt;left)
+        q.emplace(node-&gt;left, node-&gt;val);
+      if (node-&gt;right)
+        q.emplace(node-&gt;right, node-&gt;val);
+    }
+
+    return graph;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int amountOfTime(TreeNode root, int start) {
+    int ans = -1;
+    Map&lt;Integer, List&lt;Integer&gt;&gt; graph = getGraph(root);
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;(List.of(start));
+    Set&lt;Integer&gt; seen = new HashSet&lt;&gt;(Arrays.asList(start));
+
+    for (; !q.isEmpty(); ++ans) {
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int u = q.poll();
+        if (!graph.containsKey(u))
+          continue;
+        for (final int v : graph.get(u)) {
+          if (seen.contains(v))
+            continue;
+          q.offer(v);
+          seen.add(v);
+        }
+      }
+    }
+
+    return ans;
+  }
+
+  private Map&lt;Integer, List&lt;Integer&gt;&gt; getGraph(TreeNode root) {
+    Map&lt;Integer, List&lt;Integer&gt;&gt; graph = new HashMap&lt;&gt;();
+    // (node, parent)
+    Queue&lt;Pair&lt;TreeNode, Integer&gt;&gt; q = new ArrayDeque&lt;&gt;(List.of(new Pair&lt;&gt;(root, -1)));
+
+    while (!q.isEmpty()) {
+      Pair&lt;TreeNode, Integer&gt; pair = q.poll();
+      TreeNode node = pair.getKey();
+      final int parent = pair.getValue();
+      if (parent != -1) {
+        graph.putIfAbsent(parent, new ArrayList&lt;&gt;());
+        graph.putIfAbsent(node.val, new ArrayList&lt;&gt;());
+        graph.get(parent).add(node.val);
+        graph.get(node.val).add(parent);
+      }
+      if (node.left != null)
+        q.add(new Pair&lt;&gt;(node.left, node.val));
+      if (node.right != null)
+        q.add(new Pair&lt;&gt;(node.right, node.val));
+    }
+
+    return graph;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def amountOfTime(self, root: TreeNode | None, start: int) -&gt; int:
+    ans = -1
+    graph = self._getGraph(root)
+    q = collections.deque([start])
+    seen = {start}
+
+    while q:
+      ans += 1
+      for _ in range(len(q)):
+        u = q.popleft()
+        if u not in graph:
+          continue
+        for v in graph[u]:
+          if v in seen:
+            continue
+          q.append(v)
+          seen.add(v)
+
+    return ans
+
+  def _getGraph(self, root: TreeNode | None) -&gt; dict[int, list[int]]:
+    graph = collections.defaultdict(list)
+    q = collections.deque([(root, -1)])  # (node, parent)
+
+    while q:
+      node, parent = q.popleft()
+      if parent != -1:
+        graph[parent].append(node.val)
+        graph[node.val].append(parent)
+      if node.left:
+        q.append((node.left, node.val))
+      if node.right:
+        q.append((node.right, node.val))
+
+    return graph</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

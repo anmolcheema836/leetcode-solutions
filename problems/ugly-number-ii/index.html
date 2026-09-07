@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ugly Number II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Ugly Number II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/ugly-number-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/ugly-number/" class="btn">← Previous</a>
+            <span>Problem 264 of 3563</span>
+            <a href="/leetcode-solutions/problems/paint-house-ii/" class="btn">Next →</a>
+        </div>
+        <h1>264. Ugly Number II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Ugly Number II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int nthUglyNumber(int n) {
+    vector&lt;int&gt; uglyNums{1};
+    int i2 = 0;
+    int i3 = 0;
+    int i5 = 0;
+
+    while (uglyNums.size() &lt; n) {
+      const int next2 = uglyNums[i2] * 2;
+      const int next3 = uglyNums[i3] * 3;
+      const int next5 = uglyNums[i5] * 5;
+      const int next = min({next2, next3, next5});
+      if (next == next2)
+        ++i2;
+      if (next == next3)
+        ++i3;
+      if (next == next5)
+        ++i5;
+      uglyNums.push_back(next);
+    }
+
+    return uglyNums.back();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int nthUglyNumber(int n) {
+    List&lt;Integer&gt; uglyNums = new ArrayList&lt;&gt;();
+    uglyNums.add(1);
+    int i2 = 0;
+    int i3 = 0;
+    int i5 = 0;
+
+    while (uglyNums.size() &lt; n) {
+      final int next2 = uglyNums.get(i2) * 2;
+      final int next3 = uglyNums.get(i3) * 3;
+      final int next5 = uglyNums.get(i5) * 5;
+      final int next = Math.min(next2, Math.min(next3, next5));
+      if (next == next2)
+        ++i2;
+      if (next == next3)
+        ++i3;
+      if (next == next5)
+        ++i5;
+      uglyNums.add(next);
+    }
+
+    return uglyNums.get(uglyNums.size() - 1);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def nthUglyNumber(self, n: int) -&gt; int:
+    nums = [1]
+    i2 = 0
+    i3 = 0
+    i5 = 0
+
+    while len(nums) &lt; n:
+      next2 = nums[i2] * 2
+      next3 = nums[i3] * 3
+      next5 = nums[i5] * 5
+      next = min(next2, next3, next5)
+      if next == next2:
+        i2 += 1
+      if next == next3:
+        i3 += 1
+      if next == next5:
+        i5 += 1
+      nums.append(next)
+
+    return nums[-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

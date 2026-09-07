@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Bridge - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shortest Bridge written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shortest-bridge/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-recent-calls/" class="btn">← Previous</a>
+            <span>Problem 934 of 3563</span>
+            <a href="/leetcode-solutions/problems/knight-dialer/" class="btn">Next →</a>
+        </div>
+        <h1>934. Shortest Bridge</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shortest Bridge efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int shortestBridge(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    const int n = grid.size();
+    queue&lt;pair&lt;int, int&gt;&gt; q;
+
+    markGridTwo(grid, q);
+
+    for (int ans = 0; !q.empty(); ++ans)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [i, j] = q.front();
+        q.pop();
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (x &lt; 0 || x == n || y &lt; 0 || y == n)
+            continue;
+          if (grid[x][y] == 2)
+            continue;
+          if (grid[x][y] == 1)
+            return ans;
+          grid[x][y] = 2;
+          q.emplace(x, y);
+        }
+      }
+
+    throw;
+  }
+
+ private:
+  // Marks one group to 2s by DFS.
+  void markGridTwo(vector&lt;vector&lt;int&gt;&gt;&amp; grid, queue&lt;pair&lt;int, int&gt;&gt;&amp; q) {
+    for (int i = 0; i &lt; grid.size(); ++i)
+      for (int j = 0; j &lt; grid[0].size(); ++j)
+        if (grid[i][j] == 1) {
+          markGridTwo(grid, i, j, q);
+          return;
+        }
+  }
+
+  // Marks one group to 2s by DFS and pushes them to the queue.
+  void markGridTwo(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int i, int j,
+                   queue&lt;pair&lt;int, int&gt;&gt;&amp; q) {
+    if (i &lt; 0 || i == grid.size() || j &lt; 0 || j == grid[0].size())
+      return;
+    if (grid[i][j] != 1)
+      return;
+    grid[i][j] = 2;
+    q.emplace(i, j);
+    markGridTwo(grid, i + 1, j, q);
+    markGridTwo(grid, i - 1, j, q);
+    markGridTwo(grid, i, j + 1, q);
+    markGridTwo(grid, i, j - 1, q);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int shortestBridge(int[][] grid) {
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int n = grid.length;
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q = new ArrayDeque&lt;&gt;();
+
+    markGridTwo(grid, q);
+
+    for (int ans = 0; !q.isEmpty(); ++ans)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int i = q.peek().getKey();
+        final int j = q.poll().getValue();
+        for (int[] dir : DIRS) {
+          final int x = i + dir[0];
+          final int y = j + dir[1];
+          if (x &lt; 0 || x == n || y &lt; 0 || y == n)
+            continue;
+          if (grid[x][y] == 2)
+            continue;
+          if (grid[x][y] == 1)
+            return ans;
+          grid[x][y] = 2;
+          q.offer(new Pair&lt;&gt;(x, y));
+        }
+      }
+
+    throw new IllegalArgumentException();
+  }
+
+  // Marks one group to 2s by DFS.
+  private void markGridTwo(int[][] grid, Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q) {
+    for (int i = 0; i &lt; grid.length; ++i)
+      for (int j = 0; j &lt; grid[0].length; ++j)
+        if (grid[i][j] == 1) {
+          markGridTwo(grid, i, j, q);
+          return;
+        }
+  }
+
+  // Marks one group to 2s by DFS and pushes them to the queue.
+  private void markGridTwo(int[][] grid, int i, int j, Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q) {
+    if (i &lt; 0 || i == grid.length || j &lt; 0 || j == grid[0].length)
+      return;
+    if (grid[i][j] != 1)
+      return;
+    grid[i][j] = 2;
+    q.offer(new Pair&lt;&gt;(i, j));
+    markGridTwo(grid, i + 1, j, q);
+    markGridTwo(grid, i - 1, j, q);
+    markGridTwo(grid, i, j + 1, q);
+    markGridTwo(grid, i, j - 1, q);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

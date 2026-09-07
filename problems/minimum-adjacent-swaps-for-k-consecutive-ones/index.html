@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Adjacent Swaps for K Consecutive Ones - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Adjacent Swaps for K Consecutive Ones written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-adjacent-swaps-for-k-consecutive-ones/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-binary-string-after-change/" class="btn">← Previous</a>
+            <span>Problem 1703 of 3563</span>
+            <a href="/leetcode-solutions/problems/determine-if-string-halves-are-alike/" class="btn">Next →</a>
+        </div>
+        <h1>1703. Minimum Adjacent Swaps for K Consecutive Ones</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Adjacent Swaps for K Consecutive Ones efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minMoves(vector&lt;int&gt;&amp; nums, int k) {
+    vector&lt;int&gt; ones;
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      if (nums[i] == 1)
+        ones.push_back(i);
+
+    // Returns the median index of [i..i + k).
+    auto getMedIndex = [&amp;](int i) { return (i + (i + k - 1)) / 2; };
+
+    // Calculate the first group: window[0] = A[0..k).
+    const int median = ones[getMedIndex(0)];
+    int moves = 0;
+    for (int i = 0; i &lt; k; ++i)
+      moves += abs(ones[i] - median);
+
+    int ans = moves;
+
+    for (int i = 1; i &lt;= ones.size() - k; ++i) {
+      const int oldMedianIndex = ones[getMedIndex(i - 1)];
+      const int newMedianIndex = ones[getMedIndex(i)];
+      if (k % 2 == 1)
+        moves += newMedianIndex - oldMedianIndex;
+      moves -= newMedianIndex - ones[i - 1];
+      moves += ones[i + k - 1] - newMedianIndex;
+      ans = min(ans, moves);
+    }
+
+    auto nThSum = [&amp;](int n) { return n * (n + 1) / 2; };
+    return ans - nThSum((k - 1) / 2) - nThSum(k / 2);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minMoves(int[] nums, int k) {
+    List&lt;Integer&gt; ones = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      if (nums[i] == 1)
+        ones.add(i);
+
+    final int median = ones.get(getMedIndex(0, k));
+    int moves = 0;
+    for (int i = 0; i &lt; k; ++i)
+      moves += Math.abs(ones.get(i) - median);
+
+    int ans = moves;
+
+    for (int i = 1; i &lt;= ones.size() - k; ++i) {
+      final int oldMedianIndex = ones.get(getMedIndex(i - 1, k));
+      final int newMedianIndex = ones.get(getMedIndex(i, k));
+      if (k % 2 == 1)
+        moves += newMedianIndex - oldMedianIndex;
+      moves -= newMedianIndex - ones.get(i - 1);
+      moves += ones.get(i + k - 1) - newMedianIndex;
+      ans = Math.min(ans, moves);
+    }
+
+    return ans - nThSum((k - 1) / 2) - nThSum(k / 2);
+  }
+
+  // Returns the median index of [i..i + k).
+  private int getMedIndex(int i, int k) {
+    return (i + (i + k - 1)) / 2;
+  }
+
+  // Returns 1 + 2 + ... + n
+  private int nThSum(int n) {
+    return n * (n + 1) / 2;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

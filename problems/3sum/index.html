@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for 3Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/3sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-common-prefix/" class="btn">← Previous</a>
+            <span>Problem 15 of 3563</span>
+            <a href="/leetcode-solutions/problems/3sum-closest/" class="btn">Next →</a>
+        </div>
+        <h1>15. 3Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve 3Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; threeSum(vector&lt;int&gt;&amp; nums) {
+    if (nums.size() &lt; 3)
+      return {};
+
+    vector&lt;vector&lt;int&gt;&gt; ans;
+
+    ranges::sort(nums);
+
+    for (int i = 0; i + 2 &lt; nums.size(); ++i) {
+      if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1])
+        continue;
+      // Choose nums[i] as the first number in the triplet, then search the
+      // remaining numbers in [i + 1, n - 1].
+      int l = i + 1;
+      int r = nums.size() - 1;
+      while (l &lt; r) {
+        const int sum = nums[i] + nums[l] + nums[r];
+        if (sum == 0) {
+          ans.push_back({nums[i], nums[l++], nums[r--]});
+          while (l &lt; r &amp;&amp; nums[l] == nums[l - 1])
+            ++l;
+          while (l &lt; r &amp;&amp; nums[r] == nums[r + 1])
+            --r;
+        } else if (sum &lt; 0) {
+          ++l;
+        } else {
+          --r;
+        }
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; threeSum(int[] nums) {
+    if (nums.length &lt; 3)
+      return new ArrayList&lt;&gt;();
+
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+
+    Arrays.sort(nums);
+
+    for (int i = 0; i + 2 &lt; nums.length; ++i) {
+      if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1])
+        continue;
+      // Choose nums[i] as the first number in the triplet, then search the
+      // remaining numbers in [i + 1, n - 1].
+      int l = i + 1;
+      int r = nums.length - 1;
+      while (l &lt; r) {
+        final int sum = nums[i] + nums[l] + nums[r];
+        if (sum == 0) {
+          ans.add(Arrays.asList(nums[i], nums[l++], nums[r--]));
+          while (l &lt; r &amp;&amp; nums[l] == nums[l - 1])
+            ++l;
+          while (l &lt; r &amp;&amp; nums[r] == nums[r + 1])
+            --r;
+        } else if (sum &lt; 0) {
+          ++l;
+        } else {
+          --r;
+        }
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def threeSum(self, nums: list[int]) -&gt; list[list[int]]:
+    if len(nums) &lt; 3:
+      return []
+
+    ans = []
+
+    nums.sort()
+
+    for i in range(len(nums) - 2):
+      if i &gt; 0 and nums[i] == nums[i - 1]:
+        continue
+      # Choose nums[i] as the first number in the triplet, then search the
+      # remaining numbers in [i + 1, n - 1].
+      l = i + 1
+      r = len(nums) - 1
+      while l &lt; r:
+        summ = nums[i] + nums[l] + nums[r]
+        if summ == 0:
+          ans.append((nums[i], nums[l], nums[r]))
+          l += 1
+          r -= 1
+          while nums[l] == nums[l - 1] and l &lt; r:
+            l += 1
+          while nums[r] == nums[r + 1] and l &lt; r:
+            r -= 1
+        elif summ &lt; 0:
+          l += 1
+        else:
+          r -= 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

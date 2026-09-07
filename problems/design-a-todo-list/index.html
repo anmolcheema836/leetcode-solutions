@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design a Todo List - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design a Todo List written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-a-todo-list/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-time-to-complete-all-tasks/" class="btn">← Previous</a>
+            <span>Problem 2590 of 3563</span>
+            <a href="/leetcode-solutions/problems/distribute-money-to-maximum-children/" class="btn">Next →</a>
+        </div>
+        <h1>2590. Design a Todo List</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design a Todo List efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Task {
+  // int taskId;
+  string taskDescription;
+  int dueDate;
+  unordered_set&lt;string&gt; tags;
+
+  bool operator&lt;(const Task&amp; other) const {
+    return dueDate &lt; other.dueDate;
+  }
+};
+
+class TodoList {
+ public:
+  int addTask(int userId, string taskDescription, int dueDate,
+              vector&lt;string&gt; tags) {
+    userIdToTaskIdToTasks[userId][++taskId] =
+        Task{.taskDescription = taskDescription,
+             .dueDate = dueDate,
+             .tags = {tags.begin(), tags.end()}};
+    taskIds.insert(taskId);
+    return taskId;
+  }
+
+  vector&lt;string&gt; getAllTasks(int userId) {
+    vector&lt;string&gt; res;
+    for (const Task&amp; task : getTasksSortedByDueDate(userId))
+      res.push_back(task.taskDescription);
+    return res;
+  }
+
+  vector&lt;string&gt; getTasksForTag(int userId, string tag) {
+    vector&lt;string&gt; res;
+    for (const Task&amp; task : getTasksSortedByDueDate(userId))
+      if (task.tags.contains(tag))
+        res.push_back(task.taskDescription);
+    return res;
+  }
+
+  void completeTask(int userId, int taskId) {
+    if (!taskIds.contains(taskId))
+      return;
+    const auto it = userIdToTaskIdToTasks.find(userId);
+    if (it == userIdToTaskIdToTasks.cend())
+      return;
+    auto&amp; taskIdToTasks = it-&gt;second;
+    if (!taskIdToTasks.contains(taskId))
+      return;
+    taskIdToTasks.erase(taskId);
+  }
+
+ private:
+  int taskId = 0;
+  unordered_set&lt;int&gt; taskIds;
+  // {userId: {taskId: tasks}}
+  unordered_map&lt;int, unordered_map&lt;int, Task&gt;&gt; userIdToTaskIdToTasks;
+
+  vector&lt;Task&gt; getTasksSortedByDueDate(int userId) {
+    const auto it = userIdToTaskIdToTasks.find(userId);
+    if (it == userIdToTaskIdToTasks.cend())
+      return {};
+    set&lt;Task&gt; tasks;
+    for (const auto&amp; [_, task] : it-&gt;second)
+      tasks.insert(task);
+    return {tasks.begin(), tasks.end()};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TodoList {
+  public int addTask(int userId, String taskDescription, int dueDate, List&lt;String&gt; tags) {
+    userIdToTaskIdToTasks.putIfAbsent(userId, new HashMap&lt;&gt;());
+    userIdToTaskIdToTasks.get(userId).put(++taskId, new Task(taskDescription, dueDate, tags));
+    taskIds.add(taskId);
+    return taskId;
+  }
+
+  public List&lt;String&gt; getAllTasks(int userId) {
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    for (Task task : getTasksSortedByDueDate(userId))
+      res.add(task.taskDescription);
+    return res;
+  }
+
+  public List&lt;String&gt; getTasksForTag(int userId, String tag) {
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    for (Task task : getTasksSortedByDueDate(userId))
+      if (task.tags.contains(tag))
+        res.add(task.taskDescription);
+    return res;
+  }
+
+  public void completeTask(int userId, int taskId) {
+    if (!taskIds.contains(taskId))
+      return;
+    if (!userIdToTaskIdToTasks.containsKey(userId))
+      return;
+    Map&lt;Integer, Task&gt; taskIdToTasks = userIdToTaskIdToTasks.get(userId);
+    if (!taskIdToTasks.containsKey(taskId))
+      return;
+    taskIdToTasks.remove(taskId);
+  }
+
+  private record Task(String taskDescription, int dueDate, List&lt;String&gt; tags) {}
+  private int taskId = 0;
+  private Set&lt;Integer&gt; taskIds = new HashSet&lt;&gt;();
+  // {userId: {taskId: tasks}}
+  private Map&lt;Integer, Map&lt;Integer, Task&gt;&gt; userIdToTaskIdToTasks = new HashMap&lt;&gt;();
+
+  private List&lt;Task&gt; getTasksSortedByDueDate(int userId) {
+    if (!userIdToTaskIdToTasks.containsKey(userId))
+      return new ArrayList&lt;&gt;();
+    TreeSet&lt;Task&gt; tasks = new TreeSet&lt;&gt;(Comparator.comparingInt(Task::dueDate));
+    for (Task task : userIdToTaskIdToTasks.get(userId).values())
+      tasks.add(task);
+    return new ArrayList&lt;&gt;(tasks);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Task:
+  taskDescription: str
+  dueDate: int
+  tags: list[str]
+
+
+class TodoList:
+  def __init__(self):
+    self.taskId = 0
+    self.taskIds = set()
+    self.userIdToTaskIdToTasks: dict[int, dict[int, list[Task]]] = {}
+
+  def addTask(self, userId: int, taskDescription: str, dueDate: int,
+              tags: list[str]) -&gt; int:
+    self.taskId += 1
+    taskIdToTasks = self.userIdToTaskIdToTasks.setdefault(userId, {})
+    taskIdToTasks[self.taskId] = Task(taskDescription, dueDate, tags)
+    self.taskIds.add(self.taskId)
+    return self.taskId
+
+  def getAllTasks(self, userId: int) -&gt; list[str]:
+    return [task.taskDescription
+            for task in self._getTasksSortedByDueDate(userId)]
+
+  def getTasksForTag(self, userId: int, tag: str) -&gt; list[str]:
+    return [task.taskDescription
+            for task in self._getTasksSortedByDueDate(userId)
+            if tag in task.tags]
+
+  def completeTask(self, userId: int, taskId: int) -&gt; None:
+    if taskId not in self.taskIds:
+      return
+    if userId not in self.userIdToTaskIdToTasks:
+      return
+    taskIdToTasks = self.userIdToTaskIdToTasks[userId]
+    if taskId not in taskIdToTasks:
+      return
+    del taskIdToTasks[taskId]
+
+  def _getTasksSortedByDueDate(self, userId: int) -&gt; list[Task]:
+    if userId not in self.userIdToTaskIdToTasks:
+      return []
+    taskIdToTasks = self.userIdToTaskIdToTasks[userId]
+    return sorted(
+        [task for task in taskIdToTasks.values()],
+        key=lambda x: x.dueDate)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

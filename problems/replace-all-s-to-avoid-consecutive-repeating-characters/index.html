@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace All ?'s to Avoid Consecutive Repeating Characters - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Replace All ?'s to Avoid Consecutive Repeating Characters written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/replace-all-s-to-avoid-consecutive-repeating-characters/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-all-possible-routes/" class="btn">← Previous</a>
+            <span>Problem 1576 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-ways-where-square-of-number-is-equal-to-product-of-two-numbers/" class="btn">Next →</a>
+        </div>
+        <h1>1576. Replace All ?'s to Avoid Consecutive Repeating Characters</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Replace All ?'s to Avoid Consecutive Repeating Characters efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string modifyString(string s) {
+    string ans;
+
+    for (int i = 0; i &lt; s.length(); ++i)
+      if (s[i] == &#x27;?&#x27;)
+        ans += nextAvailable(ans, s, i);
+      else
+        ans += s[i];
+
+    return ans;
+  }
+
+ private:
+  char nextAvailable(const string&amp; ans, const string&amp; s, int i) {
+    char c = &#x27;a&#x27;;
+    while ((i &gt; 0 &amp;&amp; ans[i - 1] == c) ||  //
+           (i + 1 &lt; s.size() &amp;&amp; c == s[i + 1]))
+      ++c;
+    return c;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String modifyString(String s) {
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i &lt; s.length(); ++i)
+      if (s.charAt(i) == &#x27;?&#x27;)
+        sb.append(nextAvailable(sb, s, i));
+      else
+        sb.append(s.charAt(i));
+
+    return sb.toString();
+  }
+
+  private char nextAvailable(StringBuilder sb, final String s, int i) {
+    char c = &#x27;a&#x27;;
+    while ((i &gt; 0 &amp;&amp; sb.charAt(i - 1) == c) || (i + 1 &lt; s.length() &amp;&amp; c == s.charAt(i + 1)))
+      ++c;
+    return c;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def modifyString(self, s: str) -&gt; str:
+    ans = []
+
+    def nextAvailable(ans: list[int], s: str, i: int) -&gt; str:
+      c = &#x27;a&#x27;
+      while ((i &gt; 0 and ans[i - 1] == c) or
+             (i + 1 &lt; len(s) and c == s[i + 1])):
+        c = chr(ord(c) + 1)
+      return c
+
+    for i, c in enumerate(s):
+      if c == &#x27;?&#x27;:
+        ans.append(nextAvailable(ans, s, i))
+      else:
+        ans.append(c)
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

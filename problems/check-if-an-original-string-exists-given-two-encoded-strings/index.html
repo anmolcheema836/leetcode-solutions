@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check if an Original String Exists Given Two Encoded Strings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check if an Original String Exists Given Two Encoded Strings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-an-original-string-exists-given-two-encoded-strings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-operations-to-convert-number/" class="btn">← Previous</a>
+            <span>Problem 2060 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-spaces-cleaning-robot-cleaned/" class="btn">Next →</a>
+        </div>
+        <h1>2060. Check if an Original String Exists Given Two Encoded Strings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check if an Original String Exists Given Two Encoded Strings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool possiblyEquals(string s1, string s2) {
+    vector&lt;vector&lt;unordered_map&lt;int, bool&gt;&gt;&gt; mem(
+        s1.length() + 1, vector&lt;unordered_map&lt;int, bool&gt;&gt;(s2.length() + 1));
+    return f(s1, s2, 0, 0, 0, mem);
+  }
+
+ private:
+  // Returns true if s1[i..n) matches s2[j..n), accounting for the padding
+  // difference. Here, `paddingDiff` represents the signed padding. A positive
+  // `paddingDiff` indicates that s1 has an additional number of offset bytes
+  // compared to s2.
+  bool f(const string&amp; s1, const string&amp; s2, int i, int j, int paddingDiff,
+         vector&lt;vector&lt;unordered_map&lt;int, bool&gt;&gt;&gt;&amp; mem) {
+    if (const auto it = mem[i][j].find(paddingDiff); it != mem[i][j].cend())
+      return it-&gt;second;
+    if (i == s1.length() &amp;&amp; j == s2.length())
+      return paddingDiff == 0;
+    if (i &lt; s1.length() &amp;&amp; isdigit(s1[i])) {
+      // Add padding on s1.
+      const int nextLetterIndex = getNextLetterIndex(s1, i);
+      for (const int num : getNums(s1.substr(i, nextLetterIndex - i)))
+        if (f(s1, s2, nextLetterIndex, j, paddingDiff + num, mem))
+          return true;
+    } else if (j &lt; s2.length() &amp;&amp; isdigit(s2[j])) {
+      // Add padding on s2.
+      const int nextLetterIndex = getNextLetterIndex(s2, j);
+      for (const int num : getNums(s2.substr(j, nextLetterIndex - j)))
+        if (f(s1, s2, i, nextLetterIndex, paddingDiff - num, mem))
+          return true;
+    } else if (paddingDiff &gt; 0) {
+      // `s1` has more padding, so j needs to catch up.
+      if (j &lt; s2.length())
+        return f(s1, s2, i, j + 1, paddingDiff - 1, mem);
+    } else if (paddingDiff &lt; 0) {
+      // `s2` has more padding, so i needs to catch up.
+      if (i &lt; s1.length())
+        return f(s1, s2, i + 1, j, paddingDiff + 1, mem);
+    } else {  // paddingDiff == 0
+      // There&#x27;s no padding difference, so consume the next letter.
+      if (i &lt; s1.length() &amp;&amp; j &lt; s2.length() &amp;&amp; s1[i] == s2[j])
+        return f(s1, s2, i + 1, j + 1, 0, mem);
+    }
+    return mem[i][j][paddingDiff] = false;
+  }
+
+  int getNextLetterIndex(const string&amp; s, int i) {
+    int j = i;
+    while (i &lt; s.length() &amp;&amp; isdigit(s[j]))
+      ++j;
+    return j;
+  }
+
+  vector&lt;int&gt; getNums(const string&amp; s) {
+    vector&lt;int&gt; nums{stoi(s)};
+    if (s.length() == 2) {
+      nums.push_back(stoi(s.substr(0, 1)) + stoi(s.substr(1, 1)));
+    } else if (s.length() == 3) {
+      nums.push_back(stoi(s.substr(0, 1)) + stoi(s.substr(1, 2)));
+      nums.push_back(stoi(s.substr(0, 2)) + stoi(s.substr(2, 1)));
+      nums.push_back(stoi(s.substr(0, 1)) + stoi(s.substr(1, 1)) +
+                     stoi(s.substr(2, 1)));
+    }
+    return nums;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean possiblyEquals(String s1, String s2) {
+    Map&lt;Integer, Boolean&gt;[][] mem = new Map[s1.length() + 1][s2.length() + 1];
+    for (int i = 0; i &lt;= s1.length(); ++i)
+      for (int j = 0; j &lt;= s2.length(); ++j)
+        mem[i][j] = new HashMap&lt;&gt;();
+    return f(s1, s2, 0, 0, 0, mem);
+  }
+
+  // Returns true if s1[i..n) matches s2[j..n), accounting for the padding
+  // difference. Here, `paddingDiff` represents the signed padding. A positive
+  // `paddingDiff` indicates that s1 has an additional number of offset bytes
+  // compared to s2.
+  private boolean f(final String s1, final String s2, int i, int j, int paddingDiff,
+                    Map&lt;Integer, Boolean&gt;[][] mem) {
+    if (mem[i][j].containsKey(paddingDiff))
+      return mem[i][j].get(paddingDiff);
+    if (i == s1.length() &amp;&amp; j == s2.length())
+      return paddingDiff == 0;
+    if (i &lt; s1.length() &amp;&amp; Character.isDigit(s1.charAt(i))) {
+      // Add padding on s1.
+      final int nextLetterIndex = getNextLetterIndex(s1, i);
+      for (final int num : getNums(s1.substring(i, nextLetterIndex)))
+        if (f(s1, s2, nextLetterIndex, j, paddingDiff + num, mem))
+          return true;
+    } else if (j &lt; s2.length() &amp;&amp; Character.isDigit(s2.charAt(j))) {
+      // Add padding on s2.
+      final int nextLetterIndex = getNextLetterIndex(s2, j);
+      for (final int num : getNums(s2.substring(j, nextLetterIndex)))
+        if (f(s1, s2, i, nextLetterIndex, paddingDiff - num, mem))
+          return true;
+    } else if (paddingDiff &gt; 0) {
+      // `s1` has more padding, so j needs to catch up.
+      if (j &lt; s2.length())
+        return f(s1, s2, i, j + 1, paddingDiff - 1, mem);
+    } else if (paddingDiff &lt; 0) {
+      // `s2` has more padding, so i needs to catch up.
+      if (i &lt; s1.length())
+        return f(s1, s2, i + 1, j, paddingDiff + 1, mem);
+    } else { // paddingDiff == 0
+      // There&#x27;s no padding difference, so consume the next letter.
+      if (i &lt; s1.length() &amp;&amp; j &lt; s2.length() &amp;&amp; s1.charAt(i) == s2.charAt(j))
+        return f(s1, s2, i + 1, j + 1, 0, mem);
+    }
+    mem[i][j].put(paddingDiff, false);
+    return false;
+  }
+
+  private int getNextLetterIndex(final String s, int i) {
+    int j = i;
+    while (j &lt; s.length() &amp;&amp; Character.isDigit(s.charAt(j)))
+      ++j;
+    return j;
+  }
+
+  private List&lt;Integer&gt; getNums(final String s) {
+    List&lt;Integer&gt; nums = new ArrayList&lt;&gt;(List.of(Integer.parseInt(s)));
+    if (s.length() == 2) {
+      nums.add(Integer.parseInt(s.substring(0, 1)) + Integer.parseInt(s.substring(1, 2)));
+    } else if (s.length() == 3) {
+      nums.add(Integer.parseInt(s.substring(0, 1)) + Integer.parseInt(s.substring(1, 3)));
+      nums.add(Integer.parseInt(s.substring(0, 2)) + Integer.parseInt(s.substring(2, 3)));
+      nums.add(Integer.parseInt(s.substring(0, 1)) + Integer.parseInt(s.substring(1, 2)) +
+               Integer.parseInt(s.substring(2, 3)));
+    }
+    return nums;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def possiblyEquals(self, s1: str, s2: str) -&gt; bool:
+    def getNums(s: str) -&gt; set[int]:
+      nums = {int(s)}
+      for i in range(1, len(s)):
+        nums |= {x + y for x in getNums(s[:i]) for y in getNums(s[i:])}
+      return nums
+
+    def getNextLetterIndex(s: str, i: int) -&gt; int:
+      j = i
+      while j &lt; len(s) and s[j].isdigit():
+        j += 1
+      return j
+
+    @functools.lru_cache(None)
+    def dp(i: int, j: int, paddingDiff: int) -&gt; bool:
+      &quot;&quot;&quot;
+      Returns True if s1[i..n) matches s2[j..n), accounting for the padding
+      difference. Here, `paddingDiff` represents the signed padding. A positive
+      `paddingDiff` indicates that s1 has an additional number of offset bytes
+      compared to s2.
+      &quot;&quot;&quot;
+      if i == len(s1) and j == len(s2):
+        return paddingDiff == 0
+      # Add padding on s1.
+      if i &lt; len(s1) and s1[i].isdigit():
+        nextLetterIndex = getNextLetterIndex(s1, i)
+        for num in getNums(s1[i:nextLetterIndex]):
+          if dp(nextLetterIndex, j, paddingDiff + num):
+            return True
+      # Add padding on s2.
+      elif j &lt; len(s2) and s2[j].isdigit():
+        nextLetterIndex = getNextLetterIndex(s2, j)
+        for num in getNums(s2[j:nextLetterIndex]):
+          if dp(i, nextLetterIndex, paddingDiff - num):
+            return True
+      # `s1` has more padding, so j needs to catch up.
+      elif paddingDiff &gt; 0:
+        if j &lt; len(s2):
+          return dp(i, j + 1, paddingDiff - 1)
+      # `s2` has more padding, so i needs to catch up.
+      elif paddingDiff &lt; 0:
+        if i &lt; len(s1):
+          return dp(i + 1, j, paddingDiff + 1)
+      # There&#x27;s no padding difference, so consume the next letter.
+      else:  # paddingDiff == 0
+        if i &lt; len(s1) and j &lt; len(s2) and s1[i] == s2[j]:
+          return dp(i + 1, j + 1, 0)
+      return False
+
+    return dp(0, 0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

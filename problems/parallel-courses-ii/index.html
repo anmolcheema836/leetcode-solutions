@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Courses II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Parallel Courses II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/parallel-courses-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-subarray-of-1-s-after-deleting-one-element/" class="btn">← Previous</a>
+            <span>Problem 1494 of 3563</span>
+            <a href="/leetcode-solutions/problems/friendly-movies-streamed-last-month/" class="btn">Next →</a>
+        </div>
+        <h1>1494. Parallel Courses II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Parallel Courses II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minNumberOfSemesters(int n, vector&lt;vector&lt;int&gt;&gt;&amp; relations, int k) {
+    // dp[i] := the minimum number of semesters to take the courses, where i is
+    // the bitmask of the taken courses
+    vector&lt;int&gt; dp(1 &lt;&lt; n, n);
+    // prereq[i] := the bitmask of all the dependencies of the i-th course
+    vector&lt;int&gt; prereq(n);
+
+    for (const vector&lt;int&gt;&amp; relation : relations) {
+      const int prevCourse = relation[0] - 1;
+      const int nextCourse = relation[1] - 1;
+      prereq[nextCourse] |= 1 &lt;&lt; prevCourse;
+    }
+
+    dp[0] = 0;  // Don&#x27;t need time to finish 0 course.
+
+    for (int i = 0; i &lt; dp.size(); ++i) {
+      // the bitmask of all the courses can be taken
+      int coursesCanBeTaken = 0;
+      // Can take the j-th course if i contains all of j&#x27;s prerequisites.
+      for (int j = 0; j &lt; n; ++j)
+        if ((i &amp; prereq[j]) == prereq[j])
+          coursesCanBeTaken |= 1 &lt;&lt; j;
+      // Don&#x27;t take any course which is already taken.
+      // (i represents set of courses that are already taken)
+      coursesCanBeTaken &amp;= ~i;
+      // Enumerate every bitmask subset of `coursesCanBeTaken`.
+      for (unsigned s = coursesCanBeTaken; s &gt; 0;
+           s = (s - 1) &amp; coursesCanBeTaken)
+        if (popcount(s) &lt;= k)
+          // Any combination of courses (if &lt;= k) can be taken now.
+          // i | s := combining courses taken with courses can be taken.
+          dp[i | s] = min(dp[i | s], dp[i] + 1);
+    }
+
+    return dp.back();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minNumberOfSemesters(int n, int[][] relations, int k) {
+    // dp[i] := the minimum number of semesters to take the courses, where i is
+    // the bitmask of the taken courses
+    int[] dp = new int[1 &lt;&lt; n];
+    Arrays.fill(dp, n);
+    // prereq[i] := the bitmask of all the dependencies of the i-th course
+    int[] prereq = new int[n];
+
+    for (int[] r : relations) {
+      final int prevCourse = r[0] - 1;
+      final int nextCourse = r[1] - 1;
+      prereq[nextCourse] |= 1 &lt;&lt; prevCourse;
+    }
+
+    dp[0] = 0; // Don&#x27;t need time to finish 0 course.
+
+    for (int i = 0; i &lt; dp.size(); ++i) {
+      // the bitmask of all the courses can be taken
+      int coursesCanBeTaken = 0;
+      // Can take the j-th course if i contains all of j&#x27;s prerequisites.
+      for (int j = 0; j &lt; n; ++j)
+        if ((i &amp; prereq[j]) == prereq[j])
+          coursesCanBeTaken |= 1 &lt;&lt; j;
+      // Don&#x27;t take any course which is already taken.
+      // (i represents set of courses that are already taken)
+      coursesCanBeTaken &amp;= ~i;
+      // Enumerate every bitmask subset of `coursesCanBeTaken`.
+      for (int s = coursesCanBeTaken; s &gt; 0; s = (s - 1) &amp; coursesCanBeTaken)
+        if (Integer.bitCount(s) &lt;= k)
+          // Any combination of courses (if &lt;= k) can be taken now.
+          // i | s := combining courses taken with courses can be taken.
+          dp[i | s] = Math.min(dp[i | s], dp[i] + 1);
+    }
+
+    return dp[(1 &lt;&lt; n) - 1];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minNumberOfSemesters(
+      self,
+      n: int,
+      relations: list[list[int]],
+      k: int,
+  ) -&gt; int:
+    # dp[i] := the minimum number of semesters to take the courses, where i is
+    # the bitmask of the taken courses
+    dp = [n] * (1 &lt;&lt; n)
+    # prereq[i] := bitmask of all dependencies of course i
+    prereq = [0] * n
+
+    for prevCourse, nextCourse in relations:
+      prereq[nextCourse - 1] |= 1 &lt;&lt; prevCourse - 1
+
+    dp[0] = 0  # Don&#x27;t need time to finish 0 course.
+
+    for i in range(1 &lt;&lt; n):
+      # the bitmask of all the courses can be taken
+      coursesCanBeTaken = 0
+      # Can take the j-th course if i contains all of j&#x27;s prerequisites.
+      for j in range(n):
+        if (i &amp; prereq[j]) == prereq[j]:
+          coursesCanBeTaken |= 1 &lt;&lt; j
+      # Don&#x27;t take any course which is already taken.
+      # (i represents set of courses that are already taken)
+      coursesCanBeTaken &amp;= ~i
+      # Enumerate every bitmask subset of `coursesCanBeTaken`.
+      s = coursesCanBeTaken
+      while s:
+        if s.bit_count() &lt;= k:
+          # Any combination of courses (if &lt;= k) can be taken now.
+          # i | s := combining courses taken with courses can be taken.
+          dp[i | s] = min(dp[i | s], dp[i] + 1)
+        s = (s - 1) &amp; coursesCanBeTaken
+
+    return dp[-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

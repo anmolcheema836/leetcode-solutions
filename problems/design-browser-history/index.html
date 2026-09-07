@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Browser History - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Browser History written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-browser-history/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/the-k-strongest-values-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 1472 of 3563</span>
+            <a href="/leetcode-solutions/problems/paint-house-iii/" class="btn">Next →</a>
+        </div>
+        <h1>1472. Design Browser History</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Browser History efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Node {
+  Node(const string&amp; url) : url(url) {}
+  Node* prev = nullptr;
+  Node* next = nullptr;
+  const string url;
+};
+
+class BrowserHistory {
+ public:
+  BrowserHistory(string homepage) {
+    curr = new Node(homepage);
+  }
+
+  void visit(string url) {
+    curr-&gt;next = new Node(url);
+    curr-&gt;next-&gt;prev = curr;
+    curr = curr-&gt;next;
+  }
+
+  string back(int steps) {
+    while (curr-&gt;prev &amp;&amp; steps-- &gt; 0)
+      curr = curr-&gt;prev;
+    return curr-&gt;url;
+  }
+
+  string forward(int steps) {
+    while (curr-&gt;next &amp;&amp; steps-- &gt; 0)
+      curr = curr-&gt;next;
+    return curr-&gt;url;
+  }
+
+ private:
+  Node* curr = nullptr;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Node {
+  public Node prev;
+  public Node next;
+  public final String url;
+  public Node(final String url) {
+    this.url = url;
+  }
+}
+
+class BrowserHistory {
+  public BrowserHistory(String homepage) {
+    curr = new Node(homepage);
+  }
+
+  public void visit(String url) {
+    curr.next = new Node(url);
+    curr.next.prev = curr;
+    curr = curr.next;
+  }
+
+  public String back(int steps) {
+    while (curr.prev != null &amp;&amp; steps-- &gt; 0)
+      curr = curr.prev;
+    return curr.url;
+  }
+
+  public String forward(int steps) {
+    while (curr.next != null &amp;&amp; steps-- &gt; 0)
+      curr = curr.next;
+    return curr.url;
+  }
+
+  private Node curr;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Node:
+  def __init__(self, url: str):
+    self.prev = None
+    self.next = None
+    self.url = url
+
+
+class BrowserHistory:
+  def __init__(self, homepage: str):
+    self.curr = Node(homepage)
+
+  def visit(self, url: str) -&gt; None:
+    self.curr.next = Node(url)
+    self.curr.next.prev = self.curr
+    self.curr = self.curr.next
+
+  def back(self, steps: int) -&gt; str:
+    while self.curr.prev and steps &gt; 0:
+      self.curr = self.curr.prev
+      steps -= 1
+    return self.curr.url
+
+  def forward(self, steps: int) -&gt; str:
+    while self.curr.next and steps &gt; 0:
+      self.curr = self.curr.next
+      steps -= 1
+    return self.curr.url</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

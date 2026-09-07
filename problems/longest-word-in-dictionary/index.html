@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Word in Dictionary - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Word in Dictionary written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-word-in-dictionary/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-k-th-smallest-pair-distance/" class="btn">← Previous</a>
+            <span>Problem 720 of 3563</span>
+            <a href="/leetcode-solutions/problems/accounts-merge/" class="btn">Next →</a>
+        </div>
+        <h1>720. Longest Word in Dictionary</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Word in Dictionary efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  const string* word = nullptr;
+  TrieNode() : children(26) {}
+};
+
+class Solution {
+ public:
+  string longestWord(vector&lt;string&gt;&amp; words) {
+    for (const string&amp; word : words)
+      insert(word);
+    return longestWordFrom(root);
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+
+  void insert(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        node-&gt;children[i] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[i];
+    }
+    node-&gt;word = &amp;word;
+  }
+
+  string longestWordFrom(shared_ptr&lt;TrieNode&gt; node) {
+    string ans = node-&gt;word ? *node-&gt;word : &quot;&quot;;
+
+    for (shared_ptr&lt;TrieNode&gt; child : node-&gt;children)
+      if (child &amp;&amp; child-&gt;word) {
+        string childWord = longestWordFrom(child);
+        if (childWord.length() &gt; ans.length())
+          ans = childWord;
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[26];
+  public String word;
+}
+
+class Solution {
+  public String longestWord(String[] words) {
+    for (final String word : words)
+      insert(word);
+    return longestWordFrom(root);
+  }
+
+  private TrieNode root = new TrieNode();
+
+  private void insert(final String word) {
+    TrieNode node = root;
+    for (char c : word.toCharArray()) {
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        node.children[i] = new TrieNode();
+      node = node.children[i];
+    }
+    node.word = word;
+  }
+
+  private String longestWordFrom(TrieNode node) {
+    String ans = node.word == null ? &quot;&quot; : node.word;
+
+    for (TrieNode child : node.children)
+      if (child != null &amp;&amp; child.word != null) {
+        String childWord = longestWordFrom(child);
+        if (childWord.length() &gt; ans.length())
+          ans = childWord;
+      }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestWord(self, words: list[str]) -&gt; str:
+    root = {}
+
+    for word in words:
+      node = root
+      for c in word:
+        if c not in node:
+          node[c] = {}
+        node = node[c]
+      node[&#x27;word&#x27;] = word
+
+    def dfs(node: dict) -&gt; str:
+      ans = node[&#x27;word&#x27;] if &#x27;word&#x27; in node else &#x27;&#x27;
+
+      for child in node:
+        if &#x27;word&#x27; in node[child] and len(node[child][&#x27;word&#x27;]) &gt; 0:
+          childWord = dfs(node[child])
+          if len(childWord) &gt; len(ans) or (
+                  len(childWord) == len(ans) and childWord &lt; ans):
+            ans = childWord
+
+      return ans
+
+    return dfs(root)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Balanced Subsequence Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Balanced Subsequence Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-balanced-subsequence-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-score-after-applying-operations-on-a-tree/" class="btn">← Previous</a>
+            <span>Problem 2926 of 3563</span>
+            <a href="/leetcode-solutions/problems/distribute-candies-among-children-iii/" class="btn">Next →</a>
+        </div>
+        <h1>2926. Maximum Balanced Subsequence Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Balanced Subsequence Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FenwickTree {
+ public:
+  FenwickTree(int n) : vals(n + 1) {}
+
+  // Updates the maximum sum of subsequence ending in (i - 1) with `val`.
+  void maximize(int i, long val) {
+    while (i &lt; vals.size()) {
+      vals[i] = max(vals[i], val);
+      i += lowbit(i);
+    }
+  }
+
+  // Returns the maximum sum of subsequence ending in (i - 1).
+  long get(int i) const {
+    long res = 0;
+    while (i &gt; 0) {
+      res = max(res, vals[i]);
+      i -= lowbit(i);
+    }
+    return res;
+  }
+
+ private:
+  vector&lt;long&gt; vals;
+
+  static int lowbit(int i) {
+    return i &amp; -i;
+  }
+};
+
+class Solution {
+ public:
+  long long maxBalancedSubsequenceSum(vector&lt;int&gt;&amp; nums) {
+    // Let&#x27;s define maxSum[i] := subsequence with the maximum sum ending in i
+    // By observation:
+    //     nums[i] - nums[j] &gt;= i - j
+    //  =&gt; nums[i] - i &gt;= nums[j] - j
+    //  So, if nums[i] - i &gt;= nums[j] - j, where i &gt; j,
+    //  maxSum[i] = max(maxSum[i], maxSum[j] + nums[i])
+    long ans = LONG_MIN;
+    FenwickTree tree(nums.size());
+
+    for (const auto&amp; [_, i] : getPairs(nums)) {
+      const long subseqSum = tree.get(i) + nums[i];
+      tree.maximize(i + 1, subseqSum);
+      ans = max(ans, subseqSum);
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;pair&lt;int, int&gt;&gt; getPairs(const vector&lt;int&gt;&amp; nums) {
+    vector&lt;pair&lt;int, int&gt;&gt; pairs;
+    for (int i = 0; i &lt; nums.size(); ++i)
+      pairs.emplace_back(nums[i] - i, i);
+    ranges::sort(pairs);
+    return pairs;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FenwickTree {
+  public FenwickTree(int n) {
+    vals = new long[n + 1];
+  }
+
+  // Updates the maximum sum of subsequence ending in (i - 1) with `val`.
+  public void maximize(int i, long val) {
+    while (i &lt; vals.length) {
+      vals[i] = Math.max(vals[i], val);
+      i += lowbit(i);
+    }
+  }
+
+  // Returns the maximum sum of subsequence ending in (i - 1).
+  public long get(int i) {
+    long res = 0;
+    while (i &gt; 0) {
+      res = Math.max(res, vals[i]);
+      i -= lowbit(i);
+    }
+    return res;
+  }
+
+  private long[] vals;
+
+  private static int lowbit(int i) {
+    return i &amp; -i;
+  }
+}
+
+class Solution {
+  public long maxBalancedSubsequenceSum(int[] nums) {
+    // Let&#x27;s define maxSum[i] := subsequence with the maximum sum ending in i
+    // By observation:
+    //     nums[i] - nums[j] &gt;= i - j
+    //  =&gt; nums[i] - i &gt;= nums[j] - j
+    //  So, if nums[i] - i &gt;= nums[j] - j, where i &gt; j,
+    //  maxSum[i] = max(maxSum[i], maxSum[j] + nums[i])
+    long ans = Long.MIN_VALUE;
+    FenwickTree tree = new FenwickTree(nums.length);
+
+    for (Pair&lt;Integer, Integer&gt; pair : getPairs(nums)) {
+      final int i = pair.getValue();
+      final long subseqSum = tree.get(i) + nums[i];
+      tree.maximize(i + 1, subseqSum);
+      ans = Math.max(ans, subseqSum);
+    }
+
+    return ans;
+  }
+
+  private List&lt;Pair&lt;Integer, Integer&gt;&gt; getPairs(int[] nums) {
+    List&lt;Pair&lt;Integer, Integer&gt;&gt; pairs = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; nums.length; ++i)
+      pairs.add(new Pair&lt;&gt;(nums[i] - i, i));
+    pairs.sort((p1, p2) -&gt; p1.getKey() - p2.getKey());
+    return pairs;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class FenwickTree:
+  def __init__(self, n: int):
+    self.vals = [0] * (n + 1)
+
+  def maximize(self, i: int, val: int) -&gt; None:
+    &quot;&quot;&quot;Updates the maximum sum of subsequence ending in (i - 1) with `val`.&quot;&quot;&quot;
+    while i &lt; len(self.vals):
+      self.vals[i] = max(self.vals[i], val)
+      i += FenwickTree.lowbit(i)
+
+  def get(self, i: int) -&gt; int:
+    &quot;&quot;&quot;Returns the maximum sum of subsequence ending in (i - 1).&quot;&quot;&quot;
+    res = 0
+    while i &gt; 0:
+      res = max(res, self.vals[i])
+      i -= FenwickTree.lowbit(i)
+    return res
+
+  @staticmethod
+  def lowbit(i: int) -&gt; int:
+    return i &amp; -i
+
+
+class Solution:
+  def maxBalancedSubsequenceSum(self, nums: list[int]) -&gt; int:
+    # Let&#x27;s define maxSum[i] := subsequence with the maximum sum ending in i
+    # By observation:
+    #    nums[i] - nums[j] &gt;= i - j
+    # =&gt; nums[i] - i &gt;= nums[j] - j
+    # So, if nums[i] - i &gt;= nums[j] - j, where i &gt; j,
+    # maxSum[i] = max(maxSum[i], maxSum[j] + nums[i])
+    ans = -math.inf
+    tree = FenwickTree(len(nums))
+
+    for _, i in sorted([(num - i, i) for i, num in enumerate(nums)]):
+      subseqSum = tree.get(i) + nums[i]
+      tree.maximize(i + 1, subseqSum)
+      ans = max(ans, subseqSum)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expression Add Operators - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Expression Add Operators written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/expression-add-operators/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/zigzag-iterator/" class="btn">← Previous</a>
+            <span>Problem 282 of 3563</span>
+            <a href="/leetcode-solutions/problems/move-zeroes/" class="btn">Next →</a>
+        </div>
+        <h1>282. Expression Add Operators</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Expression Add Operators efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; addOperators(string num, int target) {
+    vector&lt;string&gt; ans;
+    dfs(num, target, 0, 0, 0, {}, ans);
+    return ans;
+  }
+
+ private:
+  string join(const vector&lt;string&gt;&amp; path) {
+    string joined;
+    for (const string&amp; s : path)
+      joined += s;
+    return joined;
+  }
+
+  void dfs(const string&amp; num, int target, int start, long prev, long eval,
+           vector&lt;string&gt;&amp;&amp; path, vector&lt;string&gt;&amp; ans) {
+    if (start == num.length()) {
+      if (eval == target)
+        ans.push_back(join(path));
+      return;
+    }
+
+    for (int i = start; i &lt; num.length(); ++i) {
+      if (i &gt; start &amp;&amp; num[start] == &#x27;0&#x27;)
+        return;
+      const string&amp; s = num.substr(start, i - start + 1);
+      const long curr = stol(s);
+      if (start == 0) {
+        path.push_back(s);
+        dfs(num, target, i + 1, curr, curr, std::move(path), ans);
+        path.pop_back();
+      } else {
+        for (const string&amp; op : {&quot;+&quot;, &quot;-&quot;, &quot;*&quot;}) {
+          path.push_back(op + s);
+          if (op == &quot;+&quot;)
+            dfs(num, target, i + 1, curr, eval + curr, std::move(path), ans);
+          else if (op == &quot;-&quot;)
+            dfs(num, target, i + 1, -curr, eval - curr, std::move(path), ans);
+          else
+            dfs(num, target, i + 1, prev * curr, eval - prev + prev * curr,
+                std::move(path), ans);
+          path.pop_back();
+        }
+      }
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; addOperators(String num, int target) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    dfs(num, target, 0, 0, 0, new StringBuilder(), ans);
+    return ans;
+  }
+
+  private void dfs(String num, int target, int s, long prev, long eval, StringBuilder sb,
+                   List&lt;String&gt; ans) {
+    if (s == num.length()) {
+      if (eval == target)
+        ans.add(sb.toString());
+      return;
+    }
+
+    for (int i = s; i &lt; num.length(); ++i) {
+      if (i &gt; s &amp;&amp; num.charAt(s) == &#x27;0&#x27;)
+        return;
+      final long curr = Long.parseLong(num.substring(s, i + 1));
+      final int length = sb.length();
+      if (s == 0) { // the first number
+        dfs(num, target, i + 1, curr, curr, sb.append(curr), ans);
+        sb.setLength(length);
+      } else {
+        dfs(num, target, i + 1, curr, eval + curr, sb.append(&quot;+&quot;).append(curr), ans);
+        sb.setLength(length);
+        dfs(num, target, i + 1, -curr, eval - curr, sb.append(&quot;-&quot;).append(curr), ans);
+        sb.setLength(length);
+        dfs(num, target, i + 1, prev * curr, eval - prev + prev * curr, sb.append(&quot;*&quot;).append(curr),
+            ans);
+        sb.setLength(length);
+      }
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def addOperators(self, num: str, target: int) -&gt; list[str]:
+    ans = []
+
+    def dfs(start: int, prev: int, eval: int, path: list[str]) -&gt; None:
+      if start == len(num):
+        if eval == target:
+          ans.append(&#x27;&#x27;.join(path))
+        return
+
+      for i in range(start, len(num)):
+        if i &gt; start and num[start] == &#x27;0&#x27;:
+          return
+        s = num[start:i + 1]
+        curr = int(s)
+        if start == 0:
+          path.append(s)
+          dfs(i + 1, curr, curr, path)
+          path.pop()
+        else:
+          for op in [&#x27;+&#x27;, &#x27;-&#x27;, &#x27;*&#x27;]:
+            path.append(op + s)
+            if op == &#x27;+&#x27;:
+              dfs(i + 1, curr, eval + curr, path)
+            elif op == &#x27;-&#x27;:
+              dfs(i + 1, -curr, eval - curr, path)
+            else:
+              dfs(i + 1, prev * curr, eval - prev + prev * curr, path)
+            path.pop()
+
+    dfs(0, 0, 0, [])
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts Merge - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Accounts Merge written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/accounts-merge/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-word-in-dictionary/" class="btn">← Previous</a>
+            <span>Problem 721 of 3563</span>
+            <a href="/leetcode-solutions/problems/remove-comments/" class="btn">Next →</a>
+        </div>
+        <h1>721. Accounts Merge</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Accounts Merge efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), sz(n, 1) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionBySize(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (sz[i] &lt; sz[j]) {
+      sz[j] += sz[i];
+      id[i] = j;
+    } else {
+      sz[i] += sz[j];
+      id[j] = i;
+    }
+  }
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; sz;
+};
+
+class Solution {
+ public:
+  vector&lt;vector&lt;string&gt;&gt; accountsMerge(vector&lt;vector&lt;string&gt;&gt;&amp; accounts) {
+    vector&lt;vector&lt;string&gt;&gt; ans;
+    unordered_map&lt;string, int&gt; emailToIndex;        // {email: index}
+    unordered_map&lt;int, set&lt;string&gt;&gt; indexToEmails;  // {index: {emails}}
+    UnionFind uf(accounts.size());
+
+    for (int i = 0; i &lt; accounts.size(); ++i) {
+      const string name = accounts[i][0];
+      for (int j = 1; j &lt; accounts[i].size(); ++j) {
+        const string email = accounts[i][j];
+        const auto it = emailToIndex.find(email);
+        if (it == emailToIndex.end()) {
+          emailToIndex[email] = i;
+        } else {
+          uf.unionBySize(i, it-&gt;second);
+        }
+      }
+    }
+
+    for (const auto&amp; [email, index] : emailToIndex)
+      indexToEmails[uf.find(index)].insert(email);
+
+    for (const auto&amp; [index, emails] : indexToEmails) {
+      const string name = accounts[index][0];
+      vector&lt;string&gt; row{name};
+      row.insert(row.end(), emails.begin(), emails.end());
+      ans.push_back(row);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(List&lt;List&lt;String&gt;&gt; accounts) {
+    for (List&lt;String&gt; account : accounts)
+      for (int i = 1; i &lt; account.size(); ++i) {
+        final String email = account.get(i);
+        id.putIfAbsent(email, email);
+      }
+  }
+
+  public void union(final String u, final String v) {
+    id.put(find(u), find(v));
+  }
+
+  public String find(final String u) {
+    if (u != id.get(u))
+      id.put(u, find(id.get(u)));
+    return id.get(u);
+  }
+
+  private Map&lt;String, String&gt; id = new HashMap&lt;&gt;();
+}
+
+class Solution {
+  public List&lt;List&lt;String&gt;&gt; accountsMerge(List&lt;List&lt;String&gt;&gt; accounts) {
+    List&lt;List&lt;String&gt;&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;String, String&gt; emailToName = new HashMap&lt;&gt;();
+    Map&lt;String, TreeSet&lt;String&gt;&gt; idEmailToEmails = new HashMap&lt;&gt;();
+    UnionFind uf = new UnionFind(accounts);
+
+    for (final List&lt;String&gt; account : accounts)
+      for (int i = 1; i &lt; account.size(); ++i)
+        emailToName.putIfAbsent(account.get(i), account.get(0));
+
+    for (final List&lt;String&gt; account : accounts)
+      for (int i = 2; i &lt; account.size(); ++i)
+        uf.union(account.get(i), account.get(i - 1));
+
+    for (final List&lt;String&gt; account : accounts)
+      for (int i = 1; i &lt; account.size(); ++i) {
+        final String id = uf.find(account.get(i));
+        idEmailToEmails.putIfAbsent(id, new TreeSet&lt;&gt;());
+        idEmailToEmails.get(id).add(account.get(i));
+      }
+
+    for (final String idEmail : idEmailToEmails.keySet()) {
+      List&lt;String&gt; emails = new ArrayList&lt;&gt;(idEmailToEmails.get(idEmail));
+      final String name = emailToName.get(idEmail);
+      emails.add(0, name);
+      ans.add(emails);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

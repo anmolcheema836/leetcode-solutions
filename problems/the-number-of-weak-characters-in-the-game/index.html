@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Number of Weak Characters in the Game - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Number of Weak Characters in the Game written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-number-of-weak-characters-in-the-game/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-special-quadruplets/" class="btn">← Previous</a>
+            <span>Problem 1996 of 3563</span>
+            <a href="/leetcode-solutions/problems/first-day-where-you-have-been-in-all-the-rooms/" class="btn">Next →</a>
+        </div>
+        <h1>1996. The Number of Weak Characters in the Game</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Number of Weak Characters in the Game efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numberOfWeakCharacters(vector&lt;vector&lt;int&gt;&gt;&amp; properties) {
+    int ans = 0;
+    const int maxAttack = (*ranges::max_element(
+        properties, ranges::less{},
+        [](const vector&lt;int&gt;&amp; property) { return property[0]; }))[0];
+    // maxDefenses[i] := the maximum defense for the i-th attack
+    vector&lt;int&gt; maxDefenses(maxAttack + 2);
+
+    for (const vector&lt;int&gt;&amp; property : properties) {
+      const int attack = property[0];
+      const int defense = property[1];
+      maxDefenses[attack] = max(maxDefenses[attack], defense);
+    }
+
+    for (int i = maxAttack; i &gt;= 1; --i)
+      maxDefenses[i] = max(maxDefenses[i], maxDefenses[i + 1]);
+
+    for (const vector&lt;int&gt;&amp; property : properties) {
+      const int attack = property[0];
+      const int defense = property[1];
+      if (maxDefenses[attack + 1] &gt; defense)
+        ++ans;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numberOfWeakCharacters(int[][] properties) {
+    int ans = 0;
+    final int maxAttack = Arrays.stream(properties).mapToInt(p -&gt; p[0]).max().getAsInt();
+    // maxDefenses[i] := the maximum defense for the i-th attack
+    int[] maxDefenses = new int[maxAttack + 2];
+
+    for (int[] property : properties) {
+      final int attack = property[0];
+      final int defense = property[1];
+      maxDefenses[attack] = Math.max(maxDefenses[attack], defense);
+    }
+
+    for (int i = maxAttack; i &gt;= 1; --i)
+      maxDefenses[i] = Math.max(maxDefenses[i], maxDefenses[i + 1]);
+
+    for (int[] property : properties) {
+      final int attack = property[0];
+      final int defense = property[1];
+      if (maxDefenses[attack + 1] &gt; defense)
+        ++ans;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numberOfWeakCharacters(self, properties: list[list[int]]) -&gt; int:
+    ans = 0
+    maxAttack = max(attack for attack, _ in properties)
+    # maxDefenses[i] := the maximum defense for the i-th attack
+    maxDefenses = [0] * (maxAttack + 2)
+
+    for attack, defense in properties:
+      maxDefenses[attack] = max(maxDefenses[attack], defense)
+
+    for i in range(maxAttack, 0, -1):
+      maxDefenses[i] = max(maxDefenses[i], maxDefenses[i + 1])
+
+    for attack, defense in properties:
+      if maxDefenses[attack + 1] &gt; defense:
+        ans += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

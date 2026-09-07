@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max Difference You Can Get From Changing an Integer - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Max Difference You Can Get From Changing an Integer written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/max-difference-you-can-get-from-changing-an-integer/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/kids-with-the-greatest-number-of-candies/" class="btn">← Previous</a>
+            <span>Problem 1432 of 3563</span>
+            <a href="/leetcode-solutions/problems/check-if-a-string-can-break-another-string/" class="btn">Next →</a>
+        </div>
+        <h1>1432. Max Difference You Can Get From Changing an Integer</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Max Difference You Can Get From Changing an Integer efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxDiff(int num) {
+    const string s = to_string(num);
+    int firstNot9 = s.find_first_not_of(&#x27;9&#x27;);
+    int firstNot01 = s.find_first_not_of(&quot;01&quot;);
+    if (firstNot9 == string::npos)
+      firstNot9 = 0;
+    if (firstNot01 == string::npos)
+      firstNot01 = 0;
+
+    string a = s;
+    string b = s;
+    replace(a.begin(), a.end(), s[firstNot9], &#x27;9&#x27;);
+    replace(b.begin(), b.end(), s[firstNot01], firstNot01 == 0 ? &#x27;1&#x27; : &#x27;0&#x27;);
+    return stoi(a) - stoi(b);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxDiff(int num) {
+    final String s = String.valueOf(num);
+    final int firstNot9 = firstNot(s, &#x27;9&#x27;, &#x27;9&#x27;);
+    final int firstNot01 = firstNot(s, &#x27;0&#x27;, &#x27;1&#x27;);
+    final String a = s.replace(s.charAt(firstNot9), &#x27;9&#x27;);
+    final String b = s.replace(s.charAt(firstNot01), firstNot01 == 0 ? &#x27;1&#x27; : &#x27;0&#x27;);
+    return Integer.parseInt(a) - Integer.parseInt(b);
+  }
+
+  private int firstNot(final String s, char a, char b) {
+    for (int i = 0; i &lt; s.length(); ++i)
+      if (s.charAt(i) != a &amp;&amp; s.charAt(i) != b)
+        return i;
+    return 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxDiff(self, num: int) -&gt; int:
+    s = str(num)
+
+    def firstNot(s: str, t: str) -&gt; int:
+      for i, c in enumerate(s):
+        if all(c != d for d in t):
+          return i
+      return 0
+
+    firstNot9 = firstNot(s, &#x27;9&#x27;)
+    firstNot01 = firstNot(s, &#x27;01&#x27;)
+    a = s.replace(s[firstNot9], &#x27;9&#x27;)
+    b = s.replace(s[firstNot01], &#x27;1&#x27; if firstNot01 == 0 else &#x27;0&#x27;)
+    return int(a) - int(b)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

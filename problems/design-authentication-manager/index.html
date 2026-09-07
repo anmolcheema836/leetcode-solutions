@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Authentication Manager - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Authentication Manager written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-authentication-manager/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/second-largest-digit-in-a-string/" class="btn">← Previous</a>
+            <span>Problem 1797 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-number-of-consecutive-values-you-can-make/" class="btn">Next →</a>
+        </div>
+        <h1>1797. Design Authentication Manager</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Authentication Manager efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class AuthenticationManager {
+ public:
+  AuthenticationManager(int timeToLive) : timeToLive(timeToLive) {}
+
+  void generate(string tokenId, int currentTime) {
+    tokenIdToExpiryTime[tokenId] = currentTime;
+    times.emplace(currentTime);
+  }
+
+  void renew(string tokenId, int currentTime) {
+    if (const auto it = tokenIdToExpiryTime.find(tokenId);
+        it == tokenIdToExpiryTime.cend() ||
+        currentTime &gt;= it-&gt;second + timeToLive)
+      return;
+    times.erase(tokenIdToExpiryTime[tokenId]);
+    tokenIdToExpiryTime[tokenId] = currentTime;
+    times.emplace(currentTime);
+  }
+
+  int countUnexpiredTokens(int currentTime) {
+    const auto it = times.lower_bound(currentTime - timeToLive + 1);
+    // Remove expired tokens.
+    times.erase(times.begin(), it);
+    return times.size();
+  }
+
+ private:
+  const int timeToLive;
+  unordered_map&lt;string, int&gt; tokenIdToExpiryTime;
+  set&lt;int&gt; times;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">public class AuthenticationManager {
+  public AuthenticationManager(int timeToLive) {
+    this.timeToLive = timeToLive;
+  }
+
+  public void generate(String tokenId, int currentTime) {
+    tokenIdToExpiryTime.put(tokenId, currentTime);
+    times.add(currentTime);
+  }
+
+  public void renew(String tokenId, int currentTime) {
+    Integer expiryTime = tokenIdToExpiryTime.get(tokenId);
+    if (expiryTime == null || currentTime &gt;= expiryTime + timeToLive)
+      return;
+    times.remove(expiryTime);
+    tokenIdToExpiryTime.put(tokenId, currentTime);
+    times.add(currentTime);
+  }
+
+  public int countUnexpiredTokens(int currentTime) {
+    final int expiryTimeThreshold = currentTime - timeToLive + 1;
+    // Remove expired tokens.
+    times.headSet(expiryTimeThreshold).clear();
+    return times.size();
+  }
+
+  private final int timeToLive;
+  private final Map&lt;String, Integer&gt; tokenIdToExpiryTime = new HashMap&lt;&gt;();
+  private final TreeSet&lt;Integer&gt; times = new TreeSet&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedSet
+
+
+class AuthenticationManager:
+  def __init__(self, timeToLive: int):
+    self.timeToLive = timeToLive
+    self.tokenIdToExpiryTime = {}
+    self.times = SortedSet()
+
+  def generate(self, tokenId: str, currentTime: int) -&gt; None:
+    self.tokenIdToExpiryTime[tokenId] = currentTime
+    self.times.add(currentTime)
+
+  def renew(self, tokenId: str, currentTime: int) -&gt; None:
+    if (tokenId not in self.tokenIdToExpiryTime or
+            currentTime &gt;= self.tokenIdToExpiryTime[tokenId] + self.timeToLive):
+      return
+    self.times.remove(self.tokenIdToExpiryTime[tokenId])
+    self.tokenIdToExpiryTime[tokenId] = currentTime
+    self.times.add(currentTime)
+
+  def countUnexpiredTokens(self, currentTime: int) -&gt; int:
+    i = self.times.bisect_left(currentTime - self.timeToLive + 1)
+    # Remove expired tokens.
+    for _ in range(i):
+      self.times.remove(self.times[0])
+    return len(self.times)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

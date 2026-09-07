@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Beautiful Indices in the Given Array II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Beautiful Indices in the Given Array II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-beautiful-indices-in-the-given-array-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/" class="btn">← Previous</a>
+            <span>Problem 3008 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-number-of-intersections-on-the-chart/" class="btn">Next →</a>
+        </div>
+        <h1>3008. Find Beautiful Indices in the Given Array II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Beautiful Indices in the Given Array II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Same as 3006. Find Beautiful Indices in the Given Array I
+  vector&lt;int&gt; beautifulIndices(string s, string a, string b, int k) {
+    vector&lt;int&gt; ans;
+    const vector&lt;int&gt; indicesA = kmp(s, a);
+    const vector&lt;int&gt; indicesB = kmp(s, b);
+    int indicesBIndex = 0;  // indicesB&#x27;s index
+
+    for (const int i : indicesA) {
+      // The constraint is: |j - i| &lt;= k. So, -k &lt;= j - i &lt;= k. So, move
+      // `indicesBIndex` s.t. j - i &gt;= -k, where j := indicesB[indicesBIndex].
+      while (indicesBIndex &lt; indicesB.size() &amp;&amp;
+             indicesB[indicesBIndex] - i &lt; -k)
+        ++indicesBIndex;
+      if (indicesBIndex &lt; indicesB.size() &amp;&amp; indicesB[indicesBIndex] - i &lt;= k)
+        ans.push_back(i);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the starting indices of all occurrences of the pattern in `s`.
+  vector&lt;int&gt; kmp(const string&amp; s, const string&amp; pattern) {
+    vector&lt;int&gt; res;
+    const vector&lt;int&gt; lps = getLPS(pattern);
+    int i = 0;  // s&#x27; index
+    int j = 0;  // pattern&#x27;s index
+    while (i &lt; s.length()) {
+      if (s[i] == pattern[j]) {
+        ++i;
+        ++j;
+        if (j == pattern.length()) {
+          res.push_back(i - j);
+          j = lps[j - 1];
+        }
+      } else if (j &gt; 0) {  // Mismatch after j matches.
+        // Don&#x27;t match lps[0..lps[j - 1]] since they will match anyway.
+        j = lps[j - 1];
+      } else {
+        ++i;
+      }
+    }
+    return res;
+  }
+
+  // Returns the lps array, where lps[i] is the length of the longest prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  vector&lt;int&gt; getLPS(const string&amp; pattern) {
+    vector&lt;int&gt; lps(pattern.length());
+    for (int i = 1, j = 0; i &lt; pattern.length(); ++i) {
+      while (j &gt; 0 &amp;&amp; pattern[j] != pattern[i])
+        j = lps[j - 1];
+      if (pattern[i] == pattern[j])
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Same as 3006. Find Beautiful Indices in the Given Array I
+  public List&lt;Integer&gt; beautifulIndices(String s, String a, String b, int k) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;Integer&gt; indicesA = kmp(s, a);
+    List&lt;Integer&gt; indicesB = kmp(s, b);
+    int indicesBIndex = 0; // indicesB&#x27; index
+
+    for (final int i : indicesA) {
+      // The constraint is: |j - i| &lt;= k. So, -k &lt;= j - i &lt;= k. So, move
+      // `indicesBIndex` s.t. j - i &gt;= -k, where j := indicesB[indicesBIndex].
+      while (indicesBIndex &lt; indicesB.size() &amp;&amp; indicesB.get(indicesBIndex) - i &lt; -k)
+        ++indicesBIndex;
+      if (indicesBIndex &lt; indicesB.size() &amp;&amp; indicesB.get(indicesBIndex) - i &lt;= k)
+        ans.add(i);
+    }
+
+    return ans;
+  }
+
+  // Returns the starting indices of all occurrences of the pattern in `s`.
+  private List&lt;Integer&gt; kmp(final String s, final String pattern) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int[] lps = getLPS(pattern);
+    int i = 0; // s&#x27; index
+    int j = 0; // pattern&#x27;s index
+    while (i &lt; s.length()) {
+      if (s.charAt(i) == pattern.charAt(j)) {
+        ++i;
+        ++j;
+        if (j == pattern.length()) {
+          res.add(i - j);
+          j = lps[j - 1];
+        }
+      } else if (j != 0) { // Mismatch after j matches.
+        // Don&#x27;t match lps[0..lps[j - 1]] since they will match anyway.
+        j = lps[j - 1];
+      } else {
+        ++i;
+      }
+    }
+    return res;
+  }
+
+  // Returns the lps array, where lps[i] is the length of the longest prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  private int[] getLPS(final String pattern) {
+    int[] lps = new int[pattern.length()];
+    for (int i = 1, j = 0; i &lt; pattern.length(); ++i) {
+      while (j &gt; 0 &amp;&amp; pattern.charAt(j) != pattern.charAt(i))
+        j = lps[j - 1];
+      if (pattern.charAt(i) == pattern.charAt(j))
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Same as 3006. Find Beautiful Indices in the Given Array I
+  def beautifulIndices(self, s: str, a: str, b: str, k: int) -&gt; list[int]:
+    ans = []
+    indicesA = self._kmp(s, a)
+    indicesB = self._kmp(s, b)
+    indicesBIndex = 0  # indicesB&#x27; index
+
+    for i in indicesA:
+      # The constraint is: |j - i| &lt;= k. So, -k &lt;= j - i &lt;= k. So, move
+      # `indicesBIndex` s.t. j - i &gt;= -k, where j := indicesB[indicesBIndex].
+      while indicesBIndex &lt; len(indicesB) and indicesB[indicesBIndex] - i &lt; -k:
+        indicesBIndex += 1
+      if indicesBIndex &lt; len(indicesB) and indicesB[indicesBIndex] - i &lt;= k:
+        ans.append(i)
+
+    return ans
+
+  def _kmp(self, s: str, pattern: str) -&gt; list[int]:
+    &quot;&quot;&quot;Returns the starting indices of all occurrences of the pattern in `s`.&quot;&quot;&quot;
+
+    def getLPS(pattern: str) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Returns the lps array, where lps[i] is the length of the longest prefix of
+      pattern[0..i] which is also a suffix of this substring.
+      &quot;&quot;&quot;
+      lps = [0] * len(pattern)
+      j = 0
+      for i in range(1, len(pattern)):
+        while j &gt; 0 and pattern[j] != pattern[i]:
+          j = lps[j - 1]
+        if pattern[i] == pattern[j]:
+          lps[i] = j + 1
+          j += 1
+      return lps
+
+    lps = getLPS(pattern)
+    res = []
+    i = 0  # s&#x27; index
+    j = 0  # pattern&#x27;s index
+    while i &lt; len(s):
+      if s[i] == pattern[j]:
+        i += 1
+        j += 1
+        if j == len(pattern):
+          res.append(i - j)
+          j = lps[j - 1]
+      elif j != 0:  # Mismatch after j matches.
+        # Don&#x27;t match lps[0..lps[j - 1]] since they will match anyway.
+        j = lps[j - 1]
+      else:
+        i += 1
+    return res</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

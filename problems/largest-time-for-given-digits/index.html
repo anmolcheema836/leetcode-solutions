@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Time for Given Digits - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Largest Time for Given Digits written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/largest-time-for-given-digits/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/bag-of-tokens/" class="btn">← Previous</a>
+            <span>Problem 949 of 3563</span>
+            <a href="/leetcode-solutions/problems/reveal-cards-in-increasing-order/" class="btn">Next →</a>
+        </div>
+        <h1>949. Largest Time for Given Digits</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Largest Time for Given Digits efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string largestTimeFromDigits(vector&lt;int&gt;&amp; arr) {
+    string ans;
+
+    for (int i = 0; i &lt; 4; ++i)
+      for (int j = 0; j &lt; 4; ++j)
+        for (int k = 0; k &lt; 4; ++k) {
+          if (i == j || i == k || j == k)
+            continue;
+          const string hours = to_string(arr[i]) + to_string(arr[j]);
+          const string minutes =
+              to_string(arr[k]) + to_string(arr[6 - i - j - k]);
+          if (hours &lt; &quot;24&quot; &amp;&amp; minutes &lt; &quot;60&quot;)
+            ans = max(ans, hours + &#x27;:&#x27; + minutes);
+        }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String largestTimeFromDigits(int[] arr) {
+    String ans = &quot;&quot;;
+
+    for (int i = 0; i &lt; 4; ++i)
+      for (int j = 0; j &lt; 4; ++j)
+        for (int k = 0; k &lt; 4; ++k) {
+          if (i == j || i == k || j == k)
+            continue;
+          final String hours = &quot;&quot; + arr[i] + arr[j];
+          final String minutes = &quot;&quot; + arr[k] + arr[6 - i - j - k];
+          final String time = hours + &#x27;:&#x27; + minutes;
+          if (hours.compareTo(&quot;24&quot;) &lt; 0 &amp;&amp; minutes.compareTo(&quot;60&quot;) &lt; 0 &amp;&amp; ans.compareTo(time) &lt; 0)
+            ans = time;
+        }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestTimeFromDigits(self, arr: list[int]) -&gt; str:
+    for time in itertools.permutations(sorted(arr, reverse=True)):
+      if time[:2] &lt; (2, 4) and time[2] &lt; 6:
+        return &#x27;%d%d:%d%d&#x27; % time
+    return &#x27;&#x27;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

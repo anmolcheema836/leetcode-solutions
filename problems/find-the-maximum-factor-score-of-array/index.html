@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Maximum Factor Score of Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Maximum Factor Score of Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-maximum-factor-score-of-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-original-typed-string-ii/" class="btn">← Previous</a>
+            <span>Problem 3334 of 3563</span>
+            <a href="/leetcode-solutions/problems/total-characters-in-string-after-transformations-i/" class="btn">Next →</a>
+        </div>
+        <h1>3334. Find the Maximum Factor Score of Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Maximum Factor Score of Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxScore(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    // prefixGcd[i] := GCD of nums[0..i]
+    // prefixLcm[i] := LCM of nums[0..i]
+    const auto [prefixGcd, prefixLcm] = getPrefix(nums);
+    // suffixGcd[i] := GCD of nums[i..n - 1]
+    // suffixLcm[i] := LCM of nums[i..n - 1]
+    const auto [suffixGcd, suffixLcm] = getSuffix(nums);
+    long ans = suffixGcd[0] * suffixLcm[0];
+
+    for (int i = 0; i &lt; n; ++i) {
+      const long gcd1 = i &gt; 0 ? prefixGcd[i - 1] : 0;
+      const long gcd2 = i + 1 &lt; n ? suffixGcd[i + 1] : 0;
+      const long lcm1 = i &gt; 0 ? prefixLcm[i - 1] : 1;
+      const long lcm2 = i + 1 &lt; n ? suffixLcm[i + 1] : 1;
+      const long score = gcd(gcd1, gcd2) * lcm(lcm1, lcm2);
+      ans = max(ans, score);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the prefix GCD and LCM arrays.
+  pair&lt;vector&lt;long&gt;, vector&lt;long&gt;&gt; getPrefix(const vector&lt;int&gt;&amp; nums) {
+    vector&lt;long&gt; prefixGcd;
+    vector&lt;long&gt; prefixLcm;
+    long currGcd = 0;
+    long currLcm = 1;
+    for (const int num : nums) {
+      currGcd = gcd(currGcd, num);
+      currLcm = lcm(currLcm, num);
+      prefixGcd.push_back(currGcd);
+      prefixLcm.push_back(currLcm);
+    }
+    return {prefixGcd, prefixLcm};
+  }
+
+  // Returns the suffix GCD and LCM arrays.
+  pair&lt;vector&lt;long&gt;, vector&lt;long&gt;&gt; getSuffix(const vector&lt;int&gt;&amp; nums) {
+    vector&lt;long&gt; suffixGcd;
+    vector&lt;long&gt; suffixLcm;
+    long currGcd = 0;
+    long currLcm = 1;
+    for (int i = nums.size() - 1; i &gt;= 0; --i) {
+      currGcd = gcd(currGcd, nums[i]);
+      currLcm = lcm(currLcm, nums[i]);
+      suffixGcd.push_back(currGcd);
+      suffixLcm.push_back(currLcm);
+    }
+    ranges::reverse(suffixGcd);
+    ranges::reverse(suffixLcm);
+    return {suffixGcd, suffixLcm};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxScore(int[] nums) {
+    final int n = nums.length;
+    // prefixGcd[i] := GCD of nums[0..i]
+    // prefixLcm[i] := LCM of nums[0..i]
+    long[][] prefix = getPrefix(nums);
+    long[] prefixGcd = prefix[0];
+    long[] prefixLcm = prefix[1];
+    // suffixGcd[i] := GCD of nums[i..n - 1]
+    // suffixLcm[i] := LCM of nums[i..n - 1]
+    long[][] suffix = getSuffix(nums);
+    long[] suffixGcd = suffix[0];
+    long[] suffixLcm = suffix[1];
+    long ans = suffixGcd[0] * suffixLcm[0];
+
+    for (int i = 0; i &lt; n; ++i) {
+      final long gcd1 = i &gt; 0 ? prefixGcd[i - 1] : 0;
+      final long gcd2 = i + 1 &lt; n ? suffixGcd[i + 1] : 0;
+      final long lcm1 = i &gt; 0 ? prefixLcm[i - 1] : 1;
+      final long lcm2 = i + 1 &lt; n ? suffixLcm[i + 1] : 1;
+      final long score = gcd(gcd1, gcd2) * lcm(lcm1, lcm2);
+      ans = Math.max(ans, score);
+    }
+
+    return ans;
+  }
+
+  // Returns the prefix GCD and LCM arrays.
+  private long[][] getPrefix(int[] nums) {
+    long[] prefixGcd = new long[nums.length];
+    long[] prefixLcm = new long[nums.length];
+    long currGcd = 0;
+    long currLcm = 1;
+    for (int i = 0; i &lt; nums.length; ++i) {
+      currGcd = gcd(currGcd, nums[i]);
+      currLcm = lcm(currLcm, nums[i]);
+      prefixGcd[i] = currGcd;
+      prefixLcm[i] = currLcm;
+    }
+    return new long[][] {prefixGcd, prefixLcm};
+  }
+
+  // Returns the suffix GCD and LCM arrays.
+  private long[][] getSuffix(int[] nums) {
+    long[] suffixGcd = new long[nums.length];
+    long[] suffixLcm = new long[nums.length];
+    long currGcd = 0;
+    long currLcm = 1;
+    for (int i = nums.length - 1; i &gt;= 0; --i) {
+      currGcd = gcd(currGcd, nums[i]);
+      currLcm = lcm(currLcm, nums[i]);
+      suffixGcd[i] = currGcd;
+      suffixLcm[i] = currLcm;
+    }
+    return new long[][] {suffixGcd, suffixLcm};
+  }
+
+  private long gcd(long a, long b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+
+  private long lcm(long a, long b) {
+    return a * (b / gcd(a, b));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxScore(self, nums: list[int]) -&gt; int:
+    n = len(nums)
+    # prefixGcd[i] := GCD of nums[0..i]
+    # prefixLcm[i] := LCM of nums[0..i]
+    prefixGcd, prefixLcm = self._getPrefix(nums)
+    # suffixGcd[i] := GCD of nums[i..n - 1]
+    # suffixLcm[i] := LCM of nums[i..n - 1]
+    suffixGcd, suffixLcm = self._getSuffix(nums)
+    ans = suffixGcd[0] * suffixLcm[0]
+
+    for i in range(n):
+      gcd1 = prefixGcd[i - 1] if i &gt; 0 else 0
+      gcd2 = suffixGcd[i + 1] if i + 1 &lt; n else 0
+      lcm1 = prefixLcm[i - 1] if i &gt; 0 else 1
+      lcm2 = suffixLcm[i + 1] if i + 1 &lt; n else 1
+      score = math.gcd(gcd1, gcd2) * math.lcm(lcm1, lcm2)
+      ans = max(ans, score)
+
+    return ans
+
+  def _getPrefix(self, nums: list[int]) -&gt; tuple[list[int], list[int]]:
+    &quot;&quot;&quot;Returns the prefix GCD and LCM arrays.&quot;&quot;&quot;
+    prefixGcd = []
+    prefixLcm = []
+    currGcd = 0
+    currLcm = 1
+    for num in nums:
+      currGcd = math.gcd(currGcd, num)
+      currLcm = math.lcm(currLcm, num)
+      prefixGcd.append(currGcd)
+      prefixLcm.append(currLcm)
+    return prefixGcd, prefixLcm
+
+  def _getSuffix(self, nums: list[int]) -&gt; tuple[list[int], list[int]]:
+    &quot;&quot;&quot;Returns the suffix GCD and LCM arrays.&quot;&quot;&quot;
+    suffixGcd = []
+    suffixLcm = []
+    currGcd = 0
+    currLcm = 1
+    for num in reversed(nums):
+      currGcd = math.gcd(currGcd, num)
+      currLcm = math.lcm(currLcm, num)
+      suffixGcd.append(currGcd)
+      suffixLcm.append(currLcm)
+    return list(reversed(suffixGcd)), list(reversed(suffixLcm))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

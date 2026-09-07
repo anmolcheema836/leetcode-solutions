@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Sum of the Power of All Subsequences - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Sum of the Power of All Subsequences written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-sum-of-the-power-of-all-subsequences/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/replace-question-marks-in-string-to-minimize-its-value/" class="btn">← Previous</a>
+            <span>Problem 3082 of 3563</span>
+            <a href="/leetcode-solutions/problems/existence-of-a-substring-in-a-string-and-its-reverse/" class="btn">Next →</a>
+        </div>
+        <h1>3082. Find the Sum of the Power of All Subsequences</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Sum of the Power of All Subsequences efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int sumOfPower(vector&lt;int&gt;&amp; nums, int k) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    // dp[i] := the number of subsequences in nums so far that sums to k
+    vector&lt;int&gt; dp(k + 1);
+    dp[0] = 1;
+
+    for (const int num : nums)
+      for (int i = k; i &gt;= 0; --i)
+        if (i &lt; num)
+          // 1. Exclude nums[i] in the subsequence.
+          // 2. Include nums[i] in the subsequence and skip it.
+          dp[i] = (dp[i] * 2L) % kMod;
+        else
+          // 1. Exclude nums[i] in the subsequence.
+          // 2. Include nums[i] in the subsequence and skip it.
+          // 3. Include nums[i] in the subsequence and pick it.
+          dp[i] = (dp[i] * 2L + dp[i - num]) % kMod;
+
+    return dp[k];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int sumOfPower(int[] nums, int k) {
+    final int MOD = 1_000_000_007;
+    // dp[i] := the number of subsequences in nums so far that sums to k
+    int[] dp = new int[k + 1];
+    dp[0] = 1;
+
+    for (final int num : nums)
+      for (int i = k; i &gt;= 0; --i)
+        if (i &lt; num)
+          // 1. Exclude nums[i] in the subsequence.
+          // 2. Include nums[i] in the subsequence and skip it.
+          dp[i] = (int) ((dp[i] * 2L) % MOD);
+        else
+          // 1. Exclude nums[i] in the subsequence.
+          // 2. Include nums[i] in the subsequence and skip it.
+          // 3. Include nums[i] in the subsequence and pick it.
+          dp[i] = (int) ((dp[i] * 2L + dp[i - num]) % MOD);
+
+    return dp[k];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def sumOfPower(self, nums: list[int], k: int) -&gt; int:
+    MOD = 1_000_000_007
+    # dp[i] := the number of subsequences in nums so far that sums to k
+    dp = [1] + [0] * k
+
+    for num in nums:
+      for i in range(k, -1, -1):
+        if i &lt; num:
+          dp[i] = (dp[i] * 2) % MOD
+        else:
+          dp[i] = (dp[i] * 2 + dp[i - num]) % MOD
+
+    return dp[k]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

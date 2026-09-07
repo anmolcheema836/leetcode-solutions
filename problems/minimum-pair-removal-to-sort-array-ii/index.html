@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Pair Removal to Sort Array II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Pair Removal to Sort Array II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-pair-removal-to-sort-array-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-product-of-subsequences-with-an-alternating-sum-equal-to-k/" class="btn">← Previous</a>
+            <span>Problem 3510 of 3563</span>
+            <a href="/leetcode-solutions/problems/make-a-positive-array/" class="btn">Next →</a>
+        </div>
+        <h1>3510. Minimum Pair Removal to Sort Array II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Pair Removal to Sort Array II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumPairRemoval(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    int ans = 0;
+    int inversionsCount = 0;
+    vector&lt;int&gt; nextIndices(n);
+    vector&lt;int&gt; prevIndices(n);
+    vector&lt;long&gt; values(nums.begin(), nums.end());
+
+    // Custom comparator for the set
+    auto comp = [](const pair&lt;long, int&gt;&amp; a, const pair&lt;long, int&gt;&amp; b) {
+      return a.first &lt; b.first || (a.first == b.first &amp;&amp; a.second &lt; b.second);
+    };
+    set&lt;pair&lt;long, int&gt;, decltype(comp)&gt; pairSums(comp);
+
+    for (int i = 0; i &lt; n; ++i) {
+      nextIndices[i] = i + 1;
+      prevIndices[i] = i - 1;
+    }
+
+    for (int i = 0; i &lt; n - 1; ++i)
+      pairSums.insert({(long)nums[i] + nums[i + 1], i});
+
+    for (int i = 0; i &lt; n - 1; ++i)
+      if (nums[i + 1] &lt; nums[i])
+        ++inversionsCount;
+
+    while (inversionsCount &gt; 0) {
+      ++ans;
+      auto smallestPair = *pairSums.begin();
+      pairSums.erase(pairSums.begin());
+
+      const long pairSum = smallestPair.first;
+      const int currIndex = smallestPair.second;
+      const int nextIndex = nextIndices[currIndex];
+      const int prevIndex = prevIndices[currIndex];
+
+      if (prevIndex &gt;= 0) {
+        const long oldPairSum = values[prevIndex] + values[currIndex];
+        const long newPairSum = values[prevIndex] + pairSum;
+        pairSums.erase({oldPairSum, prevIndex});
+        pairSums.insert({newPairSum, prevIndex});
+        if (values[prevIndex] &gt; values[currIndex])
+          --inversionsCount;
+        if (values[prevIndex] &gt; pairSum)
+          ++inversionsCount;
+      }
+
+      if (values[nextIndex] &lt; values[currIndex])
+        --inversionsCount;
+
+      const int nextNextIndex = (nextIndex &lt; n) ? nextIndices[nextIndex] : n;
+      if (nextNextIndex &lt; n) {
+        const long oldPairSum = values[nextIndex] + values[nextNextIndex];
+        const long newPairSum = pairSum + values[nextNextIndex];
+        pairSums.erase({oldPairSum, nextIndex});
+        pairSums.insert({newPairSum, currIndex});
+        if (values[nextNextIndex] &lt; values[nextIndex])
+          --inversionsCount;
+        if (values[nextNextIndex] &lt; pairSum)
+          ++inversionsCount;
+        prevIndices[nextNextIndex] = currIndex;
+      }
+
+      nextIndices[currIndex] = nextNextIndex;
+      values[currIndex] = pairSum;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumPairRemoval(int[] nums) {
+    final int n = nums.length;
+    int ans = 0;
+    int inversionsCount = 0;
+    int[] nextIndices = new int[n];
+    int[] prevIndices = new int[n];
+    long[] values = Arrays.stream(nums).asLongStream().toArray();
+    TreeSet&lt;Pair&lt;Long, Integer&gt;&gt; pairSums =
+        new TreeSet&lt;&gt;(Comparator.comparingLong(Pair&lt;Long, Integer&gt;::getKey)
+                          .thenComparingInt(Pair&lt;Long, Integer&gt;::getValue));
+
+    for (int i = 0; i &lt; n; ++i) {
+      nextIndices[i] = i + 1;
+      prevIndices[i] = i - 1;
+    }
+
+    for (int i = 0; i &lt; n - 1; ++i)
+      pairSums.add(new Pair&lt;&gt;((long) nums[i] + nums[i + 1], i));
+
+    for (int i = 0; i &lt; n - 1; ++i)
+      if (nums[i + 1] &lt; nums[i])
+        ++inversionsCount;
+
+    while (inversionsCount &gt; 0) {
+      ++ans;
+      Pair&lt;Long, Integer&gt; smallestPair = pairSums.pollFirst();
+      final long pairSum = smallestPair.getKey();
+      final int currIndex = smallestPair.getValue();
+      final int nextIndex = nextIndices[currIndex];
+      final int prevIndex = prevIndices[currIndex];
+      if (prevIndex &gt;= 0) {
+        final long oldPairSum = values[prevIndex] + values[currIndex];
+        final long newPairSum = values[prevIndex] + pairSum;
+        pairSums.remove(new Pair&lt;&gt;(oldPairSum, prevIndex));
+        pairSums.add(new Pair&lt;&gt;(newPairSum, prevIndex));
+        if (values[prevIndex] &gt; values[currIndex])
+          --inversionsCount;
+        if (values[prevIndex] &gt; pairSum)
+          ++inversionsCount;
+      }
+
+      if (values[nextIndex] &lt; values[currIndex])
+        --inversionsCount;
+
+      final int nextNextIndex = (nextIndex &lt; n) ? nextIndices[nextIndex] : n;
+      if (nextNextIndex &lt; n) {
+        final long oldPairSum = values[nextIndex] + values[nextNextIndex];
+        final long newPairSum = pairSum + values[nextNextIndex];
+        pairSums.remove(new Pair&lt;&gt;(oldPairSum, nextIndex));
+        pairSums.add(new Pair&lt;&gt;(newPairSum, currIndex));
+        if (values[nextNextIndex] &lt; values[nextIndex])
+          --inversionsCount;
+        if (values[nextNextIndex] &lt; pairSum)
+          ++inversionsCount;
+        prevIndices[nextNextIndex] = currIndex;
+      }
+
+      nextIndices[currIndex] = nextNextIndex;
+      values[currIndex] = pairSum;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class Solution:
+  def minimumPairRemoval(self, nums: list[int]) -&gt; int:
+    n = len(nums)
+    ans = 0
+    inversionsCount = sum(nums[i + 1] &lt; nums[i] for i in range(n - 1))
+    nextIndices = [i + 1 for i in range(n)]
+    prevIndices = [i - 1 for i in range(n)]
+    pairSums = SortedList((a + b, i)
+                          for i, (a, b) in enumerate(itertools.pairwise(nums)))
+
+    while inversionsCount &gt; 0:
+      ans += 1
+      smallestPair = pairSums.pop(0)
+      pairSum, currIndex = smallestPair
+      nextIndex = nextIndices[currIndex]
+      prevIndex = prevIndices[currIndex]
+
+      if prevIndex &gt;= 0:
+        oldPairSum = nums[prevIndex] + nums[currIndex]
+        newPairSum = nums[prevIndex] + pairSum
+        pairSums.remove((oldPairSum, prevIndex))
+        pairSums.add((newPairSum, prevIndex))
+        if nums[prevIndex] &gt; nums[currIndex]:
+          inversionsCount -= 1
+        if nums[prevIndex] &gt; pairSum:
+          inversionsCount += 1
+
+      if nums[nextIndex] &lt; nums[currIndex]:
+        inversionsCount -= 1
+
+      nextNextIndex = nextIndices[nextIndex] if nextIndex &lt; n else n
+      if nextNextIndex &lt; n:
+        oldPairSum = nums[nextIndex] + nums[nextNextIndex]
+        newPairSum = pairSum + nums[nextNextIndex]
+        pairSums.remove((oldPairSum, nextIndex))
+        pairSums.add((newPairSum, currIndex))
+        if nums[nextNextIndex] &lt; nums[nextIndex]:
+          inversionsCount -= 1
+        if nums[nextNextIndex] &lt; pairSum:
+          inversionsCount += 1
+        prevIndices[nextNextIndex] = currIndex
+
+      nextIndices[currIndex] = nextNextIndex
+      nums[currIndex] = pairSum
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Time to Finish the Race - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Time to Finish the Race written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-time-to-finish-the-race/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-time-to-complete-trips/" class="btn">← Previous</a>
+            <span>Problem 2188 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-ways-to-build-house-of-cards/" class="btn">Next →</a>
+        </div>
+        <h1>2188. Minimum Time to Finish the Race</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Time to Finish the Race efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumFinishTime(vector&lt;vector&lt;int&gt;&gt;&amp; tires, int changeTime,
+                        int numLaps) {
+    // dp[i] := the minimum time of the first i laps
+    vector&lt;int&gt; dp(numLaps + 1, INT_MAX);
+
+    for (const vector&lt;int&gt;&amp; t : tires)
+      for (int seconds = t[0], secondsSum = t[0], lapCount = 1;
+           seconds &lt; t[0] + changeTime &amp;&amp; lapCount &lt; dp.size();
+           seconds *= t[1], ++lapCount, secondsSum += seconds)
+        dp[lapCount] = min(secondsSum, dp[lapCount]);
+
+    for (int i = 2; i &lt;= numLaps; ++i)
+      for (int j = 1; j * 2 &lt;= i; ++j)
+        dp[i] = min(dp[i], dp[j] + dp[i - j] + changeTime);
+
+    return dp[numLaps];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumFinishTime(int[][] tires, int changeTime, int numLaps) {
+    // singleTire[i] := the minimum time to finish i laps without changing tire
+    int[] singleTire = new int[numLaps + 1];
+    // dp[i] := the minimum time to finish i laps
+    int[] dp = new int[numLaps + 1];
+
+    Arrays.fill(singleTire, Integer.MAX_VALUE / 2);
+    Arrays.fill(dp, Integer.MAX_VALUE / 2);
+
+    for (int i = 0; i &lt; tires.length; ++i) {
+      final int f = tires[i][0];
+      final int r = tires[i][1];
+      int sumSecs = 0;
+      int rPower = 1;
+      for (int j = 1; j &lt;= numLaps; ++j) {
+        // the time to use the same tire for the next lap &gt;=
+        // the time to change a new tire + f
+        if ((long) f * rPower &gt;= changeTime + f)
+          break;
+        sumSecs += f * rPower;
+        rPower *= r;
+        singleTire[j] = Math.min(singleTire[j], sumSecs);
+      }
+    }
+
+    dp[0] = 0;
+    for (int i = 1; i &lt;= numLaps; ++i)
+      for (int j = 1; j &lt;= i; ++j)
+        dp[i] = Math.min(dp[i], dp[i - j] + changeTime + singleTire[j]);
+
+    return dp[numLaps] - changeTime;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumFinishTime(
+      self,
+      tires: list[list[int]],
+      changeTime: int,
+      numLaps: int,
+  ) -&gt; int:
+    # singleTire[i] := the minimum time to finish i laps without changing tire
+    singleTire = [math.inf] * (numLaps + 1)
+    # dp[i] := the minimum time to finish i laps
+    dp = [math.inf] * (numLaps + 1)
+
+    for i, (f, r) in enumerate(tires):
+      sumSecs = 0
+      rPower = 1
+      for j in range(1, numLaps + 1):
+        # the time to use the same tire for the next lap &gt;=
+        # the time to change a new tire + f
+        if f * rPower &gt;= changeTime + f:
+          break
+        sumSecs += f * rPower
+        rPower *= r
+        singleTire[j] = min(singleTire[j], sumSecs)
+
+    dp[0] = 0
+    for i in range(1, numLaps + 1):
+      for j in range(1, i + 1):
+        dp[i] = min(dp[i], dp[i - j] + changeTime + singleTire[j])
+
+    return dp[numLaps] - changeTime</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

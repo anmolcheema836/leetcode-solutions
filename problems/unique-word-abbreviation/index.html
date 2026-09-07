@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Word Abbreviation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Unique Word Abbreviation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/unique-word-abbreviation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-duplicate-number/" class="btn">← Previous</a>
+            <span>Problem 288 of 3563</span>
+            <a href="/leetcode-solutions/problems/game-of-life/" class="btn">Next →</a>
+        </div>
+        <h1>288. Unique Word Abbreviation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Unique Word Abbreviation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class ValidWordAbbr {
+ public:
+  ValidWordAbbr(vector&lt;string&gt;&amp; dictionary) {
+    dict = unordered_set(dictionary.begin(), dictionary.end());
+
+    for (const string&amp; word : dict) {
+      const string&amp; abbr = getAbbr(word);
+      abbrUnique[abbr] = !abbrUnique.contains(abbr);
+    }
+  }
+
+  bool isUnique(string word) {
+    const string&amp; abbr = getAbbr(word);
+    return !abbrUnique.contains(abbr) ||
+           abbrUnique[abbr] &amp;&amp; dict.contains(word);
+  }
+
+ private:
+  unordered_set&lt;string&gt; dict;
+  unordered_map&lt;string, bool&gt; abbrUnique;  // T := unique, F := not unique
+
+  string getAbbr(const string&amp; s) {
+    const int n = s.length();
+    if (n &lt;= 2)
+      return s;
+    return s[0] + to_string(n - 2) + s.back();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class ValidWordAbbr {
+  public ValidWordAbbr(String[] dictionary) {
+    dict = new HashSet&lt;&gt;(Arrays.asList(dictionary));
+
+    for (final String word : dict) {
+      final String abbr = getAbbr(word);
+      abbrUnique.put(abbr, !abbrUnique.containsKey(abbr));
+    }
+  }
+
+  public boolean isUnique(String word) {
+    final String abbr = getAbbr(word);
+    final Boolean hasAbbr = abbrUnique.get(abbr);
+    return hasAbbr == null || hasAbbr &amp;&amp; dict.contains(word);
+  }
+
+  private Set&lt;String&gt; dict;
+  private Map&lt;String, Boolean&gt; abbrUnique = new HashMap&lt;&gt;(); // T := unique, F := not unique
+
+  private String getAbbr(final String s) {
+    final int n = s.length();
+    if (n &lt;= 2)
+      return s;
+    return s.charAt(0) + Integer.toString(n - 2) + s.charAt(n - 1);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class ValidWordAbbr:
+  def __init__(self, dictionary: list[str]):
+    self.dict = set(dictionary)
+    # T := unique, F := not unique
+    self.abbrUnique = {}
+
+    for word in self.dict:
+      abbr = self._getAbbr(word)
+      self.abbrUnique[abbr] = abbr not in self.abbrUnique
+
+  def isUnique(self, word: str) -&gt; bool:
+    abbr = self._getAbbr(word)
+    return abbr not in self.abbrUnique or self.abbrUnique[abbr] and word in self.dict
+
+  def _getAbbr(self, s: str) -&gt; str:
+    n = len(s)
+    if n &lt;= 2:
+      return s
+    return s[0] + str(n - 2) + s[-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

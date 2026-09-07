@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path With Maximum Minimum Value - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Path With Maximum Minimum Value written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/path-with-maximum-minimum-value/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/the-earliest-moment-when-everyone-become-friends/" class="btn">← Previous</a>
+            <span>Problem 1102 of 3563</span>
+            <a href="/leetcode-solutions/problems/distribute-candies-to-people/" class="btn">Next →</a>
+        </div>
+        <h1>1102. Path With Maximum Minimum Value</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Path With Maximum Minimum Value efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  int i;
+  int j;
+  int val;
+};
+
+class Solution {
+ public:
+  int maximumMinimumPath(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    const int m = grid.size();
+    const int n = grid[0].size();
+    int ans = grid[0][0];
+    vector&lt;vector&lt;bool&gt;&gt; seen(m, vector&lt;bool&gt;(n));
+    auto compare = [](const T&amp; a, const T&amp; b) { return a.val &lt; b.val; };
+    priority_queue&lt;T, vector&lt;T&gt;, decltype(compare)&gt; maxHeap(compare);
+
+    maxHeap.emplace(0, 0, grid[0][0]);
+
+    while (!maxHeap.empty()) {
+      const auto [i, j, val] = maxHeap.top();
+      maxHeap.pop();
+      ans = min(ans, val);
+      if (i == m - 1 &amp;&amp; j == n - 1)
+        return ans;
+      seen[i][j] = true;
+      for (const auto&amp; [dx, dy] : kDirs) {
+        const int x = i + dx;
+        const int y = j + dy;
+        if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+          continue;
+        if (seen[x][y])
+          continue;
+        maxHeap.emplace(x, y, grid[x][y]);
+      }
+    }
+
+    throw;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximumMinimumPath(int[][] grid) {
+    record T(int i, int j, int val) {}
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int m = grid.length;
+    final int n = grid[0].length;
+    int ans = grid[0][0];
+    boolean[][] seen = new boolean[m][n];
+    Queue&lt;T&gt; maxHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(T::val).reversed()) {
+      { offer(new T(0, 0, grid[0][0])); }
+    };
+
+    while (!maxHeap.isEmpty()) {
+      final int i = maxHeap.peek().i;
+      final int j = maxHeap.peek().j;
+      final int val = maxHeap.poll().val;
+      ans = Math.min(ans, val);
+      if (i == m - 1 &amp;&amp; j == n - 1)
+        return ans;
+      seen[i][j] = true;
+      for (int[] dir : DIRS) {
+        final int x = i + dir[0];
+        final int y = j + dir[1];
+        if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+          continue;
+        if (seen[x][y])
+          continue;
+        maxHeap.offer(new T(x, y, grid[x][y]));
+      }
+    }
+
+    throw new IllegalArgumentException();
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

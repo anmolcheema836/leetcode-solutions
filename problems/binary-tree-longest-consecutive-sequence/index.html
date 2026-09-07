@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Longest Consecutive Sequence - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Binary Tree Longest Consecutive Sequence written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/binary-tree-longest-consecutive-sequence/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/serialize-and-deserialize-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 298 of 3563</span>
+            <a href="/leetcode-solutions/problems/bulls-and-cows/" class="btn">Next →</a>
+        </div>
+        <h1>298. Binary Tree Longest Consecutive Sequence</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Binary Tree Longest Consecutive Sequence efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int longestConsecutive(TreeNode* root) {
+    if (root == nullptr)
+      return 0;
+    return dfs(root, root-&gt;val, 0, 0);
+  }
+
+ private:
+  int dfs(TreeNode* root, int target, int length, int maxLength) {
+    if (root == nullptr)
+      return maxLength;
+    if (root-&gt;val == target)
+      maxLength = max(maxLength, ++length);
+    else
+      length = 1;
+    return max(dfs(root-&gt;left, root-&gt;val + 1, length, maxLength),
+               dfs(root-&gt;right, root-&gt;val + 1, length, maxLength));
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int longestConsecutive(TreeNode root) {
+    if (root == null)
+      return 0;
+    return dfs(root, -1, 0, 1);
+  }
+
+  private int dfs(TreeNode root, int target, int length, int mx) {
+    if (root == null)
+      return mx;
+    if (root.val == target)
+      mx = Math.max(mx, ++length);
+    else
+      length = 1;
+    return Math.max(dfs(root.left, root.val + 1, length, mx),
+                    dfs(root.right, root.val + 1, length, mx));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestConsecutive(self, root: TreeNode | None) -&gt; int:
+    if not root:
+      return 0
+
+    def dfs(root: TreeNode | None, target: int, length: int, maxLength: int) -&gt; int:
+      if not root:
+        return maxLength
+      if root.val == target:
+        length += 1
+        maxLength = max(maxLength, length)
+      else:
+        length = 1
+      return max(dfs(root.left, root.val + 1, length, maxLength),
+                 dfs(root.right, root.val + 1, length, maxLength))
+
+    return dfs(root, root.val, 0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

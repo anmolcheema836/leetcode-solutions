@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brace Expansion - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Brace Expansion written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/brace-expansion/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/high-five/" class="btn">← Previous</a>
+            <span>Problem 1087 of 3563</span>
+            <a href="/leetcode-solutions/problems/confusing-number-ii/" class="btn">Next →</a>
+        </div>
+        <h1>1087. Brace Expansion</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Brace Expansion efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; expand(string s) {
+    vector&lt;string&gt; ans;
+    string path;
+    dfs(s, 0, path, ans);
+    return ans;
+  }
+
+ private:
+  void dfs(const string&amp; s, int i, string&amp; path, vector&lt;string&gt;&amp; ans) {
+    if (i == s.length()) {
+      ans.push_back(path);
+      return;
+    }
+    if (s[i] == &#x27;{&#x27;) {
+      const int nextRightBraceIndex = s.find_first_of(&#x27;}&#x27;, i);
+      for (const char c :
+           split(s.substr(i + 1, nextRightBraceIndex - i - 1), &#x27;,&#x27;)) {
+        path.push_back(c);
+        dfs(s, nextRightBraceIndex + 1, path, ans);
+        path.pop_back();
+      }
+    } else {  // s[i] != &#x27;{&#x27;
+      path.push_back(s[i]);
+      dfs(s, i + 1, path, ans);
+      path.pop_back();
+    }
+  }
+
+  vector&lt;char&gt; split(const string&amp; s, char delimiter) {
+    vector&lt;char&gt; splitted;
+    for (const char c : s)
+      if (c != delimiter)
+        splitted.push_back(c);
+    return splitted;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String[] expand(String s) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+
+    dfs(s, 0, new StringBuilder(), ans);
+    Collections.sort(ans);
+    return ans.toArray(new String[0]);
+  }
+
+  private void dfs(final String s, int i, StringBuilder sb, List&lt;String&gt; ans) {
+    if (i == s.length()) {
+      ans.add(sb.toString());
+      return;
+    }
+    if (s.charAt(i) == &#x27;{&#x27;) {
+      final int nextRightBraceIndex = s.indexOf(&quot;}&quot;, i);
+      for (final String c : s.substring(i + 1, nextRightBraceIndex).split(&quot;,&quot;)) {
+        sb.append(c);
+        dfs(s, nextRightBraceIndex + 1, sb, ans);
+        sb.deleteCharAt(sb.length() - 1);
+      }
+    } else { // s[i] != &#x27;{&#x27;
+      sb.append(s.charAt(i));
+      dfs(s, i + 1, sb, ans);
+      sb.deleteCharAt(sb.length() - 1);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def expand(self, s: str) -&gt; list[str]:
+    ans = []
+
+    def dfs(i: int, path: list[str]) -&gt; None:
+      if i == len(s):
+        ans.append(&#x27;&#x27;.join(path))
+        return
+      if s[i] == &#x27;{&#x27;:
+        nextRightBraceIndex = s.find(&#x27;}&#x27;, i)
+        for c in s[i + 1:nextRightBraceIndex].split(&#x27;,&#x27;):
+          path.append(c)
+          dfs(nextRightBraceIndex + 1, path)
+          path.pop()
+      else:  # s[i] != &#x27;{&#x27;
+        path.append(s[i])
+        dfs(i + 1, path)
+        path.pop()
+
+    dfs(0, [])
+    return sorted(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

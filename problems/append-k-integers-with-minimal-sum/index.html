@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Append K Integers With Minimal Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Append K Integers With Minimal Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/append-k-integers-with-minimal-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/cells-in-a-range-on-an-excel-sheet/" class="btn">← Previous</a>
+            <span>Problem 2195 of 3563</span>
+            <a href="/leetcode-solutions/problems/create-binary-tree-from-descriptions/" class="btn">Next →</a>
+        </div>
+        <h1>2195. Append K Integers With Minimal Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Append K Integers With Minimal Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minimalKSum(vector&lt;int&gt;&amp; nums, int k) {
+    long ans = 0;
+    nums.push_back(0);
+    ranges::sort(nums);
+
+    for (int i = 0; i + 1 &lt; nums.size(); ++i) {
+      if (nums[i] == nums[i + 1])
+        continue;
+      const int l = nums[i] + 1;
+      const int r = min(nums[i] + k, nums[i + 1] - 1);
+      ans += static_cast&lt;long&gt;(l + r) * (r - l + 1) / 2;
+      k -= r - l + 1;
+      if (k == 0)
+        return ans;
+    }
+
+    if (k &gt; 0) {
+      const int l = nums.back() + 1;
+      const int r = nums.back() + k;
+      ans += static_cast&lt;long&gt;(l + r) * (r - l + 1) / 2;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minimalKSum(int[] nums, int k) {
+    long ans = 0;
+    Arrays.sort(nums);
+
+    if (nums[0] &gt; 1) {
+      final int l = 1;
+      final int r = Math.min(k, nums[0] - 1);
+      ans += (long) (l + r) * (r - l + 1) / 2;
+      k -= r - l + 1;
+      if (k == 0)
+        return ans;
+    }
+
+    for (int i = 0; i + 1 &lt; nums.length; ++i) {
+      if (nums[i] == nums[i + 1])
+        continue;
+      final int l = nums[i] + 1;
+      final int r = Math.min(nums[i] + k, nums[i + 1] - 1);
+      ans += (long) (l + r) * (r - l + 1) / 2;
+      k -= r - l + 1;
+      if (k == 0)
+        return ans;
+    }
+
+    if (k &gt; 0) {
+      final int l = nums[nums.length - 1] + 1;
+      final int r = nums[nums.length - 1] + k;
+      ans += (long) (l + r) * (r - l + 1) / 2;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimalKSum(self, nums: list[int], k: int) -&gt; int:
+    ans = 0
+    nums.append(0)
+    nums.sort()
+
+    for a, b in zip(nums, nums[1:]):
+      if a == b:
+        continue
+      l = a + 1
+      r = min(a + k, b - 1)
+      ans += (l + r) * (r - l + 1) // 2
+      k -= r - l + 1
+      if k == 0:
+        return ans
+
+    if k &gt; 0:
+      l = nums[-1] + 1
+      r = nums[-1] + k
+      ans += (l + r) * (r - l + 1) // 2
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

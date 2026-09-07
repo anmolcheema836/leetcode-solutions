@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Single Divisor Triplets - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Single Divisor Triplets written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-single-divisor-triplets/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/replace-non-coprime-numbers-in-array/" class="btn">← Previous</a>
+            <span>Problem 2198 of 3563</span>
+            <a href="/leetcode-solutions/problems/finding-the-topic-of-each-post/" class="btn">Next →</a>
+        </div>
+        <h1>2198. Number of Single Divisor Triplets</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Single Divisor Triplets efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long singleDivisorTriplet(vector&lt;int&gt;&amp; nums) {
+    constexpr int kMax = 100;
+    long ans = 0;
+    vector&lt;int&gt; count(kMax + 1);
+
+    for (const int num : nums)
+      ++count[num];
+
+    for (int a = 1; a &lt;= kMax; ++a)
+      for (int b = a; count[a] &gt; 0 &amp;&amp; b &lt;= kMax; ++b)
+        for (int c = b; count[b] &gt; 0 &amp;&amp; c &lt;= kMax; ++c) {
+          const int sum = a + b + c;
+          if (divisible(sum, a) + divisible(sum, b) + divisible(sum, c) != 1)
+            continue;
+          if (a == b)
+            ans += static_cast&lt;long&gt;(count[a]) * (count[a] - 1) / 2 * count[c];
+          else if (b == c)
+            ans += static_cast&lt;long&gt;(count[b]) * (count[b] - 1) / 2 * count[a];
+          else
+            ans += static_cast&lt;long&gt;(count[a]) * count[b] * count[c];
+        }
+
+    return ans * 6;
+  }
+
+ private:
+  int divisible(int sum, int num) {
+    return sum % num == 0;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long singleDivisorTriplet(int[] nums) {
+    final int MAX = 100;
+    long ans = 0;
+    int[] count = new int[MAX + 1];
+
+    for (final int num : nums)
+      ++count[num];
+
+    for (int a = 1; a &lt;= MAX; ++a)
+      for (int b = a; count[a] &gt; 0 &amp;&amp; b &lt;= MAX; ++b)
+        for (int c = b; count[b] &gt; 0 &amp;&amp; c &lt;= MAX; ++c) {
+          final int sum = a + b + c;
+          if (divisible(sum, a) + divisible(sum, b) + divisible(sum, c) != 1)
+            continue;
+          if (a == b)
+            ans += (long) count[a] * (count[a] - 1) / 2 * count[c];
+          else if (b == c)
+            ans += (long) count[b] * (count[b] - 1) / 2 * count[a];
+          else
+            ans += (long) count[a] * count[b] * count[c];
+        }
+
+    return ans * 6;
+  }
+
+  private int divisible(int sum, int num) {
+    return sum % num == 0 ? 1 : 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def singleDivisorTriplet(self, nums: list[int]) -&gt; int:
+    ans = 0
+    count = collections.Counter(nums)
+
+    def divisible(summ: int, num: int) -&gt; int:
+      return summ % num == 0
+
+    for a in range(1, 101):
+      if count[a] == 0:
+        continue
+      for b in range(a, 101):
+        if count[b] == 0:
+          continue
+        for c in range(b, 101):
+          if count[c] == 0:
+            continue
+          summ = a + b + c
+          if divisible(summ, a) + divisible(summ, b) + divisible(summ, c) != 1:
+            continue
+          if a == b:
+            ans += count[a] * (count[a] - 1) // 2 * count[c]
+          elif b == c:
+            ans += count[b] * (count[b] - 1) // 2 * count[a]
+          else:
+            ans += count[a] * count[b] * count[c]
+
+    return ans * 6</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallest Palindromic Rearrangement II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Smallest Palindromic Rearrangement II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/smallest-palindromic-rearrangement-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/smallest-palindromic-rearrangement-i/" class="btn">← Previous</a>
+            <span>Problem 3518 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-numbers-with-non-decreasing-digits/" class="btn">Next →</a>
+        </div>
+        <h1>3518. Smallest Palindromic Rearrangement II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Smallest Palindromic Rearrangement II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-python">class Solution:
+  def __init__(self):
+    self.MAX = 10**6 + 1
+
+  def smallestPalindrome(self, s: str, k: int) -&gt; str:
+    count = collections.Counter(s)
+    if not self._isPalindromePossible(count):
+      return &#x27;&#x27;
+
+    halfCount, midLetter = self._getHalfCountAndMidLetter(count)
+    totalPerm = self._calculateTotalPermutations(halfCount)
+    if k &gt; totalPerm:
+      return &#x27;&#x27;
+    leftHalf = self._generateLeftHalf(halfCount, k)
+    return &#x27;&#x27;.join(leftHalf) + midLetter + &#x27;&#x27;.join(reversed(leftHalf))
+
+  def _isPalindromePossible(self, count: collections.Counter) -&gt; bool:
+    oddCount = sum(1 for count in count.values() if count % 2 == 1)
+    return oddCount &lt;= 1
+
+  def _getHalfCountAndMidLetter(self, count: collections.Counter) -&gt; tuple[list[int], str]:
+    halfCount = [0] * 26
+    midLetter = &#x27;&#x27;
+    for c, freq in count.items():
+      halfCount[ord(c) - ord(&#x27;a&#x27;)] = freq // 2
+      if freq % 2 == 1:
+        midLetter = c
+    return halfCount, midLetter
+
+  def _calculateTotalPermutations(self, halfCount: list[int]) -&gt; int:
+    &quot;&quot;&quot;Calculate the total number of possible permutations.&quot;&quot;&quot;
+    return self._countArrangements(halfCount)
+
+  def _generateLeftHalf(self, halfCount: list[int], k: int) -&gt; list[str]:
+    &quot;&quot;&quot;Generate the left half of the palindrome based on k.&quot;&quot;&quot;
+    halfLen = sum(halfCount)
+    left = []
+    for _ in range(halfLen):
+      for i, freq in enumerate(halfCount):
+        if freq == 0:
+          continue
+        halfCount[i] -= 1
+        arrangements = self._countArrangements(halfCount)
+        if arrangements &gt;= k:
+          left.append(chr(i + ord(&#x27;a&#x27;)))
+          break
+        else:
+          k -= arrangements
+          halfCount[i] += 1
+    return left
+
+  def _countArrangements(self, count: list[int]) -&gt; int:
+    &quot;&quot;&quot;Calculate the number of possible arrangements of characters.&quot;&quot;&quot;
+    total = sum(count)
+    res = 1
+    for freq in count:
+      res *= self._nCk(total, freq)
+      if res &gt;= self.MAX:
+        return self.MAX
+      total -= freq
+    return res
+
+  def _nCk(self, n: int, k: int) -&gt; int:
+    res = 1
+    for i in range(1, min(k, n - k) + 1):
+      res = res * (n - i + 1) // i
+      if res &gt;= self.MAX:
+        return self.MAX
+    return res</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

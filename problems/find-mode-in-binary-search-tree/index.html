@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Mode in Binary Search Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Mode in Binary Search Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-mode-in-binary-search-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/keyboard-row/" class="btn">← Previous</a>
+            <span>Problem 501 of 3563</span>
+            <a href="/leetcode-solutions/problems/ipo/" class="btn">Next →</a>
+        </div>
+        <h1>501. Find Mode in Binary Search Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Mode in Binary Search Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; findMode(TreeNode* root) {
+    vector&lt;int&gt; ans;
+    int count = 0;
+    int maxCount = 0;
+
+    inorder(root, count, maxCount, ans);
+    return ans;
+  }
+
+ private:
+  TreeNode* pred = nullptr;
+
+  void inorder(TreeNode* root, int&amp; count, int&amp; maxCount, vector&lt;int&gt;&amp; ans) {
+    if (root == nullptr)
+      return;
+
+    inorder(root-&gt;left, count, maxCount, ans);
+    updateCount(root, count, maxCount, ans);
+    inorder(root-&gt;right, count, maxCount, ans);
+  }
+
+  void updateCount(TreeNode* root, int&amp; count, int&amp; maxCount,
+                   vector&lt;int&gt;&amp; ans) {
+    if (pred &amp;&amp; pred-&gt;val == root-&gt;val)
+      ++count;
+    else
+      count = 1;
+
+    if (count &gt; maxCount) {
+      maxCount = count;
+      ans = {root-&gt;val};
+    } else if (count == maxCount) {
+      ans.push_back(root-&gt;val);
+    }
+
+    pred = root;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] findMode(TreeNode root) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    // count[0] := currCount
+    // count[1] := maxCount
+    int[] count = new int[2];
+
+    inorder(root, count, ans);
+    return ans.stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  private TreeNode pred = null;
+
+  private void inorder(TreeNode root, int[] count, List&lt;Integer&gt; ans) {
+    if (root == null)
+      return;
+
+    inorder(root.left, count, ans);
+    updateCount(root, count, ans);
+    inorder(root.right, count, ans);
+  }
+
+  private void updateCount(TreeNode root, int[] count, List&lt;Integer&gt; ans) {
+    if (pred != null &amp;&amp; pred.val == root.val)
+      ++count[0];
+    else
+      count[0] = 1;
+
+    if (count[0] &gt; count[1]) {
+      count[1] = count[0];
+      ans.clear();
+      ans.add(root.val);
+    } else if (count[0] == count[1]) {
+      ans.add(root.val);
+    }
+
+    pred = root;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findMode(self, root: TreeNode | None) -&gt; list[int]:
+    self.ans = []
+    self.pred = None
+    self.count = 0
+    self.maxCount = 0
+
+    def updateCount(root: TreeNode | None) -&gt; None:
+      if self.pred and self.pred.val == root.val:
+        self.count += 1
+      else:
+        self.count = 1
+
+      if self.count &gt; self.maxCount:
+        self.maxCount = self.count
+        self.ans = [root.val]
+      elif self.count == self.maxCount:
+        self.ans.append(root.val)
+
+      self.pred = root
+
+    def inorder(root: TreeNode | None) -&gt; None:
+      if not root:
+        return
+
+      inorder(root.left)
+      updateCount(root)
+      inorder(root.right)
+
+    inorder(root)
+    return self.ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

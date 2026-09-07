@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bricks Falling When Hit - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Bricks Falling When Hit written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/bricks-falling-when-hit/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-eventual-safe-states/" class="btn">← Previous</a>
+            <span>Problem 803 of 3563</span>
+            <a href="/leetcode-solutions/problems/unique-morse-code-words/" class="btn">Next →</a>
+        </div>
+        <h1>803. Bricks Falling When Hit</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Bricks Falling When Hit efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), sz(n, 1) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionBySize(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (sz[i] &lt; sz[j]) {
+      sz[j] += sz[i];
+      id[i] = j;
+    } else {
+      sz[i] += sz[j];
+      id[j] = i;
+    }
+  }
+
+  int getStableSize() {
+    // Bricks connected with 0 (top) are stable.
+    return sz[find(0)];
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; sz;
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; hitBricks(vector&lt;vector&lt;int&gt;&gt;&amp; grid, vector&lt;vector&lt;int&gt;&gt;&amp; hits) {
+    m = grid.size();
+    n = grid[0].size();
+
+    UnionFind uf(m * n + 1);  // 0 := top (stable)
+
+    // Mark cells to hit as 2.
+    for (const vector&lt;int&gt;&amp; hit : hits) {
+      const int i = hit[0];
+      const int j = hit[1];
+      if (grid[i][j] == 1)
+        grid[i][j] = 2;
+    }
+
+    // Union all the 1s.
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 1)
+          unionNeighbors(grid, uf, i, j);
+
+    vector&lt;int&gt; ans(hits.size());
+    int stableSize = uf.getStableSize();
+
+    for (int i = hits.size() - 1; i &gt;= 0; --i) {
+      const int x = hits[i][0];
+      const int y = hits[i][1];
+      if (grid[x][y] == 2) {  // cells marked from 1 to 2
+        grid[x][y] = 1;       // Unhit and restore it back to 1.
+        unionNeighbors(grid, uf, x, y);
+        const int newStableSize = uf.getStableSize();
+        if (newStableSize &gt; stableSize)
+          ans[i] = newStableSize - stableSize - 1;  // 1 := the hit cell
+        stableSize = newStableSize;
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+  int m;
+  int n;
+
+  void unionNeighbors(const vector&lt;vector&lt;int&gt;&gt;&amp; grid, UnionFind&amp; uf, int i,
+                      int j) {
+    const int hash = getHash(i, j);
+
+    for (const auto&amp; [dx, dy] : kDirs) {
+      const int x = i + dx;
+      const int y = j + dy;
+      if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+        continue;
+      if (grid[x][y] != 1)
+        continue;
+      uf.unionBySize(hash, getHash(x, y));
+    }
+
+    if (i == 0)
+      uf.unionBySize(hash, 0);
+  }
+
+  int getHash(int i, int j) {
+    return i * n + j + 1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    id = new int[n];
+    sz = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+    Arrays.fill(sz, 1);
+  }
+
+  public void unionBySize(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (sz[i] &lt; sz[j]) {
+      sz[j] += sz[i];
+      id[i] = j;
+    } else {
+      sz[i] += sz[j];
+      id[j] = i;
+    }
+  }
+
+  public int getStableSize() {
+    // Bricks connected with 0 (top) are stable.
+    return sz[find(0)];
+  }
+
+  private int[] id;
+  private int[] sz;
+
+  private int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+}
+class Solution {
+  public int[] hitBricks(int[][] grid, int[][] hits) {
+    this.m = grid.length;
+    this.n = grid[0].length;
+
+    UnionFind uf = new UnionFind(m * n + 1); // 0 := top (stable)
+
+    // Mark cells to hit as 2.
+    for (int[] hit : hits) {
+      final int i = hit[0];
+      final int j = hit[1];
+      if (grid[i][j] == 1)
+        grid[i][j] = 2;
+    }
+
+    // Union all the 1s.
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 1)
+          unionNeighbors(grid, uf, i, j);
+
+    int[] ans = new int[hits.length];
+    int stableSize = uf.getStableSize();
+
+    for (int i = hits.length - 1; i &gt;= 0; --i) {
+      final int x = hits[i][0];
+      final int y = hits[i][1];
+      if (grid[x][y] == 2) { // cells marked from 1 to 2
+        grid[x][y] = 1;      // Unhit and restore it back to 1.
+        unionNeighbors(grid, uf, x, y);
+        final int newStableSize = uf.getStableSize();
+        if (newStableSize &gt; stableSize)
+          ans[i] = newStableSize - stableSize - 1; // 1 := the hit cell
+        stableSize = newStableSize;
+      }
+    }
+
+    return ans;
+  }
+
+  private int m;
+  private int n;
+  private static final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+  private void unionNeighbors(int[][] grid, UnionFind uf, int i, int j) {
+    final int hash = getHash(i, j);
+
+    for (int[] dir : DIRS) {
+      final int x = i + dir[0];
+      final int y = j + dir[1];
+      if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+        continue;
+      if (grid[x][y] != 1)
+        continue;
+      uf.unionBySize(hash, getHash(x, y));
+    }
+
+    if (i == 0)
+      uf.unionBySize(hash, 0);
+  }
+
+  private int getHash(int i, int j) {
+    return i * n + j + 1;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

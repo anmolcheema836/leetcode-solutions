@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream of Characters - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Stream of Characters written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/stream-of-characters/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-sum-of-two-non-overlapping-subarrays/" class="btn">← Previous</a>
+            <span>Problem 1032 of 3563</span>
+            <a href="/leetcode-solutions/problems/moving-stones-until-consecutive/" class="btn">Next →</a>
+        </div>
+        <h1>1032. Stream of Characters</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Stream of Characters efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  bool isWord = false;
+  TrieNode() : children(26) {}
+};
+
+class StreamChecker {
+ public:
+  StreamChecker(vector&lt;string&gt;&amp; words) {
+    for (const string&amp; word : words)
+      insert(word);
+  }
+
+  bool query(char letter) {
+    letters += letter;
+    shared_ptr&lt;TrieNode&gt; node = root;
+
+    for (int i = letters.length() - 1; i &gt;= 0; --i) {
+      const int index = letters[i] - &#x27;a&#x27;;
+      if (node-&gt;children[index] == nullptr)
+        return false;
+      node = node-&gt;children[index];
+      if (node-&gt;isWord)
+        return true;
+    }
+
+    return false;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+  string letters;
+
+  void insert(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = word.length() - 1; i &gt;= 0; --i) {
+      const int index = word[i] - &#x27;a&#x27;;
+      if (node-&gt;children[index] == nullptr)
+        node-&gt;children[index] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[index];
+    }
+    node-&gt;isWord = true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[26];
+  public boolean isWord = false;
+}
+
+class StreamChecker {
+  public StreamChecker(String[] words) {
+    for (final String word : words)
+      insert(word);
+  }
+
+  public boolean query(char letter) {
+    letters.append(letter);
+    TrieNode node = root;
+
+    for (int i = letters.length() - 1; i &gt;= 0; --i) {
+      final int index = letters.charAt(i) - &#x27;a&#x27;;
+      if (node.children[index] == null)
+        return false;
+      node = node.children[index];
+      if (node.isWord)
+        return true;
+    }
+
+    return false;
+  }
+
+  private TrieNode root = new TrieNode();
+  private StringBuilder letters = new StringBuilder();
+
+  private void insert(final String word) {
+    TrieNode node = root;
+    for (int i = word.length() - 1; i &gt;= 0; --i) {
+      final int index = word.charAt(i) - &#x27;a&#x27;;
+      if (node.children[index] == null)
+        node.children[index] = new TrieNode();
+      node = node.children[index];
+    }
+    node.isWord = true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+    self.isWord = False
+
+
+class StreamChecker:
+  def __init__(self, words: list[str]):
+    self.root = TrieNode()
+    self.letters = []
+    for word in words:
+      self._insert(word)
+
+  def query(self, letter: str) -&gt; bool:
+    self.letters.append(letter)
+    node = self.root
+    for c in reversed(self.letters):
+      if c not in node.children:
+        return False
+      node = node.children[c]
+      if node.isWord:
+        return True
+    return False
+
+  def _insert(self, word: str) -&gt; None:
+    node = self.root
+    for c in reversed(word):
+      node = node.children.setdefault(c, TrieNode())
+    node.isWord = True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

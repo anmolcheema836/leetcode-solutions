@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Edge Reversals So Every Node Is Reachable - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Edge Reversals So Every Node Is Reachable written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-edge-reversals-so-every-node-is-reachable/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-pairs-of-points-with-distance-k/" class="btn">← Previous</a>
+            <span>Problem 2858 of 3563</span>
+            <a href="/leetcode-solutions/problems/sum-of-values-at-indices-with-k-set-bits/" class="btn">Next →</a>
+        </div>
+        <h1>2858. Minimum Edge Reversals So Every Node Is Reachable</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Edge Reversals So Every Node Is Reachable efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; minEdgeReversals(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;int&gt; ans(n);
+    vector&lt;vector&lt;pair&lt;int, bool&gt;&gt;&gt; graph(n);
+    vector&lt;bool&gt; seen(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace_back(v, /*isForward=*/true);
+      graph[v].emplace_back(u, /*isForward=*/false);
+    }
+
+    vector&lt;int&gt; mem(n, -1);
+    ans[0] = minEdgeReversals(graph, 0, seen, mem);
+    seen = vector&lt;bool&gt;(n);
+    dfs(graph, 0, seen, ans);
+    return ans;
+  }
+
+ private:
+  // Returns the minimum number of edge reversals so node u can reach every
+  // node in its subtree.
+  int minEdgeReversals(const vector&lt;vector&lt;pair&lt;int, bool&gt;&gt;&gt;&amp; graph, int u,
+                       vector&lt;bool&gt;&amp; seen, vector&lt;int&gt;&amp; mem) {
+    if (mem[u] != -1)
+      return mem[u];
+    int res = 0;
+    seen[u] = true;
+    for (const auto&amp; [v, isForward] : graph[u]) {
+      if (seen[v])
+        continue;
+      seen[v] = true;
+      res += minEdgeReversals(graph, v, seen, mem) + (isForward ? 0 : 1);
+    }
+    return mem[u] = res;
+  }
+
+  void dfs(const vector&lt;vector&lt;pair&lt;int, bool&gt;&gt;&gt;&amp; graph, int u,
+           vector&lt;bool&gt;&amp; seen, vector&lt;int&gt;&amp; ans) {
+    seen[u] = true;
+    for (const auto&amp; [v, isForward] : graph[u]) {
+      if (seen[v])
+        continue;
+      seen[v] = true;
+      ans[v] = ans[u] + (isForward ? 1 : -1);
+      dfs(graph, v, seen, ans);
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] minEdgeReversals(int n, int[][] edges) {
+    int[] ans = new int[n];
+    List&lt;Pair&lt;Integer, Boolean&gt;&gt;[] graph = new List[n];
+    boolean[] seen = new boolean[n];
+
+    for (int i = 0; i &lt; n; i++)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(new Pair&lt;&gt;(v, /*isForward=*/true));
+      graph[v].add(new Pair&lt;&gt;(u, /*isForward=*/false));
+    }
+
+    Integer[] mem = new Integer[n];
+    ans[0] = minEdgeReversals(graph, 0, seen, mem);
+    seen = new boolean[n];
+    dfs(graph, 0, seen, ans);
+    return ans;
+  }
+
+  // Returns the minimum number of edge reversals so node u can reach every
+  // node in its subtree.
+  private int minEdgeReversals(List&lt;Pair&lt;Integer, Boolean&gt;&gt;[] graph, int u, boolean[] seen,
+                               Integer[] mem) {
+    if (mem[u] != null)
+      return mem[u];
+    int res = 0;
+    seen[u] = true;
+    for (Pair&lt;Integer, Boolean&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final boolean isForward = pair.getValue();
+      if (seen[v])
+        continue;
+      seen[v] = true;
+      res += minEdgeReversals(graph, v, seen, mem) + (isForward ? 0 : 1);
+    }
+    return mem[u] = res;
+  }
+
+  private void dfs(List&lt;Pair&lt;Integer, Boolean&gt;&gt;[] graph, int u, boolean[] seen, int[] ans) {
+    seen[u] = true;
+    for (Pair&lt;Integer, Boolean&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final boolean isForward = pair.getValue();
+      if (seen[v])
+        continue;
+      seen[v] = true;
+      ans[v] = ans[u] + (isForward ? 1 : -1);
+      dfs(graph, v, seen, ans);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minEdgeReversals(self, n: int, edges: list[list[int]]) -&gt; list[int]:
+    graph = [[] for _ in range(n)]
+
+    for u, v in edges:
+      graph[u].append((v, True))  # 1 means (u -&gt; v)
+      graph[v].append((u, False))  # 0 means (v &lt;- u)
+
+    seen = {0}
+
+    @functools.lru_cache(None)
+    def dp(u: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the minimum number of edge reversals so node u can reach every
+      node in its subtree.
+      &quot;&quot;&quot;
+      res = 0
+      for v, isForward in graph[u]:
+        if v in seen:
+          continue
+        seen.add(v)
+        res += dp(v) + (0 if isForward else 1)
+      return res
+
+    ans = [0] * n
+    ans[0] = dp(0)
+
+    def dfs(u: int) -&gt; None:
+      for v, isForward in graph[u]:
+        if v in seen:
+          continue
+        seen.add(v)
+        ans[v] = ans[u] + (1 if isForward else -1)
+        dfs(v)
+
+    seen = {0}
+    dfs(0)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

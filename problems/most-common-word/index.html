@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Most Common Word - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Most Common Word written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/most-common-word/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/race-car/" class="btn">← Previous</a>
+            <span>Problem 819 of 3563</span>
+            <a href="/leetcode-solutions/problems/short-encoding-of-words/" class="btn">Next →</a>
+        </div>
+        <h1>819. Most Common Word</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Most Common Word efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string mostCommonWord(string paragraph, vector&lt;string&gt;&amp; banned) {
+    string ans;
+    int maxCount = 0;
+    unordered_map&lt;string, int&gt; count;
+    unordered_set&lt;string&gt; bannedSet{banned.begin(), banned.end()};
+
+    // Make the paragraph lowercased and remove all the punctuations.
+    for (char&amp; c : paragraph)
+      c = isalpha(c) ? tolower(c) : &#x27; &#x27;;
+
+    istringstream iss(paragraph);
+
+    for (string word; iss &gt;&gt; word;)
+      if (!bannedSet.contains(word))
+        ++count[word];
+
+    for (const auto&amp; [word, freq] : count)
+      if (freq &gt; maxCount) {
+        maxCount = freq;
+        ans = word;
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String mostCommonWord(String paragraph, String[] banned) {
+    Pair&lt;String, Integer&gt; ans = new Pair&lt;&gt;(&quot;&quot;, 0);
+    Set&lt;String&gt; bannedSet = new HashSet&lt;&gt;(Arrays.asList(banned));
+    Map&lt;String, Integer&gt; count = new HashMap&lt;&gt;();
+    String[] words = paragraph.replaceAll(&quot;\\W+&quot;, &quot; &quot;).toLowerCase().split(&quot;\\s+&quot;);
+
+    for (final String word : words)
+      if (!bannedSet.contains(word))
+        if (count.merge(word, 1, Integer::sum) &gt; ans.getValue())
+          ans = new Pair&lt;&gt;(word, count.get(word));
+
+    return ans.getKey();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def mostCommonWord(self, paragraph: str, banned: list[str]) -&gt; str:
+    banned = set(banned)
+    words = re.findall(r&#x27;\w+&#x27;, paragraph.lower())
+    return collections.Counter(
+        word for word in words if word not in banned).most_common(1)[0][0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

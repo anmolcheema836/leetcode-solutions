@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Mentions Per User - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Mentions Per User written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-mentions-per-user/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-partitions-with-even-sum-difference/" class="btn">← Previous</a>
+            <span>Problem 3433 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-frequency-after-subarray-operation/" class="btn">Next →</a>
+        </div>
+        <h1>3433. Count Mentions Per User</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Mentions Per User efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct OfflineUser {
+  int returnTimestamp;
+  int userId;
+  bool operator&gt;(const OfflineUser&amp; other) const {
+    return returnTimestamp &gt; other.returnTimestamp;
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; countMentions(int numberOfUsers, vector&lt;vector&lt;string&gt;&gt;&amp; events) {
+    vector&lt;int&gt; ans(numberOfUsers);
+    vector&lt;int&gt; online(numberOfUsers, true);
+    // min-heap to track users that are offline
+    priority_queue&lt;OfflineUser, vector&lt;OfflineUser&gt;, greater&lt;&gt;&gt; offlineQueue;
+    int allMentionsCount = 0;
+
+    ranges::sort(events, ranges::less{}, [](const vector&lt;string&gt;&amp; event) {
+      const int timestamp = stoi(event[1]);
+      const char eventType = event[0][0];
+      return pair&lt;int, char&gt;{timestamp, -eventType};
+    });
+
+    for (const vector&lt;string&gt;&amp; event : events) {
+      const string eventType = event[0];
+      const int timestamp = stoi(event[1]);
+      // Bring users back online if their offline period has ended.
+      while (!offlineQueue.empty() &amp;&amp;
+             offlineQueue.top().returnTimestamp &lt;= timestamp)
+        online[offlineQueue.top().userId] = true, offlineQueue.pop();
+      if (eventType == &quot;MESSAGE&quot;) {
+        const string mentionsString = event[2];
+        if (mentionsString == &quot;ALL&quot;) {
+          ++allMentionsCount;
+        } else if (mentionsString == &quot;HERE&quot;) {
+          for (int userId = 0; userId &lt; numberOfUsers; ++userId)
+            if (online[userId])
+              ++ans[userId];
+        } else {
+          for (const int userId : getUserIds(mentionsString))
+            ++ans[userId];
+        }
+      } else if (eventType == &quot;OFFLINE&quot;) {
+        const int userId = stoi(event[2]);
+        online[userId] = false;
+        // Add to queue to bring back online after 60 units.
+        offlineQueue.emplace(timestamp + 60, userId);
+      }
+    }
+
+    // Add the &quot;ALL&quot; mentions to all users.
+    for (int userId = 0; userId &lt; numberOfUsers; ++userId)
+      ans[userId] += allMentionsCount;
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; getUserIds(const string&amp; s) {
+    vector&lt;int&gt; integers;
+    istringstream iss(s);
+    for (string id; iss &gt;&gt; id;)
+      integers.push_back(stoi(id.substr(2)));
+    return integers;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] countMentions(int numberOfUsers, List&lt;List&lt;String&gt;&gt; events) {
+    record OfflineUser(int returnTimestamp, int userId) {}
+    int[] ans = new int[numberOfUsers];
+    boolean[] online = new boolean[numberOfUsers];
+    Arrays.fill(online, true);
+    // min-heap to track users that are offline
+    Queue&lt;OfflineUser&gt; offlineQueue =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(OfflineUser::returnTimestamp));
+    int allMentionsCount = 0;
+
+    events.sort(
+        Comparator.comparingInt((List&lt;String&gt; event) -&gt; Integer.parseInt(event.get(1)))
+            .thenComparing((List&lt;String&gt; event) -&gt; event.get(0), Comparator.reverseOrder()));
+
+    for (List&lt;String&gt; event : events) {
+      final String eventType = event.get(0);
+      final int timestamp = Integer.parseInt(event.get(1));
+      // Bring users back online if their offline period has ended.
+      while (!offlineQueue.isEmpty() &amp;&amp; offlineQueue.peek().returnTimestamp &lt;= timestamp)
+        online[offlineQueue.poll().userId] = true;
+      if (eventType.equals(&quot;MESSAGE&quot;)) {
+        String mentionsString = event.get(2);
+        if (mentionsString.equals(&quot;ALL&quot;)) {
+          ++allMentionsCount;
+        } else if (mentionsString.equals(&quot;HERE&quot;)) {
+          for (int userId = 0; userId &lt; numberOfUsers; ++userId)
+            if (online[userId])
+              ++ans[userId];
+        } else {
+          for (final int userId : getUserIds(mentionsString))
+            ++ans[userId];
+        }
+      } else if (eventType.equals(&quot;OFFLINE&quot;)) {
+        final int userId = Integer.parseInt(event.get(2));
+        online[userId] = false;
+        // Add to queue to bring back online after 60 units
+        offlineQueue.offer(new OfflineUser(timestamp + 60, userId));
+      }
+    }
+
+    // Add the &quot;ALL&quot; mentions to all users.
+    for (int userId = 0; userId &lt; numberOfUsers; ++userId)
+      ans[userId] += allMentionsCount;
+
+    return ans;
+  }
+
+  private List&lt;Integer&gt; getUserIds(final String s) {
+    List&lt;Integer&gt; integers = new ArrayList&lt;&gt;();
+    for (String part : s.split(&quot; &quot;))
+      integers.add(Integer.parseInt(part.substring(2)));
+    return integers;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class OfflineUser:
+  returnTimestamp: int
+  userId: int
+
+  def __lt__(self, other):
+    return self.returnTimestamp &lt; other.returnTimestamp
+
+
+class Solution:
+  def countMentions(
+      self,
+      numberOfUsers: int,
+      events: list[list[str]]
+  ) -&gt; list[int]:
+    ans = [0] * numberOfUsers
+    online = [True] * numberOfUsers
+    offlineQueue = []  # min-heap to track users that are offline
+    allMentionsCount = 0
+
+    events.sort(key=lambda x: (int(x[1]), -ord(x[0][0])))
+
+    for eventType, t, messageContent in events:
+      timestamp = int(t)
+      # Bring users back online if their offline period has ended.
+      while offlineQueue and offlineQueue[0].returnTimestamp &lt;= timestamp:
+        user = heapq.heappop(offlineQueue)
+        online[user.userId] = True
+      if eventType == &quot;MESSAGE&quot;:
+        match messageContent:
+          case &quot;ALL&quot;:
+            allMentionsCount += 1
+          case &quot;HERE&quot;:
+            for userId in range(numberOfUsers):
+              if online[userId]:
+                ans[userId] += 1
+          case _:
+            for userId in [int(part[2:]) for part in messageContent.split()]:
+              ans[userId] += 1
+      elif eventType == &quot;OFFLINE&quot;:
+        userId = int(messageContent)
+        online[userId] = False
+        # Add to queue to bring back online after 60 units.
+        heapq.heappush(offlineQueue, OfflineUser(timestamp + 60, userId))
+
+    # Add the &quot;ALL&quot; mentions to all users.
+    for userId in range(numberOfUsers):
+      ans[userId] += allMentionsCount
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

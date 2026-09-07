@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possible Bipartition - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Possible Bipartition written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/possible-bipartition/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/spiral-matrix-iii/" class="btn">← Previous</a>
+            <span>Problem 886 of 3563</span>
+            <a href="/leetcode-solutions/problems/super-egg-drop/" class="btn">Next →</a>
+        </div>
+        <h1>886. Possible Bipartition</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Possible Bipartition efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">enum Color { kWhite, kRed, kGreen };
+
+class Solution {
+ public:
+  bool possibleBipartition(int n, vector&lt;vector&lt;int&gt;&gt;&amp; dislikes) {
+    vector&lt;vector&lt;int&gt;&gt; graph(n + 1);
+    vector&lt;Color&gt; colors(n + 1, Color::kWhite);
+
+    for (const vector&lt;int&gt;&amp; d : dislikes) {
+      const int u = d[0];
+      const int v = d[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    // Reduce to 785. Is Graph Bipartite?
+    for (int i = 1; i &lt;= n; ++i)
+      if (colors[i] == Color::kWhite &amp;&amp;
+          !isValidColor(graph, i, colors, Color::kRed))
+        return false;
+
+    return true;
+  }
+
+ private:
+  bool isValidColor(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u,
+                    vector&lt;Color&gt;&amp; colors, Color color) {
+    // Always paint red for a white node.
+    if (colors[u] != Color::kWhite)
+      return colors[u] == color;
+
+    colors[u] = color;  // Always paint the node with `color`.
+
+    // All the children should have valid colors.
+    for (const int v : graph[u])
+      if (!isValidColor(graph, v, colors,
+                        color == Color::kRed ? Color::kGreen : Color::kRed))
+        return false;
+
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">enum Color { WHITE, RED, GREEN }
+
+class Solution {
+  public boolean possibleBipartition(int n, int[][] dislikes) {
+    List&lt;Integer&gt;[] graph = new List[n + 1];
+    Color[] colors = new Color[n + 1];
+    Arrays.fill(colors, Color.WHITE);
+
+    for (int i = 1; i &lt;= n; ++i)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] d : dislikes) {
+      final int u = d[0];
+      final int v = d[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    // Reduce to 785. Is Graph Bipartite?
+    for (int i = 1; i &lt;= n; ++i)
+      if (colors[i] == Color.WHITE &amp;&amp; !isValidColor(graph, i, colors, Color.RED))
+        return false;
+
+    return true;
+  }
+
+  private boolean isValidColor(List&lt;Integer&gt;[] graph, int u, Color[] colors, Color color) {
+    // Always paint red for a white node.
+    if (colors[u] != Color.WHITE)
+      return colors[u] == color;
+
+    colors[u] = color; // Always paint the node with `color`.
+
+    // All the children should have valid colors.
+    for (final int v : graph[u])
+      if (!isValidColor(graph, v, colors, color == Color.RED ? Color.GREEN : Color.RED))
+        return false;
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from enum import Enum
+
+
+class Color(Enum):
+  WHITE = 0
+  RED = 1
+  GREEN = 2
+
+
+class Solution:
+  def possibleBipartition(self, n: int, dislikes: list[list[int]]) -&gt; bool:
+    graph = [[] for _ in range(n + 1)]
+    colors = [Color.WHITE] * (n + 1)
+
+    for u, v in dislikes:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    # Reduce to 785. Is Graph Bipartite?
+    def isValidColor(u: int, color: Color) -&gt; bool:
+      # Always paint red for a white node.
+      if colors[u] != Color.WHITE:
+        return colors[u] == color
+
+      colors[u] = color  # Always paint the node with `color`.
+
+      # All the children should have valid colors.
+      childrenColor = Color.RED if colors[u] == Color.GREEN else Color.GREEN
+      return all(isValidColor(v, childrenColor) for v in graph[u])
+
+    return all(colors[i] != Color.WHITE or isValidColor(i, Color.RED)
+               for i in range(1, n + 1))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

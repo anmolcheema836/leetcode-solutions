@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Unique Word Abbreviation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Unique Word Abbreviation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-unique-word-abbreviation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/split-array-largest-sum/" class="btn">← Previous</a>
+            <span>Problem 411 of 3563</span>
+            <a href="/leetcode-solutions/problems/fizz-buzz/" class="btn">Next →</a>
+        </div>
+        <h1>411. Minimum Unique Word Abbreviation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Unique Word Abbreviation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string minAbbreviation(string target, vector&lt;string&gt;&amp; dictionary) {
+    const int m = target.length();
+    vector&lt;int&gt; masks;
+
+    for (const string&amp; word : dictionary) {
+      if (word.length() != m)
+        continue;
+      masks.push_back(getMask(target, word));
+    }
+
+    if (masks.empty())
+      return to_string(m);
+
+    vector&lt;string&gt; abbrs;
+
+    const int maxCand = pow(2, m);
+    // all the candidate representation of the target
+    for (int cand = 0; cand &lt; maxCand; ++cand)
+      // All the masks have at lease one bit different from the candidate.
+      if (ranges::all_of(masks, [cand](int mask) { return cand &amp; mask; }))
+        abbrs.push_back(getAbbr(target, cand));
+
+    string ans = target;
+
+    for (const string&amp; abbr : abbrs)
+      if (getAbbrLen(abbr) &lt; getAbbrLen(ans))
+        ans = abbr;
+
+    return ans;
+  }
+
+ private:
+  int getMask(const string&amp; target, const string&amp; word) {
+    const int m = target.length();
+    // mask[i] = 0 := target[i] == word[i]
+    // mask[i] = 1 := target[i] != word[i]
+    // e.g. target = &quot;apple&quot;
+    //        word = &quot;blade&quot;
+    //        mask =  11110
+    int mask = 0;
+    for (int i = 0; i &lt; m; ++i)
+      if (word[i] != target[i])
+        mask |= 1 &lt;&lt; m - 1 - i;
+    return mask;
+  }
+
+  string getAbbr(const string&amp; target, int cand) {
+    const int m = target.length();
+    string abbr;
+    int replacedCount = 0;
+    for (int i = 0; i &lt; m; ++i)
+      if (cand &gt;&gt; m - 1 - i &amp; 1) {
+        // If cand[i] = 1, `abbr` should show the original character.
+        if (replacedCount &gt; 0)
+          abbr += to_string(replacedCount);
+        abbr += target[i];
+        replacedCount = 0;
+      } else {
+        // If cand[i] = 0, `abbr` can be replaced.
+        ++replacedCount;
+      }
+    if (replacedCount &gt; 0)
+      abbr += to_string(replacedCount);
+    return abbr;
+  }
+
+  int getAbbrLen(const string&amp; abbr) {
+    int abbrLen = 0;
+    int i = 0;
+    int j = 0;
+    while (i &lt; abbr.length()) {
+      if (isalpha(abbr[j]))
+        ++j;
+      else
+        while (j &lt; abbr.length() &amp;&amp; isdigit(abbr[j]))
+          ++j;
+      ++abbrLen;
+      i = j;
+    }
+    return abbrLen;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String minAbbreviation(String target, String[] dictionary) {
+    final int m = target.length();
+    List&lt;Integer&gt; masks = new ArrayList&lt;&gt;();
+
+    for (final String word : dictionary) {
+      if (word.length() != m)
+        continue;
+      masks.add(getMask(target, word));
+    }
+
+    if (masks.isEmpty())
+      return String.valueOf(m);
+
+    List&lt;String&gt; abbrs = new ArrayList&lt;&gt;();
+
+    final int maxCand = (int) Math.pow(2, m);
+    // all the candidate representation of the target
+    for (int i = 0; i &lt; maxCand; ++i) {
+      final int cand = i;
+      // All the masks have at lease one bit different from the candidate.
+      if (masks.stream().allMatch(mask -&gt; (cand &amp; mask) &gt; 0))
+        abbrs.add(getAbbr(target, cand));
+    }
+
+    String ans = target;
+
+    for (final String abbr : abbrs)
+      if (getAbbrLen(abbr) &lt; getAbbrLen(ans))
+        ans = abbr;
+
+    return ans;
+  }
+
+  private int getMask(final String target, final String word) {
+    final int m = target.length();
+    // mask[i] = 0 := target[i] == word[i]
+    // mask[i] = 1 := target[i] != word[i]
+    // e.g. target = &quot;apple&quot;
+    //        word = &quot;blade&quot;
+    //        mask =  11110
+    int mask = 0;
+    for (int i = 0; i &lt; m; ++i)
+      if (word.charAt(i) != target.charAt(i))
+        mask |= 1 &lt;&lt; m - 1 - i;
+    return mask;
+  }
+
+  String getAbbr(final String target, int cand) {
+    final int m = target.length();
+    StringBuilder sb = new StringBuilder();
+    int replacedCount = 0;
+    for (int i = 0; i &lt; m; ++i)
+      if ((cand &gt;&gt; m - 1 - i &amp; 1) == 1) {
+        // If cand[i] = 1, `abbr` should show the original character.
+        if (replacedCount &gt; 0)
+          sb.append(replacedCount);
+        sb.append(target.charAt(i));
+        replacedCount = 0;
+      } else {
+        // If cand[i] = 0, `abbr` can be replaced.
+        ++replacedCount;
+      }
+    if (replacedCount &gt; 0)
+      sb.append(replacedCount);
+    return sb.toString();
+  }
+
+  int getAbbrLen(final String abbr) {
+    int abbrLen = 0;
+    int i = 0;
+    int j = 0;
+    while (i &lt; abbr.length()) {
+      if (Character.isAlphabetic(abbr.charAt(j)))
+        ++j;
+      else
+        while (j &lt; abbr.length() &amp;&amp; Character.isDigit(abbr.charAt(j)))
+          ++j;
+      ++abbrLen;
+      i = j;
+    }
+    return abbrLen;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minAbbreviation(self, target: str, dictionary: list[str]) -&gt; str:
+    m = len(target)
+
+    def getMask(word: str) -&gt; int:
+      # mask[i] = 0 := target[i] == word[i]
+      # mask[i] = 1 := target[i] != word[i]
+      # e.g. target = &quot;apple&quot;
+      #        word = &quot;blade&quot;
+      #        mask =  11110
+      mask = 0
+      for i, c in enumerate(word):
+        if c != target[i]:
+          mask |= 1 &lt;&lt; m - 1 - i
+      return mask
+
+    masks = [getMask(word) for word in dictionary if len(word) == m]
+    if not masks:
+      return str(m)
+
+    abbrs = []
+
+    def getAbbr(cand: int) -&gt; str:
+      abbr = []
+      replacedCount = 0
+      for i, c in enumerate(target):
+        if cand &gt;&gt; m - 1 - i &amp; 1:
+          # If cand[i] = 1, `abbr` should show the original character.
+          if replacedCount:
+            abbr += str(replacedCount)
+          abbr.append(c)
+          replacedCount = 0
+        else:
+          # If cand[i] = 0, `abbr` can be replaced.
+          replacedCount += 1
+      if replacedCount:
+        abbr.append(str(replacedCount))
+      return &#x27;&#x27;.join(abbr)
+
+    # all the candidate representation of the target
+    for cand in range(2**m):
+      # All the masks have at lease one bit different from the candidate.
+      if all(cand &amp; mask for mask in masks):
+        abbr = getAbbr(cand)
+        abbrs.append(abbr)
+
+    def getAbbrLen(abbr: str) -&gt; int:
+      abbrLen = 0
+      i = 0
+      j = 0
+      while i &lt; len(abbr):
+        if abbr[j].isalpha():
+          j += 1
+        else:
+          while j &lt; len(abbr) and abbr[j].isdigit():
+            j += 1
+        abbrLen += 1
+        i = j
+      return abbrLen
+
+    return min(abbrs, key=lambda x: getAbbrLen(x))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

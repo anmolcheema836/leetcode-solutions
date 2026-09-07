@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimize Manhattan Distances - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimize Manhattan Distances written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimize-manhattan-distances/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-alternating-subarrays/" class="btn">← Previous</a>
+            <span>Problem 3102 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-trending-hashtags-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3102. Minimize Manhattan Distances</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimize Manhattan Distances efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumDistance(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    const auto [i, j] = maxManhattanDistance(points, -1);
+    const auto [xi, yi] = maxManhattanDistance(points, i);
+    const auto [xj, yj] = maxManhattanDistance(points, j);
+    return min(manhattan(points, xi, yi), manhattan(points, xj, yj));
+  }
+
+ private:
+  // Returns the pair of indices a and b where points[a] and points[b] have the
+  // maximum Manhattan distance and a != excludedIndex and b != excludedIndex.
+  pair&lt;int, int&gt; maxManhattanDistance(const vector&lt;vector&lt;int&gt;&gt;&amp; points,
+                                      int excludedIndex) {
+    int minSum = INT_MAX;
+    int maxSum = INT_MIN;
+    int minDiff = INT_MAX;
+    int maxDiff = INT_MIN;
+    int minSumIndex = -1;
+    int maxSumIndex = -1;
+    int minDiffIndex = -1;
+    int maxDiffIndex = -1;
+
+    for (int i = 0; i &lt; points.size(); ++i) {
+      if (i == excludedIndex)
+        continue;
+      const int x = points[i][0];
+      const int y = points[i][1];
+      const int sum = x + y;
+      const int diff = x - y;
+      if (sum &lt; minSum)
+        minSum = sum, minSumIndex = i;
+      if (sum &gt; maxSum)
+        maxSum = sum, maxSumIndex = i;
+      if (diff &lt; minDiff)
+        minDiff = diff, minDiffIndex = i;
+      if (diff &gt; maxDiff)
+        maxDiff = diff, maxDiffIndex = i;
+    }
+
+    return maxSum - minSum &gt;= maxDiff - minDiff
+               ? pair&lt;int, int&gt;(minSumIndex, maxSumIndex)
+               : pair&lt;int, int&gt;(minDiffIndex, maxDiffIndex);
+  }
+
+  int manhattan(const vector&lt;vector&lt;int&gt;&gt;&amp; points, int i, int j) {
+    return abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumDistance(int[][] points) {
+    final int[] maxIndices = maxManhattanDistance(points, -1);
+    final int[] xiyi = maxManhattanDistance(points, maxIndices[0]);
+    final int[] xjyj = maxManhattanDistance(points, maxIndices[1]);
+    return Math.min(manhattan(points, xiyi[0], xiyi[1]), //
+                    manhattan(points, xjyj[0], xjyj[1]));
+  }
+
+  // Returns the pair of indices a and b where points[a] and points[b] have the
+  // maximum Manhattan distance and a != excludedIndex and b != excludedIndex.
+  private int[] maxManhattanDistance(int[][] points, int excludedIndex) {
+    int minSum = Integer.MAX_VALUE;
+    int maxSum = Integer.MIN_VALUE;
+    int minDiff = Integer.MAX_VALUE;
+    int maxDiff = Integer.MIN_VALUE;
+    int minSumIndex = -1;
+    int maxSumIndex = -1;
+    int minDiffIndex = -1;
+    int maxDiffIndex = -1;
+
+    for (int i = 0; i &lt; points.length; ++i) {
+      if (i == excludedIndex)
+        continue;
+      final int x = points[i][0];
+      final int y = points[i][1];
+      final int sum = x + y;
+      final int diff = x - y;
+      if (sum &lt; minSum) {
+        minSum = sum;
+        minSumIndex = i;
+      }
+      if (sum &gt; maxSum) {
+        maxSum = sum;
+        maxSumIndex = i;
+      }
+      if (diff &lt; minDiff) {
+        minDiff = diff;
+        minDiffIndex = i;
+      }
+      if (diff &gt; maxDiff) {
+        maxDiff = diff;
+        maxDiffIndex = i;
+      }
+    }
+
+    return maxSum - minSum &gt;= maxDiff - minDiff ? new int[] {minSumIndex, maxSumIndex}
+                                                : new int[] {minDiffIndex, maxDiffIndex};
+  }
+
+  private int manhattan(int[][] points, int i, int j) {
+    return Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumDistance(self, points: list[list[int]]) -&gt; int:
+    i, j = self._maxManhattanDistance(points, -1)
+    xi, yi = self._maxManhattanDistance(points, i)
+    xj, yj = self._maxManhattanDistance(points, j)
+    return min(self._manhattan(points, xi, yi),
+               self._manhattan(points, xj, yj))
+
+  def _maxManhattanDistance(
+      self,
+      points: list[list[int]],
+      excludedIndex: int,
+  ) -&gt; int:
+    minSum = math.inf
+    maxSum = -math.inf
+    minDiff = math.inf
+    maxDiff = -math.inf
+    minSumIndex = -1
+    maxSumIndex = -1
+    minDiffIndex = -1
+    maxDiffIndex = -1
+
+    for i, (x, y) in enumerate(points):
+      if i == excludedIndex:
+        continue
+      summ = x + y
+      diff = x - y
+      if summ &lt; minSum:
+        minSum = summ
+        minSumIndex = i
+      if summ &gt; maxSum:
+        maxSum = summ
+        maxSumIndex = i
+      if diff &lt; minDiff:
+        minDiff = diff
+        minDiffIndex = i
+      if diff &gt; maxDiff:
+        maxDiff = diff
+        maxDiffIndex = i
+
+    return ([minSumIndex, maxSumIndex] if maxSum - minSum &gt;= maxDiff - minDiff
+            else [minDiffIndex, maxDiffIndex])
+
+  def _manhattan(self, points: list[list[int]], i: int, j: int) -&gt; int:
+    return abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

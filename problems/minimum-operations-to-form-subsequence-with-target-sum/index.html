@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Operations to Form Subsequence With Target Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Operations to Form Subsequence With Target Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-operations-to-form-subsequence-with-target-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-minimum-possible-sum-of-a-beautiful-array/" class="btn">← Previous</a>
+            <span>Problem 2835 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-value-of-function-in-a-ball-passing-game/" class="btn">Next →</a>
+        </div>
+        <h1>2835. Minimum Operations to Form Subsequence With Target Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Operations to Form Subsequence With Target Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minOperations(vector&lt;int&gt;&amp; nums, int target) {
+    constexpr int kNoMissingBit = 31;
+    constexpr int maxBit = 31;
+    int ans = 0;
+    int minMissingBit = kNoMissingBit;
+    // count[i] := the number of occurrences of 2^i
+    vector&lt;int&gt; count(maxBit + 1);
+
+    for (const int num : nums)
+      ++count[static_cast&lt;int&gt;(log2(num))];
+
+    for (int bit = 0; bit &lt; maxBit; ++bit) {
+      // Check if `bit` is in the target.
+      if (target &gt;&gt; bit &amp; 1) {
+        // If there are available bits, use one bit.
+        if (count[bit] &gt; 0)
+          --count[bit];
+        else
+          minMissingBit = min(minMissingBit, bit);
+      }
+      // If we previously missed a bit and there are available bits.
+      if (minMissingBit != kNoMissingBit &amp;&amp; count[bit] &gt; 0) {
+        --count[bit];
+        // Count the operations to break `bit` into `minMissingBit`.
+        ans += bit - minMissingBit;
+        minMissingBit = kNoMissingBit;
+      }
+      // Combining smaller numbers costs nothing.
+      count[bit + 1] += count[bit] / 2;
+    }
+
+    // Check if all target bits have been covered, otherwise return -1.
+    return minMissingBit == kNoMissingBit ? ans : -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minOperations(List&lt;Integer&gt; nums, int target) {
+    final int NO_MISSING_BIT = 31;
+    final int maxBit = 31;
+    int ans = 0;
+    int minMissingBit = NO_MISSING_BIT;
+    // count[i] := the number of occurrences of 2^i
+    int[] count = new int[maxBit + 1];
+
+    for (final int num : nums)
+      ++count[(int) (Math.log(num) / Math.log(2))];
+
+    for (int bit = 0; bit &lt; maxBit; ++bit) {
+      // Check if `bit` is in the target.
+      if ((target &gt;&gt; bit &amp; 1) == 1) {
+        // If there are available bits, use one bit.
+        if (count[bit] &gt; 0)
+          --count[bit];
+        else
+          minMissingBit = Math.min(minMissingBit, bit);
+      }
+      // If we previously missed a bit and there are available bits.
+      if (minMissingBit != NO_MISSING_BIT &amp;&amp; count[bit] &gt; 0) {
+        --count[bit];
+        // Count the operations to break `bit` into `minMissingBit`.
+        ans += bit - minMissingBit;
+        minMissingBit = NO_MISSING_BIT; // Set it to an the invalid value.
+      }
+      // Combining smaller numbers costs nothing.
+      count[bit + 1] += count[bit] / 2;
+    }
+
+    // Check if all target bits have been covered, otherwise return -1.
+    return minMissingBit == NO_MISSING_BIT ? ans : -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minOperations(self, nums: list[int], target: int) -&gt; int:
+    NO_MISSING_BIT = 31
+    maxBit = 31
+    ans = 0
+    minMissingBit = NO_MISSING_BIT
+    # count[i] := the number of occurrences of 2^i
+    count = collections.Counter(int(math.log2(num)) for num in nums)
+
+    for bit in range(maxBit):
+      # Check if `bit` is in the target.
+      if target &gt;&gt; bit &amp; 1:
+        # If there are available bits, use one bit.
+        if count[bit] &gt; 0:
+          count[bit] -= 1
+        else:
+          minMissingBit = min(minMissingBit, bit)
+      # If we previously missed a bit and there are available bits.
+      if minMissingBit != NO_MISSING_BIT and count[bit] &gt; 0:
+        count[bit] -= 1
+        # Count the operations to break `bit` into `minMissingBit`.
+        ans += bit - minMissingBit
+        minMissingBit = NO_MISSING_BIT  # Set it to an the invalid value.
+      # Combining smaller numbers costs nothing.
+      count[bit + 1] += count[bit] // 2
+
+    # Check if all target bits have been covered, otherwise return -1.
+    return ans if minMissingBit == maxBit else -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

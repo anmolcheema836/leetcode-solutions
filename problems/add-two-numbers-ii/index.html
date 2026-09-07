@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Two Numbers II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Add Two Numbers II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/add-two-numbers-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sequence-reconstruction/" class="btn">← Previous</a>
+            <span>Problem 445 of 3563</span>
+            <a href="/leetcode-solutions/problems/arithmetic-slices-ii-subsequence/" class="btn">Next →</a>
+        </div>
+        <h1>445. Add Two Numbers II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Add Two Numbers II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    stack&lt;ListNode*&gt; stack1;
+    stack&lt;ListNode*&gt; stack2;
+
+    while (l1) {
+      stack1.push(l1);
+      l1 = l1-&gt;next;
+    }
+
+    while (l2) {
+      stack2.push(l2);
+      l2 = l2-&gt;next;
+    }
+
+    ListNode* head = nullptr;
+    int carry = 0;
+
+    while (carry || !stack1.empty() || !stack2.empty()) {
+      if (!stack1.empty())
+        carry += stack1.top()-&gt;val, stack1.pop();
+      if (!stack2.empty())
+        carry += stack2.top()-&gt;val, stack2.pop();
+      ListNode* node = new ListNode(carry % 10);
+      node-&gt;next = head;
+      head = node;
+      carry /= 10;
+    }
+
+    return head;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    Deque&lt;ListNode&gt; stack1 = new ArrayDeque&lt;&gt;();
+    Deque&lt;ListNode&gt; stack2 = new ArrayDeque&lt;&gt;();
+
+    while (l1 != null) {
+      stack1.push(l1);
+      l1 = l1.next;
+    }
+
+    while (l2 != null) {
+      stack2.push(l2);
+      l2 = l2.next;
+    }
+
+    ListNode head = null;
+    int carry = 0;
+
+    while (carry &gt; 0 || !stack1.isEmpty() || !stack2.isEmpty()) {
+      if (!stack1.isEmpty())
+        carry += stack1.pop().val;
+      if (!stack2.isEmpty())
+        carry += stack2.pop().val;
+      ListNode node = new ListNode(carry % 10);
+      node.next = head;
+      head = node;
+      carry /= 10;
+    }
+
+    return head;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def addTwoNumbers(self, l1: ListNode, l2: ListNode) -&gt; ListNode:
+    stack1 = []
+    stack2 = []
+
+    while l1:
+      stack1.append(l1)
+      l1 = l1.next
+
+    while l2:
+      stack2.append(l2)
+      l2 = l2.next
+
+    head = None
+    carry = 0
+
+    while carry or stack1 or stack2:
+      if stack1:
+        carry += stack1.pop().val
+      if stack2:
+        carry += stack2.pop().val
+      node = ListNode(carry % 10)
+      node.next = head
+      head = node
+      carry //= 10
+
+    return head</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Five - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for High Five written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/high-five/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-digits-in-the-minimum-number/" class="btn">← Previous</a>
+            <span>Problem 1086 of 3563</span>
+            <a href="/leetcode-solutions/problems/brace-expansion/" class="btn">Next →</a>
+        </div>
+        <h1>1086. High Five</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve High Five efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; highFive(vector&lt;vector&lt;int&gt;&gt;&amp; items) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    map&lt;int, priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;&gt; idToScores;
+
+    for (const vector&lt;int&gt;&amp; item : items) {
+      const int id = item[0];
+      const int score = item[1];
+      auto&amp; scores = idToScores[id];
+      scores.push(score);
+      if (scores.size() &gt; 5)
+        scores.pop();
+    }
+
+    for (auto&amp; [id, scores] : idToScores) {
+      int sum = 0;
+      while (!scores.empty())
+        sum += scores.top(), scores.pop();
+      ans.push_back({id, sum / 5});
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] highFive(int[][] items) {
+    List&lt;int[]&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;Integer, PriorityQueue&lt;Integer&gt;&gt; idToScores = new TreeMap&lt;&gt;();
+
+    for (int[] item : items) {
+      final int id = item[0];
+      final int score = item[1];
+      idToScores.putIfAbsent(id, new PriorityQueue&lt;&gt;());
+      PriorityQueue&lt;Integer&gt; scores = idToScores.get(id);
+      scores.add(score);
+      if (scores.size() &gt; 5)
+        scores.poll();
+    }
+
+    for (Map.Entry&lt;Integer, PriorityQueue&lt;Integer&gt;&gt; entry : idToScores.entrySet()) {
+      final int id = entry.getKey();
+      PriorityQueue&lt;Integer&gt; scores = entry.getValue();
+      int sum = 0;
+      while (!scores.isEmpty())
+        sum += scores.poll();
+      ans.add(new int[] {id, sum / 5});
+    }
+
+    return ans.toArray(int[][] ::new);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def highFive(self, items: list[list[int]]) -&gt; list[list[int]]:
+    idToScores = collections.defaultdict(list)
+
+    for id, score in items:
+      heapq.heappush(idToScores[id], score)
+      if len(idToScores[id]) &gt; 5:
+        heapq.heappop(idToScores[id])
+
+    return [[id, sum(scores) // 5] for id, scores in sorted(idToScores.items())]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

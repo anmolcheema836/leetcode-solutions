@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Elegance of a K-Length Subsequence - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Elegance of a K-Length Subsequence written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-elegance-of-a-k-length-subsequence/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-safest-path-in-a-grid/" class="btn">← Previous</a>
+            <span>Problem 2813 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-time-takes-to-reach-destination-without-drowning/" class="btn">Next →</a>
+        </div>
+        <h1>2813. Maximum Elegance of a K-Length Subsequence</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Elegance of a K-Length Subsequence efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long findMaximumElegance(vector&lt;vector&lt;int&gt;&gt;&amp; items, int k) {
+    long ans = 0;
+    long totalProfit = 0;
+    unordered_set&lt;int&gt; seenCategories;
+    stack&lt;int&gt; decreasingDuplicateProfits;
+
+    ranges::sort(items, greater&lt;&gt;());
+
+    for (int i = 0; i &lt; k; i++) {
+      const int profit = items[i][0];
+      const int category = items[i][1];
+      totalProfit += profit;
+      if (seenCategories.contains(category))
+        decreasingDuplicateProfits.push(profit);
+      else
+        seenCategories.insert(category);
+    }
+
+    ans = totalProfit +
+          static_cast&lt;long&gt;(seenCategories.size()) * seenCategories.size();
+
+    for (int i = k; i &lt; items.size(); ++i) {
+      const int profit = items[i][0];
+      const int category = items[i][1];
+      if (!seenCategories.contains(category) &amp;&amp;
+          !decreasingDuplicateProfits.empty()) {
+        // If this is a new category we haven&#x27;t seen before, it&#x27;s worth
+        // considering taking it and replacing the one with the least profit
+        // since it will increase the distinct_categories and potentially result
+        // in a larger total_profit + distinct_categories^2.
+        totalProfit -= decreasingDuplicateProfits.top(),
+            decreasingDuplicateProfits.pop();
+        totalProfit += profit;
+        seenCategories.insert(category);
+        ans = max(ans,
+                  static_cast&lt;long&gt;(totalProfit +
+                                    static_cast&lt;long&gt;(seenCategories.size()) *
+                                        seenCategories.size()));
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long findMaximumElegance(int[][] items, int k) {
+    long ans = 0;
+    long totalProfit = 0;
+    Set&lt;Integer&gt; seenCategories = new HashSet&lt;&gt;();
+    Deque&lt;Integer&gt; decreasingDuplicateProfits = new ArrayDeque&lt;&gt;();
+
+    Arrays.sort(items, Comparator.comparingInt(item -&gt; - item[0]));
+
+    for (int i = 0; i &lt; k; ++i) {
+      final int profit = items[i][0];
+      final int category = items[i][1];
+      totalProfit += profit;
+      if (seenCategories.contains(category))
+        decreasingDuplicateProfits.push(profit);
+      else
+        seenCategories.add(category);
+    }
+
+    ans = totalProfit + 1L * seenCategories.size() * seenCategories.size();
+
+    for (int i = k; i &lt; items.length; ++i) {
+      final int profit = items[i][0];
+      final int category = items[i][1];
+      if (!seenCategories.contains(category) &amp;&amp; !decreasingDuplicateProfits.isEmpty()) {
+        // If this is a new category we haven&#x27;t seen before, it&#x27;s worth
+        // considering taking it and replacing the one with the least profit
+        // since it will increase the distinct_categories and potentially result
+        // in a larger total_profit + distinct_categories^2.
+        totalProfit -= decreasingDuplicateProfits.pop();
+        totalProfit += profit;
+        seenCategories.add(category);
+        ans = Math.max(ans, totalProfit + 1L * seenCategories.size() * seenCategories.size());
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findMaximumElegance(self, items: list[list[int]], k: int) -&gt; int:
+    ans = 0
+    totalProfit = 0
+    seenCategories = set()
+    decreasingDuplicateProfits = []
+
+    items.sort(reverse=True)
+
+    for i in range(k):
+      profit, category = items[i]
+      totalProfit += profit
+      if category in seenCategories:
+        decreasingDuplicateProfits.append(profit)
+      else:
+        seenCategories.add(category)
+
+    ans = totalProfit + len(seenCategories)**2
+
+    for i in range(k, len(items)):
+      profit, category = items[i]
+      if category not in seenCategories and decreasingDuplicateProfits:
+        # If this is a new category we haven&#x27;t seen before, it&#x27;s worth
+        # considering taking it and replacing the one with the least profit
+        # since it will increase the distinct_categories and potentially result
+        # in a larger total_profit + distinct_categories^2.
+        totalProfit -= decreasingDuplicateProfits.pop()
+        totalProfit += profit
+        seenCategories.add(category)
+        ans = max(ans, totalProfit + len(seenCategories)**2)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

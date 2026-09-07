@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCD Sort of an Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for GCD Sort of an Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/gcd-sort-of-an-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/first-day-where-you-have-been-in-all-the-rooms/" class="btn">← Previous</a>
+            <span>Problem 1998 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-greater-multiple-made-of-two-digits/" class="btn">Next →</a>
+        </div>
+        <h1>1998. GCD Sort of an Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve GCD Sort of an Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), rank(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; rank;
+};
+
+class Solution {
+ public:
+  bool gcdSort(vector&lt;int&gt;&amp; nums) {
+    const int mx = ranges::max(nums);
+    const vector&lt;int&gt; minPrimeFactors = sieveEratosthenes(mx + 1);
+    UnionFind uf(mx + 1);
+
+    for (const int num : nums)
+      for (const int primeFactor : getPrimeFactors(num, minPrimeFactors))
+        uf.unionByRank(num, primeFactor);
+
+    vector&lt;int&gt; sortedNums(nums);
+    ranges::sort(sortedNums);
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      // Can&#x27;t swap nums[i] with sortedNums[i].
+      if (uf.find(nums[i]) != uf.find(sortedNums[i]))
+        return false;
+
+    return true;
+  }
+
+ private:
+  // Gets the minimum prime factor of i, where 1 &lt; i &lt;= n.
+  vector&lt;int&gt; sieveEratosthenes(int n) {
+    vector&lt;int&gt; minPrimeFactors(n + 1);
+    iota(minPrimeFactors.begin() + 2, minPrimeFactors.end(), 2);
+    for (int i = 2; i * i &lt; n; ++i)
+      if (minPrimeFactors[i] == i)  // `i` is prime.
+        for (int j = i * i; j &lt; n; j += i)
+          minPrimeFactors[j] = min(minPrimeFactors[j], i);
+    return minPrimeFactors;
+  }
+
+  vector&lt;int&gt; getPrimeFactors(int num, const vector&lt;int&gt;&amp; minPrimeFactors) {
+    vector&lt;int&gt; primeFactors;
+    while (num &gt; 1) {
+      const int divisor = minPrimeFactors[num];
+      primeFactors.push_back(divisor);
+      while (num % divisor == 0)
+        num /= divisor;
+    }
+    return primeFactors;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    id = new int[n];
+    rank = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+  }
+
+  public void unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  public int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+
+  private int[] id;
+  private int[] rank;
+}
+
+class Solution {
+  public boolean gcdSort(int[] nums) {
+    final int mx = Arrays.stream(nums).max().getAsInt();
+    final int[] minPrimeFactors = sieveEratosthenes(mx + 1);
+    UnionFind uf = new UnionFind(mx + 1);
+
+    for (final int num : nums)
+      for (final int primeFactor : getPrimeFactors(num, minPrimeFactors))
+        uf.unionByRank(num, primeFactor);
+
+    int[] sortedNums = nums.clone();
+    Arrays.sort(sortedNums);
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      // Can&#x27;t swap nums[i] with sortedNums[i].
+      if (uf.find(nums[i]) != uf.find(sortedNums[i]))
+        return false;
+
+    return true;
+  }
+
+  // Gets the minimum prime factor of i, where 1 &lt; i &lt;= n.
+  private int[] sieveEratosthenes(int n) {
+    int[] minPrimeFactors = new int[n + 1];
+    for (int i = 2; i &lt;= n; ++i)
+      minPrimeFactors[i] = i;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (minPrimeFactors[i] == i) // `i` is prime.
+        for (int j = i * i; j &lt; n; j += i)
+          minPrimeFactors[j] = Math.min(minPrimeFactors[j], i);
+    return minPrimeFactors;
+  }
+
+  private List&lt;Integer&gt; getPrimeFactors(int num, int[] minPrimeFactors) {
+    List&lt;Integer&gt; primeFactors = new ArrayList&lt;&gt;();
+    while (num &gt; 1) {
+      final int divisor = minPrimeFactors[num];
+      primeFactors.add(divisor);
+      while (num % divisor == 0)
+        num /= divisor;
+    }
+    return primeFactors;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.id = list(range(n))
+    self.rank = [0] * n
+
+  def unionByRank(self, u: int, v: int) -&gt; None:
+    i = self.find(u)
+    j = self.find(v)
+    if i == j:
+      return False
+    if self.rank[i] &lt; self.rank[j]:
+      self.id[i] = j
+    elif self.rank[i] &gt; self.rank[j]:
+      self.id[j] = i
+    else:
+      self.id[i] = j
+      self.rank[j] += 1
+    return True
+
+  def find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self.find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def gcdSort(self, nums: list[int]) -&gt; bool:
+    mx = max(nums)
+    minPrimeFactors = self._sieveEratosthenes(mx + 1)
+    uf = UnionFind(mx + 1)
+
+    for num in nums:
+      for primeFactor in self._getPrimeFactors(num, minPrimeFactors):
+        uf.unionByRank(num, primeFactor)
+
+    for a, b in zip(nums, sorted(nums)):
+      # Can&#x27;t swap nums[i] with sortedNums[i].
+      if uf.find(a) != uf.find(b):
+        return False
+
+    return True
+
+  def _sieveEratosthenes(self, n: int) -&gt; list[int]:
+    &quot;&quot;&quot;Gets the minimum prime factor of i, where 1 &lt; i &lt;= n.&quot;&quot;&quot;
+    minPrimeFactors = [i for i in range(n + 1)]
+    for i in range(2, int(n**0.5) + 1):
+      if minPrimeFactors[i] == i:  # `i` is prime.
+        for j in range(i * i, n, i):
+          minPrimeFactors[j] = min(minPrimeFactors[j], i)
+    return minPrimeFactors
+
+  def _getPrimeFactors(self, num: int, minPrimeFactors: list[int]) -&gt; list[int]:
+    primeFactors = []
+    while num &gt; 1:
+      divisor = minPrimeFactors[num]
+      primeFactors.append(divisor)
+      while num % divisor == 0:
+        num //= divisor
+    return primeFactors</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

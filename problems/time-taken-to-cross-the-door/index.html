@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Taken to Cross the Door - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Time Taken to Cross the Door written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/time-taken-to-cross-the-door/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-good-binary-strings/" class="btn">← Previous</a>
+            <span>Problem 2534 of 3563</span>
+            <a href="/leetcode-solutions/problems/difference-between-element-sum-and-digit-sum-of-an-array/" class="btn">Next →</a>
+        </div>
+        <h1>2534. Time Taken to Cross the Door</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Time Taken to Cross the Door efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; timeTaken(vector&lt;int&gt;&amp; arrival, vector&lt;int&gt;&amp; state) {
+    const int n = arrival.size();
+    vector&lt;int&gt; ans(n);
+    vector&lt;queue&lt;int&gt;&gt; qs(2);  // qs[0] := enter queue, qs[1] := exit queue
+    int time = 0;
+    int d = 1;  // 0 := enter, 1 := exit
+
+    for (int i = 0; i &lt; n; ++i) {
+      popQueues(time, d, arrival[i], qs, ans);
+      // If the door was not used in the previous second, then the person who
+      // wants to exit goes first.
+      if (arrival[i] &gt; time) {
+        time = arrival[i];  // Forward `time` to now.
+        d = 1;
+      }
+      qs[state[i]].push(i);
+    }
+
+    popQueues(time, d, 200&#x27;000, qs, ans);
+    return ans;
+  }
+
+ private:
+  void popQueues(int&amp; time, int&amp; d, int arrivalTime, vector&lt;queue&lt;int&gt;&gt;&amp; qs,
+                 vector&lt;int&gt;&amp; ans) {
+    while (arrivalTime &gt; time &amp;&amp; (!qs[0].empty() || !qs[1].empty())) {
+      if (qs[d].empty())
+        d ^= 1;
+      ans[qs[d].front()] = time++, qs[d].pop();
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] timeTaken(int[] arrival, int[] state) {
+    final int n = arrival.length;
+    int[] ans = new int[n];
+    Queue&lt;Integer&gt;[] qs = new Queue[2];
+    qs[0] = new LinkedList&lt;&gt;(); // enter queue
+    qs[1] = new LinkedList&lt;&gt;(); // exit queue
+
+    for (int i = 0; i &lt; n; ++i) {
+      popQueues(arrival[i], qs, ans);
+      // If the door was not used in the previous second, then the person who
+      // wants to exit goes first.
+      if (arrival[i] &gt; time) {
+        time = arrival[i]; // Forward `time` to now.
+        d = 1;             // Reset priority to exit.
+      }
+      qs[state[i]].offer(i);
+    }
+
+    popQueues(200000, qs, ans);
+    return ans;
+  }
+
+  private int time = 0;
+  private int d = 1; // 0: enter, 1: exit
+
+  private void popQueues(int arrivalTime, Queue&lt;Integer&gt;[] qs, int[] ans) {
+    while (arrivalTime &gt; time &amp;&amp; (!qs[0].isEmpty() || !qs[1].isEmpty())) {
+      if (qs[d].isEmpty())
+        d ^= 1; // Toggle between enter (0) and exit (1)
+      ans[qs[d].poll()] = time++;
+    }
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

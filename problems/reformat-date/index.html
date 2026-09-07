@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reformat Date - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Reformat Date written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/reformat-date/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-root-of-n-ary-tree/" class="btn">← Previous</a>
+            <span>Problem 1507 of 3563</span>
+            <a href="/leetcode-solutions/problems/range-sum-of-sorted-subarray-sums/" class="btn">Next →</a>
+        </div>
+        <h1>1507. Reformat Date</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Reformat Date efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string reformatDate(string date) {
+    const unordered_map&lt;string, string&gt; monthToNumString{
+        {&quot;Jan&quot;, &quot;01&quot;}, {&quot;Feb&quot;, &quot;02&quot;}, {&quot;Mar&quot;, &quot;03&quot;}, {&quot;Apr&quot;, &quot;04&quot;},
+        {&quot;May&quot;, &quot;05&quot;}, {&quot;Jun&quot;, &quot;06&quot;}, {&quot;Jul&quot;, &quot;07&quot;}, {&quot;Aug&quot;, &quot;08&quot;},
+        {&quot;Sep&quot;, &quot;09&quot;}, {&quot;Oct&quot;, &quot;10&quot;}, {&quot;Nov&quot;, &quot;11&quot;}, {&quot;Dec&quot;, &quot;12&quot;},
+    };
+    const int index1 = date.find_first_of(&#x27; &#x27;);
+    const int index2 = date.find_first_of(&#x27; &#x27;, index1 + 1);
+    const string day = index1 == 4 ? date.substr(0, 2) : string(&quot;0&quot;) + date[0];
+    const string month =
+        monthToNumString.at(date.substr(index1 + 1, index2 - (index1 + 1)));
+    const string year = date.substr(index2 + 1);
+    return year + &quot;-&quot; + month + &quot;-&quot; + day;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String reformatDate(String date) {
+    Map&lt;String, String&gt; months = getMonths();
+    String[] words = date.split(&quot;\\s+&quot;);
+    final String day =
+        (words[0].length() == 4) ? words[0].substring(0, 2) : &quot;0&quot; + words[0].substring(0, 1);
+    final String month = months.get(words[1]);
+    final String year = words[2];
+    return year + &quot;-&quot; + month + &quot;-&quot; + day;
+  }
+
+  private Map&lt;String, String&gt; getMonths() {
+    Map&lt;String, String&gt; months = new HashMap&lt;&gt;();
+    months.put(&quot;Jan&quot;, &quot;01&quot;);
+    months.put(&quot;Feb&quot;, &quot;02&quot;);
+    months.put(&quot;Mar&quot;, &quot;03&quot;);
+    months.put(&quot;Apr&quot;, &quot;04&quot;);
+    months.put(&quot;May&quot;, &quot;05&quot;);
+    months.put(&quot;Jun&quot;, &quot;06&quot;);
+    months.put(&quot;Jul&quot;, &quot;07&quot;);
+    months.put(&quot;Aug&quot;, &quot;08&quot;);
+    months.put(&quot;Sep&quot;, &quot;09&quot;);
+    months.put(&quot;Oct&quot;, &quot;10&quot;);
+    months.put(&quot;Nov&quot;, &quot;11&quot;);
+    months.put(&quot;Dec&quot;, &quot;12&quot;);
+    return months;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def reformatDate(self, date: str) -&gt; str:
+    monthToNumString = {
+        &#x27;Jan&#x27;: &#x27;01&#x27;, &#x27;Feb&#x27;: &#x27;02&#x27;, &#x27;Mar&#x27;: &#x27;03&#x27;, &#x27;Apr&#x27;: &#x27;04&#x27;,
+        &#x27;May&#x27;: &#x27;05&#x27;, &#x27;Jun&#x27;: &#x27;06&#x27;, &#x27;Jul&#x27;: &#x27;07&#x27;, &#x27;Aug&#x27;: &#x27;08&#x27;,
+        &#x27;Sep&#x27;: &#x27;09&#x27;, &#x27;Oct&#x27;: &#x27;10&#x27;, &#x27;Nov&#x27;: &#x27;11&#x27;, &#x27;Dec&#x27;: &#x27;12&#x27;,
+    }
+    day, month, year = date.split()
+    day = day[:-2] if len(day) == 4 else &#x27;0&#x27; + day[:-2]
+    return f&#x27;{year}-{monthToNumString[month]}-{day}&#x27;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

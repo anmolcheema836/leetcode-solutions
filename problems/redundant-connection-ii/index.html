@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redundant Connection II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Redundant Connection II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/redundant-connection-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/redundant-connection/" class="btn">← Previous</a>
+            <span>Problem 685 of 3563</span>
+            <a href="/leetcode-solutions/problems/repeated-string-match/" class="btn">Next →</a>
+        </div>
+        <h1>685. Redundant Connection II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Redundant Connection II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), rank(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  bool unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return false;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+    return true;
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; rank;
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; findRedundantDirectedConnection(vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;int&gt; ids(edges.size() + 1);
+    int nodeWithTwoParents = 0;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int v = edge[1];
+      if (++ids[v] == 2) {
+        nodeWithTwoParents = v;
+        break;
+      }
+    }
+
+    // If there is no edge with two ids, don&#x27;t skip any edge.
+    if (nodeWithTwoParents == 0)
+      return findRedundantDirectedConnection(edges, -1);
+
+    for (int i = edges.size() - 1; i &gt;= 0; --i)
+      if (edges[i][1] == nodeWithTwoParents)
+        // Try to delete the edges[i].
+        if (findRedundantDirectedConnection(edges, i).empty())
+          return edges[i];
+
+    throw;
+  }
+
+  vector&lt;int&gt; findRedundantDirectedConnection(const vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                                              int skippedEdgeIndex) {
+    UnionFind uf(edges.size() + 1);
+
+    for (int i = 0; i &lt; edges.size(); ++i) {
+      if (i == skippedEdgeIndex)
+        continue;
+      if (!uf.unionByRank(edges[i][0], edges[i][1]))
+        return edges[i];
+    }
+
+    return {};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    id = new int[n];
+    rank = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+  }
+
+  public boolean unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return false;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+    return true;
+  }
+
+  private int[] id;
+  private int[] rank;
+
+  private int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+}
+
+class Solution {
+  public int[] findRedundantDirectedConnection(int[][] edges) {
+    int[] ids = new int[edges.length + 1];
+    int nodeWithTwoParents = 0;
+
+    for (int[] edge : edges) {
+      final int v = edge[1];
+      if (++ids[v] == 2) {
+        nodeWithTwoParents = v;
+        break;
+      }
+    }
+
+    // If there is no edge with two ids, don&#x27;t skip any edge.
+    if (nodeWithTwoParents == 0)
+      return findRedundantDirectedConnection(edges, -1);
+
+    for (int i = edges.length - 1; i &gt;= 0; --i)
+      if (edges[i][1] == nodeWithTwoParents)
+        // Try to delete the edges[i].
+        if (findRedundantDirectedConnection(edges, i).length == 0)
+          return edges[i];
+
+    throw new IllegalArgumentException();
+  }
+
+  private int[] findRedundantDirectedConnection(int[][] edges, int skippedEdgeIndex) {
+    UnionFind uf = new UnionFind(edges.length + 1);
+
+    for (int i = 0; i &lt; edges.length; ++i) {
+      if (i == skippedEdgeIndex)
+        continue;
+      if (!uf.unionByRank(edges[i][0], edges[i][1]))
+        return edges[i];
+    }
+
+    return new int[] {};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.id = list(range(n))
+    self.rank = [0] * n
+
+  def unionByRank(self, u: int, v: int) -&gt; bool:
+    i = self._find(u)
+    j = self._find(v)
+    if i == j:
+      return False
+    if self.rank[i] &lt; self.rank[j]:
+      self.id[i] = j
+    elif self.rank[i] &gt; self.rank[j]:
+      self.id[j] = i
+    else:
+      self.id[i] = j
+      self.rank[j] += 1
+    return True
+
+  def _find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self._find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def findRedundantDirectedConnection(
+      self, edges: list[list[int]],
+  ) -&gt; list[int]:
+    ids = [0] * (len(edges) + 1)
+    nodeWithTwoParents = 0
+
+    for _, v in edges:
+      ids[v] += 1
+      if ids[v] == 2:
+        nodeWithTwoParents = v
+
+    def findRedundantDirectedConnection(skippedEdgeIndex: int) -&gt; list[int]:
+      uf = UnionFind(len(edges) + 1)
+
+      for i, edge in enumerate(edges):
+        if i == skippedEdgeIndex:
+          continue
+        if not uf.unionByRank(edge[0], edge[1]):
+          return edge
+
+      return []
+
+    # If there is no edge with two ids, don&#x27;t skip any edge.
+    if nodeWithTwoParents == 0:
+      return findRedundantDirectedConnection(-1)
+
+    for i in reversed(range(len(edges))):
+      _, v = edges[i]
+      if v == nodeWithTwoParents:
+        # Try to delete the edges[i].
+        if not findRedundantDirectedConnection(i):
+          return edges[i]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Houses in a Circular Street - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Houses in a Circular Street written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-houses-in-a-circular-street/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/is-object-empty/" class="btn">← Previous</a>
+            <span>Problem 2728 of 3563</span>
+            <a href="/leetcode-solutions/problems/check-if-the-number-is-fascinating/" class="btn">Next →</a>
+        </div>
+        <h1>2728. Count Houses in a Circular Street</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Houses in a Circular Street efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">/**
+ * Definition for a street.
+ * class Street {
+ *  public:
+ *   Street(vector&lt;int&gt; doors);
+ *   void openDoor();
+ *   void closeDoor();
+ *   bool isDoorOpen();
+ *   void moveRight();
+ *   void moveLeft();
+ * };
+ */
+
+class Solution {
+ public:
+  int houseCount(Street* street, int k) {
+    for (int i = 0; i &lt; k; ++i) {
+      if (street-&gt;isDoorOpen())
+        street-&gt;closeDoor();
+      street-&gt;moveRight();
+    }
+
+    for (int ans = 0;; ++ans) {
+      if (street-&gt;isDoorOpen())
+        return ans;
+      street-&gt;openDoor();
+      street-&gt;moveRight();
+    }
+
+    throw;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">/**
+ * Definition for a street.
+ * class Street {
+ *   public Street(int[] doors);
+ *   public void openDoor();
+ *   public void closeDoor();
+ *   public boolean isDoorOpen();
+ *   public void moveRight();
+ *   public void moveLeft();
+ * }
+ */
+
+class Solution {
+  public int houseCount(Street street, int k) {
+    for (int i = 0; i &lt; k; ++i) {
+      if (street.isDoorOpen())
+        street.closeDoor();
+      street.moveRight();
+    }
+
+    for (int ans = 0;; ++ans) {
+      if (street.isDoorOpen())
+        return ans;
+      street.openDoor();
+      street.moveRight();
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python"># Definition for a street.
+# class Street:
+#   def openDoor(self):
+#     pass
+#   def closeDoor(self):
+#     pass
+#   def isDoorOpen(self):
+#     pass
+#   def moveRight(self):
+#     pass
+#   def moveLeft(self):
+#     pass
+
+class Solution:
+  def houseCount(self, street: Optional[&#x27;Street&#x27;], k: int) -&gt; int:
+    for _ in range(k):
+      if street.isDoorOpen():
+        street.closeDoor()
+      street.moveRight()
+
+    for ans in range(k + 1):
+      if street.isDoorOpen():
+        return ans
+      street.openDoor()
+      street.moveRight()</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Compressed String Iterator - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Compressed String Iterator written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-compressed-string-iterator/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/consecutive-available-seats/" class="btn">← Previous</a>
+            <span>Problem 604 of 3563</span>
+            <a href="/leetcode-solutions/problems/can-place-flowers/" class="btn">Next →</a>
+        </div>
+        <h1>604. Design Compressed String Iterator</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Compressed String Iterator efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class StringIterator {
+ public:
+  StringIterator(string compressedString) {
+    int i = 0;  // compressedString&#x27;s index
+    while (i &lt; compressedString.length()) {
+      const char c = compressedString[i++];
+      int num = 0;
+      while (i &lt; compressedString.length() &amp;&amp; isdigit(compressedString[i]))
+        num = num * 10 + (compressedString[i++] - &#x27;0&#x27;);
+      q.emplace(c, num);
+    }
+  }
+
+  char next() {
+    if (!hasNext())
+      return &#x27; &#x27;;
+    const char c = q.front().first;
+    if (--q.front().second == 0)
+      q.pop();
+    return c;
+  }
+
+  bool hasNext() {
+    return !q.empty();
+  }
+
+ private:
+  queue&lt;pair&lt;char, int&gt;&gt; q;  // (currentChar, num)
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class StringIterator {
+  public StringIterator(String compressedString) {
+    int i = 0; // compressedString&#x27;s index
+    while (i &lt; compressedString.length()) {
+      final char c = compressedString.charAt(i++);
+      int num = 0;
+      while (i &lt; compressedString.length() &amp;&amp; Character.isDigit(compressedString.charAt(i)))
+        num = num * 10 + (compressedString.charAt(i++) - &#x27;0&#x27;);
+      q.offer(new Pair&lt;&gt;(c, num));
+    }
+  }
+
+  public char next() {
+    if (!hasNext())
+      return &#x27; &#x27;;
+    final char c = q.peek().getKey();
+    final int num = q.poll().getValue();
+    if (num &gt; 1)
+      q.addFirst(new Pair&lt;&gt;(c, num - 1));
+    return c;
+  }
+
+  public boolean hasNext() {
+    return !q.isEmpty();
+  }
+
+  // (currentChar, num)
+  private LinkedList&lt;Pair&lt;Character, Integer&gt;&gt; q = new LinkedList&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class StringIterator:
+  def __init__(self, compressedString: str):
+    self.q = collections.deque()  # (currentChar, num)
+
+    i = 0  # compressedString&#x27;s index
+    while i &lt; len(compressedString):
+      c = compressedString[i]
+      i += 1
+      num = 0
+      while i &lt; len(compressedString) and compressedString[i].isdigit():
+        num = num * 10 + int(compressedString[i])
+        i += 1
+      self.q.append((c, num))
+
+  def next(self) -&gt; str:
+    if not self.hasNext():
+      return &#x27; &#x27;
+    c, num = self.q.popleft()
+    if num &gt; 1:
+      self.q.appendleft((c, num - 1))
+    return c
+
+  def hasNext(self) -&gt; bool:
+    return self.q</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

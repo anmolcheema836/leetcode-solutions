@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sum of Distances - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sum of Distances written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sum-of-distances/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/prime-in-diagonal/" class="btn">← Previous</a>
+            <span>Problem 2615 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimize-the-maximum-difference-of-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>2615. Sum of Distances</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sum of Distances efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;long long&gt; distance(vector&lt;int&gt;&amp; nums) {
+    vector&lt;long long&gt; ans(nums.size());
+    unordered_map&lt;int, vector&lt;int&gt;&gt; numToIndices;
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      numToIndices[nums[i]].push_back(i);
+
+    for (const auto&amp; [_, indices] : numToIndices) {
+      const int n = indices.size();
+      if (n == 1)
+        continue;
+      long sumSoFar = accumulate(indices.begin(), indices.end(), 0L);
+      int prevIndex = 0;
+      for (int i = 0; i &lt; n; ++i) {
+        sumSoFar += (i - 1) * (indices[i] - prevIndex);
+        sumSoFar -= (n - 1 - i) * (indices[i] - prevIndex);
+        ans[indices[i]] = sumSoFar;
+        prevIndex = indices[i];
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long[] distance(int[] nums) {
+    long[] ans = new long[nums.length];
+    Map&lt;Integer, List&lt;Integer&gt;&gt; numToIndices = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      numToIndices.putIfAbsent(nums[i], new ArrayList&lt;&gt;());
+      numToIndices.get(nums[i]).add(i);
+    }
+
+    for (List&lt;Integer&gt; indices : numToIndices.values()) {
+      final int n = indices.size();
+      if (n == 1) {
+        continue;
+      }
+      long sumSoFar = indices.stream().mapToLong(Integer::longValue).sum();
+      int prevIndex = 0;
+      for (int i = 0; i &lt; n; ++i) {
+        sumSoFar += (i - 1) * (indices.get(i) - prevIndex);
+        sumSoFar -= (n - 1 - i) * (indices.get(i) - prevIndex);
+        ans[indices.get(i)] = sumSoFar;
+        prevIndex = indices.get(i);
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def distance(self, nums: list[int]) -&gt; list[int]:
+    ans = [0] * len(nums)
+    numToIndices = collections.defaultdict(list)
+
+    for i, num in enumerate(nums):
+      numToIndices[num].append(i)
+
+    for indices in numToIndices.values():
+      n = len(indices)
+      if n == 1:
+        continue
+      sumSoFar = sum(indices)
+      prevIndex = 0
+      for i in range(n):
+        sumSoFar += (i - 1) * (indices[i] - prevIndex)
+        sumSoFar -= (n - 1 - i) * (indices[i] - prevIndex)
+        ans[indices[i]] = sumSoFar
+        prevIndex = indices[i]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

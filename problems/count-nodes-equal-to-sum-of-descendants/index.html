@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Nodes Equal to Sum of Descendants - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Nodes Equal to Sum of Descendants written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-nodes-equal-to-sum-of-descendants/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/first-and-last-call-on-the-same-day/" class="btn">← Previous</a>
+            <span>Problem 1973 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-time-to-type-word-using-special-typewriter/" class="btn">Next →</a>
+        </div>
+        <h1>1973. Count Nodes Equal to Sum of Descendants</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Nodes Equal to Sum of Descendants efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  long sum;
+  int count;
+};
+
+class Solution {
+ public:
+  int equalToDescendants(TreeNode* root) {
+    return dfs(root).count;
+  }
+
+ private:
+  T dfs(TreeNode* root) {
+    if (root == nullptr)
+      return T{.sum = 0, .count = 0};
+    T left = dfs(root-&gt;left);
+    T right = dfs(root-&gt;right);
+    return T{.sum = root-&gt;val + left.sum + right.sum,
+             .count = left.count + right.count +
+                      (root-&gt;val == left.sum + right.sum ? 1 : 0)};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int equalToDescendants(TreeNode root) {
+    return dfs(root).count;
+  }
+
+  private T dfs(TreeNode root) {
+    if (root == null)
+      return new T(0, 0);
+    T left = dfs(root.left);
+    T right = dfs(root.right);
+    return new T(root.val + left.sum + right.sum,
+                 left.count + right.count + (root.val == left.sum + right.sum ? 1 : 0));
+  }
+
+  private record T(long sum, int count){};
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class T:
+  summ: int
+  count: int
+
+
+class Solution:
+  def equalToDescendants(self, root: TreeNode | None) -&gt; int:
+    def dfs(root: TreeNode | None) -&gt; T:
+      if not root:
+        return T(0, 0)
+      left = dfs(root.left)
+      right = dfs(root.right)
+      return T(root.val + left.summ + right.summ,
+               left.count + right.count +
+               (1 if root.val == left.summ + right.summ else 0))
+
+    return dfs(root).count</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

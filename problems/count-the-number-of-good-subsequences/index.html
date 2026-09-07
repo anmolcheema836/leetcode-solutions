@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count the Number of Good Subsequences - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count the Number of Good Subsequences written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-the-number-of-good-subsequences/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/difference-between-maximum-and-minimum-price-sum/" class="btn">← Previous</a>
+            <span>Problem 2539 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-common-value/" class="btn">Next →</a>
+        </div>
+        <h1>2539. Count the Number of Good Subsequences</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count the Number of Good Subsequences efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countGoodSubsequences(string s) {
+    // For each frequency f in [1, max(freq)], start with &quot;&quot; and calculate how
+    // many subsequences can be constructed with each letter&#x27;s frequency = f.
+    //
+    // e.g. s = &quot;abb&quot;, so f = max(freq) = 2.
+    //
+    // For f = 1, with 1 way to build &quot;&quot;, choose any &#x27;a&#x27; to construct a good
+    // subseq, so # of good subsequences = 1 + 1 * (1, 1) = 2 (&quot;&quot;, &quot;a&quot;). Next,
+    // add &#x27;b&#x27; and # of good subsequences = 2 + 2 * (2, 1) = 6 (&quot;&quot;, &quot;a&quot;, &quot;b1&quot;,
+    // &quot;b2&quot;, &quot;ab1&quot;, &quot;ab2&quot;). So, the number of good subsequences for f = 1 is 5
+    // since we need to exclude &quot;&quot;.
+    //
+    // For f = 2, with 1 way to build &quot;&quot;, choose any two &#x27;b&#x27;s to construct a
+    // good subseq, so # of good subsequences = 1 + 1 * (2, 2) is 2 (&quot;&quot;, &quot;bb&quot;).
+    // So, the number of good subsequences for f = 2 = 1 since we need to
+    // exclude &quot;&quot;.
+    //
+    // Therefore, the number of good subsequences for &quot;aab&quot; = 5 + 1 = 6.
+    int ans = 0;
+    vector&lt;int&gt; count(26);
+
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+
+    const int maxFreq = ranges::max(count);
+    const auto [fact, invFact] = getFactAndInvFact(maxFreq);
+
+    for (int freq = 1; freq &lt;= maxFreq; ++freq) {
+      long numSubseqs = 1;  // &quot;&quot;
+      for (const int charFreq : count)
+        if (charFreq &gt;= freq)
+          numSubseqs = (numSubseqs +  //
+                        numSubseqs * nCk(charFreq, freq, fact, invFact)) %
+                       kMod;
+      ans += numSubseqs - 1;  // Minus &quot;&quot;.
+      ans %= kMod;
+    }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  pair&lt;vector&lt;long&gt;, vector&lt;long&gt;&gt; getFactAndInvFact(int n) {
+    vector&lt;long&gt; fact(n + 1);
+    vector&lt;long&gt; invFact(n + 1);
+    vector&lt;long&gt; inv(n + 1);
+    fact[0] = invFact[0] = 1;
+    inv[0] = inv[1] = 1;
+    for (int i = 1; i &lt;= n; ++i) {
+      if (i &gt;= 2)
+        inv[i] = kMod - kMod / i * inv[kMod % i] % kMod;
+      fact[i] = fact[i - 1] * i % kMod;
+      invFact[i] = invFact[i - 1] * inv[i] % kMod;
+    }
+    return {fact, invFact};
+  }
+
+  int nCk(int n, int k, const vector&lt;long&gt;&amp; fact, const vector&lt;long&gt;&amp; invFact) {
+    return fact[n] * invFact[k] % kMod * invFact[n - k] % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countGoodSubsequences(String s) {
+    // For each frequency f in [1, max(freq)], start with &quot;&quot; and calculate how
+    // many subsequences can be finalructed with each letter&#x27;s frequency = f.
+    //
+    // e.g. s = &quot;abb&quot;, so f = max(freq) = 2.
+    //
+    // For f = 1, with 1 way to build &quot;&quot;, choose any &#x27;a&#x27; to finalruct a good
+    // subseq, so # of good subsequences = 1 + 1 * (1, 1) = 2 (&quot;&quot;, &quot;a&quot;). Next, add
+    // &#x27;b&#x27; and # of good subsequences = 2 + 2 * (2, 1) = 6 (&quot;&quot;, &quot;a&quot;, &quot;b1&quot;, &quot;b2&quot;,
+    // &quot;ab1&quot;, &quot;ab2&quot;). So, the number of good subsequences for f = 1 is 5 since we need to
+    // exclude &quot;&quot;.
+    //
+    // For f = 2, with 1 way to build &quot;&quot;, choose any two &#x27;b&#x27;s to finalruct a
+    // good subseq, so # of good subsequences = 1 + 1 * (2, 2) is 2 (&quot;&quot;, &quot;bb&quot;). So,
+    // the number of good subsequences for f = 2 = 1 since we need to exclude &quot;&quot;.
+    //
+    // Therefore, the number of good subsequences for &quot;aab&quot; = 5 + 1 = 6.
+    final int MOD = 1_000_000_007;
+    int ans = 0;
+    int[] count = new int[26];
+
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    final int maxFreq = Arrays.stream(count).max().getAsInt();
+    final long[][] factAndInvFact = getFactAndInvFact(maxFreq);
+    final long[] fact = factAndInvFact[0];
+    final long[] invFact = factAndInvFact[1];
+
+    for (int freq = 1; freq &lt;= maxFreq; ++freq) {
+      long numSubseqs = 1; // &quot;&quot;
+      for (final int charFreq : count)
+        if (charFreq &gt;= freq)
+          numSubseqs = (numSubseqs + //
+                        numSubseqs * nCk(charFreq, freq, fact, invFact)) %
+                       MOD;
+      ans += numSubseqs - 1; // Minus &quot;&quot;.
+      ans %= MOD;
+    }
+
+    return ans;
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private long[][] getFactAndInvFact(int n) {
+    long[] fact = new long[n + 1];
+    long[] invFact = new long[n + 1];
+    long[] inv = new long[n + 1];
+    fact[0] = invFact[0] = 1;
+    inv[0] = inv[1] = 1;
+    for (int i = 1; i &lt;= n; ++i) {
+      if (i &gt;= 2)
+        inv[i] = MOD - MOD / i * inv[MOD % i] % MOD;
+      fact[i] = fact[i - 1] * i % MOD;
+      invFact[i] = invFact[i - 1] * inv[i] % MOD;
+    }
+    return new long[][] {fact, invFact};
+  }
+
+  private int nCk(int n, int k, long[] fact, long[] invFact) {
+    return (int) (fact[n] * invFact[k] % MOD * invFact[n - k] % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countGoodSubsequences(self, s: str) -&gt; int:
+    MOD = 1_000_000_007
+    ans = 0
+    count = collections.Counter(s)
+
+    @functools.lru_cache(None)
+    def fact(i: int) -&gt; int:
+      return 1 if i &lt;= 1 else i * fact(i - 1) % MOD
+
+    @functools.lru_cache(None)
+    def inv(i: int) -&gt; int:
+      return pow(i, MOD - 2, MOD)
+
+    @functools.lru_cache(None)
+    def nCk(n: int, k: int) -&gt; int:
+      return fact(n) * inv(fact(k)) * inv(fact(n - k)) % MOD
+
+    for freq in range(1, max(count.values()) + 1):
+      numSubseqs = 1  # &quot;&quot;
+      for charFreq in count.values():
+        if charFreq &gt;= freq:
+          numSubseqs = numSubseqs * (1 + nCk(charFreq, freq)) % MOD
+      ans += numSubseqs - 1  # Minus &quot;&quot;.
+      ans %= MOD
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

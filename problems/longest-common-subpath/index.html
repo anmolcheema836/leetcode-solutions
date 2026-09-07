@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Common Subpath - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Common Subpath written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-common-subpath/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-good-numbers/" class="btn">← Previous</a>
+            <span>Problem 1923 of 3563</span>
+            <a href="/leetcode-solutions/problems/erect-the-fence-ii/" class="btn">Next →</a>
+        </div>
+        <h1>1923. Longest Common Subpath</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Common Subpath efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int longestCommonSubpath(int n, vector&lt;vector&lt;int&gt;&gt;&amp; paths) {
+    int l = 0;
+    int r = paths[0].size();
+
+    while (l &lt; r) {
+      const int m = l + (r - l + 1) / 2;
+      if (checkCommonSubpath(paths, m))
+        l = m;
+      else
+        r = m - 1;
+    }
+
+    return l;
+  }
+
+  static constexpr long kBase = 165&#x27;131;
+  static constexpr long kHash = 8&#x27;417&#x27;508&#x27;174&#x27;513;
+
+  // Returns true if there&#x27;s a common subpath of length m for all the paths.
+  bool checkCommonSubpath(const vector&lt;vector&lt;int&gt;&gt;&amp; paths, int m) {
+    vector&lt;unordered_set&lt;long&gt;&gt; hashSets;
+
+    // Calculate the hash values for subpaths of length m for every path.
+    for (const vector&lt;int&gt;&amp; path : paths)
+      hashSets.push_back(rabinKarp(path, m));
+
+    // Check if there is a common subpath of length m.
+    for (const long subpathHash : hashSets[0])
+      if (ranges::all_of(hashSets,
+                         [subpathHash](const unordered_set&lt;long&gt;&amp; hashSet) {
+        return hashSet.contains(subpathHash);
+      }))
+        return true;
+
+    return false;
+  }
+
+  // Returns the hash values for subpaths of length m in the path.
+  unordered_set&lt;long&gt; rabinKarp(const vector&lt;int&gt;&amp; path, int m) {
+    unordered_set&lt;long&gt; hashes;
+    long maxPower = 1;
+    long hash = 0;
+    for (int i = 0; i &lt; path.size(); ++i) {
+      hash = (hash * kBase + path[i]) % kHash;
+      if (i &gt;= m)
+        hash = (hash - path[i - m] * maxPower % kHash + kHash) % kHash;
+      else
+        maxPower = maxPower * kBase % kHash;
+      if (i &gt;= m - 1)
+        hashes.insert(hash);
+    }
+    return hashes;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int longestCommonSubpath(int n, int[][] paths) {
+    int l = 0;
+    int r = paths[0].length;
+
+    while (l &lt; r) {
+      final int m = l + (r - l + 1) / 2;
+      if (checkCommonSubpath(paths, m))
+        l = m;
+      else
+        r = m - 1;
+    }
+
+    return l;
+  }
+
+  private static final long BASE = 165_131L;
+  private static final long HASH = 8_417_508_174_513L;
+
+  // Returns true if there&#x27;s a common subpath of length m for all the paths.
+  private boolean checkCommonSubpath(int[][] paths, int m) {
+    Set&lt;Long&gt;[] hashSets = new Set[paths.length];
+
+    // Calculate the hash values for subpaths of length m for every path.
+    for (int i = 0; i &lt; paths.length; ++i)
+      hashSets[i] = rabinKarp(paths[i], m);
+
+    // Check if there is a common subpath of length m.
+    for (final long subpathHash : hashSets[0])
+      if (Arrays.stream(hashSets).allMatch(hashSet -&gt; hashSet.contains(subpathHash)))
+        return true;
+
+    return false;
+  }
+
+  // Returns the hash values for subpaths of length m in the path.
+  private Set&lt;Long&gt; rabinKarp(int[] path, int m) {
+    Set&lt;Long&gt; hashes = new HashSet&lt;&gt;();
+    long maxPower = 1;
+    long hash = 0;
+    for (int i = 0; i &lt; path.length; ++i) {
+      hash = (hash * BASE + path[i]) % HASH;
+      if (i &gt;= m)
+        hash = (hash - path[i - m] * maxPower % HASH + HASH) % HASH;
+      else
+        maxPower = maxPower * BASE % HASH;
+      if (i &gt;= m - 1)
+        hashes.add(hash);
+    }
+    return hashes;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def __init__(self):
+    self.BASE = 165_131
+    self.HASH = 8_417_508_174_513
+
+  def longestCommonSubpath(self, n: int, paths: list[list[int]]) -&gt; int:
+    l = 0
+    r = len(paths[0])
+
+    while l &lt; r:
+      m = l + (r - l + 1) // 2
+      if self._checkCommonSubpath(paths, m):
+        l = m
+      else:
+        r = m - 1
+
+    return l
+
+  def _checkCommonSubpath(self, paths: list[list[int]], m: int) -&gt; bool:
+    &quot;&quot;&quot;
+    Returns True if there&#x27;s a common subpath of length m for all the paths.
+    &quot;&quot;&quot;
+    # Calculate the hash values for subpaths of length m for every path.
+    hashSets = [self._rabinKarp(path, m) for path in paths]
+
+    # Check if there is a common subpath of length m.
+    for subpathHash in hashSets[0]:
+      if all(subpathHash in hashSet for hashSet in hashSets):
+        return True
+
+    return False
+
+  def _rabinKarp(self, path: list[int], m: int) -&gt; set[int]:
+    &quot;&quot;&quot;Returns the hash values for subpaths of length m in the path.&quot;&quot;&quot;
+    hashes = set()
+    maxPower = 1
+    hash = 0
+
+    for i, num in enumerate(path):
+      hash = (hash * self.BASE + num) % self.HASH
+      if i &gt;= m:
+        hash = (hash - path[i - m] * maxPower %
+                self.HASH + self.HASH) % self.HASH
+      else:
+        maxPower = maxPower * self.BASE % self.HASH
+      if i &gt;= m - 1:
+        hashes.add(hash)
+
+    return hashes</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

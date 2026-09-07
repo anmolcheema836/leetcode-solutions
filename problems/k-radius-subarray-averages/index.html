@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K Radius Subarray Averages - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for K Radius Subarray Averages written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/k-radius-subarray-averages/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-target-indices-after-sorting-array/" class="btn">← Previous</a>
+            <span>Problem 2090 of 3563</span>
+            <a href="/leetcode-solutions/problems/removing-minimum-and-maximum-from-array/" class="btn">Next →</a>
+        </div>
+        <h1>2090. K Radius Subarray Averages</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve K Radius Subarray Averages efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; getAverages(vector&lt;int&gt;&amp; nums, int k) {
+    const int n = nums.size();
+    const int size = 2 * k + 1;
+    vector&lt;int&gt; ans(n, -1);
+    if (size &gt; n)
+      return ans;
+
+    long sum = accumulate(nums.begin(), nums.begin() + size, 0L);
+
+    for (int i = k; i + k &lt; n; ++i) {
+      ans[i] = sum / size;
+      if (i + k + 1 &lt; n)
+        sum += nums[i + k + 1] - nums[i - k];
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] getAverages(int[] nums, int k) {
+    final int n = nums.length;
+    final int size = 2 * k + 1;
+    int[] ans = new int[n];
+    Arrays.fill(ans, -1);
+    if (size &gt; n)
+      return ans;
+
+    long sum = 0;
+
+    for (int i = 0; i &lt; size; ++i)
+      sum += nums[i];
+
+    for (int i = k; i + k &lt; n; ++i) {
+      ans[i] = (int) (sum / size);
+      if (i + k + 1 &lt; n)
+        sum += nums[i + k + 1] - nums[i - k];
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getAverages(self, nums: list[int], k: int) -&gt; list[int]:
+    n = len(nums)
+    size = 2 * k + 1
+    ans = [-1] * n
+    if size &gt; n:
+      return ans
+
+    summ = sum(nums[:size])
+
+    for i in range(k, n - k):
+      ans[i] = summ // size
+      if i + k + 1 &lt; n:
+        summ += nums[i + k + 1] - nums[i - k]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

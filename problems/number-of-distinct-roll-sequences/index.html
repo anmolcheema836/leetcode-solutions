@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Distinct Roll Sequences - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Distinct Roll Sequences written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-distinct-roll-sequences/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-xor-after-operations/" class="btn">← Previous</a>
+            <span>Problem 2318 of 3563</span>
+            <a href="/leetcode-solutions/problems/check-if-matrix-is-x-matrix/" class="btn">Next →</a>
+        </div>
+        <h1>2318. Number of Distinct Roll Sequences</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Distinct Roll Sequences efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int distinctSequences(int n) {
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; mem(n + 1,
+                                    vector&lt;vector&lt;int&gt;&gt;(7, vector&lt;int&gt;(7)));
+    return distinctSequences(n, 0, 0, mem);
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  // Returns the number of distinct sequences for n dices with `prev` and
+  // `prevPrev`.
+  int distinctSequences(int n, int prev, int prevPrev,
+                        vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&amp; mem) {
+    if (n == 0)
+      return 1;
+    if (mem[n][prev][prevPrev] &gt; 0)
+      return mem[n][prev][prevPrev];
+
+    for (int dice = 1; dice &lt;= 6; ++dice)
+      if (dice != prev &amp;&amp; dice != prevPrev &amp;&amp;
+          (prev == 0 || gcd(dice, prev) == 1)) {
+        mem[n][prev][prevPrev] += distinctSequences(n - 1, dice, prev, mem);
+        mem[n][prev][prevPrev] %= kMod;
+      }
+
+    return mem[n][prev][prevPrev];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int distinctSequences(int n) {
+    int[][][] mem = new int[n + 1][7][7];
+    return distinctSequences(n, 0, 0);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  // Returns the number of distinct sequences for n dices with `prev` and
+  // `prevPrev`.
+  private int distinctSequences(int n, int prev, int prevPrev, int[][][] mem) {
+    if (n == 0)
+      return 1;
+    if (mem[n][prev][prevPrev] &gt; 0)
+      return mem[n][prev][prevPrev];
+
+    for (int dice = 1; dice &lt;= 6; ++dice)
+      if (dice != prev &amp;&amp; dice != prevPrev &amp;&amp; (prev == 0 || gcd(dice, prev) == 1)) {
+        mem[n][prev][prevPrev] += distinctSequences(n - 1, dice, prev, mem);
+        mem[n][prev][prevPrev] %= MOD;
+      }
+
+    return mem[n][prev][prevPrev];
+  }
+
+  private int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def distinctSequences(self, n: int) -&gt; int:
+    MOD = 1_000_000_007
+
+    @functools.lru_cache(None)
+    def dp(n: int, prev: int, prevPrev: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of distinct sequences for n dices with `prev` and
+      `prevPrev`.
+      &quot;&quot;&quot;
+      if n == 0:
+        return 1
+      res = 0
+      for dice in range(1, 7):
+        if (dice not in (prev, prevPrev) and
+                (prev == 0 or math.gcd(dice, prev) == 1)):
+          res += dp(n - 1, dice, prev)
+          res %= MOD
+      return res
+
+    return dp(n, 0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

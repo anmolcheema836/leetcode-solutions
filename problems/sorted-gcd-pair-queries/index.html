@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorted GCD Pair Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sorted GCD Pair Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sorted-gcd-pair-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/construct-2d-grid-matching-graph-layout/" class="btn">← Previous</a>
+            <span>Problem 3312 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-last-marked-nodes-in-tree/" class="btn">Next →</a>
+        </div>
+        <h1>3312. Sorted GCD Pair Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sorted GCD Pair Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; gcdValues(vector&lt;int&gt;&amp; nums, vector&lt;long long&gt;&amp; queries) {
+    const int maxNum = ranges::max(nums);
+    vector&lt;int&gt; ans;
+    // countDivisor[d] := the number of `nums` having `num % d == 0`
+    vector&lt;int&gt; countDivisor(maxNum + 1);
+    // countGcdPair[g] := the number of pairs having gcd == g
+    vector&lt;long&gt; countGcdPair(maxNum + 1);
+    // prefixCountGcdPair[g] := the number of pairs having gcd &lt;= g
+    vector&lt;long&gt; prefixCountGcdPair{0};
+
+    for (const int num : nums)
+      for (int i = 1; i * i &lt;= num; ++i)
+        if (num % i == 0) {
+          ++countDivisor[i];
+          if (i != num / i)
+            ++countDivisor[num / i];
+        }
+
+    for (int gcd = maxNum; gcd &gt;= 1; --gcd) {
+      // There are C(countDivisor[gcd], 2) pairs that have a common divisor
+      // that&#x27;s a multiple of `gcd` (including the one that equals to `gcd`).
+      // So, substract the multiples of `gcd` to have the number of pairs with a
+      // gcd that&#x27;s exactly `gcd`.
+      countGcdPair[gcd] =
+          countDivisor[gcd] * static_cast&lt;long&gt;(countDivisor[gcd] - 1) / 2;
+      for (int largerGcd = 2 * gcd; largerGcd &lt;= maxNum; largerGcd += gcd)
+        countGcdPair[gcd] -= countGcdPair[largerGcd];
+    }
+
+    for (int gcd = 1; gcd &lt;= maxNum; ++gcd)
+      prefixCountGcdPair.push_back(prefixCountGcdPair.back() +
+                                   countGcdPair[gcd]);
+
+    for (const long query : queries)
+      ans.push_back(getNthGcdPair(query, prefixCountGcdPair));
+
+    return ans;
+  }
+
+ private:
+  // Returns the `query`-th gcd pair.
+  int getNthGcdPair(long query, const vector&lt;long&gt;&amp; prefixCountGcdPair) {
+    int l = 1;
+    int r = prefixCountGcdPair.size() - 1;
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (prefixCountGcdPair[m] &lt; query + 1)
+        l = m + 1;
+      else
+        r = m;
+    }
+    return l;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] gcdValues(int[] nums, long[] queries) {
+    int maxNum = Arrays.stream(nums).max().getAsInt();
+    int[] ans = new int[queries.length];
+    // countDivisor[d] := the number of `nums` having `num % d == 0`
+    int[] countDivisor = new int[maxNum + 1];
+    // countGcdPair[g] := the number of pairs having gcd == g
+    long[] countGcdPair = new long[maxNum + 1];
+    // prefixCountGcdPair[g] := the number of pairs having gcd &lt;= g
+    long[] prefixCountGcdPair = new long[maxNum + 1];
+
+    for (final int num : nums)
+      for (int i = 1; i * i &lt;= num; ++i)
+        if (num % i == 0) {
+          ++countDivisor[i];
+          if (i != num / i)
+            ++countDivisor[num / i];
+        }
+
+    for (int gcd = maxNum; gcd &gt;= 1; --gcd) {
+      // There are C(countDivisor[gcd], 2) pairs that have a common divisor
+      // that&#x27;s a multiple of `gcd` (including the one that equals to `gcd`).
+      // So, substract the multiples of `gcd` to have the number of pairs with a
+      // gcd that&#x27;s exactly `gcd`.
+      countGcdPair[gcd] = (long) countDivisor[gcd] * (countDivisor[gcd] - 1) / 2;
+      for (int largerGcd = 2 * gcd; largerGcd &lt;= maxNum; largerGcd += gcd)
+        countGcdPair[gcd] -= countGcdPair[largerGcd];
+    }
+
+    for (int gcd = 1; gcd &lt;= maxNum; ++gcd)
+      prefixCountGcdPair[gcd] = prefixCountGcdPair[gcd - 1] + countGcdPair[gcd];
+
+    for (int i = 0; i &lt; queries.length; ++i)
+      ans[i] = getNthGcdPair(queries[i], prefixCountGcdPair);
+
+    return ans;
+  }
+
+  // Returns the `query`-th gcd pair.
+  private int getNthGcdPair(long query, long[] prefixCountGcdPair) {
+    int l = 1;
+    int r = prefixCountGcdPair.length - 1;
+    while (l &lt; r) {
+      int m = (l + r) / 2;
+      if (prefixCountGcdPair[m] &lt; query + 1)
+        l = m + 1;
+      else
+        r = m;
+    }
+    return l;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def gcdValues(self, nums: list[int], queries: list[int]) -&gt; list[int]:
+    maxNum = max(nums)
+    # countDivisor[d] := the number of `nums` having `num % d == 0`
+    countDivisor = [0] * (maxNum + 1)
+    # countGcdPair[g] := the number of pairs having gcd == g
+    countGcdPair = [0] * (maxNum + 1)
+
+    for num in nums:
+      for i in range(1, math.isqrt(num) + 1):
+        if num % i == 0:
+          countDivisor[i] += 1
+          if i != num // i:
+            countDivisor[num // i] += 1
+
+    for gcd in range(maxNum, 0, -1):
+      # There are C(countDivisor[gcd], 2) pairs that have a common divisor
+      # that&#x27;s a multiple of `gcd` (including the one that equals to `gcd`).
+      # So, substract the multiples of `gcd` to have the number of pairs with a
+      # gcd that&#x27;s exactly `gcd`.
+      countGcdPair[gcd] = countDivisor[gcd] * (countDivisor[gcd] - 1) // 2
+      for largerGcd in range(2 * gcd, maxNum + 1, gcd):
+        countGcdPair[gcd] -= countGcdPair[largerGcd]
+
+    # prefixCountGcdPair[g] := the number of pairs having gcd &lt;= g
+    prefixCountGcdPair = list(itertools.accumulate(countGcdPair))
+    return [bisect.bisect_left(prefixCountGcdPair, query + 1)
+            for query in queries]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

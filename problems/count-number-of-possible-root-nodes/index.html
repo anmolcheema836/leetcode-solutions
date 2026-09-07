@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Number of Possible Root Nodes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Number of Possible Root Nodes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-number-of-possible-root-nodes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-ways-to-group-overlapping-ranges/" class="btn">← Previous</a>
+            <span>Problem 2581 of 3563</span>
+            <a href="/leetcode-solutions/problems/pass-the-pillow/" class="btn">Next →</a>
+        </div>
+        <h1>2581. Count Number of Possible Root Nodes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Number of Possible Root Nodes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int rootCount(vector&lt;vector&lt;int&gt;&gt;&amp; edges, vector&lt;vector&lt;int&gt;&gt;&amp; guesses,
+                int k) {
+    int ans = 0;
+    const int n = edges.size() + 1;
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    vector&lt;unordered_set&lt;int&gt;&gt; guessGraph(n);
+    vector&lt;int&gt; parent(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    for (const vector&lt;int&gt;&amp; guess : guesses) {
+      const int u = guess[0];
+      const int v = guess[1];
+      guessGraph[u].insert(v);
+    }
+
+    // Precalculate `parent`.
+    dfs(graph, 0, /*prev=*/-1, parent);
+
+    // Calculate `correctGuess` for tree rooted at 0.
+    int correctGuess = 0;
+    for (int i = 1; i &lt; n; ++i)
+      if (guessGraph[parent[i]].contains(i))
+        ++correctGuess;
+
+    reroot(graph, 0, /*prev=*/-1, correctGuess, guessGraph, k, ans);
+    return ans;
+  }
+
+ private:
+  void dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, int prev,
+           vector&lt;int&gt;&amp; parent) {
+    parent[u] = prev;
+    for (const int v : graph[u])
+      if (v != prev)
+        dfs(graph, v, u, parent);
+  }
+
+  void reroot(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, int prev,
+              int correctGuess, const vector&lt;unordered_set&lt;int&gt;&gt;&amp; guessGraph,
+              const int&amp; k, int&amp; ans) {
+    if (u != 0) {
+      // The tree is rooted at u, so a guess edge (u, prev) will match the new
+      // `parent` relationship.
+      if (guessGraph[u].contains(prev))
+        ++correctGuess;
+      // A guess edge (prev, u) matching the old `parent` relationship will no
+      // longer be true.
+      if (guessGraph[prev].contains(u))
+        --correctGuess;
+    }
+    if (correctGuess &gt;= k)
+      ++ans;
+    for (const int v : graph[u])
+      if (v != prev)
+        reroot(graph, v, u, correctGuess, guessGraph, k, ans);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int rootCount(int[][] edges, int[][] guesses, int k) {
+    final int n = edges.length + 1;
+    List&lt;Integer&gt;[] graph = new List[n];
+    Set&lt;Integer&gt;[] guessGraph = new Set[n];
+    int[] parent = new int[n];
+
+    for (int i = 0; i &lt; n; ++i) {
+      graph[i] = new ArrayList&lt;&gt;();
+      guessGraph[i] = new HashSet&lt;&gt;();
+    }
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    for (int[] guess : guesses) {
+      final int u = guess[0];
+      final int v = guess[1];
+      guessGraph[u].add(v);
+    }
+
+    // Precalculate `parent`.
+    dfs(graph, 0, /*prev=*/-1, parent);
+
+    // Calculate `correctGuess` for tree rooted at 0.
+    int correctGuess = 0;
+    for (int i = 1; i &lt; n; ++i)
+      if (guessGraph[parent[i]].contains(i))
+        ++correctGuess;
+
+    reroot(graph, 0, /*prev=*/-1, correctGuess, guessGraph, k);
+    return ans;
+  }
+
+  private int ans = 0;
+
+  private void dfs(List&lt;Integer&gt;[] graph, int u, int prev, int[] parent) {
+    parent[u] = prev;
+    for (final int v : graph[u])
+      if (v != prev)
+        dfs(graph, v, u, parent);
+  }
+
+  private void reroot(List&lt;Integer&gt;[] graph, int u, int prev, int correctGuess,
+                      Set&lt;Integer&gt;[] guessGraph, int k) {
+    if (u != 0) {
+      // The tree is rooted at u, so a guess edge (u, prev) will match the new
+      // `parent` relationship.
+      if (guessGraph[u].contains(prev))
+        ++correctGuess;
+      // A guess edge (prev, u) matching the old `parent` relationship will no
+      // longer be true.
+      if (guessGraph[prev].contains(u))
+        --correctGuess;
+    }
+    if (correctGuess &gt;= k)
+      ++ans;
+    for (final int v : graph[u])
+      if (v != prev)
+        reroot(graph, v, u, correctGuess, guessGraph, k);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def rootCount(
+      self,
+      edges: list[list[int]],
+      guesses: list[list[int]],
+      k: int,
+  ) -&gt; int:
+    ans = 0
+    n = len(edges) + 1
+    graph = [[] for _ in range(n)]
+    guessGraph = [set() for _ in range(n)]
+    parent = [0] * n
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    for u, v in guesses:
+      guessGraph[u].add(v)
+
+    def dfs(u: int, prev: int) -&gt; None:
+      parent[u] = prev
+      for v in graph[u]:
+        if v != prev:
+          dfs(v, u)
+
+    # Precalculate `parent`.
+    dfs(0, -1)
+
+    # Calculate `correctGuess` for tree rooted at 0.
+    correctGuess = sum(i in guessGraph[parent[i]] for i in range(1, n))
+
+    def reroot(u: int, prev: int, correctGuess: int) -&gt; None:
+      nonlocal ans
+      if u != 0:
+        # The tree is rooted at u, so a guess edge (u, prev) will match the new
+        # `parent` relationship.
+        if prev in guessGraph[u]:
+          correctGuess += 1
+        # A guess edge (prev, u) matching the old `parent` relationship will no
+        # longer be True.
+        if u in guessGraph[prev]:
+          correctGuess -= 1
+      if correctGuess &gt;= k:
+        ans += 1
+      for v in graph[u]:
+        if v != prev:
+          reroot(v, u, correctGuess)
+
+    reroot(0, -1, correctGuess)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closest Leaf in a Binary Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Closest Leaf in a Binary Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/closest-leaf-in-a-binary-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/cherry-pickup/" class="btn">← Previous</a>
+            <span>Problem 742 of 3563</span>
+            <a href="/leetcode-solutions/problems/network-delay-time/" class="btn">Next →</a>
+        </div>
+        <h1>742. Closest Leaf in a Binary Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Closest Leaf in a Binary Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findClosestLeaf(TreeNode* root, int k) {
+    int ans = -1;
+    int minDist = 1000;
+    // {node: distance to TreeNode(k)}
+    unordered_map&lt;TreeNode*, int&gt; nodeToDist;
+
+    getDists(root, k, nodeToDist);
+    getClosestLeaf(root, 0, nodeToDist, minDist, ans);
+
+    return ans;
+  }
+
+ private:
+  void getDists(TreeNode* root, int k,
+                unordered_map&lt;TreeNode*, int&gt;&amp; nodeToDist) {
+    if (root == nullptr)
+      return;
+    if (root-&gt;val == k) {
+      nodeToDist[root] = 0;
+      return;
+    }
+
+    getDists(root-&gt;left, k, nodeToDist);
+    if (const auto it = nodeToDist.find(root-&gt;left); it != nodeToDist.cend()) {
+      // The TreeNode(k) is in the left subtree.
+      nodeToDist[root] = it-&gt;second + 1;
+      return;
+    }
+
+    getDists(root-&gt;right, k, nodeToDist);
+    if (const auto it = nodeToDist.find(root-&gt;right); it != nodeToDist.cend())
+      // The TreeNode(k) is in the right subtree.
+      nodeToDist[root] = it-&gt;second + 1;
+  }
+
+  void getClosestLeaf(TreeNode* root, int dist,
+                      unordered_map&lt;TreeNode*, int&gt;&amp; nodeToDist, int&amp; minDist,
+                      int&amp; ans) {
+    if (root == nullptr)
+      return;
+    if (nodeToDist.contains(root))
+      dist = nodeToDist[root];
+    if (root-&gt;left == nullptr &amp;&amp; root-&gt;right == nullptr) {
+      if (dist &lt; minDist) {
+        minDist = dist;
+        ans = root-&gt;val;
+      }
+      return;
+    }
+
+    getClosestLeaf(root-&gt;left, dist + 1, nodeToDist, minDist, ans);
+    getClosestLeaf(root-&gt;right, dist + 1, nodeToDist, minDist, ans);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findClosestLeaf(TreeNode root, int k) {
+    ans = -1;
+    minDist = 1000;
+    // {node: distance to TreeNode(k)}
+    Map&lt;TreeNode, Integer&gt; nodeToDist = new HashMap&lt;&gt;();
+
+    getDists(root, k, nodeToDist);
+    getClosestLeaf(root, 0, nodeToDist);
+
+    return ans;
+  }
+
+  private int ans;
+  private int minDist;
+
+  private void getDists(TreeNode root, int k, Map&lt;TreeNode, Integer&gt; nodeToDist) {
+    if (root == null)
+      return;
+    if (root.val == k) {
+      nodeToDist.put(root, 0);
+      return;
+    }
+
+    getDists(root.left, k, nodeToDist);
+    if (nodeToDist.containsKey(root.left)) {
+      // The TreeNode(k) is in the left subtree.
+      nodeToDist.put(root, nodeToDist.get(root.left) + 1);
+      return;
+    }
+
+    getDists(root.right, k, nodeToDist);
+    if (nodeToDist.containsKey(root.right))
+      // The TreeNode(k) is in the right subtree.
+      nodeToDist.put(root, nodeToDist.get(root.right) + 1);
+  }
+
+  private void getClosestLeaf(TreeNode root, int dist, Map&lt;TreeNode, Integer&gt; nodeToDist) {
+    if (root == null)
+      return;
+    if (nodeToDist.containsKey(root))
+      dist = nodeToDist.get(root);
+    if (root.left == null &amp;&amp; root.right == null) {
+      if (dist &lt; minDist) {
+        minDist = dist;
+        ans = root.val;
+      }
+      return;
+    }
+
+    getClosestLeaf(root.left, dist + 1, nodeToDist);
+    getClosestLeaf(root.right, dist + 1, nodeToDist);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Events That Can Be Attended - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Events That Can Be Attended written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-events-that-can-be-attended/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/product-of-the-last-k-numbers/" class="btn">← Previous</a>
+            <span>Problem 1353 of 3563</span>
+            <a href="/leetcode-solutions/problems/construct-target-array-with-multiple-sums/" class="btn">Next →</a>
+        </div>
+        <h1>1353. Maximum Number of Events That Can Be Attended</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Events That Can Be Attended efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxEvents(vector&lt;vector&lt;int&gt;&gt;&amp; events) {
+    int ans = 0;
+    int d = 0;  // the current day
+    int i = 0;  // events&#x27; index
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;&gt;&gt; minHeap;
+
+    ranges::sort(events);
+
+    while (!minHeap.empty() || i &lt; events.size()) {
+      // If no events are available to attend today, let time flies to the next
+      // available event.
+      if (minHeap.empty())
+        d = events[i][0];
+      // All the events starting from today are newly available.
+      while (i &lt; events.size() &amp;&amp; events[i][0] == d)
+        minHeap.push(events[i++][1]);
+      // Greedily attend the event that&#x27;ll end the earliest since it has higher
+      // chance can&#x27;t be attended in the future.
+      minHeap.pop();
+      ++ans;
+      ++d;
+      // Pop the events that can&#x27;t be attended.
+      while (!minHeap.empty() &amp;&amp; minHeap.top() &lt; d)
+        minHeap.pop();
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxEvents(int[][] events) {
+    int ans = 0;
+    int d = 0; // the current day
+    int i = 0; // events&#x27; index
+    Queue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();
+
+    Arrays.sort(events, Comparator.comparingInt(event -&gt; event[0]));
+
+    while (!minHeap.isEmpty() || i &lt; events.length) {
+      // If no events are available to attend today, let time flies to the next
+      // available event.
+      if (minHeap.isEmpty())
+        d = events[i][0];
+      // All the events starting from today are newly available.
+      while (i &lt; events.length &amp;&amp; events[i][0] == d)
+        minHeap.offer(events[i++][1]);
+      // Greedily attend the event that&#x27;ll end the earliest since it has higher
+      // chance can&#x27;t be attended in the future.
+      minHeap.poll();
+      ++ans;
+      ++d;
+      // Pop the events that can&#x27;t be attended.
+      while (!minHeap.isEmpty() &amp;&amp; minHeap.peek() &lt; d)
+        minHeap.poll();
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxEvents(self, events: list[list[int]]) -&gt; int:
+    ans = 0
+    minHeap = []
+    i = 0  # events&#x27; index
+
+    events.sort(key=lambda x: x[0])
+
+    while minHeap or i &lt; len(events):
+      # If no events are available to attend today, let time flies to the next
+      # available event.
+      if not minHeap:
+        d = events[i][0]
+      # All the events starting from today are newly available.
+      while i &lt; len(events) and events[i][0] == d:
+        heapq.heappush(minHeap, events[i][1])
+        i += 1
+      # Greedily attend the event that&#x27;ll end the earliest since it has higher
+      # chance can&#x27;t be attended in the future.
+      heapq.heappop(minHeap)
+      ans += 1
+      d += 1
+      # Pop the events that can&#x27;t be attended.
+      while minHeap and minHeap[0] &lt; d:
+        heapq.heappop(minHeap)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

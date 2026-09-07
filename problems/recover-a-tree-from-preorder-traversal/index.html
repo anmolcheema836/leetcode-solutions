@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recover a Tree From Preorder Traversal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Recover a Tree From Preorder Traversal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/recover-a-tree-from-preorder-traversal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-arithmetic-subsequence/" class="btn">← Previous</a>
+            <span>Problem 1028 of 3563</span>
+            <a href="/leetcode-solutions/problems/two-city-scheduling/" class="btn">Next →</a>
+        </div>
+        <h1>1028. Recover a Tree From Preorder Traversal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Recover a Tree From Preorder Traversal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  TreeNode* recoverFromPreorder(string traversal) {
+    int i = 0;
+    return recoverFromPreorder(traversal, 0, i);
+  }
+
+ private:
+  TreeNode* recoverFromPreorder(const string&amp; traversal, int depth, int&amp; i) {
+    int nDashes = 0;
+    while (i + nDashes &lt; traversal.length() &amp;&amp; traversal[i + nDashes] == &#x27;-&#x27;)
+      ++nDashes;
+    if (nDashes != depth)
+      return nullptr;
+
+    i += depth;
+    const int start = i;
+    while (i &lt; traversal.length() &amp;&amp; isdigit(traversal[i]))
+      ++i;
+
+    return new TreeNode(stoi(traversal.substr(start, i - start)),
+                        recoverFromPreorder(traversal, depth + 1, i),
+                        recoverFromPreorder(traversal, depth + 1, i));
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public TreeNode recoverFromPreorder(String traversal) {
+    return recoverFromPreorder(traversal, 0);
+  }
+
+  private int i = 0;
+
+  private TreeNode recoverFromPreorder(final String traversal, int depth) {
+    int nDashes = 0;
+    while (i + nDashes &lt; traversal.length() &amp;&amp; traversal.charAt(i + nDashes) == &#x27;-&#x27;)
+      ++nDashes;
+    if (nDashes != depth)
+      return null;
+
+    i += depth;
+    final int start = i;
+    while (i &lt; traversal.length() &amp;&amp; Character.isDigit(traversal.charAt(i)))
+      ++i;
+
+    return new TreeNode(Integer.valueOf(traversal.substring(start, i)),
+                        recoverFromPreorder(traversal, depth + 1),
+                        recoverFromPreorder(traversal, depth + 1));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def recoverFromPreorder(self, traversal: str) -&gt; TreeNode | None:
+    i = 0
+
+    def recoverFromPreorder(depth: int) -&gt; TreeNode | None:
+      nonlocal i
+      nDashes = 0
+      while i + nDashes &lt; len(traversal) and traversal[i + nDashes] == &#x27;-&#x27;:
+        nDashes += 1
+      if nDashes != depth:
+        return None
+
+      i += depth
+      start = i
+      while i &lt; len(traversal) and traversal[i].isdigit():
+        i += 1
+
+      return TreeNode(int(traversal[start:i]),
+                      recoverFromPreorder(depth + 1),
+                      recoverFromPreorder(depth + 1))
+
+    return recoverFromPreorder(0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

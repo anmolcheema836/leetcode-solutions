@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Router - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Implement Router written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/implement-router/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-pair-removal-to-sort-array-i/" class="btn">← Previous</a>
+            <span>Problem 3508 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-product-of-subsequences-with-an-alternating-sum-equal-to-k/" class="btn">Next →</a>
+        </div>
+        <h1>3508. Implement Router</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Implement Router efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Packet {
+  int source;
+  int destination;
+  int timestamp;
+
+  bool operator&lt;(const Packet&amp; other) const {
+    return source &lt; other.source ||
+           (source == other.source &amp;&amp; destination &lt; other.destination) ||
+           (source == other.source &amp;&amp; destination == other.destination &amp;&amp;
+            timestamp &lt; other.timestamp);
+  }
+};
+
+class Router {
+ public:
+  Router(int memoryLimit) : memoryLimit(memoryLimit) {}
+
+  bool addPacket(int source, int destination, int timestamp) {
+    const Packet packet{source, destination, timestamp};
+    if (uniquePackets.find(packet) != uniquePackets.end())
+      return false;
+    if (packetQueue.size() == memoryLimit)
+      forwardPacket();
+    packetQueue.push(packet);
+    uniquePackets.insert(packet);
+    destinationTimestamps[destination].push_back(timestamp);
+    return true;
+  }
+
+  vector&lt;int&gt; forwardPacket() {
+    if (packetQueue.empty())
+      return {};
+    const Packet nextPacket = packetQueue.front();
+    packetQueue.pop();
+    uniquePackets.erase(nextPacket);
+    ++processedPacketIndex[nextPacket.destination];
+    return {nextPacket.source, nextPacket.destination, nextPacket.timestamp};
+  }
+
+  int getCount(int destination, int startTime, int endTime) {
+    if (destinationTimestamps.find(destination) == destinationTimestamps.end())
+      return 0;
+    const vector&lt;int&gt;&amp; timestamps = destinationTimestamps[destination];
+    const int startIndex = processedPacketIndex[destination];
+    const auto lowerBound = lower_bound(timestamps.begin() + startIndex,
+                                        timestamps.end(), startTime);
+    const auto upperBound =
+        upper_bound(timestamps.begin() + startIndex, timestamps.end(), endTime);
+    return upperBound - lowerBound;
+  }
+
+ private:
+  const int memoryLimit;
+  set&lt;Packet&gt; uniquePackets;
+  queue&lt;Packet&gt; packetQueue;
+  map&lt;int, vector&lt;int&gt;&gt; destinationTimestamps;
+  map&lt;int, int&gt; processedPacketIndex;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Packet implements Comparable&lt;Packet&gt; {
+  public int source;
+  public int destination;
+  public int timestamp;
+
+  public Packet(int source, int destination, int timestamp) {
+    this.source = source;
+    this.destination = destination;
+    this.timestamp = timestamp;
+  }
+
+  @Override
+  public int compareTo(Packet other) {
+    if (source != other.source)
+      return Integer.compare(source, other.source);
+    if (destination != other.destination)
+      return Integer.compare(destination, other.destination);
+    return Integer.compare(timestamp, other.timestamp);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    Packet packet = (Packet) o;
+    return source == packet.source &amp;&amp; destination == packet.destination &amp;&amp;
+        timestamp == packet.timestamp;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(source, destination, timestamp);
+  }
+}
+
+class Router {
+  public Router(int memoryLimit) {
+    this.memoryLimit = memoryLimit;
+  }
+
+  public boolean addPacket(int source, int destination, int timestamp) {
+    Packet packet = new Packet(source, destination, timestamp);
+    if (uniquePackets.contains(packet))
+      return false;
+    if (packetQueue.size() == memoryLimit)
+      forwardPacket();
+    packetQueue.add(packet);
+    uniquePackets.add(packet);
+    destinationTimestamps.computeIfAbsent(destination, k -&gt; new ArrayList&lt;&gt;()).add(timestamp);
+    return true;
+  }
+
+  public List&lt;Integer&gt; forwardPacket() {
+    if (packetQueue.isEmpty())
+      return Collections.emptyList();
+    Packet nextPacket = packetQueue.poll();
+    uniquePackets.remove(nextPacket);
+    processedPacketIndex.merge(nextPacket.destination, 1, Integer::sum);
+    return Arrays.asList(nextPacket.source, nextPacket.destination, nextPacket.timestamp);
+  }
+
+  public int getCount(int destination, int startTime, int endTime) {
+    if (!destinationTimestamps.containsKey(destination))
+      return 0;
+    List&lt;Integer&gt; timestamps = destinationTimestamps.get(destination);
+    final int startIndex = processedPacketIndex.getOrDefault(destination, 0);
+    final int lowerBoundIndex = firstGreaterEqual(timestamps, startIndex, startTime);
+    final int upperBoundIndex = firstGreater(timestamps, lowerBoundIndex, endTime);
+    return upperBoundIndex - lowerBoundIndex;
+  }
+
+  private final int memoryLimit;
+  private final TreeSet&lt;Packet&gt; uniquePackets = new TreeSet&lt;&gt;();
+  private final Queue&lt;Packet&gt; packetQueue = new LinkedList&lt;&gt;();
+  private final Map&lt;Integer, List&lt;Integer&gt;&gt; destinationTimestamps = new HashMap&lt;&gt;();
+  private final Map&lt;Integer, Integer&gt; processedPacketIndex = new HashMap&lt;&gt;();
+
+  private int firstGreaterEqual(List&lt;Integer&gt; timestamps, int startIndex, int startTime) {
+    int l = startIndex;
+    int r = timestamps.size();
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (timestamps.get(m) &gt;= startTime)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+
+  private int firstGreater(List&lt;Integer&gt; timestamps, int startIndex, int endTime) {
+    int l = startIndex;
+    int r = timestamps.size();
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (timestamps.get(m) &gt; endTime)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Packet:
+  source: int
+  destination: int
+  timestamp: int
+
+
+class Router:
+  def __init__(self, memoryLimit: int):
+    self.memoryLimit = memoryLimit
+    self.uniquePackets: set[Packet] = set()
+    self.packetQueue: collections.deque[Packet] = collections.deque()
+    self.destinationTimestamps = collections.defaultdict(list)
+    self.processedPacketIndex = collections.Counter()
+
+  def addPacket(self, source: int, destination: int, timestamp: int) -&gt; bool:
+    packet = Packet(source, destination, timestamp)
+    if packet in self.uniquePackets:
+      return False
+    if len(self.packetQueue) == self.memoryLimit:
+      self.forwardPacket()
+    self.packetQueue.append(packet)
+    self.uniquePackets.add(packet)
+    if destination not in self.destinationTimestamps:
+      self.destinationTimestamps[destination] = []
+    self.destinationTimestamps[destination].append(timestamp)
+    return True
+
+  def forwardPacket(self) -&gt; list[int]:
+    if not self.packetQueue:
+      return []
+    nextPacket = self.packetQueue.popleft()
+    self.uniquePackets.remove(nextPacket)
+    self.processedPacketIndex[nextPacket.destination] += 1
+    return [nextPacket.source, nextPacket.destination, nextPacket.timestamp]
+
+  def getCount(self, destination: int, startTime: int, endTime: int) -&gt; int:
+    if destination not in self.destinationTimestamps:
+      return 0
+    timestamps = self.destinationTimestamps[destination]
+    startIndex = self.processedPacketIndex.get(destination, 0)
+    lowerBound = bisect.bisect_left(timestamps, startTime, startIndex)
+    upperBound = bisect.bisect_right(timestamps, endTime, startIndex)
+    return upperBound - lowerBound</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

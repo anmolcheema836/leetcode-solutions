@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construct String With Repeat Limit - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Construct String With Repeat Limit written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/construct-string-with-repeat-limit/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/merge-nodes-in-between-zeros/" class="btn">← Previous</a>
+            <span>Problem 2182 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-array-pairs-divisible-by-k/" class="btn">Next →</a>
+        </div>
+        <h1>2182. Construct String With Repeat Limit</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Construct String With Repeat Limit efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string repeatLimitedString(string s, int repeatLimit) {
+    string ans;
+    vector&lt;int&gt; count(26);
+
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+
+    while (true) {
+      const bool addOne = !ans.empty() &amp;&amp; shouldAddOne(ans, count);
+      const int i = getLargestChar(ans, count);
+      if (i == -1)
+        break;
+      const int repeats = addOne ? 1 : min(count[i], repeatLimit);
+      ans += string(repeats, &#x27;a&#x27; + i);
+      count[i] -= repeats;
+    }
+
+    return ans;
+  }
+
+ private:
+  bool shouldAddOne(const string&amp; ans, const vector&lt;int&gt;&amp; count) {
+    for (int i = 25; i &gt;= 0; --i)
+      if (count[i])
+        return ans.back() == &#x27;a&#x27; + i;
+    return false;
+  }
+
+  int getLargestChar(const string&amp; ans, const vector&lt;int&gt;&amp; count) {
+    for (int i = 25; i &gt;= 0; --i)
+      if (count[i] &amp;&amp; (ans.empty() || ans.back() != &#x27;a&#x27; + i))
+        return i;
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String repeatLimitedString(String s, int repeatLimit) {
+    StringBuilder sb = new StringBuilder();
+    int[] count = new int[26];
+
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    while (true) {
+      final boolean addOne = !sb.isEmpty() &amp;&amp; shouldAddOne(sb, count);
+      final int i = getLargestChar(sb, count);
+      if (i == -1)
+        break;
+      final int repeats = addOne ? 1 : Math.min(count[i], repeatLimit);
+      sb.append(String.valueOf((char) (&#x27;a&#x27; + i)).repeat(repeats));
+      count[i] -= repeats;
+    }
+
+    return sb.toString();
+  }
+
+  private boolean shouldAddOne(StringBuilder sb, int[] count) {
+    for (int i = 25; i &gt;= 0; --i)
+      if (count[i] &gt; 0)
+        return sb.charAt(sb.length() - 1) == &#x27;a&#x27; + i;
+    return false;
+  }
+
+  private int getLargestChar(StringBuilder sb, int[] count) {
+    for (int i = 25; i &gt;= 0; --i)
+      if (count[i] &gt; 0 &amp;&amp; (sb.isEmpty() || sb.charAt(sb.length() - 1) != &#x27;a&#x27; + i))
+        return i;
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def repeatLimitedString(self, s: str, repeatLimit: int) -&gt; str:
+    ans = &#x27;&#x27;
+    count = collections.Counter(s)
+
+    while True:
+      addOne = ans and self._shouldAddOne(ans, count)
+      c = self._getLargestChar(ans, count)
+      if c == &#x27; &#x27;:
+        break
+      repeats = 1 if addOne else min(count[c], repeatLimit)
+      ans += c * repeats
+      count[c] -= repeats
+
+    return ans
+
+  def _shouldAddOne(self, ans: str, count: collections.Counter) -&gt; bool:
+    for c in reversed(string.ascii_lowercase):
+      if count[c]:
+        return ans[-1] == c
+    return False
+
+  def _getLargestChar(self, ans: str, count: collections.Counter) -&gt; int:
+    for c in reversed(string.ascii_lowercase):
+      if count[c] and (not ans or ans[-1] != c):
+        return c
+    return &#x27; &#x27;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost to Convert String II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost to Convert String II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-to-convert-string-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-to-convert-string-i/" class="btn">← Previous</a>
+            <span>Problem 2977 of 3563</span>
+            <a href="/leetcode-solutions/problems/symmetric-coordinates/" class="btn">Next →</a>
+        </div>
+        <h1>2977. Minimum Cost to Convert String II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost to Convert String II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minimumCost(string source, string target, vector&lt;string&gt;&amp; original,
+                        vector&lt;string&gt;&amp; changed, vector&lt;int&gt;&amp; cost) {
+    const unordered_set&lt;int&gt; subLengths = getSubLengths(original);
+    const unordered_map&lt;string, int&gt; subToId = getSubToId(original, changed);
+    const int subCount = subToId.size();
+    // dist[u][v] := the minimum distance to change the substring with id u to
+    // the substring with id v
+    vector&lt;vector&lt;long&gt;&gt; dist(subCount, vector&lt;long&gt;(subCount, LONG_MAX));
+    // dp[i] := the minimum cost to change the first i letters of `source` into
+    // `target`, leaving the suffix untouched
+    vector&lt;long&gt; dp(source.length() + 1, LONG_MAX);
+
+    for (int i = 0; i &lt; cost.size(); ++i) {
+      const int u = subToId.at(original[i]);
+      const int v = subToId.at(changed[i]);
+      dist[u][v] = min(dist[u][v], static_cast&lt;long&gt;(cost[i]));
+    }
+
+    for (int k = 0; k &lt; subCount; ++k)
+      for (int i = 0; i &lt; subCount; ++i)
+        if (dist[i][k] &lt; LONG_MAX)
+          for (int j = 0; j &lt; subCount; ++j)
+            if (dist[k][j] &lt; LONG_MAX)
+              dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+
+    dp[0] = 0;
+
+    for (int i = 0; i &lt; source.length(); ++i) {
+      if (dp[i] == LONG_MAX)
+        continue;
+      if (target[i] == source[i])
+        dp[i + 1] = min(dp[i + 1], dp[i]);
+      for (const int subLength : subLengths) {
+        if (i + subLength &gt; source.length())
+          continue;
+        const string subSource = source.substr(i, subLength);
+        const string subTarget = target.substr(i, subLength);
+        if (!subToId.contains(subSource) || !subToId.contains(subTarget))
+          continue;
+        const int u = subToId.at(subSource);
+        const int v = subToId.at(subTarget);
+        if (dist[u][v] &lt; LONG_MAX)
+          dp[i + subLength] = min(dp[i + subLength], dp[i] + dist[u][v]);
+      }
+    }
+
+    return dp[source.length()] == LONG_MAX ? -1 : dp[source.length()];
+  }
+
+ private:
+  unordered_map&lt;string, int&gt; getSubToId(const vector&lt;string&gt;&amp; original,
+                                        const vector&lt;string&gt;&amp; changed) {
+    unordered_map&lt;string, int&gt; subToId;
+    for (const string&amp; s : original)
+      if (!subToId.contains(s))
+        subToId[s] = subToId.size();
+    for (const string&amp; s : changed)
+      if (!subToId.contains(s))
+        subToId[s] = subToId.size();
+    return subToId;
+  }
+
+  unordered_set&lt;int&gt; getSubLengths(const vector&lt;string&gt;&amp; original) {
+    unordered_set&lt;int&gt; subLengths;
+    for (const string&amp; s : original)
+      subLengths.insert(s.length());
+    return subLengths;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minimumCost(String source, String target, String[] original, String[] changed,
+                          int[] cost) {
+    Set&lt;Integer&gt; subLengths = getSubLengths(original);
+    Map&lt;String, Integer&gt; subToId = getSubToId(original, changed);
+    final int subCount = subToId.size();
+    // dist[u][v] := the minimum distance to change the substring with id u to
+    // the substring with id v
+    long[][] dist = new long[subCount][subCount];
+    Arrays.stream(dist).forEach(A -&gt; Arrays.fill(A, Long.MAX_VALUE));
+    // dp[i] := the minimum cost to change the first i letters of `source` into
+    // `target`, leaving the suffix untouched
+    long[] dp = new long[source.length() + 1];
+    Arrays.fill(dp, Long.MAX_VALUE);
+
+    for (int i = 0; i &lt; cost.length; ++i) {
+      final int u = subToId.get(original[i]);
+      final int v = subToId.get(changed[i]);
+      dist[u][v] = Math.min(dist[u][v], (long) cost[i]);
+    }
+
+    for (int k = 0; k &lt; subCount; ++k)
+      for (int i = 0; i &lt; subCount; ++i)
+        if (dist[i][k] &lt; Long.MAX_VALUE)
+          for (int j = 0; j &lt; subCount; ++j)
+            if (dist[k][j] &lt; Long.MAX_VALUE)
+              dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+
+    dp[0] = 0;
+
+    for (int i = 0; i &lt; source.length(); ++i) {
+      if (dp[i] == Long.MAX_VALUE)
+        continue;
+      if (target.charAt(i) == source.charAt(i))
+        dp[i + 1] = Math.min(dp[i + 1], dp[i]);
+      for (int subLength : subLengths) {
+        if (i + subLength &gt; source.length())
+          continue;
+        String subSource = source.substring(i, i + subLength);
+        String subTarget = target.substring(i, i + subLength);
+        if (!subToId.containsKey(subSource) || !subToId.containsKey(subTarget))
+          continue;
+        final int u = subToId.get(subSource);
+        final int v = subToId.get(subTarget);
+        if (dist[u][v] &lt; Long.MAX_VALUE)
+          dp[i + subLength] = Math.min(dp[i + subLength], dp[i] + dist[u][v]);
+      }
+    }
+
+    return dp[source.length()] == Long.MAX_VALUE ? -1 : dp[source.length()];
+  }
+
+  private Map&lt;String, Integer&gt; getSubToId(String[] original, String[] changed) {
+    Map&lt;String, Integer&gt; subToId = new HashMap&lt;&gt;();
+    for (final String s : original)
+      subToId.putIfAbsent(s, subToId.size());
+    for (final String s : changed)
+      subToId.putIfAbsent(s, subToId.size());
+    return subToId;
+  }
+
+  private Set&lt;Integer&gt; getSubLengths(String[] original) {
+    Set&lt;Integer&gt; subLengths = new HashSet&lt;&gt;();
+    for (final String s : original)
+      subLengths.add(s.length());
+    return subLengths;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumCost(
+      self,
+      source: str,
+      target: str,
+      original: list[str],
+      changed: list[str],
+      cost: list[int],
+  ) -&gt; int:
+    subLengths = set(len(s) for s in original)
+    subToId = self._getSubToId(original, changed)
+    subCount = len(subToId)
+    # dist[u][v] := the minimum distance to change the substring with id u to
+    # the substring with id v
+    dist = [[math.inf for _ in range(subCount)] for _ in range(subCount)]
+    # dp[i] := the minimum cost to change the first i letters of `source` into
+    # `target`, leaving the suffix untouched
+    dp = [math.inf for _ in range(len(source) + 1)]
+
+    for a, b, c in zip(original, changed, cost):
+      u = subToId[a]
+      v = subToId[b]
+      dist[u][v] = min(dist[u][v], c)
+
+    for k in range(subCount):
+      for i in range(subCount):
+        if dist[i][k] &lt; math.inf:
+          for j in range(subCount):
+            if dist[k][j] &lt; math.inf:
+              dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+    dp[0] = 0
+
+    for i, (s, t) in enumerate(zip(source, target)):
+      if dp[i] == math.inf:
+        continue
+      if s == t:
+        dp[i + 1] = min(dp[i + 1], dp[i])
+      for subLength in subLengths:
+        if i + subLength &gt; len(source):
+          continue
+        subSource = source[i:i + subLength]
+        subTarget = target[i:i + subLength]
+        if subSource not in subToId or subTarget not in subToId:
+          continue
+        u = subToId[subSource]
+        v = subToId[subTarget]
+        if dist[u][v] != math.inf:
+          dp[i + subLength] = min(dp[i + subLength], dp[i] + dist[u][v])
+
+    return -1 if dp[len(source)] == math.inf else dp[len(source)]
+
+  def _getSubToId(self, original: str, changed: str) -&gt; dict[str, int]:
+    subToId = {}
+    for s in original + changed:
+      if s not in subToId:
+        subToId[s] = len(subToId)
+    return subToId</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

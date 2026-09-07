@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Justification - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Text Justification written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/text-justification/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/add-binary/" class="btn">← Previous</a>
+            <span>Problem 68 of 3563</span>
+            <a href="/leetcode-solutions/problems/sqrt-x/" class="btn">Next →</a>
+        </div>
+        <h1>68. Text Justification</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Text Justification efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; fullJustify(vector&lt;string&gt;&amp; words, size_t maxWidth) {
+    vector&lt;string&gt; ans;
+    vector&lt;string&gt; row;
+    size_t rowLetters = 0;
+
+    for (const string&amp; word : words) {
+      // If we place the word in this row, it will exceed the maximum width.
+      // Therefore, we cannot put the word in this row and have to pad spaces
+      // for each word in this row.
+      if (rowLetters + row.size() + word.length() &gt; maxWidth) {
+        const int spaces = maxWidth - rowLetters;
+        if (row.size() == 1) {
+          // Pad all the spaces after row[0].
+          for (int i = 0; i &lt; spaces; ++i)
+            row[0] += &quot; &quot;;
+        } else {
+          // Evenly pad all the spaces to each word (expect the last one) in
+          // this row.
+          for (int i = 0; i &lt; spaces; ++i)
+            row[i % (row.size() - 1)] += &quot; &quot;;
+        }
+        ans.push_back(join(row, &quot;&quot;));
+        row.clear();
+        rowLetters = 0;
+      }
+      row.push_back(word);
+      rowLetters += word.length();
+    }
+    ans.push_back(ljust(join(row, &quot; &quot;), maxWidth));
+
+    return ans;
+  }
+
+ private:
+  string join(const vector&lt;string&gt;&amp; words, const string&amp; s) {
+    string joined;
+    for (int i = 0; i &lt; words.size(); ++i) {
+      joined += words[i];
+      if (i != words.size() - 1)
+        joined += s;
+    }
+    return joined;
+  }
+
+  string ljust(string s, int width) {
+    for (int i = 0; i &lt; s.length() - width; ++i)
+      s += &quot; &quot;;
+    return s;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; fullJustify(String[] words, int maxWidth) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;StringBuilder&gt; row = new ArrayList&lt;&gt;();
+    int rowLetters = 0;
+
+    for (final String word : words) {
+      // If we place the word in this row, it will exceed the maximum width.
+      // Therefore, we cannot put the word in this row and have to pad spaces
+      // for each word in this row.
+      if (rowLetters + row.size() + word.length() &gt; maxWidth) {
+        final int spaces = maxWidth - rowLetters;
+        if (row.size() == 1) {
+          // Pad all the spaces after row[0].
+          for (int i = 0; i &lt; spaces; ++i)
+            row.get(0).append(&quot; &quot;);
+        } else {
+          // Evenly pad all the spaces to each word (expect the last one) in
+          // this row.
+          for (int i = 0; i &lt; spaces; ++i)
+            row.get(i % (row.size() - 1)).append(&quot; &quot;);
+        }
+        final String joinedRow =
+            row.stream().map(StringBuilder::toString).collect(Collectors.joining(&quot;&quot;));
+        ans.add(joinedRow);
+        row.clear();
+        rowLetters = 0;
+      }
+      row.add(new StringBuilder(word));
+      rowLetters += word.length();
+    }
+
+    final String lastRow =
+        row.stream().map(StringBuilder::toString).collect(Collectors.joining(&quot; &quot;));
+    StringBuilder sb = new StringBuilder(lastRow);
+    final int spacesToBeAdded = maxWidth - sb.length();
+    for (int i = 0; i &lt; spacesToBeAdded; ++i)
+      sb.append(&quot; &quot;);
+
+    ans.add(sb.toString());
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def fullJustify(self, words: list[str], maxWidth: int) -&gt; list[str]:
+    ans = []
+    row = []
+    rowLetters = 0
+
+    for word in words:
+      # If we place the word in this row, it will exceed the maximum width.
+      # Therefore, we cannot put the word in this row and have to pad spaces
+      # for each word in this row.
+      if rowLetters + len(word) + len(row) &gt; maxWidth:
+        for i in range(maxWidth - rowLetters):
+          row[i % (len(row) - 1 or 1)] += &#x27; &#x27;
+        ans.append(&#x27;&#x27;.join(row))
+        row = []
+        rowLetters = 0
+      row.append(word)
+      rowLetters += len(word)
+
+    return ans + [&#x27; &#x27;.join(row).ljust(maxWidth)]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Subarrays With More Ones Than Zeros - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Subarrays With More Ones Than Zeros written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-subarrays-with-more-ones-than-zeros/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/" class="btn">← Previous</a>
+            <span>Problem 2031 of 3563</span>
+            <a href="/leetcode-solutions/problems/two-out-of-three/" class="btn">Next →</a>
+        </div>
+        <h1>2031. Count Subarrays With More Ones Than Zeros</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Subarrays With More Ones Than Zeros efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FenwickTree {
+ public:
+  FenwickTree(int n) : sums(n + 1) {}
+
+  void add(int i, int delta) {
+    while (i &lt; sums.size()) {
+      sums[i] += delta;
+      i += lowbit(i);
+    }
+  }
+
+  int get(int i) const {
+    int sum = 0;
+    while (i &gt; 0) {
+      sum += sums[i];
+      i -= lowbit(i);
+    }
+    return sum;
+  }
+
+ private:
+  vector&lt;int&gt; sums;
+
+  static inline int lowbit(int i) {
+    return i &amp; -i;
+  }
+};
+
+class Solution {
+ public:
+  int subarraysWithMoreZerosThanOnes(vector&lt;int&gt;&amp; nums) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int n = nums.size();
+    int ans = 0;
+    int prefix = 0;
+    // Map [-n, n] to [1, 2 * n + 1].
+    FenwickTree tree(2 * n + 1);
+    tree.add(remap(0, n), 1);
+
+    for (const int num : nums) {
+      prefix += num == 0 ? -1 : 1;
+      // If prefix[j] &gt; prefix[i], where 0 &lt;= i &lt; j &lt; |prefix|, that means that
+      // there are more ones than zeros in nums[i + 1, j].
+      ans += tree.get(remap(prefix - 1, n));
+      ans %= kMod;
+      tree.add(remap(prefix, n), 1);
+    }
+
+    return ans;
+  }
+
+ private:
+  int remap(int i, int n) {
+    return i + n + 1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FenwickTree {
+  public FenwickTree(int n) {
+    sums = new int[n + 1];
+  }
+
+  public void add(int i, int delta) {
+    while (i &lt; sums.length) {
+      sums[i] += delta;
+      i += lowbit(i);
+    }
+  }
+
+  public int get(int i) {
+    int sum = 0;
+    while (i &gt; 0) {
+      sum += sums[i];
+      i -= lowbit(i);
+    }
+    return sum;
+  }
+
+  private int[] sums;
+
+  private static int lowbit(int i) {
+    return i &amp; -i;
+  }
+}
+
+class Solution {
+  public int subarraysWithMoreZerosThanOnes(int[] nums) {
+    final int MOD = 1_000_000_007;
+    final int n = nums.length;
+    int ans = 0;
+    int prefix = 0;
+    FenwickTree tree = new FenwickTree(2 * n + 1);
+    tree.add(remap(0, n), 1);
+
+    for (final int num : nums) {
+      prefix += num == 0 ? -1 : 1;
+      ans += tree.get(remap(prefix - 1, n));
+      ans %= MOD;
+      tree.add(remap(prefix, n), 1);
+    }
+
+    return ans;
+  }
+
+  private int remap(int i, int n) {
+    return i + n + 1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class FenwichTree:
+  def __init__(self, n: int):
+    self.n = n
+    self.sums = [0] * (2 * n + 1)
+
+  def add(self, i: int, delta: int) -&gt; None:
+    i += self.n + 1  # re-mapping
+    while i &lt; len(self.sums):
+      self.sums[i] += delta
+      i += i &amp; -i
+
+  def get(self, i: int) -&gt; int:
+    i += self.n + 1  # re-mapping
+    summ = 0
+    while i &gt; 0:
+      summ += self.sums[i]
+      i -= i &amp; -i
+    return summ
+
+
+class Solution:
+  def subarraysWithMoreZerosThanOnes(self, nums: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+    ans = 0
+    prefix = 0
+    tree = FenwichTree(len(nums))
+    tree.add(0, 1)
+
+    for num in nums:
+      prefix += -1 if num == 0 else 1
+      ans += tree.get(prefix - 1)
+      ans %= MOD
+      tree.add(prefix, 1)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

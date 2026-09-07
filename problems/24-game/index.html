@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 Game - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for 24 Game written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/24-game/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/valid-parenthesis-string/" class="btn">← Previous</a>
+            <span>Problem 679 of 3563</span>
+            <a href="/leetcode-solutions/problems/valid-palindrome-ii/" class="btn">Next →</a>
+        </div>
+        <h1>679. 24 Game</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve 24 Game efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool judgePoint24(vector&lt;int&gt;&amp; nums) {
+    vector&lt;double&gt; doubleNums;
+
+    for (const int num : nums)
+      doubleNums.push_back(num);
+
+    return dfs(doubleNums);
+  }
+
+ private:
+  bool dfs(vector&lt;double&gt;&amp; nums) {
+    if (nums.size() == 1)
+      return abs(nums[0] - 24) &lt; 0.001;
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      for (int j = 0; j &lt; i; ++j) {
+        for (const double num : generate(nums[i], nums[j])) {
+          vector&lt;double&gt; nextRound{num};
+          for (int k = 0; k &lt; nums.size(); ++k) {
+            if (k == i || k == j)  // It is used in `generate()`.
+              continue;
+            nextRound.push_back(nums[k]);
+          }
+          if (dfs(nextRound))
+            return true;
+        }
+      }
+
+    return false;
+  }
+
+  vector&lt;double&gt; generate(double a, double b) {
+    return {a * b, a / b, b / a, a + b, a - b, b - a};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean judgePoint24(int[] nums) {
+    List&lt;Double&gt; doubleNums = new ArrayList&lt;&gt;();
+
+    for (final int num : nums)
+      doubleNums.add((double) num);
+
+    return dfs(doubleNums);
+  }
+
+  private boolean dfs(List&lt;Double&gt; nums) {
+    if (nums.size() == 1)
+      return Math.abs(nums.get(0) - 24.0) &lt; 0.001;
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      for (int j = i + 1; j &lt; nums.size(); ++j)
+        for (final double num : generate(nums.get(i), nums.get(j))) {
+          List&lt;Double&gt; nextRound = new ArrayList&lt;&gt;(List.of(num));
+          for (int k = 0; k &lt; nums.size(); ++k) {
+            if (k == i || k == j) // It is used in `generate()`.
+              continue;
+            nextRound.add(nums.get(k));
+          }
+          if (dfs(nextRound))
+            return true;
+        }
+
+    return false;
+  }
+
+  private double[] generate(double a, double b) {
+    return new double[] {a * b, a / b, b / a, a + b, a - b, b - a};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def judgePoint24(self, nums: list[int]) -&gt; bool:
+    def generate(a: float, b: float) -&gt; list[float]:
+      return [a * b,
+              math.inf if b == 0 else a / b,
+              math.inf if a == 0 else b / a,
+              a + b, a - b, b - a]
+
+    def dfs(nums: list[float]) -&gt; bool:
+      if len(nums) == 1:
+        return abs(nums[0] - 24.0) &lt; 0.001
+
+      for i, j in itertools.combinations(range(len(nums)), 2):
+        for num in generate(nums[i], nums[j]):
+          nextRound = [num]
+          for k in range(len(nums)):
+            if k == i or k == j:
+              continue
+            nextRound.append(nums[k])
+          if dfs(nextRound):
+            return True
+
+      return False
+
+    return dfs(nums)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

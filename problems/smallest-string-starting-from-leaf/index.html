@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallest String Starting From Leaf - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Smallest String Starting From Leaf written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/smallest-string-starting-from-leaf/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/vertical-order-traversal-of-a-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 988 of 3563</span>
+            <a href="/leetcode-solutions/problems/add-to-array-form-of-integer/" class="btn">Next →</a>
+        </div>
+        <h1>988. Smallest String Starting From Leaf</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Smallest String Starting From Leaf efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string smallestFromLeaf(TreeNode* root) {
+    string ans;
+    dfs(root, &quot;&quot;, ans);
+    return ans;
+  }
+
+ private:
+  void dfs(TreeNode* root, string&amp;&amp; path, string&amp; ans) {
+    if (root == nullptr)
+      return;
+
+    path.push_back(root-&gt;val + &#x27;a&#x27;);
+
+    if (root-&gt;left == nullptr &amp;&amp; root-&gt;right == nullptr) {
+      ranges::reverse(path);
+      if (ans == &quot;&quot; || ans &gt; path)
+        ans = path;
+      ranges::reverse(path);  // Roll back.
+    }
+
+    dfs(root-&gt;left, std::move(path), ans);
+    dfs(root-&gt;right, std::move(path), ans);
+    path.pop_back();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String smallestFromLeaf(TreeNode root) {
+    dfs(root, new StringBuilder());
+    return ans;
+  }
+
+  private String ans = null;
+
+  private void dfs(TreeNode root, StringBuilder sb) {
+    if (root == null)
+      return;
+
+    sb.append((char) (root.val + &#x27;a&#x27;));
+
+    if (root.left == null &amp;&amp; root.right == null) {
+      final String path = sb.reverse().toString();
+      sb.reverse(); // Roll back.
+      if (ans == null || ans.compareTo(path) &gt; 0)
+        ans = path;
+    }
+
+    dfs(root.left, sb);
+    dfs(root.right, sb);
+    sb.deleteCharAt(sb.length() - 1);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

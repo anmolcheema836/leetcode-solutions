@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Substring of One Repeating Character - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Substring of One Repeating Character written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-substring-of-one-repeating-character/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-points-in-an-archery-competition/" class="btn">← Previous</a>
+            <span>Problem 2213 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-health-to-beat-game/" class="btn">Next →</a>
+        </div>
+        <h1>2213. Longest Substring of One Repeating Character</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Substring of One Repeating Character efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct SegmentTreeNode {
+  int lo;
+  int hi;
+  char maxLetter;
+  char prefixLetter;
+  char suffixLetter;
+  int maxLength;
+  int prefixLength;
+  int suffixLength;
+  SegmentTreeNode* left;
+  SegmentTreeNode* right;
+  SegmentTreeNode(int lo, int hi, char maxLetter, char prefixLetter,
+                  char suffixLetter, int maxLength, int prefixLength,
+                  int suffixLength, SegmentTreeNode* left = nullptr,
+                  SegmentTreeNode* right = nullptr)
+      : lo(lo),
+        hi(hi),
+        maxLetter(maxLetter),
+        prefixLetter(prefixLetter),
+        suffixLetter(suffixLetter),
+        maxLength(maxLength),
+        prefixLength(prefixLength),
+        suffixLength(suffixLength),
+        left(left),
+        right(right) {}
+  ~SegmentTreeNode() {
+    delete left;
+    delete right;
+    left = nullptr;
+    right = nullptr;
+  }
+};
+
+class SegmentTree {
+ public:
+  explicit SegmentTree(const string&amp; s) : root(build(s, 0, s.length() - 1)) {}
+  ~SegmentTree() {
+    delete root;
+  }
+
+  void update(int i, char val) {
+    root = update(root, i, val);
+  }
+
+  int getMaxLength() {
+    return root-&gt;maxLength;
+  }
+
+ private:
+  SegmentTreeNode* root;
+
+  SegmentTreeNode* build(const string&amp; s, int lo, int hi) const {
+    if (lo == hi)
+      return new SegmentTreeNode(lo, hi, s[lo], s[lo], s[lo], 1, 1, 1);
+    const int mid = (lo + hi) / 2;
+    SegmentTreeNode* left = build(s, lo, mid);
+    SegmentTreeNode* right = build(s, mid + 1, hi);
+    return merge(left, right);
+  }
+
+  SegmentTreeNode* update(SegmentTreeNode* root, int i, char c) {
+    if (root-&gt;lo == i &amp;&amp; root-&gt;hi == i) {
+      root-&gt;maxLetter = c;
+      root-&gt;prefixLetter = c;
+      root-&gt;suffixLetter = c;
+      return root;
+    }
+    const int mid = (root-&gt;lo + root-&gt;hi) / 2;
+    if (i &lt;= mid) {
+      SegmentTreeNode* updatedLeft = update(root-&gt;left, i, c);
+      return root = merge(updatedLeft, root-&gt;right);
+    } else {
+      SegmentTreeNode* updatedRight = update(root-&gt;right, i, c);
+      return root = merge(root-&gt;left, updatedRight);
+    }
+  }
+
+  SegmentTreeNode* merge(SegmentTreeNode* left, SegmentTreeNode* right) const {
+    // Get `maxLetter` and `maxLength`.
+    char maxLetter = &#x27; &#x27;;
+    int maxLength = 0;
+    if (left-&gt;maxLength &gt; right-&gt;maxLength) {
+      maxLetter = left-&gt;maxLetter;
+      maxLength = left-&gt;maxLength;
+    } else {
+      maxLetter = right-&gt;maxLetter;
+      maxLength = right-&gt;maxLength;
+    }
+    if (left-&gt;suffixLetter == right-&gt;prefixLetter &amp;&amp;
+        left-&gt;suffixLength + right-&gt;prefixLength &gt; maxLength) {
+      maxLetter = left-&gt;suffixLetter;
+      maxLength = left-&gt;suffixLength + right-&gt;prefixLength;
+    }
+
+    // Get `prefixLetter` and `prefixLength`.
+    char prefixLetter = left-&gt;prefixLetter;
+    int prefixLength = left-&gt;prefixLength;
+    if (left-&gt;lo + prefixLength == right-&gt;lo &amp;&amp;
+        left-&gt;prefixLetter == right-&gt;prefixLetter)
+      prefixLength += right-&gt;prefixLength;
+
+    // Get `suffixLetter` and `suffixLength`.
+    char suffixLetter = right-&gt;suffixLetter;
+    int suffixLength = right-&gt;suffixLength;
+    if (right-&gt;hi - suffixLength == left-&gt;hi &amp;&amp;
+        right-&gt;suffixLetter == left-&gt;suffixLetter)
+      suffixLength += left-&gt;suffixLength;
+    return new SegmentTreeNode(left-&gt;lo, right-&gt;hi, maxLetter, prefixLetter,
+                               suffixLetter, maxLength, prefixLength,
+                               suffixLength, left, right);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; longestRepeating(string s, string queryLetteracters,
+                               vector&lt;int&gt;&amp; queryIndices) {
+    vector&lt;int&gt; ans;
+    SegmentTree tree(s);
+
+    for (int i = 0; i &lt; queryIndices.size(); ++i) {
+      tree.update(queryIndices[i], queryLetteracters[i]);
+      ans.push_back(tree.getMaxLength());
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

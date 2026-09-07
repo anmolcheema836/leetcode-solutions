@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Range XOR Queries with Subarray Reversals - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Range XOR Queries with Subarray Reversals written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/range-xor-queries-with-subarray-reversals/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-x-value-of-array-ii/" class="btn">← Previous</a>
+            <span>Problem 3526 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-most-common-response/" class="btn">Next →</a>
+        </div>
+        <h1>3526. Range XOR Queries with Subarray Reversals</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Range XOR Queries with Subarray Reversals efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Node {
+  Node(int v) : val(v), subXor(v) {}
+  int val;
+  int subXor;
+  int sz = 1;
+  int rev = false;
+  int prior = rand();
+  Node* l = nullptr;
+  Node* r = nullptr;
+};
+
+class AVLTree {
+ public:
+  AVLTree(const vector&lt;int&gt;&amp; nums) : root(nullptr) {
+    build(nums);
+  }
+
+  void updateValue(int index, int val) {
+    Node* l = nullptr;
+    Node* r = nullptr;
+    Node* m = nullptr;
+    split(root, index, l, r);
+    split(r, 1, m, r);
+    if (m != nullptr)
+      m-&gt;val = val;
+    update(m);
+    root = merge(merge(l, m), r);
+  }
+
+  int rangeXor(int left, int right) {
+    Node* l = nullptr;
+    Node* m = nullptr;
+    Node* r = nullptr;
+    split(root, left, l, r);
+    split(r, right - left + 1, m, r);
+    const int res = getXor(m);
+    root = merge(merge(l, m), r);
+    return res;
+  }
+
+  void reverseRange(int left, int right) {
+    Node* l = nullptr;
+    Node* m = nullptr;
+    Node* r = nullptr;
+    split(root, left, l, r);
+    split(r, right - left + 1, m, r);
+    if (m != nullptr)
+      m-&gt;rev = !m-&gt;rev;
+    root = merge(merge(l, m), r);
+  }
+
+ private:
+  Node* root;
+
+  void build(const vector&lt;int&gt;&amp; nums) {
+    for (const int num : nums)
+      root = merge(root, new Node(num));
+  }
+
+  int getSize(Node* t) {
+    return t ? t-&gt;sz : 0;
+  }
+
+  int getXor(Node* t) {
+    return t ? t-&gt;subXor : 0;
+  }
+
+  void push(Node* t) {
+    if (t == nullptr || !t-&gt;rev)
+      return;
+    swap(t-&gt;l, t-&gt;r);
+    if (t-&gt;l != nullptr)
+      t-&gt;l-&gt;rev ^= 1;
+    if (t-&gt;r != nullptr)
+      t-&gt;r-&gt;rev ^= 1;
+    t-&gt;rev = false;
+  }
+
+  void update(Node* t) {
+    if (t == nullptr)
+      return;
+    t-&gt;sz = 1 + getSize(t-&gt;l) + getSize(t-&gt;r);
+    t-&gt;subXor = t-&gt;val ^ getXor(t-&gt;l) ^ getXor(t-&gt;r);
+  }
+
+  void split(Node* t, int k, Node*&amp; l, Node*&amp; r) {
+    if (t == nullptr)
+      return void(l = r = nullptr);
+    push(t);
+    if (getSize(t-&gt;l) &gt;= k) {
+      split(t-&gt;l, k, l, t-&gt;l);
+      r = t;
+    } else {
+      split(t-&gt;r, k - getSize(t-&gt;l) - 1, t-&gt;r, r);
+      l = t;
+    }
+    update(t);
+  }
+
+  Node* merge(Node* l, Node* r) {
+    push(l);
+    push(r);
+    if (l == nullptr || r == nullptr)
+      return l == nullptr ? r : l;
+    if (l-&gt;prior &gt; r-&gt;prior) {
+      l-&gt;r = merge(l-&gt;r, r);
+      update(l);
+      return l;
+    } else {
+      r-&gt;l = merge(l, r-&gt;l);
+      update(r);
+      return r;
+    }
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; getResults(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    AVLTree tree(nums);
+    vector&lt;int&gt; ans;
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int type = query[0];
+      if (type == 1)
+        tree.updateValue(/*index=*/query[1], /*val=*/query[2]);
+      else if (type == 2)
+        ans.push_back(tree.rangeXor(/*left=*/query[1], /*right=*/query[2]));
+      else if (type == 3)
+        tree.reverseRange(/*left=*/query[1], /*right=*/query[2]);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Frequency Score of a Subarray - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Frequency Score of a Subarray written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-frequency-score-of-a-subarray/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/closest-prime-numbers-in-range/" class="btn">← Previous</a>
+            <span>Problem 2524 of 3563</span>
+            <a href="/leetcode-solutions/problems/categorize-box-according-to-criteria/" class="btn">Next →</a>
+        </div>
+        <h1>2524. Maximum Frequency Score of a Subarray</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Frequency Score of a Subarray efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxFrequencyScore(vector&lt;int&gt;&amp; nums, int k) {
+    unordered_map&lt;int, int&gt; count;
+
+    for (int i = 0; i &lt; k; ++i)
+      ++count[nums[i]];
+
+    int sum = getInitialSum(count);
+    int ans = sum;
+
+    for (int i = k; i &lt; nums.size(); ++i) {
+      // Remove the leftmost number that&#x27;s out-of-window.
+      const int leftNum = nums[i - k];
+      sum = (sum - modPow(leftNum, count[leftNum]) + kMod) % kMod;
+      // After decreasing its frequency, if it&#x27;s still &gt; 0, then add it back.
+      if (--count[leftNum] &gt; 0)
+        sum = (sum + modPow(leftNum, count[leftNum])) % kMod;
+      // Otherwise, remove it from the count map.
+      else
+        count.erase(leftNum);
+      // Add the current number. Similarly, remove the current score like above.
+      const int rightNum = nums[i];
+      if (count[rightNum] &gt; 0)
+        sum = (sum - modPow(rightNum, count[rightNum]) + kMod) % kMod;
+      sum = (sum + modPow(rightNum, ++count[rightNum])) % kMod;
+      ans = max(ans, sum);
+    }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  int getInitialSum(const unordered_map&lt;int, int&gt;&amp; count) {
+    long sum = 0;
+    for (const auto&amp; [num, freq] : count)
+      sum = (sum + modPow(num, freq)) % kMod;
+    return sum;
+  }
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxFrequencyScore(int[] nums, int k) {
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; k; ++i)
+      count.merge(nums[i], 1, Integer::sum);
+
+    int sum = getInitialSum(count);
+    int ans = sum;
+
+    for (int i = k; i &lt; nums.length; ++i) {
+      // Remove the leftmost number that&#x27;s out-of-window.
+      final int leftNum = nums[i - k];
+      sum = (sum - modPow(leftNum, count.get(leftNum)) + MOD) % MOD;
+      // After decreasing its frequency, if it&#x27;s still &gt; 0, then add it back.
+      if (count.merge(leftNum, -1, Integer::sum) &gt; 0)
+        sum = (sum + modPow(leftNum, count.get(leftNum))) % MOD;
+      // Otherwise, remove it from the count map.
+      else
+        count.remove(leftNum);
+      // Add the current number. Similarly, remove the current score like above.
+      final int rightNum = nums[i];
+      if (count.getOrDefault(rightNum, 0) &gt; 0)
+        sum = (sum - modPow(rightNum, count.get(rightNum)) + MOD) % MOD;
+      sum = (sum + modPow(rightNum, count.merge(rightNum, 1, Integer::sum))) % MOD;
+      ans = Math.max(ans, sum);
+    }
+
+    return ans;
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private int getInitialSum(Map&lt;Integer, Integer&gt; count) {
+    int sum = 0;
+    for (Map.Entry&lt;Integer, Integer&gt; entry : count.entrySet()) {
+      final int num = entry.getKey();
+      final int freq = entry.getValue();
+      sum = (sum + modPow(num, freq)) % MOD;
+    }
+    return sum;
+  }
+
+  private int modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return (int) (x * modPow(x % MOD, (n - 1)) % MOD);
+    return modPow(x * x % MOD, (n / 2)) % MOD;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxFrequencyScore(self, nums: list[int], k: int) -&gt; int:
+    MOD = 1_000_000_007
+    count = collections.Counter(nums[:k])
+    summ = self._getInitialSumm(count, MOD)
+    ans = summ
+
+    for i in range(k, len(nums)):
+      # Remove the leftmost number that&#x27;s out-of-window.
+      leftNum = nums[i - k]
+      summ = (summ - pow(leftNum, count[leftNum], MOD) + MOD) % MOD
+      # After decreasing its frequency, if it&#x27;s still &gt; 0, then add it back.
+      count[leftNum] -= 1
+      if count[leftNum] &gt; 0:
+        summ = (summ + pow(leftNum, count[leftNum], MOD)) % MOD
+      # Otherwise, remove it from the count map.
+      else:
+        del count[leftNum]
+      # Add the current number. Similarly, remove the current score like above.
+      rightNum = nums[i]
+      if count[rightNum] &gt; 0:
+        summ = (summ - pow(rightNum, count[rightNum], MOD) + MOD) % MOD
+      count[rightNum] += 1
+      summ = (summ + pow(rightNum, count[rightNum], MOD)) % MOD
+      ans = max(ans, summ)
+
+    return ans
+
+  def _getInitialSumm(self, count: dict[int, int], MOD: int) -&gt; int:
+    summ = 0
+    for num, freq in count.items():
+      summ = (summ + pow(num, freq, MOD)) % MOD
+    return summ</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

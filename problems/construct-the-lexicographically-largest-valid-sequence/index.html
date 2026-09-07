@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construct the Lexicographically Largest Valid Sequence - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Construct the Lexicographically Largest Valid Sequence written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/construct-the-lexicographically-largest-valid-sequence/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-score-from-removing-substrings/" class="btn">← Previous</a>
+            <span>Problem 1718 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-ways-to-reconstruct-a-tree/" class="btn">Next →</a>
+        </div>
+        <h1>1718. Construct the Lexicographically Largest Valid Sequence</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Construct the Lexicographically Largest Valid Sequence efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; constructDistancedSequence(int n) {
+    vector&lt;int&gt; ans(2 * n - 1);
+    dfs(n, 0, 0, ans);
+    return ans;
+  }
+
+ private:
+  bool dfs(int n, int i, int mask, vector&lt;int&gt;&amp; ans) {
+    if (i == ans.size())
+      return true;
+    if (ans[i] &gt; 0)
+      return dfs(n, i + 1, mask, ans);
+
+    // Greedily fill in `ans` in descending order.
+    for (int num = n; num &gt;= 1; --num) {
+      if (mask &gt;&gt; num &amp; 1)
+        continue;
+      if (num == 1) {
+        ans[i] = num;
+        if (dfs(n, i + 1, mask | 1 &lt;&lt; num, ans))
+          return true;
+        ans[i] = 0;
+      } else {  // num in [2, n]
+        if (i + num &gt;= ans.size() || ans[i + num] &gt; 0)
+          continue;
+        ans[i] = num;
+        ans[i + num] = num;
+        if (dfs(n, i + 1, mask | 1 &lt;&lt; num, ans))
+          return true;
+        ans[i + num] = 0;
+        ans[i] = 0;
+      }
+    }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] constructDistancedSequence(int n) {
+    int[] ans = new int[2 * n - 1];
+    dfs(n, 0, 0, ans);
+    return ans;
+  }
+
+  private boolean dfs(int n, int i, int mask, int[] ans) {
+    if (i == ans.length)
+      return true;
+    if (ans[i] &gt; 0)
+      return dfs(n, i + 1, mask, ans);
+
+    // Greedily fill in `ans` in descending order.
+    for (int num = n; num &gt;= 1; --num) {
+      if ((mask &gt;&gt; num &amp; 1) == 1)
+        continue;
+      if (num == 1) {
+        ans[i] = num;
+        if (dfs(n, i + 1, mask | 1 &lt;&lt; num, ans))
+          return true;
+        ans[i] = 0;
+      } else { // num in [2, n]
+        if (i + num &gt;= ans.length || ans[i + num] &gt; 0)
+          continue;
+        ans[i] = num;
+        ans[i + num] = num;
+        if (dfs(n, i + 1, mask | 1 &lt;&lt; num, ans))
+          return true;
+        ans[i + num] = 0;
+        ans[i] = 0;
+      }
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def constructDistancedSequence(self, n: int) -&gt; list[int]:
+    ans = [0] * (2 * n - 1)
+
+    def dfs(i: int, mask: int) -&gt; bool:
+      if i == len(ans):
+        return True
+      if ans[i] &gt; 0:
+        return dfs(i + 1, mask)
+
+      # Greedily fill in `ans` in descending order.
+      for num in range(n, 0, -1):
+        if (mask &gt;&gt; num &amp; 1) == 1:
+          continue
+        if num == 1:
+          ans[i] = num
+          if dfs(i + 1, mask | 1 &lt;&lt; num):
+            return True
+          ans[i] = 0
+        else:  # num in [2, n]
+          if i + num &gt;= len(ans) or ans[i + num] &gt; 0:
+            continue
+          ans[i] = num
+          ans[i + num] = num
+          if dfs(i + 1, mask | 1 &lt;&lt; num):
+            return True
+          ans[i + num] = 0
+          ans[i] = 0
+
+      return False
+
+    dfs(0, 0)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

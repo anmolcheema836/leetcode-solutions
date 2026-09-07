@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize the Number of Partitions After Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize the Number of Partitions After Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-the-number-of-partitions-after-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-size-of-a-set-after-removals/" class="btn">← Previous</a>
+            <span>Problem 3003 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-subtree-of-the-same-color/" class="btn">Next →</a>
+        </div>
+        <h1>3003. Maximize the Number of Partitions After Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize the Number of Partitions After Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxPartitionsAfterOperations(string s, int k) {
+    unordered_map&lt;long, int&gt; mem;
+    return maxPartitionsAfterOperations(s, 0, true, 0, k, mem) + 1;
+  }
+
+ private:
+  // Returns the maximum number of partitions of s[i..n), where `canChange` is
+  // true if we can still change a letter, and `mask` is the bitmask of the
+  // letters we&#x27;ve seen.
+  int maxPartitionsAfterOperations(const string&amp; s, int i, bool canChange,
+                                   int mask, int k,
+                                   unordered_map&lt;long, int&gt;&amp; mem) {
+    if (i == s.length())
+      return 0;
+
+    long key = static_cast&lt;long&gt;(i) &lt;&lt; 27 | (canChange ? 1 : 0) &lt;&lt; 26 | mask;
+    if (const auto it = mem.find(key); it != mem.end())
+      return it-&gt;second;
+
+    // Initialize the result based on the current letter.
+    int res = getRes(s, i, canChange, mask, 1 &lt;&lt; (s[i] - &#x27;a&#x27;), k, mem);
+
+    // If allowed, explore the option to change the current letter.
+    if (canChange)
+      for (int j = 0; j &lt; 26; ++j)
+        res = max(res, getRes(s, i, false, mask, 1 &lt;&lt; j, k, mem));
+
+    return mem[key] = res;
+  }
+
+  int getRes(const string&amp; s, int i, bool nextCanChange, unsigned mask,
+             int newBit, int k, unordered_map&lt;long, int&gt;&amp; mem) {
+    const unsigned newMask = mask | newBit;
+    if (popcount(newMask) &gt; k)  // fresh start
+      return 1 + maxPartitionsAfterOperations(s, i + 1, nextCanChange, newBit,
+                                              k, mem);
+    return maxPartitionsAfterOperations(s, i + 1, nextCanChange, newMask, k,
+                                        mem);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxPartitionsAfterOperations(String s, int k) {
+    Map&lt;Long, Integer&gt; mem = new HashMap&lt;&gt;();
+    return maxPartitionsAfterOperations(s, 0, true, 0, k, mem) + 1;
+  }
+
+  // Returns the maximum number of partitions of s[i..n), where `canChange` is
+  // true if we can still change a letter, and `mask` is the bitmask of the
+  // letters we&#x27;ve seen.
+  private int maxPartitionsAfterOperations(final String s, int i, boolean canChange, int mask,
+                                           int k, Map&lt;Long, Integer&gt; mem) {
+    if (i == s.length())
+      return 0;
+
+    Long key = (long) i &lt;&lt; 27 | (canChange ? 1 : 0) &lt;&lt; 26 | mask;
+    if (mem.containsKey(key))
+      return mem.get(key);
+
+    // Initialize the result based on the current letter.
+    int res = getRes(s, i, canChange, mask, 1 &lt;&lt; (s.charAt(i) - &#x27;a&#x27;), k, mem);
+
+    // If allowed, explore the option to change the current letter.
+    if (canChange)
+      for (int j = 0; j &lt; 26; ++j)
+        res = Math.max(res, getRes(s, i, false, mask, 1 &lt;&lt; j, k, mem));
+
+    mem.put(key, res);
+    return res;
+  }
+
+  private int getRes(final String s, int i, boolean nextCanChange, int mask, int newBit, int k,
+                     Map&lt;Long, Integer&gt; mem) {
+    final int newMask = mask | newBit;
+    if (Integer.bitCount(newMask) &gt; k) // fresh start
+      return 1 + maxPartitionsAfterOperations(s, i + 1, nextCanChange, newBit, k, mem);
+    return maxPartitionsAfterOperations(s, i + 1, nextCanChange, newMask, k, mem);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxPartitionsAfterOperations(self, s: str, k: int) -&gt; int:
+    @functools.lru_cache(None)
+    def dp(i: int, canChange: bool, mask: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the maximum number of partitions of s[i..n), where `canChange` is
+      True if we can still change a letter, and `mask` is the bitmask of the
+      letters we&#x27;ve seen.
+      &quot;&quot;&quot;
+      if i == len(s):
+        return 0
+
+      def getRes(newBit: int, nextCanChange: bool) -&gt; int:
+        newMask = mask | newBit
+        if newMask.bit_count() &gt; k:
+          return 1 + dp(i + 1, nextCanChange, newBit)
+        return dp(i + 1, nextCanChange, newMask)
+
+      # Initialize the result based on the current letter.
+      res = getRes(1 &lt;&lt; (ord(s[i]) - ord(&#x27;a&#x27;)), canChange)
+
+      # If allowed, explore the option to change the current letter.
+      if canChange:
+        for j in range(26):
+          res = max(res, getRes(1 &lt;&lt; j, False))
+      return res
+
+    return dp(0, True, 0) + 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

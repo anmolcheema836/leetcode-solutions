@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost to Convert String I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost to Convert String I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-to-convert-string-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-square-area-by-removing-fences-from-a-field/" class="btn">← Previous</a>
+            <span>Problem 2976 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-to-convert-string-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2976. Minimum Cost to Convert String I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost to Convert String I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minimumCost(string source, string target, vector&lt;char&gt;&amp; original,
+                        vector&lt;char&gt;&amp; changed, vector&lt;int&gt;&amp; cost) {
+    long ans = 0;
+    // dist[u][v] := the minimum distance to change (&#x27;a&#x27; + u) to (&#x27;a&#x27; + v)
+    vector&lt;vector&lt;long&gt;&gt; dist(26, vector&lt;long&gt;(26, LONG_MAX));
+
+    for (int i = 0; i &lt; cost.size(); ++i) {
+      const int u = original[i] - &#x27;a&#x27;;
+      const int v = changed[i] - &#x27;a&#x27;;
+      dist[u][v] = min(dist[u][v], static_cast&lt;long&gt;(cost[i]));
+    }
+
+    for (int k = 0; k &lt; 26; ++k)
+      for (int i = 0; i &lt; 26; ++i)
+        if (dist[i][k] &lt; LONG_MAX)
+          for (int j = 0; j &lt; 26; ++j)
+            if (dist[k][j] &lt; LONG_MAX)
+              dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+
+    for (int i = 0; i &lt; source.length(); ++i) {
+      if (source[i] == target[i])
+        continue;
+      const int u = source[i] - &#x27;a&#x27;;
+      const int v = target[i] - &#x27;a&#x27;;
+      if (dist[u][v] == LONG_MAX)
+        return -1;
+      ans += dist[u][v];
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minimumCost(String source, String target, char[] original, char[] changed,
+                          int[] cost) {
+    long ans = 0;
+    // dist[u][v] := the minimum distance to change (&#x27;a&#x27; + u) to (&#x27;a&#x27; + v)
+    long[][] dist = new long[26][26];
+    Arrays.stream(dist).forEach(A -&gt; Arrays.fill(A, Long.MAX_VALUE));
+
+    for (int i = 0; i &lt; cost.length; ++i) {
+      final int u = original[i] - &#x27;a&#x27;;
+      final int v = changed[i] - &#x27;a&#x27;;
+      dist[u][v] = Math.min(dist[u][v], cost[i]);
+    }
+
+    for (int k = 0; k &lt; 26; ++k)
+      for (int i = 0; i &lt; 26; ++i)
+        if (dist[i][k] &lt; Long.MAX_VALUE)
+          for (int j = 0; j &lt; 26; ++j)
+            if (dist[k][j] &lt; Long.MAX_VALUE)
+              dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+
+    for (int i = 0; i &lt; source.length(); ++i) {
+      if (source.charAt(i) == target.charAt(i))
+        continue;
+      final int u = source.charAt(i) - &#x27;a&#x27;;
+      final int v = target.charAt(i) - &#x27;a&#x27;;
+      if (dist[u][v] == Long.MAX_VALUE)
+        return -1;
+      ans += dist[u][v];
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumCost(
+      self,
+      source: str,
+      target: str,
+      original: list[str],
+      changed: list[str],
+      cost: list[int],
+  ) -&gt; int:
+    ans = 0
+    # dist[u][v] := the minimum distance to change (&#x27;a&#x27; + u) to (&#x27;a&#x27; + v)
+    dist = [[math.inf] * 26 for _ in range(26)]
+
+    for a, b, c in zip(original, changed, cost):
+      u = ord(a) - ord(&#x27;a&#x27;)
+      v = ord(b) - ord(&#x27;a&#x27;)
+      dist[u][v] = min(dist[u][v], c)
+
+    for k in range(26):
+      for i in range(26):
+        if dist[i][k] &lt; math.inf:
+          for j in range(26):
+            if dist[k][j] &lt; math.inf:
+              dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+    for s, t in zip(source, target):
+      if s == t:
+        continue
+      u = ord(s) - ord(&#x27;a&#x27;)
+      v = ord(t) - ord(&#x27;a&#x27;)
+      if dist[u][v] == math.inf:
+        return -1
+      ans += dist[u][v]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

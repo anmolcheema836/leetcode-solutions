@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count the Number of K-Free Subsets - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count the Number of K-Free Subsets written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-the-number-of-k-free-subsets/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/promise-time-limit/" class="btn">← Previous</a>
+            <span>Problem 2638 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-width-of-columns-of-a-grid/" class="btn">Next →</a>
+        </div>
+        <h1>2638. Count the Number of K-Free Subsets</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count the Number of K-Free Subsets efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 2597. The Number of Beautiful Subsets
+  long long countTheNumOfKFreeSubsets(vector&lt;int&gt;&amp; nums, int k) {
+    unordered_map&lt;int, set&lt;int&gt;&gt; modToSubset;
+
+    for (const int num : nums)
+      modToSubset[num % k].insert(num);
+
+    int prevNum = -k;
+    long skip = 0;
+    long pick = 0;
+
+    for (const auto&amp; [_, subset] : modToSubset)
+      for (const int num : subset) {
+        const long cacheSkip = skip;
+        skip += pick;
+        pick = 1 + cacheSkip + (num - prevNum == k ? 0 : pick);
+        prevNum = num;
+      }
+
+    return 1 + skip + pick;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long countTheNumOfKFreeSubsets(int[] nums, int k) {
+    Map&lt;Integer, Set&lt;Integer&gt;&gt; modToSubset = new HashMap&lt;&gt;();
+
+    for (final int num : nums) {
+      modToSubset.putIfAbsent(num % k, new TreeSet&lt;&gt;());
+      modToSubset.get(num % k).add(num);
+    }
+
+    int prevNum = -k;
+    long skip = 0;
+    long pick = 0;
+
+    for (Set&lt;Integer&gt; subset : modToSubset.values())
+      for (final int num : subset) {
+        final long cacheSkip = skip;
+        skip += pick;
+        pick = 1 + cacheSkip + (num - prevNum == k ? 0 : pick);
+        prevNum = num;
+      }
+
+    return 1 + skip + pick;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countTheNumOfKFreeSubsets(self, nums: list[int], k: int) -&gt; int:
+    modToSubset = collections.defaultdict(set)
+
+    for num in nums:
+      modToSubset[num % k].add(num)
+
+    prevNum = -k
+    skip = 0
+    pick = 0
+
+    for subset in modToSubset.values():
+      for num in sorted(subset):
+        skip, pick = (skip + pick,
+                      1 + skip + (0 if num - prevNum == k else pick))
+        prevNum = num
+
+    return 1 + skip + pick</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

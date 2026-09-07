@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Invalid Parentheses - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Remove Invalid Parentheses written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/remove-invalid-parentheses/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-increasing-subsequence/" class="btn">← Previous</a>
+            <span>Problem 301 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-rectangle-enclosing-black-pixels/" class="btn">Next →</a>
+        </div>
+        <h1>301. Remove Invalid Parentheses</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Remove Invalid Parentheses efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; removeInvalidParentheses(string s) {
+    vector&lt;string&gt; ans;
+    const auto [l, r] = getLeftAndRightCounts(s);
+    dfs(s, 0, l, r, ans);
+    return ans;
+  }
+
+ private:
+  // Similar to 921. Minimum Add to Make Parentheses Valid
+  // Returns how many &#x27;(&#x27; and &#x27;)&#x27; need to be deleted.
+  pair&lt;int, int&gt; getLeftAndRightCounts(const string&amp; s) {
+    int l = 0;
+    int r = 0;
+
+    for (const char c : s)
+      if (c == &#x27;(&#x27;)
+        ++l;
+      else if (c == &#x27;)&#x27;) {
+        if (l == 0)
+          ++r;
+        else
+          --l;
+      }
+
+    return {l, r};
+  }
+
+  void dfs(const string&amp; s, int start, int l, int r, vector&lt;string&gt;&amp; ans) {
+    if (l == 0 &amp;&amp; r == 0 &amp;&amp; isValid(s)) {
+      ans.push_back(s);
+      return;
+    }
+
+    for (int i = start; i &lt; s.length(); ++i) {
+      if (i &gt; start &amp;&amp; s[i] == s[i - 1])
+        continue;
+      if (l &gt; 0 &amp;&amp; s[i] == &#x27;(&#x27;)  // Delete s[i].
+        dfs(s.substr(0, i) + s.substr(i + 1), i, l - 1, r, ans);
+      if (r &gt; 0 &amp;&amp; s[i] == &#x27;)&#x27;)  // Delete s[i].
+        dfs(s.substr(0, i) + s.substr(i + 1), i, l, r - 1, ans);
+    }
+  }
+
+  bool isValid(const string&amp; s) {
+    int opened = 0;  // the number of &#x27;(&#x27; - # of &#x27;)&#x27;
+    for (const char c : s) {
+      if (c == &#x27;(&#x27;)
+        ++opened;
+      else if (c == &#x27;)&#x27;)
+        --opened;
+      if (opened &lt; 0)
+        return false;
+    }
+    return true;  // opened == 0
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; removeInvalidParentheses(String s) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    final int[] counts = getLeftAndRightCounts(s);
+    dfs(s, 0, counts[0], counts[1], ans);
+    return ans;
+  }
+
+  // Similar to 921. Minimum Add to Make Parentheses Valid
+  // Returns how many &#x27;(&#x27; and &#x27;)&#x27; need to be deleted.
+  private int[] getLeftAndRightCounts(final String s) {
+    int l = 0;
+    int r = 0;
+
+    for (final char c : s.toCharArray())
+      if (c == &#x27;(&#x27;)
+        ++l;
+      else if (c == &#x27;)&#x27;) {
+        if (l == 0)
+          ++r;
+        else
+          --l;
+      }
+
+    return new int[] {l, r};
+  }
+
+  private void dfs(final String s, int start, int l, int r, List&lt;String&gt; ans) {
+    if (l == 0 &amp;&amp; r == 0 &amp;&amp; isValid(s)) {
+      ans.add(s);
+      return;
+    }
+
+    for (int i = start; i &lt; s.length(); ++i) {
+      if (i &gt; start &amp;&amp; s.charAt(i) == s.charAt(i - 1))
+        continue;
+      if (l &gt; 0 &amp;&amp; s.charAt(i) == &#x27;(&#x27;) // Delete s[i].
+        dfs(s.substring(0, i) + s.substring(i + 1), i, l - 1, r, ans);
+      else if (r &gt; 0 &amp;&amp; s.charAt(i) == &#x27;)&#x27;) // Delete s[i].
+        dfs(s.substring(0, i) + s.substring(i + 1), i, l, r - 1, ans);
+    }
+  }
+
+  private boolean isValid(final String s) {
+    int opened = 0; // the number of &#x27;(&#x27; - # of &#x27;)&#x27;
+    for (final char c : s.toCharArray()) {
+      if (c == &#x27;(&#x27;)
+        ++opened;
+      else if (c == &#x27;)&#x27;)
+        --opened;
+      if (opened &lt; 0)
+        return false;
+    }
+    return true; // opened == 0
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def removeInvalidParentheses(self, s: str) -&gt; list[str]:
+    # Similar to 921. Minimum Add to Make Parentheses Valid
+    def getLeftAndRightCounts(s: str) -&gt; tuple[int, int]:
+      &quot;&quot;&quot;Returns how many &#x27;(&#x27; and &#x27;)&#x27; need to be deleted.&quot;&quot;&quot;
+      l = 0
+      r = 0
+
+      for c in s:
+        if c == &#x27;(&#x27;:
+          l += 1
+        elif c == &#x27;)&#x27;:
+          if l == 0:
+            r += 1
+          else:
+            l -= 1
+
+      return l, r
+
+    def isValid(s: str):
+      opened = 0  # the number of &#x27;(&#x27; - # of &#x27;)&#x27;
+      for c in s:
+        if c == &#x27;(&#x27;:
+          opened += 1
+        elif c == &#x27;)&#x27;:
+          opened -= 1
+        if opened &lt; 0:
+          return False
+      return True  # opened == 0
+
+    ans = []
+
+    def dfs(s: str, start: int, l: int, r: int) -&gt; None:
+      if l == 0 and r == 0 and isValid(s):
+        ans.append(s)
+        return
+
+      for i in range(start, len(s)):
+        if i &gt; start and s[i] == s[i - 1]:
+          continue
+        if r &gt; 0 and s[i] == &#x27;)&#x27;:  # Delete s[i]
+          dfs(s[:i] + s[i + 1:], i, l, r - 1)
+        elif l &gt; 0 and s[i] == &#x27;(&#x27;:  # Delete s[i]
+          dfs(s[:i] + s[i + 1:], i, l - 1, r)
+
+    l, r = getLeftAndRightCounts(s)
+    dfs(s, 0, l, r)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

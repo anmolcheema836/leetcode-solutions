@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum String Length After Removing Substrings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum String Length After Removing Substrings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-string-length-after-removing-substrings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/array-wrapper/" class="btn">← Previous</a>
+            <span>Problem 2696 of 3563</span>
+            <a href="/leetcode-solutions/problems/lexicographically-smallest-palindrome/" class="btn">Next →</a>
+        </div>
+        <h1>2696. Minimum String Length After Removing Substrings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum String Length After Removing Substrings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minLength(string s) {
+    stack&lt;char&gt; stack;
+
+    for (const char c : s)
+      if (c == &#x27;B&#x27; &amp;&amp; match(stack, &#x27;A&#x27;))
+        stack.pop();
+      else if (c == &#x27;D&#x27; &amp;&amp; match(stack, &#x27;C&#x27;))
+        stack.pop();
+      else
+        stack.push(c);
+
+    return stack.size();
+  }
+
+ private:
+  bool match(const stack&lt;char&gt;&amp; stack, int c) {
+    return !stack.empty() &amp;&amp; stack.top() == c;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minLength(String s) {
+    Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;();
+
+    for (final char c : s.toCharArray())
+      if (c == &#x27;B&#x27; &amp;&amp; match(stack, &#x27;A&#x27;))
+        stack.pop();
+      else if (c == &#x27;D&#x27; &amp;&amp; match(stack, &#x27;C&#x27;))
+        stack.pop();
+      else
+        stack.push(c);
+
+    return stack.size();
+  }
+
+  private boolean match(Deque&lt;Character&gt; stack, char c) {
+    return !stack.isEmpty() &amp;&amp; stack.peek() == c;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minLength(self, s: str) -&gt; int:
+    stack = []
+
+    def match(c: str) -&gt; bool:
+      return stack and stack[-1] == c
+
+    for c in s:
+      if c == &#x27;B&#x27; and match(&#x27;A&#x27;):
+        stack.pop()
+      elif c == &#x27;D&#x27; and match(&#x27;C&#x27;):
+        stack.pop()
+      else:
+        stack.append(c)
+
+    return len(stack)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

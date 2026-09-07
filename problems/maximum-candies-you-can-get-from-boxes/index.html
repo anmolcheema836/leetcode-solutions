@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Candies You Can Get from Boxes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Candies You Can Get from Boxes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-candies-you-can-get-from-boxes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-of-occurrences-of-a-substring/" class="btn">← Previous</a>
+            <span>Problem 1298 of 3563</span>
+            <a href="/leetcode-solutions/problems/replace-elements-with-greatest-element-on-right-side/" class="btn">Next →</a>
+        </div>
+        <h1>1298. Maximum Candies You Can Get from Boxes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Candies You Can Get from Boxes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxCandies(vector&lt;int&gt;&amp; status, vector&lt;int&gt;&amp; candies,
+                 vector&lt;vector&lt;int&gt;&gt;&amp; keys, vector&lt;vector&lt;int&gt;&gt;&amp; containedBoxes,
+                 vector&lt;int&gt;&amp; initialBoxes) {
+    int ans = 0;
+    queue&lt;int&gt; q;
+    vector&lt;bool&gt; reachedClosedBoxes(status.size());
+
+    auto pushBoxesIfPossible = [&amp;status, &amp;q,
+                                &amp;reachedClosedBoxes](const vector&lt;int&gt;&amp; boxes) {
+      for (const int box : boxes)
+        if (status[box])
+          q.push(box);
+        else
+          reachedClosedBoxes[box] = true;
+    };
+
+    pushBoxesIfPossible(initialBoxes);
+
+    while (!q.empty()) {
+      const int currBox = q.front();
+      q.pop();
+
+      // Add the candies.
+      ans += candies[currBox];
+
+      // Push `reachedClosedBoxes` by `key` obtained in this turn and change
+      // their statuses.
+      for (const int key : keys[currBox]) {
+        if (!status[key] &amp;&amp; reachedClosedBoxes[key])
+          q.push(key);
+        status[key] = 1;  // boxes[key] is now open.
+      }
+
+      // Push the boxes contained in `currBox`.
+      pushBoxesIfPossible(containedBoxes[currBox]);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxCandies(int[] status, int[] candies, int[][] keys, int[][] containedBoxes,
+                        int[] initialBoxes) {
+    int ans = 0;
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();
+    boolean[] reachedClosedBoxes = new boolean[status.length];
+
+    pushBoxesIfPossible(initialBoxes, status, q, reachedClosedBoxes);
+
+    while (!q.isEmpty()) {
+      final int currBox = q.poll();
+
+      // Add the candies.
+      ans += candies[currBox];
+
+      // Push `reachedClosedBoxes` by `key` obtained in this turn and change
+      // their statuses.
+      for (final int key : keys[currBox]) {
+        if (status[key] == 0 &amp;&amp; reachedClosedBoxes[key])
+          q.offer(key);
+        status[key] = 1; // boxes[key] is now open.
+      }
+
+      // Push the boxes contained in `currBox`.
+      pushBoxesIfPossible(containedBoxes[currBox], status, q, reachedClosedBoxes);
+    }
+
+    return ans;
+  }
+
+  private void pushBoxesIfPossible(int[] boxes, int[] status, Queue&lt;Integer&gt; q,
+                                   boolean[] reachedClosedBoxes) {
+    for (final int box : boxes)
+      if (status[box] == 1)
+        q.offer(box);
+      else
+        reachedClosedBoxes[box] = true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxCandies(
+      self,
+      status: list[int],
+      candies: list[int],
+      keys: list[list[int]],
+      containedBoxes: list[list[int]],
+      initialBoxes: list[int],
+  ) -&gt; int:
+    ans = 0
+    q = collections.deque()
+    reachedClosedBoxes = [0] * len(status)
+
+    def pushBoxesIfPossible(boxes: list[int]) -&gt; None:
+      for box in boxes:
+        if status[box]:
+          q.append(box)
+        else:
+          reachedClosedBoxes[box] = True
+
+    pushBoxesIfPossible(initialBoxes)
+
+    while q:
+      currBox = q.popleft()
+
+      # Add the candies.
+      ans += candies[currBox]
+
+      # Push `reachedClosedBoxes` by `key` obtained in this turn and change
+      # their statuses.
+      for key in keys[currBox]:
+        if not status[key] and reachedClosedBoxes[key]:
+          q.append(key)
+        status[key] = 1  # boxes[key] is now open
+
+      # Push the boxes contained in `currBox`.
+      pushBoxesIfPossible(containedBoxes[currBox])
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

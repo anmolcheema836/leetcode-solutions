@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Number of Texts - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Number of Texts written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-number-of-texts/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-nodes-equal-to-average-of-subtree/" class="btn">← Previous</a>
+            <span>Problem 2266 of 3563</span>
+            <a href="/leetcode-solutions/problems/check-if-there-is-a-valid-parentheses-string-path/" class="btn">Next →</a>
+        </div>
+        <h1>2266. Count Number of Texts</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Number of Texts efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countTexts(string pressedKeys) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int n = pressedKeys.length();
+    // dp[i] := the number of possible text messages of pressedKeys[i..n)
+    vector&lt;long&gt; dp(n + 1);
+    dp[n] = 1;  // &quot;&quot;
+
+    for (int i = n - 1; i &gt;= 0; --i) {
+      dp[i] = dp[i + 1];
+      if (isSame(pressedKeys, i, 2))
+        dp[i] += dp[i + 2];
+      if (isSame(pressedKeys, i, 3))
+        dp[i] += dp[i + 3];
+      if ((pressedKeys[i] == &#x27;7&#x27; || pressedKeys[i] == &#x27;9&#x27;) &amp;&amp;
+          isSame(pressedKeys, i, 4))
+        dp[i] += dp[i + 4];
+      dp[i] %= kMod;
+    }
+
+    return dp[0];
+  }
+
+ private:
+  // Returns true if s[i..i + k) are the same digits.
+  bool isSame(const string&amp; s, int i, int k) {
+    if (i + k &gt; s.length())
+      return false;
+    for (int j = i + 1; j &lt; i + k; ++j)
+      if (s[j] != s[i])
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countTexts(String pressedKeys) {
+    final int MOD = 1_000_000_007;
+    final int n = pressedKeys.length();
+    // dp[i] := the number of possible text messages of pressedKeys[i..n)
+    long[] dp = new long[n + 1];
+    dp[n] = 1; // &quot;&quot;
+
+    for (int i = n - 1; i &gt;= 0; --i) {
+      dp[i] = dp[i + 1];
+      if (isSame(pressedKeys, i, 2))
+        dp[i] += dp[i + 2];
+      if (isSame(pressedKeys, i, 3))
+        dp[i] += dp[i + 3];
+      if ((pressedKeys.charAt(i) == &#x27;7&#x27; || pressedKeys.charAt(i) == &#x27;9&#x27;) &amp;&amp;
+          isSame(pressedKeys, i, 4))
+        dp[i] += dp[i + 4];
+      dp[i] %= MOD;
+    }
+
+    return (int) dp[0];
+  }
+
+  // Returns true if s[i..i + k) are the same digits.
+  private boolean isSame(final String s, int i, int k) {
+    if (i + k &gt; s.length())
+      return false;
+    for (int j = i + 1; j &lt; i + k; ++j)
+      if (s.charAt(j) != s.charAt(i))
+        return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countTexts(self, pressedKeys: str) -&gt; int:
+    MOD = 1_000_000_007
+    n = len(pressedKeys)
+    # dp[i] := the number of possible text messages of pressedKeys[i..n)
+    dp = [0] * n + [1]
+
+    def isSame(s: str, i: int, k: int) -&gt; bool:
+      &quot;&quot;&quot;Returns True if s[i..i + k) are the same digits.&quot;&quot;&quot;
+      if i + k &gt; len(s):
+        return False
+      for j in range(i + 1, i + k):
+        if s[j] != s[i]:
+          return False
+      return True
+
+    for i in reversed(range(n)):
+      dp[i] = dp[i + 1]
+      if isSame(pressedKeys, i, 2):
+        dp[i] += dp[i + 2]
+      if isSame(pressedKeys, i, 3):
+        dp[i] += dp[i + 3]
+      if ((pressedKeys[i] == &#x27;7&#x27; or pressedKeys[i] == &#x27;9&#x27;) and
+              isSame(pressedKeys, i, 4)):
+        dp[i] += dp[i + 4]
+      dp[i] %= MOD
+
+    return dp[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Number of Subarrays Where Boundary Elements Are Maximum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Number of Subarrays Where Boundary Elements Are Maximum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-number-of-subarrays-where-boundary-elements-are-maximum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-time-to-visit-disappearing-nodes/" class="btn">← Previous</a>
+            <span>Problem 3113 of 3563</span>
+            <a href="/leetcode-solutions/problems/latest-time-you-can-obtain-after-replacing-characters/" class="btn">Next →</a>
+        </div>
+        <h1>3113. Find the Number of Subarrays Where Boundary Elements Are Maximum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Number of Subarrays Where Boundary Elements Are Maximum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long numberOfSubarrays(vector&lt;int&gt;&amp; nums) {
+    long ans = 0;
+    vector&lt;pair&lt;int, int&gt;&gt; stack;
+
+    for (const int num : nums) {
+      while (!stack.empty() &amp;&amp; stack.back().first &lt; num)
+        stack.pop_back();
+      if (stack.empty() || stack.back().first != num)
+        stack.emplace_back(num, 0);
+      ans += ++stack.back().second;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long numberOfSubarrays(int[] nums) {
+    Deque&lt;int[]&gt; stack = new ArrayDeque&lt;&gt;();
+    long ans = 0;
+    int top = -1;
+
+    for (final int num : nums) {
+      while (!stack.isEmpty() &amp;&amp; stack.peek()[0] &lt; num)
+        stack.pop();
+      if (stack.isEmpty() || stack.peek()[0] != num)
+        stack.push(new int[] {num, 0});
+      ans += ++stack.peek()[1];
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numberOfSubarrays(self, nums: list[int]) -&gt; int:
+    ans = 0
+    stack = []
+
+    for num in nums:
+      while stack and stack[-1][0] &lt; num:
+        stack.pop()
+      if not stack or stack[-1][0] != num:
+        stack.append([num, 0])
+      stack[-1][1] += 1
+      ans += stack[-1][1]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

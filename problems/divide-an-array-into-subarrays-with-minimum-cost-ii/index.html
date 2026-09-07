@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divide an Array Into Subarrays With Minimum Cost II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Divide an Array Into Subarrays With Minimum Cost II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimize-length-of-array-using-operations/" class="btn">← Previous</a>
+            <span>Problem 3013 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-number-of-pushes-to-type-word-i/" class="btn">Next →</a>
+        </div>
+        <h1>3013. Divide an Array Into Subarrays With Minimum Cost II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Divide an Array Into Subarrays With Minimum Cost II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minimumCost(vector&lt;int&gt;&amp; nums, int k, int dist) {
+    // Equivalently, the problem is to find nums[0] + the minimum sum of the top
+    // k - 1 numbers in nums[i..i + dist], where i &gt; 0 and i + dist &lt; n.
+    long windowSum = 0;
+    multiset&lt;int&gt; selected;
+    multiset&lt;int&gt; candidates;
+
+    for (int i = 1; i &lt;= dist + 1; ++i) {
+      windowSum += nums[i];
+      selected.insert(nums[i]);
+    }
+
+    windowSum = balance(windowSum, selected, candidates, k);
+    long minWindowSum = windowSum;
+
+    for (int i = dist + 2; i &lt; nums.size(); ++i) {
+      const int outOfScope = nums[i - dist - 1];
+      if (selected.find(outOfScope) != selected.end()) {
+        windowSum -= outOfScope;
+        selected.erase(selected.find(outOfScope));
+      } else {
+        candidates.erase(candidates.find(outOfScope));
+      }
+      if (nums[i] &lt; *selected.rbegin()) {  // nums[i] is a better number.
+        windowSum += nums[i];
+        selected.insert(nums[i]);
+      } else {
+        candidates.insert(nums[i]);
+      }
+      windowSum = balance(windowSum, selected, candidates, k);
+      minWindowSum = min(minWindowSum, windowSum);
+    }
+
+    return nums[0] + minWindowSum;
+  }
+
+ private:
+  // Returns the updated `windowSum` by balancing the multiset `selected` to
+  // keep the top k - 1 numbers.
+  long balance(long windowSum, multiset&lt;int&gt;&amp; selected,
+               multiset&lt;int&gt;&amp; candidates, int k) {
+    while (selected.size() &lt; k - 1) {
+      const int minCandidate = *candidates.begin();
+      windowSum += minCandidate;
+      selected.insert(minCandidate);
+      candidates.erase(candidates.find(minCandidate));
+    }
+    while (selected.size() &gt; k - 1) {
+      const int maxSelected = *selected.rbegin();
+      windowSum -= maxSelected;
+      selected.erase(selected.find(maxSelected));
+      candidates.insert(maxSelected);
+    }
+    return windowSum;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Multiset {
+  public void add(int num) {
+    map.merge(num, 1, Integer::sum);
+    ++sz;
+  }
+
+  public void remove(int num) {
+    map.merge(num, -1, Integer::sum);
+    if (map.get(num) == 0)
+      map.remove(num);
+    --sz;
+  }
+
+  public int min() {
+    return map.firstEntry().getKey();
+  }
+
+  public int max() {
+    return map.lastEntry().getKey();
+  }
+
+  public int size() {
+    return sz;
+  }
+
+  public boolean contains(int num) {
+    return map.containsKey(num);
+  }
+
+  private TreeMap&lt;Integer, Integer&gt; map = new TreeMap&lt;&gt;();
+  private int sz = 0;
+}
+
+class Solution {
+  public long minimumCost(int[] nums, int k, int dist) {
+    // Equivalently, the problem is to find nums[0] + the minimum sum of the top
+    // k - 1 numbers in nums[i..i + dist], where i &gt; 0 and i + dist &lt; n.
+    long windowSum = 0;
+    Multiset selected = new Multiset();
+    Multiset candidates = new Multiset();
+
+    for (int i = 1; i &lt;= dist + 1; ++i) {
+      windowSum += nums[i];
+      selected.add(nums[i]);
+    }
+
+    windowSum = balance(windowSum, selected, candidates, k);
+    long minWindowSum = windowSum;
+
+    for (int i = dist + 2; i &lt; nums.length; ++i) {
+      final int outOfScope = nums[i - dist - 1];
+      if (selected.contains(outOfScope)) {
+        windowSum -= outOfScope;
+        selected.remove(outOfScope);
+      } else {
+        candidates.remove(outOfScope);
+      }
+      if (nums[i] &lt; selected.max()) { // nums[i] is a better number.
+        windowSum += nums[i];
+        selected.add(nums[i]);
+      } else {
+        candidates.add(nums[i]);
+      }
+      windowSum = balance(windowSum, selected, candidates, k);
+      minWindowSum = Math.min(minWindowSum, windowSum);
+    }
+
+    return nums[0] + minWindowSum;
+  }
+
+  // Returns the updated `windowSum` by balancing the multiset `selected` to
+  // keep the top k - 1 numbers.
+  private long balance(long windowSum, Multiset selected, Multiset candidates, int k) {
+    while (selected.size() &lt; k - 1) {
+      final int minCandidate = candidates.min();
+      windowSum += minCandidate;
+      selected.add(minCandidate);
+      candidates.remove(minCandidate);
+    }
+    while (selected.size() &gt; k - 1) {
+      final int maxSelected = selected.max();
+      windowSum -= maxSelected;
+      selected.remove(maxSelected);
+      candidates.add(maxSelected);
+    }
+    return windowSum;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class Solution:
+  def minimumCost(self, nums: list[int], k: int, dist: int) -&gt; int:
+    # Equivalently, the problem is to find nums[0] + the minimum sum of the top
+    # k - 1 numbers in nums[i..i + dist], where i &gt; 0 and i + dist &lt; n.
+    windowSum = sum(nums[i] for i in range(1, dist + 2))
+    selected = SortedList(nums[i] for i in range(1, dist + 2))
+    candidates = SortedList()
+
+    def balance() -&gt; int:
+      &quot;&quot;&quot;
+      Returns the updated `windowSum` by balancing the multiset `selected` to
+      keep the top k - 1 numbers.
+      &quot;&quot;&quot;
+      nonlocal windowSum
+      while len(selected) &lt; k - 1:
+        minCandidate = candidates[0]
+        windowSum += minCandidate
+        selected.add(minCandidate)
+        candidates.remove(minCandidate)
+      while len(selected) &gt; k - 1:
+        maxSelected = selected[-1]
+        windowSum -= maxSelected
+        selected.remove(maxSelected)
+        candidates.add(maxSelected)
+      return windowSum
+
+    windowSum = balance()
+    minWindowSum = windowSum
+
+    for i in range(dist + 2, len(nums)):
+      outOfScope = nums[i - dist - 1]
+      if outOfScope in selected:
+        windowSum -= outOfScope
+        selected.remove(outOfScope)
+      else:
+        candidates.remove(outOfScope)
+      if nums[i] &lt; selected[-1]:  # nums[i] is a better number.
+        windowSum += nums[i]
+        selected.add(nums[i])
+      else:
+        candidates.add(nums[i])
+      windowSum = balance()
+      minWindowSum = min(minWindowSum, windowSum)
+
+    return nums[0] + minWindowSum</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

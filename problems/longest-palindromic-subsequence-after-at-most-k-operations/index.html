@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Palindromic Subsequence After at Most K Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Palindromic Subsequence After at Most K Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-palindromic-subsequence-after-at-most-k-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-largest-almost-missing-integer/" class="btn">← Previous</a>
+            <span>Problem 3472 of 3563</span>
+            <a href="/leetcode-solutions/problems/sum-of-k-subarrays-with-length-at-least-m/" class="btn">Next →</a>
+        </div>
+        <h1>3472. Longest Palindromic Subsequence After at Most K Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Palindromic Subsequence After at Most K Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 516. Longest Palindromic Subsequence
+  int longestPalindromicSubsequence(string s, int k) {
+    const int n = s.length();
+    // dp[i][j][op] := the length of LPS(s[i..j]) with at most `op` operations
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(n,
+                                   vector&lt;vector&lt;int&gt;&gt;(n, vector&lt;int&gt;(k + 1)));
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int op = 0; op &lt;= k; ++op)
+        dp[i][i][op] = 1;
+
+    for (int d = 1; d &lt; n; ++d)
+      for (int i = 0; i + d &lt; n; ++i) {
+        const int j = i + d;
+        for (int op = 0; op &lt;= k; ++op) {
+          if (s[i] == s[j]) {
+            dp[i][j][op] = 2 + dp[i + 1][j - 1][op];
+          } else {
+            dp[i][j][op] = max(dp[i + 1][j][op], dp[i][j - 1][op]);
+            const int cost = getCost(s[i], s[j]);
+            if (cost &lt;= op)
+              dp[i][j][op] = max(dp[i][j][op], 2 + dp[i + 1][j - 1][op - cost]);
+          }
+        }
+      }
+
+    return dp[0][n - 1][k];
+  }
+
+ private:
+  int getCost(char a, char b) {
+    const int dist = abs(a - b);
+    return min(dist, 26 - dist);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 516. Longest Palindromic Subsequence
+  public int longestPalindromicSubsequence(String s, int k) {
+    final int n = s.length();
+    // dp[i][j][op] := the length of LPS(s[i..j]) with at most `op` operations
+    int[][][] dp = new int[n][n][k + 1];
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int op = 0; op &lt;= k; ++op)
+        dp[i][i][op] = 1;
+
+    for (int d = 1; d &lt; n; ++d)
+      for (int i = 0; i + d &lt; n; ++i) {
+        final int j = i + d;
+        for (int op = 0; op &lt;= k; ++op) {
+          if (s.charAt(i) == s.charAt(j)) {
+            dp[i][j][op] = 2 + dp[i + 1][j - 1][op];
+          } else {
+            dp[i][j][op] = Math.max(dp[i + 1][j][op], dp[i][j - 1][op]);
+            final int cost = getCost(s.charAt(i), s.charAt(j));
+            if (cost &lt;= op)
+              dp[i][j][op] = Math.max(dp[i][j][op], 2 + dp[i + 1][j - 1][op - cost]);
+          }
+        }
+      }
+
+    return dp[0][n - 1][k];
+  }
+
+  private int getCost(char a, char b) {
+    final int dist = Math.abs(a - b);
+    return Math.min(dist, 26 - dist);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 516. Longest Palindromic Subsequence
+  def longestPalindromicSubsequence(self, s: str, k: int) -&gt; int:
+    n = len(s)
+    # dp[i][j][op] := the length of LPS(s[i..j]) with at most `op` operations
+    dp = [[[0] * (k + 1) for _ in range(n)] for _ in range(n)]
+
+    for i in range(n):
+      for op in range(k + 1):
+        dp[i][i][op] = 1
+
+    for d in range(1, n):
+      for i in range(n - d):
+        j = i + d
+        for op in range(k + 1):
+          if s[i] == s[j]:
+            dp[i][j][op] = 2 + dp[i + 1][j - 1][op]
+          else:
+            dp[i][j][op] = max(dp[i + 1][j][op], dp[i][j - 1][op])
+            cost = self._getCost(s[i], s[j])
+            if cost &lt;= op:
+              dp[i][j][op] = max(dp[i][j][op], 2 + dp[i + 1][j - 1][op - cost])
+
+    return dp[0][n - 1][k]
+
+  def _getCost(self, a: str, b: str) -&gt; int:
+    dist = abs(ord(a) - ord(b))
+    return min(dist, 26 - dist)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

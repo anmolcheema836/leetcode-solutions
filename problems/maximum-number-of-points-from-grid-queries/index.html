@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Points From Grid Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Points From Grid Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-points-from-grid-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-memory-allocator/" class="btn">← Previous</a>
+            <span>Problem 2503 of 3563</span>
+            <a href="/leetcode-solutions/problems/concatenate-the-name-and-the-profession/" class="btn">Next →</a>
+        </div>
+        <h1>2503. Maximum Number of Points From Grid Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Points From Grid Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct IndexedQuery {
+  int queryIndex;
+  int query;
+};
+
+struct T {
+  int i;
+  int j;
+  int val;  // grid[i][j]
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; maxPoints(vector&lt;vector&lt;int&gt;&gt;&amp; grid, vector&lt;int&gt;&amp; queries) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    const int m = grid.size();
+    const int n = grid[0].size();
+    vector&lt;int&gt; ans(queries.size());
+    auto compare = [](const T&amp; a, const T&amp; b) { return a.val &gt; b.val; };
+    priority_queue&lt;T, vector&lt;T&gt;, decltype(compare)&gt; minHeap(compare);
+    vector&lt;vector&lt;bool&gt;&gt; seen(m, vector&lt;bool&gt;(n));
+
+    minHeap.emplace(0, 0, grid[0][0]);
+    seen[0][0] = true;
+    int accumulate = 0;
+
+    for (const auto&amp; [queryIndex, query] : getIndexedQueries(queries)) {
+      while (!minHeap.empty()) {
+        const auto [i, j, val] = minHeap.top();
+        minHeap.pop();
+        if (val &gt;= query) {
+          // The smallest neighbor is still larger than `query`, so no need to
+          // keep exploring. Re-push (i, j, grid[i][j]) back to the `minHeap`.
+          minHeap.emplace(i, j, val);
+          break;
+        }
+        ++accumulate;
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          if (seen[x][y])
+            continue;
+          minHeap.emplace(x, y, grid[x][y]);
+          seen[x][y] = true;
+        }
+      }
+      ans[queryIndex] = accumulate;
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;IndexedQuery&gt; getIndexedQueries(const vector&lt;int&gt;&amp; queries) {
+    vector&lt;IndexedQuery&gt; indexedQueries;
+    for (int i = 0; i &lt; queries.size(); ++i)
+      indexedQueries.push_back({i, queries[i]});
+    ranges::sort(
+        indexedQueries, ranges::less{},
+        [](const IndexedQuery&amp; indexedQuery) { return indexedQuery.query; });
+    return indexedQueries;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maxPoints(int[][] grid, int[] queries) {
+    record T(int i, int j, int val) {}
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int m = grid.length;
+    final int n = grid[0].length;
+    int[] ans = new int[queries.length];
+    Queue&lt;T&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(T::val));
+    boolean[][] seen = new boolean[m][n];
+
+    minHeap.offer(new T(0, 0, grid[0][0]));
+    seen[0][0] = true;
+    int accumulate = 0;
+
+    for (IndexedQuery indexedQuery : getIndexedQueries(queries)) {
+      final int queryIndex = indexedQuery.queryIndex;
+      final int query = indexedQuery.query;
+      while (!minHeap.isEmpty()) {
+        final int i = minHeap.peek().i;
+        final int j = minHeap.peek().j;
+        final int val = minHeap.poll().val;
+        if (val &gt;= query) {
+          // The smallest neighbor is still larger than `query`, so no need to
+          // keep exploring. Re-push (i, j, grid[i][j]) back to the `minHeap`.
+          minHeap.offer(new T(i, j, val));
+          break;
+        }
+        ++accumulate;
+        for (int[] dir : DIRS) {
+          final int x = i + dir[0];
+          final int y = j + dir[1];
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          if (seen[x][y])
+            continue;
+          minHeap.offer(new T(x, y, grid[x][y]));
+          seen[x][y] = true;
+        }
+      }
+      ans[queryIndex] = accumulate;
+    }
+
+    return ans;
+  }
+
+  private record IndexedQuery(int queryIndex, int query) {}
+
+  private IndexedQuery[] getIndexedQueries(int[] queries) {
+    IndexedQuery[] indexedQueries = new IndexedQuery[queries.length];
+    for (int i = 0; i &lt; queries.length; ++i)
+      indexedQueries[i] = new IndexedQuery(i, queries[i]);
+    Arrays.sort(indexedQueries, Comparator.comparingInt(IndexedQuery::query));
+    return indexedQueries;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class IndexedQuery:
+  queryIndex: int
+  query: int
+
+  def __iter__(self):
+    yield self.queryIndex
+    yield self.query
+
+
+class Solution:
+  def maxPoints(self, grid: list[list[int]], queries: list[int]) -&gt; list[int]:
+    DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    m = len(grid)
+    n = len(grid[0])
+    ans = [0] * len(queries)
+    minHeap = [(grid[0][0], 0, 0)]  # (grid[i][j], i, j)
+    seen = {(0, 0)}
+    accumulate = 0
+
+    for queryIndex, query in sorted([IndexedQuery(i, query)
+                                     for i, query in enumerate(queries)],
+                                    key=lambda x: x.query):
+      while minHeap:
+        val, i, j = heapq.heappop(minHeap)
+        if val &gt;= query:
+          # The smallest neighbor is still larger than `query`, so no need to
+          # keep exploring. Re-push (i, j, grid[i][j]) back to the `minHeap`.
+          heapq.heappush(minHeap, (val, i, j))
+          break
+        accumulate += 1
+        for dx, dy in DIRS:
+          x = i + dx
+          y = j + dy
+          if x &lt; 0 or x == m or y &lt; 0 or y == n:
+            continue
+          if (x, y) in seen:
+            continue
+          heapq.heappush(minHeap, (grid[x][y], x, y))
+          seen.add((x, y))
+      ans[queryIndex] = accumulate
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

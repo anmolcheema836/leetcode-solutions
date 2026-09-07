@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Knight’s Tour - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Knight’s Tour written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-knight-s-tour/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/lexicographically-smallest-beautiful-string/" class="btn">← Previous</a>
+            <span>Problem 2664 of 3563</span>
+            <a href="/leetcode-solutions/problems/counter-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2664. The Knight’s Tour</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Knight’s Tour efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; tourOfKnight(int m, int n, int r, int c) {
+    vector&lt;vector&lt;int&gt;&gt; ans(m, vector&lt;int&gt;(n, -1));
+    dfs(m, n, r, c, 0, ans);
+    return ans;
+  }
+
+ private:
+  static constexpr int kDirs[8][2] = {{1, 2},   {2, 1},   {2, -1}, {1, -2},
+                                      {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+
+  bool dfs(int m, int n, int i, int j, int step, vector&lt;vector&lt;int&gt;&gt;&amp; ans) {
+    if (step == m * n)
+      return true;
+    if (i &lt; 0 || i &gt;= m || j &lt; 0 || j &gt;= n)
+      return false;
+    if (ans[i][j] != -1)
+      return false;
+    ans[i][j] = step;
+    for (const auto&amp; [dx, dy] : kDirs)
+      if (dfs(m, n, i + dx, j + dy, step + 1, ans))
+        return true;
+    ans[i][j] = -1;
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] tourOfKnight(int m, int n, int r, int c) {
+    int[][] ans = new int[m][n];
+    Arrays.stream(ans).forEach(A -&gt; Arrays.fill(A, -1));
+    dfs(m, n, r, c, 0, ans);
+    return ans;
+  }
+
+  private static final int[][] DIRS = {{1, 2},   {2, 1},   {2, -1}, {1, -2},
+                                       {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+
+  private boolean dfs(int m, int n, int i, int j, int step, int[][] ans) {
+    if (step == m * n)
+      return true;
+    if (i &lt; 0 || i &gt;= m || j &lt; 0 || j &gt;= n)
+      return false;
+    if (ans[i][j] != -1)
+      return false;
+    ans[i][j] = step;
+    for (int[] dir : DIRS)
+      if (dfs(m, n, i + dir[0], j + dir[1], step + 1, ans))
+        return true;
+    ans[i][j] = -1;
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def tourOfKnight(self, m: int, n: int, r: int, c: int) -&gt; list[list[int]]:
+    DIRS = ((1, 2), (2, 1), (2, -1), (1, -2),
+            (-1, -2), (-2, -1), (-2, 1), (-1, 2))
+    ans = [[-1] * n for _ in range(m)]
+
+    def dfs(i: int, j: int, step: int) -&gt; bool:
+      if step == m * n:
+        return True
+      if i &lt; 0 or i &gt;= m or j &lt; 0 or j &gt;= n:
+        return False
+      if ans[i][j] != -1:
+        return False
+      ans[i][j] = step
+      for dx, dy in DIRS:
+        if dfs(i + dx, j + dy, step + 1):
+          return True
+      ans[i][j] = -1
+      return False
+
+    dfs(r, c, 0)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

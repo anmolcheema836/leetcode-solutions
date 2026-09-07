@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Substring With Largest Variance - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Substring With Largest Variance written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/substring-with-largest-variance/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-white-tiles-covered-by-a-carpet/" class="btn">← Previous</a>
+            <span>Problem 2272 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-resultant-array-after-removing-anagrams/" class="btn">Next →</a>
+        </div>
+        <h1>2272. Substring With Largest Variance</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Substring With Largest Variance efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int largestVariance(string s) {
+    int ans = 0;
+
+    for (char a = &#x27;a&#x27;; a &lt;= &#x27;z&#x27;; ++a)
+      for (char b = &#x27;a&#x27;; b &lt;= &#x27;z&#x27;; ++b)
+        if (a != b)
+          ans = max(ans, kadane(s, a, b));
+
+    return ans;
+  }
+
+ private:
+  // a := the letter with the higher frequency
+  // b := the letter with the lower frequency
+  int kadane(const string&amp; s, char a, char b) {
+    int ans = 0;
+    int countA = 0;
+    int countB = 0;
+    bool canExtendPrevB = false;
+
+    for (const char c : s) {
+      if (c != a &amp;&amp; c != b)
+        continue;
+      if (c == a)
+        ++countA;
+      else
+        ++countB;
+      if (countB &gt; 0) {
+        // An interval should contain at least one b.
+        ans = max(ans, countA - countB);
+      } else if (countB == 0 &amp;&amp; canExtendPrevB) {
+        // edge case: consider the previous b.
+        ans = max(ans, countA - 1);
+      }
+      // Reset if the number of b &gt; the number of a.
+      if (countB &gt; countA) {
+        countA = 0;
+        countB = 0;
+        canExtendPrevB = true;
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int largestVariance(String s) {
+    int ans = 0;
+
+    for (char a = &#x27;a&#x27;; a &lt;= &#x27;z&#x27;; ++a)
+      for (char b = &#x27;a&#x27;; b &lt;= &#x27;z&#x27;; ++b)
+        if (a != b)
+          ans = Math.max(ans, kadane(s, a, b));
+
+    return ans;
+  }
+
+  // a := the letter with the higher frequency
+  // b := the letter with the lower frequency
+  private int kadane(final String s, char a, char b) {
+    int ans = 0;
+    int countA = 0;
+    int countB = 0;
+    boolean canExtendPrevB = false;
+
+    for (final char c : s.toCharArray()) {
+      if (c != a &amp;&amp; c != b)
+        continue;
+      if (c == a)
+        ++countA;
+      else
+        ++countB;
+      if (countB &gt; 0) {
+        // An interval should contain at least one b.
+        ans = Math.max(ans, countA - countB);
+      } else if (countB == 0 &amp;&amp; canExtendPrevB) {
+        // edge case: consider the previous b
+        ans = Math.max(ans, countA - 1);
+      }
+      // Reset if the number of b &gt; the number of a.
+      if (countB &gt; countA) {
+        countA = 0;
+        countB = 0;
+        canExtendPrevB = true;
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestVariance(self, s: str) -&gt; int:
+    # a := the letter with the higher frequency
+    # b := the letter with the lower frequency
+    def kadane(a: str, b: str) -&gt; int:
+      ans = 0
+      countA = 0
+      countB = 0
+      canExtendPrevB = False
+
+      for c in s:
+        if c != a and c != b:
+          continue
+        if c == a:
+          countA += 1
+        else:
+          countB += 1
+        if countB &gt; 0:
+          # An interval should contain at least one b.
+          ans = max(ans, countA - countB)
+        elif countB == 0 and canExtendPrevB:
+          # edge case: consider the previous b.
+          ans = max(ans, countA - 1)
+        # Reset if the number of b &gt; the number of a.
+        if countB &gt; countA:
+          countA = 0
+          countB = 0
+          canExtendPrevB = True
+
+      return ans
+
+    return max(kadane(a, b)
+               for a in string.ascii_lowercase
+               for b in string.ascii_lowercase
+               if a != b)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

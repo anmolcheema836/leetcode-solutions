@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bold Words in String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Bold Words in String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/bold-words-in-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/set-intersection-size-at-least-two/" class="btn">← Previous</a>
+            <span>Problem 758 of 3563</span>
+            <a href="/leetcode-solutions/problems/employee-free-time/" class="btn">Next →</a>
+        </div>
+        <h1>758. Bold Words in String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Bold Words in String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string boldWords(vector&lt;string&gt;&amp; words, string s) {
+    string ans;
+    vector&lt;pair&lt;int, int&gt;&gt; intervals;
+    vector&lt;pair&lt;int, int&gt;&gt; merged;
+
+    for (const string&amp; word : words) {
+      const int n = word.length();
+      for (int i = 0; i + n &lt;= s.length(); ++i)
+        if (s.substr(i, n) == word)
+          intervals.emplace_back(i, i + n);
+    }
+
+    if (intervals.empty())
+      return s;
+
+    ranges::sort(intervals);
+
+    for (const pair&lt;int, int&gt;&amp; interval : intervals)
+      if (merged.empty() || merged.back().second &lt; interval.first)
+        merged.push_back(interval);
+      else
+        merged.back().second = max(merged.back().second, interval.second);
+
+    int prevEnd = 0;
+
+    for (const auto&amp; [startIndex, endIndex] : merged) {
+      ans += s.substr(prevEnd, startIndex - prevEnd);
+      ans += &quot;&lt;b&gt;&quot; + s.substr(startIndex, endIndex - startIndex) + &quot;&lt;/b&gt;&quot;;
+      prevEnd = endIndex;
+    }
+
+    if (!merged.empty())
+      ans += s.substr(merged.back().second);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[26];
+  public boolean isWord = false;
+}
+
+class Solution {
+  public String boldWords(String[] words, String s) {
+    final int n = s.length();
+    StringBuilder sb = new StringBuilder();
+    // bold[i] := true if s[i] should be bolded
+    boolean[] bold = new boolean[n];
+
+    for (final String word : words)
+      insert(word);
+
+    int boldEnd = -1; // `s[i..boldEnd]` should be bolded.
+    for (int i = 0; i &lt; n; ++i) {
+      boldEnd = Math.max(boldEnd, find(s, i));
+      bold[i] = boldEnd &gt;= i;
+    }
+
+    // Construct the string with the bold tags.
+    int i = 0;
+    while (i &lt; n)
+      if (bold[i]) {
+        int j = i;
+        while (j &lt; n &amp;&amp; bold[j])
+          ++j;
+        // s[i..j) should be bolded
+        sb.append(&quot;&lt;b&gt;&quot;).append(s.substring(i, j)).append(&quot;&lt;/b&gt;&quot;);
+        i = j;
+      } else {
+        sb.append(s.charAt(i++));
+      }
+
+    return sb.toString();
+  }
+
+  private TrieNode root = new TrieNode();
+
+  private void insert(final String word) {
+    TrieNode node = root;
+    for (final char c : word.toCharArray()) {
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        node.children[i] = new TrieNode();
+      node = node.children[i];
+    }
+    node.isWord = true;
+  }
+
+  private int find(final String s, int i) {
+    TrieNode node = root;
+    int ans = -1;
+    for (int j = i; j &lt; s.length(); ++j) {
+      final int index = s.charAt(j) - &#x27;a&#x27;;
+      if (node.children[index] == null)
+        return ans;
+      node = node.children[index];
+      if (node.isWord)
+        ans = j;
+    }
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+    self.isWord = False
+
+
+class Solution:
+  def boldWords(self, words: list[str], s: str) -&gt; str:
+    n = len(s)
+    ans = []
+    # bold[i] := True if s[i] should be bolded
+    bold = [0] * n
+    root = TrieNode()
+
+    def insert(word: str) -&gt; None:
+      node = root
+      for c in word:
+        if c not in node.children:
+          node.children[c] = TrieNode()
+        node = node.children[c]
+      node.isWord = True
+
+    def find(s: str, i: int) -&gt; int:
+      node = root
+      ans = -1
+      for j in range(i, len(s)):
+        node = node.children.setdefault(s[j], TrieNode())
+        if node.isWord:
+          ans = j
+      return ans
+
+    for word in words:
+      insert(word)
+
+    boldEnd = -1  # `s[i..boldEnd]` should be bolded.
+    for i in range(n):
+      boldEnd = max(boldEnd, find(s, i))
+      bold[i] = boldEnd &gt;= i
+
+    # Construct the with bold tags
+    i = 0
+    while i &lt; n:
+      if bold[i]:
+        j = i
+        while j &lt; n and bold[j]:
+          j += 1
+        # `s[i..j)` should be bolded.
+        ans.append(&#x27;&lt;b&gt;&#x27; + s[i:j] + &#x27;&lt;/b&gt;&#x27;)
+        i = j
+      else:
+        ans.append(s[i])
+        i += 1
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

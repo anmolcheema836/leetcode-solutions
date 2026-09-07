@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum XOR of Two Non-Overlapping Subtrees - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum XOR of Two Non-Overlapping Subtrees written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-xor-of-two-non-overlapping-subtrees/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-beautiful-partitions/" class="btn">← Previous</a>
+            <span>Problem 2479 of 3563</span>
+            <a href="/leetcode-solutions/problems/form-a-chemical-bond/" class="btn">Next →</a>
+        </div>
+        <h1>2479. Maximum XOR of Two Non-Overlapping Subtrees</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum XOR of Two Non-Overlapping Subtrees efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  TrieNode() : children(2) {}
+};
+
+class BitTrie {
+ public:
+  BitTrie(int maxBit) : maxBit(maxBit) {}
+
+  void insert(long num) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      const int bit = num &gt;&gt; i &amp; 1;
+      if (node-&gt;children[bit] == nullptr)
+        node-&gt;children[bit] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[bit];
+    }
+  }
+
+  long getMaxXor(long num) {
+    long maxXor = 0;
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      const int bit = num &gt;&gt; i &amp; 1;
+      const int toggleBit = bit ^ 1;
+      if (node-&gt;children[toggleBit] != nullptr) {
+        maxXor = maxXor | 1L &lt;&lt; i;
+        node = node-&gt;children[toggleBit];
+      } else if (node-&gt;children[bit] != nullptr) {
+        node = node-&gt;children[bit];
+      } else {  // There&#x27;s nothing in the Bit Trie.
+        return 0;
+      }
+    }
+    return maxXor;
+  }
+
+ private:
+  const int maxBit;
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+};
+
+class Solution {
+ public:
+  long long maxXor(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges, vector&lt;int&gt;&amp; values) {
+    long ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+    vector&lt;long&gt; treeSums(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      tree[u].push_back(v);
+      tree[v].push_back(u);
+    }
+
+    getTreeSum(tree, 0, -1, treeSums, values);
+    const long maxSubTreeSum =
+        *max_element(treeSums.begin() + 1, treeSums.end());
+    const int maxBit = static_cast&lt;int&gt;(log2(maxSubTreeSum));
+    // Similar to 421. Maximum XOR of Two Numbers in an Array
+    dfs(tree, 0, -1, treeSums, BitTrie(maxBit), ans);
+    return ans;
+  }
+
+ private:
+  // Gets the tree sum rooted at node u.
+  long getTreeSum(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev,
+                  vector&lt;long&gt;&amp; treeSums, const vector&lt;int&gt;&amp; values) {
+    long treeSum = values[u];
+    for (const int v : tree[u])
+      if (v != prev)
+        treeSum += getTreeSum(tree, v, u, treeSums, values);
+    treeSums[u] = treeSum;
+    return treeSum;
+  }
+
+  void dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev,
+           const vector&lt;long&gt;&amp; treeSums, BitTrie&amp;&amp; bitTrie, long&amp; ans) {
+    for (const int v : tree[u]) {
+      if (v == prev)
+        continue;
+      // Preorder to get the ans.
+      ans = max(ans, bitTrie.getMaxXor(treeSums[v]));
+      // Recursively call on the subtree rooted at node v.
+      dfs(tree, v, u, treeSums, std::move(bitTrie), ans);
+      // Postorder insert the tree sum rooted at node v.
+      bitTrie.insert(treeSums[v]);
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[2];
+}
+
+class BitTrie {
+  public BitTrie(int maxBit) {
+    this.maxBit = maxBit;
+  }
+
+  public void insert(long num) {
+    TrieNode node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      final int bit = (int) (num &gt;&gt; i &amp; 1);
+      if (node.children[bit] == null)
+        node.children[bit] = new TrieNode();
+      node = node.children[bit];
+    }
+  }
+
+  public long getMaxXor(long num) {
+    long maxXor = 0;
+    TrieNode node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      final int bit = (int) (num &gt;&gt; i &amp; 1);
+      final int toggleBit = bit ^ 1;
+      if (node.children[toggleBit] != null) {
+        maxXor = maxXor | 1L &lt;&lt; i;
+        node = node.children[toggleBit];
+      } else if (node.children[bit] != null) {
+        node = node.children[bit];
+      } else { // There&#x27;s nothing in the Bit Trie.
+        return 0;
+      }
+    }
+    return maxXor;
+  }
+
+  private int maxBit;
+  private TrieNode root = new TrieNode();
+}
+
+class Solution {
+  public long maxXor(int n, int[][] edges, int[] values) {
+    List&lt;Integer&gt;[] tree = new List[n];
+    long[] treeSums = new long[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      tree[u].add(v);
+      tree[v].add(u);
+    }
+
+    getTreeSum(tree, 0, -1, treeSums, values);
+    final long maxSubTreeSum = getMaxSubTreeSum(treeSums);
+    final int maxBit = (int) (Math.log(maxSubTreeSum) / Math.log(2));
+    // Similar to 421. Maximum XOR of Two Numbers in an Array
+    dfs(tree, 0, -1, treeSums, new BitTrie(maxBit));
+    return ans;
+  }
+
+  private long ans = 0;
+
+  // Gets the tree sum rooted at node u.
+  private long getTreeSum(List&lt;Integer&gt;[] tree, int u, int prev, long[] treeSums, int[] values) {
+    long treeSum = values[u];
+    for (final int v : tree[u])
+      if (v != prev)
+        treeSum += getTreeSum(tree, v, u, treeSums, values);
+    treeSums[u] = treeSum;
+    return treeSum;
+  }
+
+  private long getMaxSubTreeSum(long[] treeSums) {
+    long maxSubTreeSum = 0;
+    for (int i = 1; i &lt; treeSums.length; ++i)
+      maxSubTreeSum = Math.max(maxSubTreeSum, treeSums[i]);
+    return maxSubTreeSum;
+  }
+
+  private void dfs(List&lt;Integer&gt;[] tree, int u, int prev, long[] treeSums, BitTrie bitTrie) {
+    for (final int v : tree[u]) {
+      if (v == prev)
+        continue;
+      // Preorder to get the ans.
+      ans = Math.max(ans, bitTrie.getMaxXor(treeSums[v]));
+      // Recursively call on the subtree rooted at node v.
+      dfs(tree, v, u, treeSums, bitTrie);
+      // Postorder to insert the tree sum rooted at node v.
+      bitTrie.insert(treeSums[v]);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: list[TrieNode | None] = [None] * 2
+
+
+class BitTrie:
+  def __init__(self, maxBit: int):
+    self.maxBit = maxBit
+    self.root = TrieNode()
+
+  def insert(self, num: int) -&gt; None:
+    node = self.root
+    for i in range(self.maxBit, -1, -1):
+      bit = num &gt;&gt; i &amp; 1
+      if not node.children[bit]:
+        node.children[bit] = TrieNode()
+      node = node.children[bit]
+
+  def getMaxXor(self, num: int) -&gt; int:
+    maxXor = 0
+    node = self.root
+    for i in range(self.maxBit, -1, -1):
+      bit = num &gt;&gt; i &amp; 1
+      toggleBit = bit ^ 1
+      if node.children[toggleBit]:
+        maxXor = maxXor | 1 &lt;&lt; i
+        node = node.children[toggleBit]
+      elif node.children[bit]:
+        node = node.children[bit]
+      else:  # There&#x27;s nothing in the Bit Trie.
+        return 0
+    return maxXor
+
+
+class Solution:
+  def maxXor(self, n: int, edges: list[list[int]], values: list[int]) -&gt; int:
+    ans = 0
+    tree = [[] for _ in range(n)]
+    treeSums = [0] * n
+
+    for u, v in edges:
+      tree[u].append(v)
+      tree[v].append(u)
+
+    # Gets the tree sum rooted at node u.
+    def getTreeSum(u: int, prev: int) -&gt; int:
+      treeSum = values[u] + sum(getTreeSum(v, u) for v in tree[u] if v != prev)
+      treeSums[u] = treeSum
+      return treeSum
+
+    def dfs(u: int, prev: int, bitTrie: BitTrie) -&gt; None:
+      nonlocal ans
+      for v in tree[u]:
+        if v == prev:
+          continue
+        # Preorder to get the ans.
+        ans = max(ans, bitTrie.getMaxXor(treeSums[v]))
+        # Recursively call on the subtree rooted at node v.
+        dfs(v, u, bitTrie)
+        # Postorder to insert the tree sum rooted at node v.
+        bitTrie.insert(treeSums[v])
+
+    getTreeSum(0, -1)
+    maxBit = int(math.log2(max(treeSums[1:])))
+    # Similar to 421. Maximum XOR of Two Numbers in an Array
+    dfs(0, -1, BitTrie(maxBit))
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

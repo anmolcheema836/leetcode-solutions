@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Threshold for Inversion Pairs Count - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Threshold for Inversion Pairs Count written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-threshold-for-inversion-pairs-count/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-numbers-with-non-decreasing-digits/" class="btn">← Previous</a>
+            <span>Problem 3520 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-product-recommendation-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>3520. Minimum Threshold for Inversion Pairs Count</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Threshold for Inversion Pairs Count efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minThreshold(vector&lt;int&gt;&amp; nums, int k) {
+    const int mx = ranges::max(nums);
+    int l = 0;
+    int r = mx + 1;
+
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (countInversionPairs(nums, k, m))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l &gt; mx ? -1 : l;
+  }
+
+ private:
+  bool countInversionPairs(const vector&lt;int&gt;&amp; nums, int k, int threshold) {
+    int inversionCount = 0;
+    vector&lt;int&gt; sortedNums;
+
+    for (const int num : nums) {
+      const auto lower = ranges::upper_bound(sortedNums, num);
+      const auto upper = ranges::upper_bound(sortedNums, num + threshold);
+      inversionCount += upper - lower;
+      sortedNums.insert(lower, num);
+    }
+
+    return inversionCount &gt;= k;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minThreshold(int[] nums, int k) {
+    final int mx = Arrays.stream(nums).max().getAsInt();
+    int l = 0;
+    int r = mx + 1;
+
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (countInversionPairs(nums, k, m))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l &gt; mx ? -1 : l;
+  }
+
+  private boolean countInversionPairs(final int[] nums, final int k, final int threshold) {
+    int inversionCount = 0;
+    List&lt;Integer&gt; sortedNums = new ArrayList&lt;&gt;();
+
+    for (final int num : nums) {
+      final int lower = firstGreater(sortedNums, num);
+      final int upper = firstGreater(sortedNums, num + threshold);
+      inversionCount += upper - lower;
+      sortedNums.add(lower, num);
+    }
+
+    return inversionCount &gt;= k;
+  }
+
+  private int firstGreater(List&lt;Integer&gt; arr, int target) {
+    int l = 0;
+    int r = arr.size();
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (arr.get(m) &gt; target)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

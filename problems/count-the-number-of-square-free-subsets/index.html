@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count the Number of Square-Free Subsets - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count the Number of Square-Free Subsets written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-the-number-of-square-free-subsets/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-operations-to-reduce-an-integer-to-0/" class="btn">← Previous</a>
+            <span>Problem 2572 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-string-with-lcp/" class="btn">Next →</a>
+        </div>
+        <h1>2572. Count the Number of Square-Free Subsets</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count the Number of Square-Free Subsets efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int squareFreeSubsets(vector&lt;int&gt;&amp; nums) {
+    vector&lt;vector&lt;int&gt;&gt; mem(nums.size(),
+                            vector&lt;int&gt;(1 &lt;&lt; (kPrimesCount + 1), -1));
+    vector&lt;int&gt; masks;
+
+    for (const int num : nums)
+      masks.push_back(getMask(num));
+
+    // -1 means that we take no number.
+    // `used` is initialized to 1 so that -1 &amp; 1 = 1 instead of 0.
+    return (squareFreeSubsets(masks, 0, /*used=*/1, mem) - 1 + kMod) % kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+  static constexpr int kPrimesCount = 10;
+  static constexpr int primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+
+  int squareFreeSubsets(const vector&lt;int&gt;&amp; masks, int i, int used,
+                        vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i == masks.size())
+      return 1;
+    if (mem[i][used] != -1)
+      return mem[i][used];
+    const int pick = (masks[i] &amp; used) == 0
+                         ? squareFreeSubsets(masks, i + 1, used | masks[i], mem)
+                         : 0;
+    const int skip = squareFreeSubsets(masks, i + 1, used, mem);
+    return mem[i][used] = (pick + skip) % kMod;
+  }
+
+  // e.g. num = 10 = 2 * 5, so mask = 0b101 -&gt; 0b1010 (append a 0)
+  //      num = 15 = 3 * 5, so mask = 0b110 -&gt; 0b1100 (append a 0)
+  //      num = 25 = 5 * 5, so mask =  0b-1 -&gt; 0b1..1 (invalid)
+  int getMask(int num) {
+    int mask = 0;
+    for (int i = 0; i &lt; sizeof(primes) / sizeof(int); ++i) {
+      int rootCount = 0;
+      while (num % primes[i] == 0) {
+        num /= primes[i];
+        ++rootCount;
+      }
+      if (rootCount &gt;= 2)
+        return -1;
+      if (rootCount == 1)
+        mask |= 1 &lt;&lt; i;
+    }
+    return mask &lt;&lt; 1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int squareFreeSubsets(int[] nums) {
+    Integer[][] mem = new Integer[nums.length][1 &lt;&lt; (PRIMES_COUNT + 1)];
+    int[] masks = new int[nums.length];
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      masks[i] = getMask(nums[i]);
+
+    // -1 means that we take no number.
+    // `used` is initialized to 1 so that -1 &amp; 1 = 1 instead of 0.
+    return (squareFreeSubsets(masks, 0, /*used=*/1, mem) - 1 + MOD) % MOD;
+  }
+
+  private static final int MOD = 1_000_000_007;
+  private static final int PRIMES_COUNT = 10;
+  private static final int[] primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+
+  private int squareFreeSubsets(int[] masks, int i, int used, Integer[][] mem) {
+    if (i == masks.length)
+      return 1;
+    if (mem[i][used] != null)
+      return mem[i][used];
+    final int pick =
+        (masks[i] &amp; used) == 0 ? squareFreeSubsets(masks, i + 1, used | masks[i], mem) : 0;
+    final int skip = squareFreeSubsets(masks, i + 1, used, mem);
+    return mem[i][used] = (pick + skip) % MOD;
+  }
+
+  // e.g. num = 10 = 2 * 5, so mask = 0b101 -&gt; 0b1010 (append a 0)
+  //      num = 15 = 3 * 5, so mask = 0b110 -&gt; 0b1100 (append a 0)
+  //      num = 25 = 5 * 5, so mask =  0b-1 -&gt; 0b1..1 (invalid)
+  private int getMask(int num) {
+    int mask = 0;
+    for (int i = 0; i &lt; primes.length; ++i) {
+      int rootCount = 0;
+      while (num % primes[i] == 0) {
+        num /= primes[i];
+        ++rootCount;
+      }
+      if (rootCount &gt;= 2)
+        return -1;
+      if (rootCount == 1)
+        mask |= 1 &lt;&lt; i;
+    }
+    return mask &lt;&lt; 1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def squareFreeSubsets(self, nums: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+
+    def getMask(num: int) -&gt; int:
+      &quot;&quot;&quot;
+      e.g. num = 10 = 2 * 5, so mask = 0b101 . 0b1010 (append a 0)
+           num = 15 = 3 * 5, so mask = 0b110 . 0b1100 (append a 0)
+           num = 25 = 5 * 5, so mask =  (-1)2 . (1..1)2 (invalid)
+      &quot;&quot;&quot;
+      mask = 0
+      for i, prime in enumerate(primes):
+        rootCount = 0
+        while num % prime == 0:
+          num //= prime
+          rootCount += 1
+        if rootCount &gt;= 2:
+          return -1
+        if rootCount == 1:
+          mask |= 1 &lt;&lt; i
+      return mask &lt;&lt; 1
+
+    masks = [getMask(num) for num in nums]
+
+    @functools.lru_cache(None)
+    def dp(i: int, used: int) -&gt; int:
+      if i == len(masks):
+        return 1
+      pick = dp(i + 1, used | masks[i]) if (masks[i] &amp; used) == 0 else 0
+      skip = dp(i + 1, used)
+      return (pick + skip) % MOD
+
+    # -1 means that we take no number.
+    # `used` is initialized to 1 so that -1 &amp; 1 = 1 instead of 0.
+    return (dp(0, 1) - 1 + MOD) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

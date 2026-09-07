@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Coins From K Consecutive Bags - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Coins From K Consecutive Bags written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-coins-from-k-consecutive-bags/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-mirror-score-of-a-string/" class="btn">← Previous</a>
+            <span>Problem 3413 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-score-of-non-overlapping-intervals/" class="btn">Next →</a>
+        </div>
+        <h1>3413. Maximum Coins From K Consecutive Bags</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Coins From K Consecutive Bags efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maximumCoins(vector&lt;vector&lt;int&gt;&gt;&amp; coins, int k) {
+    vector&lt;vector&lt;int&gt;&gt; negatedCoins = negateLeftRight(coins);
+    return max(slide(coins, k), slide(negatedCoins, k));
+  }
+
+ private:
+  vector&lt;vector&lt;int&gt;&gt; negateLeftRight(const vector&lt;vector&lt;int&gt;&gt; coins) {
+    vector&lt;vector&lt;int&gt;&gt; res;
+    for (const vector&lt;int&gt;&amp; coin : coins) {
+      const int l = coin[0];
+      const int r = coin[1];
+      const int c = coin[2];
+      res.push_back({-r, -l, c});
+    }
+    return res;
+  }
+
+  long slide(vector&lt;vector&lt;int&gt;&gt;&amp; coins, int k) {
+    long res = 0;
+    long windowSum = 0;
+    int j = 0;
+
+    ranges::sort(coins);
+
+    for (const vector&lt;int&gt;&amp; coin : coins) {
+      const int li = coin[0];
+      const int ri = coin[1];
+      const int ci = coin[2];
+      const int rightBoundary = li + k;
+
+      // [lj, rj] is fully in [li..li + k)
+      while (j + 1 &lt; coins.size() &amp;&amp; coins[j + 1][0] &lt; rightBoundary) {
+        const int lj = coins[j][0];
+        const int rj = coins[j][1];
+        const int cj = coins[j][2];
+        windowSum += static_cast&lt;long&gt;(rj - lj + 1) * cj;
+        ++j;
+      }
+
+      // [lj, rj] may be partially in [l..l + k)
+      long last = 0;
+      if (j &lt; coins.size() &amp;&amp; coins[j][0] &lt; rightBoundary) {
+        const int lj = coins[j][0];
+        const int rj = coins[j][1];
+        const int cj = coins[j][2];
+        last = static_cast&lt;long&gt;(min(rightBoundary - 1, rj) - lj + 1) * cj;
+      }
+
+      res = max(res, windowSum + last);
+      windowSum -= static_cast&lt;long&gt;(ri - li + 1) * ci;
+    }
+
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maximumCoins(int[][] coins, int k) {
+    int[][] negatedCoins = negateLeftRight(coins);
+    return Math.max(slide(coins, k), slide(negatedCoins, k));
+  }
+
+  private int[][] negateLeftRight(int[][] coins) {
+    int[][] res = new int[coins.length][3];
+    for (int i = 0; i &lt; coins.length; ++i) {
+      final int l = coins[i][0];
+      final int r = coins[i][1];
+      final int c = coins[i][2];
+      res[i][0] = -r;
+      res[i][1] = -l;
+      res[i][2] = c;
+    }
+    return res;
+  }
+
+  private long slide(int[][] coins, int k) {
+    long res = 0;
+    long windowSum = 0;
+    int j = 0;
+
+    Arrays.sort(coins, Comparator.comparingInt((int[] coin) -&gt; coin[0]));
+
+    for (int[] coin : coins) {
+      final int li = coin[0];
+      final int ri = coin[1];
+      final int ci = coin[2];
+      final int rightBoundary = li + k;
+
+      // [lj, rj] is fully in [li..li + k).
+      while (j + 1 &lt; coins.length &amp;&amp; coins[j + 1][0] &lt; rightBoundary) {
+        final int lj = coins[j][0];
+        final int rj = coins[j][1];
+        final int cj = coins[j][2];
+        windowSum += (long) (rj - lj + 1) * cj;
+        ++j;
+      }
+
+      // [lj, rj] may be partially in [l..l + k).
+      long last = 0;
+      if (j &lt; coins.length &amp;&amp; coins[j][0] &lt; rightBoundary) {
+        final int lj = coins[j][0];
+        final int rj = coins[j][1];
+        final int cj = coins[j][2];
+        last = (long) (Math.min(rightBoundary - 1, rj) - lj + 1) * cj;
+      }
+
+      res = Math.max(res, windowSum + last);
+      windowSum -= (long) (ri - li + 1) * ci;
+    }
+
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumCoins(self, coins: list[list[int]], k: int) -&gt; int:
+    return max(self._slide(coins, k),
+               self._slide([[-r, -l, c] for l, r, c in coins], k))
+
+  def _slide(self, coins: list[list[int]], k: int) -&gt; int:
+    coins.sort()
+    res = 0
+    windowSum = 0
+    j = 0
+    for li, ri, ci in coins:  # Consider the number line [li..li + k).
+      rightBoundary = li + k
+
+      # [lj, rj] is fully in [li..li + k).
+      while j + 1 &lt; len(coins) and coins[j + 1][0] &lt; rightBoundary:
+        lj, rj, cj = coins[j]
+        windowSum += (rj - lj + 1) * cj
+        j += 1
+
+      # [lj, rj] may be partially in [l..l + k).
+      last = 0
+      if j &lt; len(coins) and coins[j][0] &lt; rightBoundary:
+        lj, rj, cj = coins[j]
+        last = (min(rightBoundary - 1, rj) - lj + 1) * cj
+
+      res = max(res, windowSum + last)
+      windowSum -= (ri - li + 1) * ci
+    return res</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

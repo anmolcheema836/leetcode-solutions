@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path In Zigzag Labelled Binary Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Path In Zigzag Labelled Binary Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/path-in-zigzag-labelled-binary-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/distribute-candies-to-people/" class="btn">← Previous</a>
+            <span>Problem 1104 of 3563</span>
+            <a href="/leetcode-solutions/problems/filling-bookcase-shelves/" class="btn">Next →</a>
+        </div>
+        <h1>1104. Path In Zigzag Labelled Binary Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Path In Zigzag Labelled Binary Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; pathInZigZagTree(int label) {
+    deque&lt;int&gt; ans;
+    int level;
+
+    for (int l = 0; l &lt; 21; ++l)
+      if (pow(2, l) &gt; label) {
+        level = l - 1;
+        break;
+      }
+
+    if (level % 2 == 1)
+      label = boundarySum(level) - label;
+
+    for (int l = level; l &gt;= 0; --l) {
+      ans.push_front(l % 2 == 0 ? label : boundarySum(l) - label);
+      label /= 2;
+    }
+
+    return {ans.begin(), ans.end()};
+  }
+
+ private:
+  int boundarySum(int level) {
+    return pow(2, level) + pow(2, level + 1) - 1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; pathInZigZagTree(int label) {
+    LinkedList&lt;Integer&gt; ans = new LinkedList&lt;&gt;();
+    int level = 0;
+
+    for (int l = 0; l &lt; 21; ++l)
+      if (Math.pow(2, l) &gt; label) {
+        level = l - 1;
+        break;
+      }
+
+    if (level % 2 == 1)
+      label = boundarySum(level) - label;
+
+    for (int l = level; l &gt;= 0; --l) {
+      ans.addFirst(l % 2 == 0 ? label : boundarySum(l) - label);
+      label /= 2;
+    }
+
+    return new ArrayList&lt;&gt;(ans);
+  }
+
+  private int boundarySum(int level) {
+    return (int) Math.pow(2, level) + (int) Math.pow(2, level + 1) - 1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def pathInZigZagTree(self, label: int) -&gt; list[int]:
+    def boundarySum(level: int):
+      return 2**level + 2**(level + 1) - 1
+
+    ans = []
+
+    for l in range(21):
+      if 2**l &gt; label:
+        level = l - 1
+        break
+
+    if level % 2 == 1:
+      label = boundarySum(level) - label
+
+    for l in reversed(range(level + 1)):
+      ans.append(label if l % 2 == 0 else boundarySum(l) - label)
+      label //= 2
+
+    return ans[::-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

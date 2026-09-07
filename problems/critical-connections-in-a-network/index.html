@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critical Connections in a Network - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Critical Connections in a Network written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/critical-connections-in-a-network/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/k-concatenation-maximum-sum/" class="btn">← Previous</a>
+            <span>Problem 1192 of 3563</span>
+            <a href="/leetcode-solutions/problems/monthly-transactions-i/" class="btn">Next →</a>
+        </div>
+        <h1>1192. Critical Connections in a Network</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Critical Connections in a Network efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; criticalConnections(int n,
+                                          vector&lt;vector&lt;int&gt;&gt;&amp; connections) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; connection : connections) {
+      const int u = connection[0];
+      const int v = connection[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    // rank[i] := the minimum node that node i can reach with forward edges
+    // Initialize with NO_RANK = -2 to indicate not visited.
+    getRank(graph, 0, 0, vector&lt;int&gt;(n, NO_RANK), ans);
+    return ans;
+  }
+
+ private:
+  static constexpr int NO_RANK = -2;
+
+  // Gets the minimum rank that u can reach with forward edges.
+  int getRank(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, int currRank,
+              vector&lt;int&gt;&amp;&amp; rank, vector&lt;vector&lt;int&gt;&gt;&amp; ans) {
+    if (rank[u] != NO_RANK)  // The rank is already determined.
+      return rank[u];
+
+    rank[u] = currRank;
+    int minRank = currRank;
+
+    for (const int v : graph[u]) {
+      // visited || parent (that&#x27;s why NO_RANK = -2 instead of -1)
+      if (rank[u] == rank.size() || rank[v] == currRank - 1)
+        continue;
+      const int nextRank =
+          getRank(graph, v, currRank + 1, std::move(rank), ans);
+      // (u, v) is the only way for u go to v.
+      if (nextRank == currRank + 1)
+        ans.push_back({u, v});
+      minRank = min(minRank, nextRank);
+    }
+
+    rank[u] = rank.size();  // Mark as visited.
+    return minRank;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; criticalConnections(int n, List&lt;List&lt;Integer&gt;&gt; connections) {
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;Integer&gt;[] graph = new List[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (List&lt;Integer&gt; connection : connections) {
+      final int u = connection.get(0);
+      final int v = connection.get(1);
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    // rank[i] := the minimum node that node i can reach with forward edges
+    // Initialize with NO_RANK = -2 to indicate not visited.
+    int[] rank = new int[n];
+    Arrays.fill(rank, NO_RANK);
+    getRank(graph, 0, 0, rank, ans);
+    return ans;
+  }
+
+  private static final int NO_RANK = -2;
+
+  // Gets the minimum rank that u can reach with forward edges.
+  private int getRank(List&lt;Integer&gt;[] graph, int u, int myRank, int[] rank,
+                      List&lt;List&lt;Integer&gt;&gt; ans) {
+    if (rank[u] != NO_RANK) // The rank is already been determined.
+      return rank[u];
+
+    rank[u] = myRank;
+    int minRank = myRank;
+
+    for (final int v : graph[u]) {
+      // visited || parent (that&#x27;s why NO_RANK = -2 instead of -1)
+      if (rank[u] == rank.length || rank[v] == myRank - 1)
+        continue;
+      final int nextRank = getRank(graph, v, myRank + 1, rank, ans);
+      // (u, v) is the only way for u go to v.
+      if (nextRank == myRank + 1)
+        ans.add(Arrays.asList(u, v));
+      minRank = Math.min(minRank, nextRank);
+    }
+
+    rank[u] = rank.length; // Mark as visited.
+    return minRank;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

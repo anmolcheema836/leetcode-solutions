@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Even Odd Subarray With Threshold - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Even Odd Subarray With Threshold written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-even-odd-subarray-with-threshold/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/convert-json-string-to-object/" class="btn">← Previous</a>
+            <span>Problem 2760 of 3563</span>
+            <a href="/leetcode-solutions/problems/prime-pairs-with-target-sum/" class="btn">Next →</a>
+        </div>
+        <h1>2760. Longest Even Odd Subarray With Threshold</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Even Odd Subarray With Threshold efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int longestAlternatingSubarray(vector&lt;int&gt;&amp; nums, int threshold) {
+    int ans = 0;
+    int dp = 0;
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      if (nums[i] &gt; threshold)
+        dp = 0;
+      else if (i &gt; 0 &amp;&amp; dp &gt; 0 &amp;&amp; isOddEven(nums[i - 1], nums[i]))
+        // Increase the size of the subarray.
+        ++dp;
+      else
+        // Start a new subarray if the start is valid.
+        dp = nums[i] % 2 == 0 ? 1 : 0;
+      ans = max(ans, dp);
+    }
+
+    return ans;
+  }
+
+ private:
+  bool isOddEven(int a, int b) {
+    return a % 2 != b % 2;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int longestAlternatingSubarray(int[] nums, int threshold) {
+    int ans = 0;
+    int dp = 0;
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      if (nums[i] &gt; threshold)
+        dp = 0;
+      else if (i &gt; 0 &amp;&amp; dp &gt; 0 &amp;&amp; isOddEven(nums[i - 1], nums[i]))
+        // Increase the size of the subarray.
+        ++dp;
+      else
+        // Start a new subarray if the start is valid.
+        dp = nums[i] % 2 == 0 ? 1 : 0;
+      ans = Math.max(ans, dp);
+    }
+
+    return ans;
+  }
+
+  private boolean isOddEven(int a, int b) {
+    return a % 2 != b % 2;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestAlternatingSubarray(self, nums: list[int], threshold: int) -&gt; int:
+    ans = 0
+    dp = 0
+
+    def isOddEven(a: int, b: int) -&gt; bool:
+      return a % 2 != b % 2
+
+    for i, num in enumerate(nums):
+      if num &gt; threshold:
+        dp = 0
+      elif i &gt; 0 and dp &gt; 0 and isOddEven(nums[i - 1], num):
+        # Increase the size of the subarray.
+        dp += 1
+      else:
+        # Start a new subarray if the start is valid.
+        dp = 1 if num % 2 == 0 else 0
+      ans = max(ans, dp)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

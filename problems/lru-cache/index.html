@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU Cache - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for LRU Cache written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/lru-cache/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/binary-tree-postorder-traversal/" class="btn">← Previous</a>
+            <span>Problem 146 of 3563</span>
+            <a href="/leetcode-solutions/problems/insertion-sort-list/" class="btn">Next →</a>
+        </div>
+        <h1>146. LRU Cache</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve LRU Cache efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Node {
+  int key;
+  int value;
+};
+
+class LRUCache {
+ public:
+  LRUCache(int capacity) : capacity(capacity) {}
+
+  int get(int key) {
+    const auto it = keyToIterator.find(key);
+    if (it == keyToIterator.cend())
+      return -1;
+
+    const auto&amp; listIt = it-&gt;second;
+    // Move it to the front.
+    cache.splice(cache.begin(), cache, listIt);
+    return listIt-&gt;value;
+  }
+
+  void put(int key, int value) {
+    // There&#x27;s no capacity issue, so just update the value.
+    if (const auto it = keyToIterator.find(key); it != keyToIterator.cend()) {
+      const auto&amp; listIt = it-&gt;second;
+      // Move it to the front.
+      cache.splice(cache.begin(), cache, listIt);
+      listIt-&gt;value = value;
+      return;
+    }
+
+    // Check the capacity.
+    if (cache.size() == capacity) {
+      const Node&amp; lastNode = cache.back();
+      // That&#x27;s why we store `key` in `Node`.
+      keyToIterator.erase(lastNode.key);
+      cache.pop_back();
+    }
+
+    cache.emplace_front(key, value);
+    keyToIterator[key] = cache.begin();
+  }
+
+ private:
+  const int capacity;
+  list&lt;Node&gt; cache;
+  unordered_map&lt;int, list&lt;Node&gt;::iterator&gt; keyToIterator;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Node {
+  public int key;
+  public int value;
+  public Node(int key, int value) {
+    this.key = key;
+    this.value = value;
+  }
+}
+
+class LRUCache {
+  public LRUCache(int capacity) {
+    this.capacity = capacity;
+  }
+
+  public int get(int key) {
+    if (!keyToNode.containsKey(key))
+      return -1;
+
+    Node node = keyToNode.get(key);
+    cache.remove(node);
+    cache.add(node);
+    return node.value;
+  }
+
+  public void put(int key, int value) {
+    if (keyToNode.containsKey(key)) {
+      keyToNode.get(key).value = value;
+      get(key);
+      return;
+    }
+
+    if (cache.size() == capacity) {
+      Node lastNode = cache.iterator().next();
+      cache.remove(lastNode);
+      keyToNode.remove(lastNode.key);
+    }
+
+    Node node = new Node(key, value);
+    cache.add(node);
+    keyToNode.put(key, node);
+  }
+
+  private int capacity;
+  private Set&lt;Node&gt; cache = new LinkedHashSet&lt;&gt;();
+  private Map&lt;Integer, Node&gt; keyToNode = new HashMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Node:
+  def __init__(self, key: int, value: int):
+    self.key = key
+    self.value = value
+    self.prev = None
+    self.next = None
+
+
+class LRUCache:
+  def __init__(self, capacity: int):
+    self.capacity = capacity
+    self.keyToNode = {}
+    self.head = Node(-1, -1)
+    self.tail = Node(-1, -1)
+    self.join(self.head, self.tail)
+
+  def get(self, key: int) -&gt; int:
+    if key not in self.keyToNode:
+      return -1
+
+    node = self.keyToNode[key]
+    self.remove(node)
+    self.moveToHead(node)
+    return node.value
+
+  def put(self, key: int, value: int) -&gt; None:
+    if key in self.keyToNode:
+      node = self.keyToNode[key]
+      node.value = value
+      self.remove(node)
+      self.moveToHead(node)
+      return
+
+    if len(self.keyToNode) == self.capacity:
+      lastNode = self.tail.prev
+      del self.keyToNode[lastNode.key]
+      self.remove(lastNode)
+
+    self.moveToHead(Node(key, value))
+    self.keyToNode[key] = self.head.next
+
+  def join(self, node1: Node, node2: Node):
+    node1.next = node2
+    node2.prev = node1
+
+  def moveToHead(self, node: Node):
+    self.join(node, self.head.next)
+    self.join(self.head, node)
+
+  def remove(self, node: Node):
+    self.join(node.prev, node.next)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Ways to Make Array With Product - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Ways to Make Array With Product written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-ways-to-make-array-with-product/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/decode-xored-permutation/" class="btn">← Previous</a>
+            <span>Problem 1735 of 3563</span>
+            <a href="/leetcode-solutions/problems/latest-time-by-replacing-hidden-digits/" class="btn">Next →</a>
+        </div>
+        <h1>1735. Count Ways to Make Array With Product</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Ways to Make Array With Product efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; waysToFillArray(vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    constexpr int kMax = 10000;
+    constexpr int kMaxFreq = 13;  // 2^13 = 8192 &lt; kMax
+    const vector&lt;int&gt; minPrimeFactors = sieveEratosthenes(kMax + 1);
+    const auto [fact, invFact] = getFactAndInvFact(kMax + kMaxFreq - 1);
+    vector&lt;int&gt; ans;
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int n = query[0];
+      const int k = query[1];
+      int res = 1;
+      for (const auto&amp; [_, freq] : getPrimeFactorsCount(k, minPrimeFactors))
+        res = static_cast&lt;long&gt;(res) * nCk(n - 1 + freq, freq, fact, invFact) %
+              kMod;
+      ans.push_back(res);
+    }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  // Gets the minimum prime factor of i, where 1 &lt; i &lt;= n.
+  vector&lt;int&gt; sieveEratosthenes(int n) {
+    vector&lt;int&gt; minPrimeFactors(n + 1);
+    iota(minPrimeFactors.begin() + 2, minPrimeFactors.end(), 2);
+    for (int i = 2; i * i &lt; n; ++i)
+      if (minPrimeFactors[i] == i)  // `i` is prime.
+        for (int j = i * i; j &lt; n; j += i)
+          minPrimeFactors[j] = min(minPrimeFactors[j], i);
+    return minPrimeFactors;
+  }
+
+  unordered_map&lt;int, int&gt; getPrimeFactorsCount(
+      int num, const vector&lt;int&gt;&amp; minPrimeFactors) {
+    unordered_map&lt;int, int&gt; count;
+    while (num &gt; 1) {
+      const int divisor = minPrimeFactors[num];
+      while (num % divisor == 0) {
+        num /= divisor;
+        ++count[divisor];
+      }
+    }
+    return count;
+  }
+
+  pair&lt;vector&lt;long&gt;, vector&lt;long&gt;&gt; getFactAndInvFact(int n) {
+    vector&lt;long&gt; fact(n + 1);
+    vector&lt;long&gt; invFact(n + 1);
+    vector&lt;long&gt; inv(n + 1);
+    fact[0] = invFact[0] = 1;
+    inv[0] = inv[1] = 1;
+    for (int i = 1; i &lt;= n; ++i) {
+      if (i &gt;= 2)
+        inv[i] = kMod - kMod / i * inv[kMod % i] % kMod;
+      fact[i] = fact[i - 1] * i % kMod;
+      invFact[i] = invFact[i - 1] * inv[i] % kMod;
+    }
+    return {fact, invFact};
+  }
+
+  int nCk(int n, int k, const vector&lt;long&gt;&amp; fact, const vector&lt;long&gt;&amp; invFact) {
+    return fact[n] * invFact[k] % kMod * invFact[n - k] % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] waysToFillArray(int[][] queries) {
+    final int MAX = 10_000;
+    final int MAX_FREQ = 13; // 2^13 = 8192 &lt; MAX
+    final int[] minPrimeFactors = sieveEratosthenes(MAX + 1);
+    final long[][] factAndInvFact = getFactAndInvFact(MAX + MAX_FREQ - 1);
+    final long[] fact = factAndInvFact[0];
+    final long[] invFact = factAndInvFact[1];
+    int[] ans = new int[queries.length];
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int n = queries[i][0];
+      final int k = queries[i][1];
+      int res = 1;
+      for (final int freq : getPrimeFactorsCount(k, minPrimeFactors).values())
+        res = (int) ((long) res * nCk(n - 1 + freq, freq, fact, invFact) % MOD);
+      ans[i] = res;
+    }
+
+    return ans;
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  // Gets the minimum prime factor of i, where 1 &lt; i &lt;= n.
+  private int[] sieveEratosthenes(int n) {
+    int[] minPrimeFactors = new int[n + 1];
+    for (int i = 2; i &lt;= n; ++i)
+      minPrimeFactors[i] = i;
+    for (int i = 2; i * i &lt; n; ++i)
+      if (minPrimeFactors[i] == i) // `i` is prime.
+        for (int j = i * i; j &lt; n; j += i)
+          minPrimeFactors[j] = Math.min(minPrimeFactors[j], i);
+    return minPrimeFactors;
+  }
+
+  private Map&lt;Integer, Integer&gt; getPrimeFactorsCount(int num, int[] minPrimeFactors) {
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+    while (num &gt; 1) {
+      final int divisor = minPrimeFactors[num];
+      while (num % divisor == 0) {
+        num /= divisor;
+        count.put(divisor, count.merge(divisor, 1, Integer::sum));
+      }
+    }
+    return count;
+  }
+
+  private long[][] getFactAndInvFact(int n) {
+    long[] fact = new long[n + 1];
+    long[] invFact = new long[n + 1];
+    long[] inv = new long[n + 1];
+    fact[0] = invFact[0] = 1;
+    inv[0] = inv[1] = 1;
+    for (int i = 1; i &lt;= n; ++i) {
+      if (i &gt;= 2)
+        inv[i] = MOD - MOD / i * inv[MOD % i] % MOD;
+      fact[i] = fact[i - 1] * i % MOD;
+      invFact[i] = invFact[i - 1] * inv[i] % MOD;
+    }
+    return new long[][] {fact, invFact};
+  }
+
+  private int nCk(int n, int k, long[] fact, long[] invFact) {
+    return (int) (fact[n] * invFact[k] % MOD * invFact[n - k] % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def waysToFillArray(self, queries: list[list[int]]) -&gt; list[int]:
+    MOD = 1_000_000_007
+    MAX = 10_000
+    minPrimeFactors = self._sieveEratosthenes(MAX + 1)
+
+    @functools.lru_cache(None)
+    def fact(i: int) -&gt; int:
+      return 1 if i &lt;= 1 else i * fact(i - 1) % MOD
+
+    @functools.lru_cache(None)
+    def inv(i: int) -&gt; int:
+      return pow(i, MOD - 2, MOD)
+
+    @functools.lru_cache(None)
+    def nCk(n: int, k: int) -&gt; int:
+      return fact(n) * inv(fact(k)) * inv(fact(n - k)) % MOD
+
+    ans = []
+
+    for n, k in queries:
+      res = 1
+      for freq in self._getPrimeFactorsCount(k, minPrimeFactors).values():
+        res = res * nCk(n - 1 + freq, freq) % MOD
+      ans.append(res)
+
+    return ans
+
+  def _sieveEratosthenes(self, n: int) -&gt; list[int]:
+    &quot;&quot;&quot;Gets the minimum prime factor of i, where 1 &lt; i &lt;= n.&quot;&quot;&quot;
+    minPrimeFactors = [i for i in range(n + 1)]
+    for i in range(2, int(n**0.5) + 1):
+      if minPrimeFactors[i] == i:  # `i` is prime.
+        for j in range(i * i, n, i):
+          minPrimeFactors[j] = min(minPrimeFactors[j], i)
+    return minPrimeFactors
+
+  def _getPrimeFactorsCount(self, num: int, minPrimeFactors: list[int]) -&gt; dict[int, int]:
+    count = collections.Counter()
+    while num &gt; 1:
+      divisor = minPrimeFactors[num]
+      while num % divisor == 0:
+        num //= divisor
+        count[divisor] += 1
+    return count</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Number of K-Even Arrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Number of K-Even Arrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-number-of-k-even-arrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/second-highest-salary-ii/" class="btn">← Previous</a>
+            <span>Problem 3339 of 3563</span>
+            <a href="/leetcode-solutions/problems/check-balanced-string/" class="btn">Next →</a>
+        </div>
+        <h1>3339. Find the Number of K-Even Arrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Number of K-Even Arrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countOfArrays(int n, int m, int k) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int even = m / 2;    // the number of even numbers in [1, m]
+    const int odd = m - even;  // the number of odd numbers in [1, m]
+    // dp[j][0/1] := the number of arrays of length so far i with j consecutive
+    // even number pairs ending in an even number (0) or an odd number (1)
+    vector&lt;vector&lt;int&gt;&gt; dp(k + 1, vector&lt;int&gt;(2));
+
+    // Base case: arrays of length 1
+    // For an array of length 1, we can&#x27;t have any even number pairs yet.
+    dp[0][0] = even;
+    dp[0][1] = odd;
+
+    for (int i = 2; i &lt;= n; ++i) {
+      vector&lt;vector&lt;int&gt;&gt; newDp(k + 1, vector&lt;int&gt;(2));
+      for (int j = 0; j &lt;= k; ++j) {
+        // 1. Appending an even number to an array ending in an even number
+        //    creates a new consecutive even number pair.
+        // 2. Appending an even number to an array ending in an odd number.
+        newDp[j][0] = (static_cast&lt;long&gt;(j &gt; 0 ? dp[j - 1][0] : 0) * even +
+                       static_cast&lt;long&gt;(dp[j][1]) * even) %
+                      kMod;
+        // 3. Appending an odd number to an array.
+        newDp[j][1] = static_cast&lt;long&gt;(dp[j][0] + dp[j][1]) * odd % kMod;
+      }
+      dp = std::move(newDp);
+    }
+
+    return (dp[k][0] + dp[k][1]) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countOfArrays(int n, int m, int k) {
+    final int MOD = 1_000_000_007;
+    final int even = m / 2;   // the number of even numbers in [1, m]
+    final int odd = m - even; // the number of odd numbers in [1, m]
+    // dp[j][0/1] := the number of arrays of length so far i with j consecutive
+    // even number pairs ending in an even number (0) or an odd number (1)
+    int[][] dp = new int[k + 1][2];
+
+    // Base case: arrays of length 1
+    // For an array of length 1, we can&#x27;t have any even number pairs yet.
+    dp[0][0] = even;
+    dp[0][1] = odd;
+
+    for (int i = 2; i &lt;= n; ++i) {
+      int[][] newDp = new int[k + 1][2];
+      for (int j = 0; j &lt;= k; ++j) {
+        // 1. Appending an even number to an array ending in an even number
+        //    creates a new consecutive even number pair.
+        // 2. Appending an even number to an array ending in an odd number.
+        newDp[j][0] =
+            (int) (((long) (j &gt; 0 ? dp[j - 1][0] : 0) * even + (long) dp[j][1] * even) % MOD);
+        // 3. Appending an odd number to an array.
+        newDp[j][1] = (int) ((long) (dp[j][0] + dp[j][1]) * odd % MOD);
+      }
+      dp = newDp;
+    }
+
+    return (dp[k][0] + dp[k][1]) % MOD;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countOfArrays(self, n: int, m: int, k: int) -&gt; int:
+    MOD = 10**9 + 7
+    even = m // 2  # the number of even numbers in [1, m]
+    odd = m - even  # the number of odd numbers in [1, m]
+    # dp[j][0/1] := the number of arrays of length so far i with j consecutive
+    # even number pairs ending in an even number (0) or an odd number (1)
+    dp = [[0] * 2 for _ in range(k + 1)]
+
+    # Base case: arrays of length 1
+    # For an array of length 1, we can&#x27;t have any even number pairs yet.
+    dp[0][0] = even
+    dp[0][1] = odd
+
+    for _ in range(2, n + 1):
+      newDp = [[0] * 2 for _ in range(k + 1)]
+      for j in range(k + 1):
+        # 1. Appending an even number to an array ending in an even number
+        #    creates a new consecutive even number pair.
+        # 2. Appending an even number to an array ending in an odd number.
+        newDp[j][0] = ((dp[j - 1][0] if j &gt; 0 else 0) * even +
+                       dp[j][1] * even) % MOD
+        # 3. Appending an odd number to an array.
+        newDp[j][1] = sum(dp[j]) * odd % MOD
+      dp = newDp
+
+    return sum(dp[k]) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

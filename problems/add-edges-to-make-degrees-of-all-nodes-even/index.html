@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Edges to Make Degrees of All Nodes Even - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Add Edges to Make Degrees of All Nodes Even written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/add-edges-to-make-degrees-of-all-nodes-even/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/smallest-value-after-replacing-with-sum-of-prime-factors/" class="btn">← Previous</a>
+            <span>Problem 2508 of 3563</span>
+            <a href="/leetcode-solutions/problems/cycle-length-queries-in-a-tree/" class="btn">Next →</a>
+        </div>
+        <h1>2508. Add Edges to Make Degrees of All Nodes Even</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Add Edges to Make Degrees of All Nodes Even efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isPossible(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;unordered_set&lt;int&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0] - 1;
+      const int v = edge[1] - 1;
+      graph[u].insert(v);
+      graph[v].insert(u);
+    }
+
+    const vector&lt;int&gt; oddNodes = getOddNodes(graph);
+    if (oddNodes.empty())
+      return true;
+    if (oddNodes.size() == 2) {
+      const int a = oddNodes[0];
+      const int b = oddNodes[1];
+      for (int i = 0; i &lt; n; ++i)
+        // Can connect i with a and i with b.
+        if (!graph[i].contains(a) &amp;&amp; !graph[i].contains(b))
+          return true;
+    }
+    if (oddNodes.size() == 4) {
+      const int a = oddNodes[0];
+      const int b = oddNodes[1];
+      const int c = oddNodes[2];
+      const int d = oddNodes[3];
+      return (!graph[a].contains(b) &amp;&amp; !graph[c].contains(d)) ||
+             (!graph[a].contains(c) &amp;&amp; !graph[b].contains(d)) ||
+             (!graph[a].contains(d) &amp;&amp; !graph[b].contains(c));
+    }
+    return false;
+  }
+
+ private:
+  vector&lt;int&gt; getOddNodes(const vector&lt;unordered_set&lt;int&gt;&gt;&amp; graph) {
+    vector&lt;int&gt; oddNodes;
+    for (int i = 0; i &lt; graph.size(); ++i)
+      if (graph[i].size() % 2 == 1)
+        oddNodes.push_back(i);
+    return oddNodes;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isPossible(int n, List&lt;List&lt;Integer&gt;&gt; edges) {
+    Set&lt;Integer&gt;[] graph = new Set[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      graph[i] = new HashSet&lt;&gt;();
+
+    for (List&lt;Integer&gt; edge : edges) {
+      final int u = edge.get(0) - 1;
+      final int v = edge.get(1) - 1;
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    List&lt;Integer&gt; oddNodes = getOddNodes(graph);
+    if (oddNodes.isEmpty())
+      return true;
+    if (oddNodes.size() == 2) {
+      final int a = oddNodes.get(0);
+      final int b = oddNodes.get(1);
+      for (int i = 0; i &lt; n; ++i)
+        // Can connect i with a and i with b.
+        if (!graph[i].contains(a) &amp;&amp; !graph[i].contains(b))
+          return true;
+    }
+    if (oddNodes.size() == 4) {
+      final int a = oddNodes.get(0);
+      final int b = oddNodes.get(1);
+      final int c = oddNodes.get(2);
+      final int d = oddNodes.get(3);
+      return (!graph[a].contains(b) &amp;&amp; !graph[c].contains(d)) ||
+          (!graph[a].contains(c) &amp;&amp; !graph[b].contains(d)) ||
+          (!graph[a].contains(d) &amp;&amp; !graph[b].contains(c));
+    }
+    return false;
+  }
+
+  private List&lt;Integer&gt; getOddNodes(Set&lt;Integer&gt;[] graph) {
+    List&lt;Integer&gt; oddNodes = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; graph.length; ++i)
+      if (graph[i].size() % 2 == 1)
+        oddNodes.add(i);
+    return oddNodes;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isPossible(self, n: int, edges: list[list[int]]) -&gt; bool:
+    graph = [set() for _ in range(n)]
+
+    for u, v in edges:
+      graph[u - 1].add(v - 1)
+      graph[v - 1].add(u - 1)
+
+    oddNodes = [i for i, neighbor in enumerate(
+        graph) if len(neighbor) % 2 == 1]
+    if not oddNodes:
+      return True
+    if len(oddNodes) == 2:
+      a, b = oddNodes
+      return any(a not in graph[i] and b not in graph[i] for i in range(n))
+    if len(oddNodes) == 4:
+      a, b, c, d = oddNodes
+      return ((b not in graph[a] and d not in graph[c]) or
+              (c not in graph[a] and d not in graph[b]) or
+              (d not in graph[a] and c not in graph[b]))
+    return False</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

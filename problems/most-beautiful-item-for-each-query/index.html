@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Most Beautiful Item for Each Query - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Most Beautiful Item for Each Query written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/most-beautiful-item-for-each-query/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/walking-robot-simulation-ii/" class="btn">← Previous</a>
+            <span>Problem 2070 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-number-of-tasks-you-can-assign/" class="btn">Next →</a>
+        </div>
+        <h1>2070. Most Beautiful Item for Each Query</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Most Beautiful Item for Each Query efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; maximumBeauty(vector&lt;vector&lt;int&gt;&gt;&amp; items, vector&lt;int&gt;&amp; queries) {
+    vector&lt;int&gt; ans;
+    vector&lt;int&gt; prices;
+    vector&lt;int&gt; maxBeautySoFar(items.size() + 1);
+
+    ranges::sort(items);
+
+    for (const vector&lt;int&gt;&amp; item : items)
+      prices.push_back(item[0]);
+
+    for (int i = 0; i &lt; items.size(); ++i)
+      maxBeautySoFar[i + 1] = max(maxBeautySoFar[i], items[i][1]);
+
+    for (const int query : queries) {
+      const int i = ranges::upper_bound(prices, query) - prices.begin();
+      ans.push_back(maxBeautySoFar[i]);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maximumBeauty(int[][] items, int[] queries) {
+    int[] ans = new int[queries.length];
+    int[] prices = new int[items.length];
+    int[] maxBeautySoFar = new int[items.length + 1];
+
+    Arrays.sort(items, Comparator.comparingInt(item -&gt; item[0]));
+
+    for (int i = 0; i &lt; items.length; ++i)
+      maxBeautySoFar[i + 1] = Math.max(maxBeautySoFar[i], items[i][1]);
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int index = firstGreater(items, queries[i]);
+      ans[i] = maxBeautySoFar[index];
+    }
+
+    return ans;
+  }
+
+  private int firstGreater(int[][] items, int q) {
+    int l = 0;
+    int r = items.length;
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (items[m][0] &gt; q)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumBeauty(
+      self,
+      items: list[list[int]],
+      queries: list[int],
+  ) -&gt; list[int]:
+    prices, beauties = zip(*sorted(items))
+    maxBeautySoFar = [0] * (len(beauties) + 1)
+
+    for i, beauty in enumerate(beauties):
+      maxBeautySoFar[i + 1] = max(maxBeautySoFar[i], beauty)
+
+    return [maxBeautySoFar[bisect_right(prices, query)] for query in queries]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

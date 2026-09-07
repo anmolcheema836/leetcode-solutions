@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Difference Score in a Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Difference Score in a Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-difference-score-in-a-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/taking-maximum-energy-from-the-mystic-dungeon/" class="btn">← Previous</a>
+            <span>Problem 3148 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-minimum-cost-array-permutation/" class="btn">Next →</a>
+        </div>
+        <h1>3148. Maximum Difference Score in a Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Difference Score in a Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxScore(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    constexpr int kMax = 200&#x27;000;
+    int ans = -kMax;
+
+    for (int i = 0; i &lt; grid.size(); ++i)
+      for (int j = 0; j &lt; grid[0].size(); ++j) {
+        const int prevMin = min(i &gt; 0 ? grid[i - 1][j] : kMax,  //
+                                j &gt; 0 ? grid[i][j - 1] : kMax);
+        ans = max(ans, grid[i][j] - prevMin);
+        grid[i][j] = min(grid[i][j], prevMin);
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxScore(List&lt;List&lt;Integer&gt;&gt; grid) {
+    final int MAX = 200_000;
+    int ans = -MAX;
+
+    for (int i = 0; i &lt; grid.size(); ++i)
+      for (int j = 0; j &lt; grid.get(0).size(); ++j) {
+        final int prevMin = Math.min(i &gt; 0 ? grid.get(i - 1).get(j) : MAX, //
+                                     j &gt; 0 ? grid.get(i).get(j - 1) : MAX);
+        ans = Math.max(ans, grid.get(i).get(j) - prevMin);
+        if (prevMin &lt; grid.get(i).get(j))
+          grid.get(i).set(j, prevMin);
+      }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxScore(self, grid: list[list[int]]) -&gt; int:
+    MAX = 200000
+    ans = -MAX
+
+    for i, row in enumerate(grid):
+      for j, num in enumerate(row):
+        prevMin = min(grid[i - 1][j] if i &gt; 0 else MAX,
+                      grid[i][j - 1] if j &gt; 0 else MAX)
+        ans = max(ans, num - prevMin)
+        grid[i][j] = min(num, prevMin)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

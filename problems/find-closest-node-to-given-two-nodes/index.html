@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Closest Node to Given Two Nodes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Closest Node to Given Two Nodes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-closest-node-to-given-two-nodes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-of-groups-entering-a-competition/" class="btn">← Previous</a>
+            <span>Problem 2359 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-cycle-in-a-graph/" class="btn">Next →</a>
+        </div>
+        <h1>2359. Find Closest Node to Given Two Nodes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Closest Node to Given Two Nodes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int closestMeetingNode(vector&lt;int&gt;&amp; edges, int node1, int node2) {
+    constexpr int kMax = 10000;
+    const vector&lt;int&gt; dist1 = getDist(edges, node1);
+    const vector&lt;int&gt; dist2 = getDist(edges, node2);
+    int minDist = kMax;
+    int ans = -1;
+
+    for (int i = 0; i &lt; edges.size(); ++i)
+      if (min(dist1[i], dist2[i]) &gt;= 0) {
+        const int maxDist = max(dist1[i], dist2[i]);
+        if (maxDist &lt; minDist) {
+          minDist = maxDist;
+          ans = i;
+        }
+      }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; getDist(const vector&lt;int&gt;&amp; edges, int u) {
+    vector&lt;int&gt; dist(edges.size(), -1);
+    int d = 0;
+    while (u != -1 &amp;&amp; dist[u] == -1) {
+      dist[u] = d++;
+      u = edges[u];
+    }
+    return dist;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int closestMeetingNode(int[] edges, int node1, int node2) {
+    final int MAX = 10000;
+    final int[] dist1 = getDist(edges, node1);
+    final int[] dist2 = getDist(edges, node2);
+    int minDist = MAX;
+    int ans = -1;
+
+    for (int i = 0; i &lt; edges.length; ++i)
+      if (Math.min(dist1[i], dist2[i]) &gt;= 0) {
+        final int maxDist = Math.max(dist1[i], dist2[i]);
+        if (maxDist &lt; minDist) {
+          minDist = maxDist;
+          ans = i;
+        }
+      }
+
+    return ans;
+  }
+
+  private int[] getDist(int[] edges, int u) {
+    int[] dist = new int[edges.length];
+    Arrays.fill(dist, -1);
+    int d = 0;
+    while (u != -1 &amp;&amp; dist[u] == -1) {
+      dist[u] = d++;
+      u = edges[u];
+    }
+    return dist;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def closestMeetingNode(self, edges: list[int], node1: int, node2: int) -&gt; int:
+    MAX = 10000
+    dist1 = self._getDist(edges, node1)
+    dist2 = self._getDist(edges, node2)
+    minDist = MAX
+    ans = -1
+
+    for i, (d1, d2) in enumerate(zip(dist1, dist2)):
+      if min(d1, d2) &gt;= 0:
+        maxDist = max(d1, d2)
+        if maxDist &lt; minDist:
+          minDist = maxDist
+          ans = i
+
+    return ans
+
+  def _getDist(self, edges: list[int], u: int) -&gt; list[int]:
+    dist = [-1] * len(edges)
+    d = 0
+    while u != -1 and dist[u] == -1:
+      dist[u] = d
+      d += 1
+      u = edges[u]
+    return dist</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Difference Between Element Sum and Digit Sum of an Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Difference Between Element Sum and Digit Sum of an Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/difference-between-element-sum-and-digit-sum-of-an-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/time-taken-to-cross-the-door/" class="btn">← Previous</a>
+            <span>Problem 2535 of 3563</span>
+            <a href="/leetcode-solutions/problems/increment-submatrices-by-one/" class="btn">Next →</a>
+        </div>
+        <h1>2535. Difference Between Element Sum and Digit Sum of an Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Difference Between Element Sum and Digit Sum of an Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int differenceOfSum(vector&lt;int&gt;&amp; nums) {
+    const int elementSum = accumulate(nums.begin(), nums.end(), 0);
+    const int allDigitSum = getAllDigitSum(nums);
+    return abs(elementSum - allDigitSum);
+  }
+
+ private:
+  int getAllDigitSum(const vector&lt;int&gt;&amp; nums) {
+    int allDigitSum = 0;
+    for (const int num : nums)
+      allDigitSum += getDigitSum(num);
+    return allDigitSum;
+  }
+
+  int getDigitSum(int num) {
+    int digitSum = 0;
+    while (num &gt; 0) {
+      digitSum += num % 10;
+      num /= 10;
+    }
+    return digitSum;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int differenceOfSum(int[] nums) {
+    final int elementSum = Arrays.stream(nums).sum();
+    final int allDigitSum = getAllDigitSum(nums);
+    return Math.abs(elementSum - allDigitSum);
+  }
+
+  private int getAllDigitSum(int[] nums) {
+    int allDigitSum = 0;
+    for (final int num : nums)
+      allDigitSum += getDigitSum(num);
+    return allDigitSum;
+  }
+
+  private int getDigitSum(int num) {
+    int digitSum = 0;
+    while (num &gt; 0) {
+      digitSum += num % 10;
+      num /= 10;
+    }
+    return digitSum;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def differenceOfSum(self, nums: list[int]) -&gt; int:
+    elementSum = sum(nums)
+    digitSum = self._getAllDigitSum(nums)
+    return abs(elementSum - digitSum)
+
+  def _getAllDigitSum(self, nums: list[int]) -&gt; int:
+    return sum(self._getDigitSum(num) for num in nums)
+
+  def _getDigitSum(self, num: int) -&gt; int:
+    return sum(int(digit) for digit in str(num))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

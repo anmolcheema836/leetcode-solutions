@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Beautiful Numbers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Beautiful Numbers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-beautiful-numbers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/zero-array-transformation-iv/" class="btn">← Previous</a>
+            <span>Problem 3490 of 3563</span>
+            <a href="/leetcode-solutions/problems/phone-number-prefix/" class="btn">Next →</a>
+        </div>
+        <h1>3490. Count Beautiful Numbers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Beautiful Numbers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int beautifulNumbers(int l, int r) {
+    return count(to_string(r), 0, /*tight=*/true, /*isLeadingZero=*/true,
+                 /*hasZero=*/false, /*sum=*/0, /*prod=*/1, {}) -
+           count(to_string(l - 1), 0, /*tight=*/true, /*isLeadingZero=*/true,
+                 /*hasZero=*/false, /*sum=*/0, /*prod=*/1, {});
+  }
+
+ private:
+  int count(const string&amp; s, int i, bool tight, bool isLeadingZero,
+            bool hasZero, int sum, int prod, unordered_map&lt;string, int&gt;&amp;&amp; mem) {
+    if (i == s.length()) {
+      if (isLeadingZero)
+        return 0;
+      return (hasZero || prod % sum == 0) ? 1 : 0;
+    }
+    const string key = hash(i, tight, isLeadingZero, hasZero, sum, prod);
+    if (!isLeadingZero &amp;&amp; hasZero &amp;&amp; !tight)
+      return mem[key] = pow(10, s.length() - i);
+    if (const auto it = mem.find(key); it != mem.end())
+      return it-&gt;second;
+
+    int res = 0;
+    const int maxDigit = tight ? s[i] - &#x27;0&#x27; : 9;
+
+    for (int d = 0; d &lt;= maxDigit; ++d) {
+      const bool nextTight = tight &amp;&amp; (d == maxDigit);
+      const bool nextIsLeadingZero = isLeadingZero &amp;&amp; d == 0;
+      const bool nextHasZero = !nextIsLeadingZero &amp;&amp; d == 0;
+      const int nextProd = nextIsLeadingZero ? 1 : prod * d;
+      res += count(s, i + 1, nextTight, nextIsLeadingZero, nextHasZero, sum + d,
+                   nextProd, std::move(mem));
+    }
+
+    return mem[key] = res;
+  }
+
+  string hash(int i, bool tight, bool isLeadingZero, bool hasZero, int sum,
+              int prod) {
+    return to_string(i) + &quot;_&quot; + (tight ? &quot;1&quot; : &quot;0&quot;) + &quot;_&quot; +
+           (isLeadingZero ? &quot;1&quot; : &quot;0&quot;) + &quot;_&quot; + (hasZero ? &quot;1&quot; : &quot;0&quot;) + &quot;_&quot; +
+           to_string(sum) + &quot;_&quot; + to_string(prod);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int beautifulNumbers(int l, int r) {
+    return count(String.valueOf(r), 0, /*tight=*/true, /*isLeadingZero=*/true,
+                 /*hasZero=*/false, /*sum=*/0, /*prod=*/1, new HashMap&lt;&gt;()) -
+        count(String.valueOf(l - 1), 0, /*tight=*/true, /*isLeadingZero=*/true,
+              /*hasZero=*/false, /*sum=*/0, /*prod=*/1, new HashMap&lt;&gt;());
+  }
+
+  private int count(final String s, int i, boolean tight, boolean isLeadingZero, boolean hasZero,
+                    int sum, int prod, Map&lt;String, Integer&gt; mem) {
+    if (i == s.length()) {
+      if (isLeadingZero)
+        return 0;
+      return (hasZero || prod % sum == 0) ? 1 : 0;
+    }
+    final String key = hash(i, tight, isLeadingZero, hasZero, sum, prod);
+    if (!isLeadingZero &amp;&amp; hasZero &amp;&amp; !tight) {
+      final int val = (int) Math.pow(10, s.length() - i);
+      mem.put(key, val);
+      return val;
+    }
+    if (mem.containsKey(key))
+      return mem.get(key);
+
+    int res = 0;
+    final int maxDigit = tight ? s.charAt(i) - &#x27;0&#x27; : 9;
+
+    for (int d = 0; d &lt;= maxDigit; ++d) {
+      final boolean nextTight = tight &amp;&amp; (d == maxDigit);
+      final boolean nextIsLeadingZero = isLeadingZero &amp;&amp; d == 0;
+      final boolean nextHasZero = !nextIsLeadingZero &amp;&amp; d == 0;
+      final int nextProd = nextIsLeadingZero ? 1 : prod * d;
+      res += count(s, i + 1, nextTight, nextIsLeadingZero, nextHasZero, sum + d, nextProd, mem);
+    }
+
+    mem.put(key, res);
+    return res;
+  }
+
+  private String hash(int i, boolean tight, boolean isLeadingZero, boolean hasZero, int sum,
+                      int prod) {
+    return i + &quot;_&quot; + (tight ? &quot;1&quot; : &quot;0&quot;) + &quot;_&quot; + (isLeadingZero ? &quot;1&quot; : &quot;0&quot;) + &quot;_&quot; +
+        (hasZero ? &quot;1&quot; : &quot;0&quot;) + &quot;_&quot; + sum + &quot;_&quot; + prod;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def beautifulNumbers(self, l: int, r: int) -&gt; int:
+    @functools.lru_cache(None)
+    def dp(
+        s: str,
+        i: int,
+        tight: bool,
+        isLeadingZero: bool,
+        hasZero: bool,
+        sum: int,
+        prod: int,
+    ) -&gt; int:
+      if i == len(s):
+        if isLeadingZero:
+          return 0
+        return 1 if hasZero or prod % sum == 0 else 0
+      if not isLeadingZero and hasZero and not tight:
+        return 10 ** (len(s) - i)
+
+      res = 0
+      maxDigit = int(s[i]) if tight else 9
+
+      for d in range(maxDigit + 1):
+        nextTight = tight and (d == maxDigit)
+        nextIsLeadingZero = isLeadingZero and d == 0
+        nextHasZero = not nextIsLeadingZero and d == 0
+        nextProd = 1 if nextIsLeadingZero else prod * d
+        res += dp(s, i + 1, nextTight, nextIsLeadingZero,
+                  nextHasZero, sum + d, nextProd)
+
+      return res
+
+    return (dp(str(r), 0, tight=True, isLeadingZero=True, hasZero=False, sum=0, prod=1) -
+            dp(str(l - 1), 0, tight=True, isLeadingZero=True, hasZero=False, sum=0, prod=1))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

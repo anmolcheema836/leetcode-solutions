@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Ladder II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Word Ladder II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/word-ladder-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/valid-palindrome/" class="btn">← Previous</a>
+            <span>Problem 126 of 3563</span>
+            <a href="/leetcode-solutions/problems/word-ladder/" class="btn">Next →</a>
+        </div>
+        <h1>126. Word Ladder II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Word Ladder II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;string&gt;&gt; findLadders(string beginWord, string endWord,
+                                     vector&lt;string&gt;&amp; wordList) {
+    unordered_set&lt;string&gt; wordSet{wordList.begin(), wordList.end()};
+    if (!wordSet.contains(endWord))
+      return {};
+
+    unordered_map&lt;string, int&gt; distFromBeginWord{{beginWord, 0}};
+    if (!bfs(beginWord, endWord, wordSet, distFromBeginWord))
+      return {};
+
+    vector&lt;vector&lt;string&gt;&gt; ans;
+    wordSet.insert(beginWord);
+    dfs(endWord, beginWord, distFromBeginWord, wordSet, {endWord}, ans);
+    return ans;
+  }
+
+ private:
+  // Uses BFS to update the minimum steps to reach `endWord` from `beginWord` by
+  // using the words in `wordSet`.
+  bool bfs(const string&amp; beginWord, const string&amp; endWord,
+           unordered_set&lt;string&gt;&amp; wordSet,
+           unordered_map&lt;string, int&gt;&amp; distFromBeginWord) {
+    queue&lt;string&gt; q{{beginWord}};
+    while (!q.empty()) {
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const string parent = q.front();
+        q.pop();
+        if (parent == endWord)
+          return true;
+        for (const string&amp; child : getChildren(parent, wordSet)) {
+          if (distFromBeginWord.contains(child))
+            continue;
+          distFromBeginWord[child] = distFromBeginWord[parent] + 1;
+          q.push(child);
+        }
+      }
+    }
+    return false;
+  }
+
+  void dfs(const string&amp; word, const string&amp; beginWord,
+           const unordered_map&lt;string, int&gt;&amp; distFromBeginWord,
+           const unordered_set&lt;string&gt;&amp; wordSet, vector&lt;string&gt;&amp;&amp; path,
+           vector&lt;vector&lt;string&gt;&gt;&amp; ans) {
+    if (word == beginWord) {
+      ans.push_back({path.rbegin(), path.rend()});
+      return;
+    }
+
+    const int currDist = distFromBeginWord.at(word);
+
+    for (const string&amp; child : getChildren(word, wordSet)) {
+      if (const auto it = distFromBeginWord.find(child);
+          it != distFromBeginWord.cend() &amp;&amp; it-&gt;second == currDist - 1) {
+        path.push_back(child);
+        dfs(child, beginWord, distFromBeginWord, wordSet, std::move(path), ans);
+        path.pop_back();
+      }
+    }
+  }
+
+  vector&lt;string&gt; getChildren(const string&amp; parent,
+                             const unordered_set&lt;string&gt;&amp; wordSet) {
+    vector&lt;string&gt; children;
+    string child(parent);
+    for (int i = 0; i &lt; child.length(); ++i) {
+      const char cache = child[i];
+      for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c) {
+        if (c == cache)
+          continue;
+        child[i] = c;
+        if (wordSet.contains(child))
+          children.push_back(child);
+      }
+      child[i] = cache;
+    }
+    return children;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;String&gt;&gt; findLadders(String beginWord, String endWord, List&lt;String&gt; wordList) {
+    Set&lt;String&gt; wordSet = new HashSet&lt;&gt;(wordList);
+    if (!wordSet.contains(endWord))
+      return new ArrayList&lt;&gt;();
+
+    // {&quot;hit&quot;: [&quot;hot&quot;], &quot;hot&quot;: [&quot;dot&quot;, &quot;lot&quot;], ...}
+    Map&lt;String, List&lt;String&gt;&gt; graph = new HashMap&lt;&gt;();
+
+    // Build the graph from the beginWord to the endWord.
+    if (!bfs(beginWord, endWord, wordSet, graph))
+      return new ArrayList&lt;&gt;();
+
+    List&lt;List&lt;String&gt;&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;String&gt; path = new ArrayList&lt;&gt;(List.of(beginWord));
+    dfs(graph, beginWord, endWord, path, ans);
+    return ans;
+  }
+
+  private boolean bfs(final String beginWord, final String endWord, Set&lt;String&gt; wordSet,
+                      Map&lt;String, List&lt;String&gt;&gt; graph) {
+    Set&lt;String&gt; currentLevelWords = new HashSet&lt;&gt;();
+    currentLevelWords.add(beginWord);
+    boolean reachEndWord = false;
+
+    while (!currentLevelWords.isEmpty()) {
+      for (final String word : currentLevelWords)
+        wordSet.remove(word);
+      Set&lt;String&gt; nextLevelWords = new HashSet&lt;&gt;();
+      for (final String parent : currentLevelWords) {
+        graph.putIfAbsent(parent, new ArrayList&lt;&gt;());
+        for (final String child : getChildren(parent, wordSet)) {
+          if (wordSet.contains(child)) {
+            nextLevelWords.add(child);
+            graph.get(parent).add(child);
+          }
+          if (child.equals(endWord))
+            reachEndWord = true;
+        }
+      }
+      if (reachEndWord)
+        return true;
+      currentLevelWords = nextLevelWords;
+    }
+
+    return false;
+  }
+
+  private List&lt;String&gt; getChildren(final String parent, Set&lt;String&gt; wordSet) {
+    List&lt;String&gt; children = new ArrayList&lt;&gt;();
+    StringBuilder sb = new StringBuilder(parent);
+
+    for (int i = 0; i &lt; sb.length(); ++i) {
+      final char cache = sb.charAt(i);
+      for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c) {
+        if (c == cache)
+          continue;
+        sb.setCharAt(i, c);
+        final String child = sb.toString();
+        if (wordSet.contains(child))
+          children.add(child);
+      }
+      sb.setCharAt(i, cache);
+    }
+
+    return children;
+  }
+
+  private void dfs(Map&lt;String, List&lt;String&gt;&gt; graph, final String word, final String endWord,
+                   List&lt;String&gt; path, List&lt;List&lt;String&gt;&gt; ans) {
+    if (word.equals(endWord)) {
+      ans.add(new ArrayList&lt;&gt;(path));
+      return;
+    }
+    if (!graph.containsKey(word))
+      return;
+
+    for (final String child : graph.get(word)) {
+      path.add(child);
+      dfs(graph, child, endWord, path, ans);
+      path.remove(path.size() - 1);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findLadders(self, beginWord: str, endWord: str, wordList: list[str]) -&gt; list[list[str]]:
+    wordSet = set(wordList)
+    if endWord not in wordList:
+      return []
+
+    # {&quot;hit&quot;: [&quot;hot&quot;], &quot;hot&quot;: [&quot;dot&quot;, &quot;lot&quot;], ...}
+    graph: dict[str, list[str]] = collections.defaultdict(list)
+
+    # Build the graph from the beginWord to the endWord.
+    if not self._bfs(beginWord, endWord, wordSet, graph):
+      return []
+
+    ans = []
+    self._dfs(graph, beginWord, endWord, [beginWord], ans)
+    return ans
+
+  def _bfs(
+      self,
+      beginWord: str,
+      endWord: str,
+      wordSet: set[str],
+      graph: dict[str, list[str]],
+  ) -&gt; bool:
+    currentLevelWords = {beginWord}
+
+    while currentLevelWords:
+      for word in currentLevelWords:
+        wordSet.discard(word)
+      nextLevelWords = set()
+      reachEndWord = False
+      for parent in currentLevelWords:
+        for child in self._getChildren(parent, wordSet):
+          if child in wordSet:
+            nextLevelWords.add(child)
+            graph[parent].append(child)
+          if child == endWord:
+            reachEndWord = True
+      if reachEndWord:
+        return True
+      currentLevelWords = nextLevelWords
+
+    return False
+
+  def _getChildren(self, parent: str, wordSet: set[str]) -&gt; list[str]:
+    children = []
+    s = list(parent)
+
+    for i, cache in enumerate(s):
+      for c in string.ascii_lowercase:
+        if c == cache:
+          continue
+        s[i] = c
+        child = &#x27;&#x27;.join(s)
+        if child in wordSet:
+          children.append(child)
+      s[i] = cache
+
+    return children
+
+  def _dfs(
+      self,
+      graph: dict[str, list[str]],
+      word: str,
+      endWord: str,
+      path: list[str],
+      ans: list[list[str]],
+  ) -&gt; None:
+    if word == endWord:
+      ans.append(path.copy())
+      return
+
+    for child in graph.get(word, []):
+      path.append(child)
+      self._dfs(graph, child, endWord, path, ans)
+      path.pop()</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

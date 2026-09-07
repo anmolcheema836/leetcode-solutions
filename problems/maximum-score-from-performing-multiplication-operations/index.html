@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Score from Performing Multiplication Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Score from Performing Multiplication Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-score-from-performing-multiplication-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-operations-to-move-all-balls-to-each-box/" class="btn">← Previous</a>
+            <span>Problem 1770 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-palindrome-length-from-subsequences/" class="btn">Next →</a>
+        </div>
+        <h1>1770. Maximum Score from Performing Multiplication Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Score from Performing Multiplication Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximumScore(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; multipliers) {
+    vector&lt;vector&lt;int&gt;&gt; mem(multipliers.size(),
+                            vector&lt;int&gt;(multipliers.size(), -1));
+    return maximumScore(nums, 0, multipliers, 0, mem);
+  }
+
+ private:
+  // Returns the maximum score of nums[s..e] and multipliers[i].
+  int maximumScore(const vector&lt;int&gt;&amp; nums, int s,
+                   const vector&lt;int&gt;&amp; multipliers, int i,
+                   vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i == multipliers.size())
+      return 0;
+    if (mem[s][i] != -1)
+      return mem[s][i];
+
+    // The number of nums picked on the start side is s.
+    // The number of nums picked on the end side is i - s.
+    // So, e = n - (i - s) - 1.
+    const int e = nums.size() - (i - s) - 1;
+    const int pickStart = nums[s] * multipliers[i] +
+                          maximumScore(nums, s + 1, multipliers, i + 1, mem);
+    const int pickEnd = nums[e] * multipliers[i] +
+                        maximumScore(nums, s, multipliers, i + 1, mem);
+    return mem[s][i] = max(pickStart, pickEnd);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximumScore(int[] nums, int[] multipliers) {
+    Integer[][] mem = new Integer[multipliers.length][multipliers.length];
+    return maximumScore(nums, 0, multipliers, 0, mem);
+  }
+
+  private int maximumScore(int[] nums, int s, int[] multipliers, int i, Integer[][] mem) {
+    if (i == multipliers.length)
+      return 0;
+    if (mem[s][i] != null)
+      return mem[s][i];
+
+    // The number of nums picked on the start side is s.
+    // The number of nums picked on the end side is i - s.
+    // So, e = n - (i - s) - 1.
+    final int e = nums.length - (i - s) - 1;
+    final int pickStart = nums[s] * multipliers[i] + //
+                          maximumScore(nums, s + 1, multipliers, i + 1, mem);
+    final int pickEnd = nums[e] * multipliers[i] + //
+                        maximumScore(nums, s, multipliers, i + 1, mem);
+    return mem[s][i] = Math.max(pickStart, pickEnd);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximumScore(self, nums: list[int], multipliers: list[int]) -&gt; int:
+    @functools.lru_cache(2000)
+    def dp(s: int, i: int) -&gt; int:
+      &quot;&quot;&quot;Returns the maximum score of nums[s..e] and multipliers[i].&quot;&quot;&quot;
+      if i == len(multipliers):
+        return 0
+
+      # The number of nums picked on the start side is s.
+      # The number of nums picked on the end side is i - s.
+      # So, e = n - (i - s) - 1.
+      e = len(nums) - (i - s) - 1
+      pickStart = nums[s] * multipliers[i] + dp(s + 1, i + 1)
+      pickEnd = nums[e] * multipliers[i] + dp(s, i + 1)
+      return max(pickStart, pickEnd)
+
+    return dp(0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strong Password Checker - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Strong Password Checker written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/strong-password-checker/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/battleships-in-a-board/" class="btn">← Previous</a>
+            <span>Problem 420 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-xor-of-two-numbers-in-an-array/" class="btn">Next →</a>
+        </div>
+        <h1>420. Strong Password Checker</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Strong Password Checker efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int strongPasswordChecker(string password) {
+    const int n = password.length();
+    const int missing = getMissing(password);
+    // the number of replacements to deal with 3 repeating characters
+    int replaces = 0;
+    // the number of sequences that can be substituted with 1 deletions,
+    // (3k)-seqs
+    int oneSeq = 0;
+    // the number of sequences that can be substituted with 2 deletions,
+    // (3k + 1)-seqs
+    int twoSeq = 0;
+
+    for (int i = 2; i &lt; n;)
+      if (password[i] == password[i - 1] &amp;&amp;
+          password[i - 1] == password[i - 2]) {
+        int length = 2;  // the length of the repeating password
+        while (i &lt; n &amp;&amp; password[i] == password[i - 1]) {
+          ++length;
+          ++i;
+        }
+        replaces += length / 3;  // &#x27;aaaaaaa&#x27; -&gt; &#x27;aaxaaxa&#x27;
+        if (length % 3 == 0)
+          ++oneSeq;
+        if (length % 3 == 1)
+          ++twoSeq;
+      } else {
+        ++i;
+      }
+
+    if (n &lt; 6)
+      return max(6 - n, missing);
+    if (n &lt;= 20)
+      return max(replaces, missing);
+
+    const int deletes = n - 20;
+    // Each replacement in (3k)-seqs can be substituted with 1 deletions.
+    replaces -= min(oneSeq, deletes);
+    // Each replacement in (3k + 1)-seqs can be substituted with 2 deletions.
+    replaces -= min(max(deletes - oneSeq, 0), twoSeq * 2) / 2;
+    // Each replacement in other seqs can be substituted with 3 deletions.
+    replaces -= max(deletes - oneSeq - twoSeq * 2, 0) / 3;
+    return deletes + max(replaces, missing);
+  }
+
+ private:
+  int getMissing(const string&amp; password) {
+    return 3 -  //
+           ranges::any_of(password, [](char c) { return isupper(c); }) -
+           ranges::any_of(password, [](char c) { return islower(c); }) -
+           ranges::any_of(password, [](char c) { return isdigit(c); });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int strongPasswordChecker(String password) {
+    final int n = password.length();
+    final int missing = getMissing(password);
+    // the number of replacements to deal with 3 repeating characters
+    int replaces = 0;
+    // the number of sequences that can be substituted with 1 deletions, (3k)-seqs
+    int oneSeq = 0;
+    // the number of sequences that can be substituted with 2 deletions, (3k + 1)-seqs
+    int twoSeq = 0;
+
+    for (int i = 2; i &lt; n;)
+      if (password.charAt(i) == password.charAt(i - 1) &amp;&amp;
+          password.charAt(i - 1) == password.charAt(i - 2)) {
+        int length = 2; // the length of the repeating password
+        while (i &lt; n &amp;&amp; password.charAt(i) == password.charAt(i - 1)) {
+          ++length;
+          ++i;
+        }
+        replaces += length / 3; // &#x27;aaaaaaa&#x27; -&gt; &#x27;aaxaaxa&#x27;
+        if (length % 3 == 0)
+          ++oneSeq;
+        if (length % 3 == 1)
+          ++twoSeq;
+      } else {
+        ++i;
+      }
+
+    if (n &lt; 6)
+      return Math.max(6 - n, missing);
+    if (n &lt;= 20)
+      return Math.max(replaces, missing);
+
+    final int deletes = n - 20;
+    // Each replacement in (3k)-seqs can be substituted with 1 deletions.
+    replaces -= Math.min(oneSeq, deletes);
+    // Each replacement in (3k + 1)-seqs can be substituted with 2 deletions.
+    replaces -= Math.min(Math.max(deletes - oneSeq, 0), twoSeq * 2) / 2;
+    // Each replacement in other seqs can be substituted with 3 deletions.
+    replaces -= Math.max(deletes - oneSeq - twoSeq * 2, 0) / 3;
+    return deletes + Math.max(replaces, missing);
+  }
+
+  private int getMissing(final String password) {
+    return 3 - //
+        (password.chars().anyMatch(Character::isUpperCase) ? 1 : 0) -
+        (password.chars().anyMatch(Character::isLowerCase) ? 1 : 0) -
+        (password.chars().anyMatch(Character::isDigit) ? 1 : 0);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def strongPasswordChecker(self, password: str) -&gt; int:
+    n = len(password)
+    missing = self._getMissing(password)
+    # the number of replacements to deal with 3 repeating characters
+    replaces = 0
+    # the number of sequences that can be substituted with 1 deletions,
+    # (3k)-seqs
+    oneSeq = 0
+    # the number of sequences that can be substituted with 2 deletions,
+    # (3k + 1)-seqs
+    twoSeq = 0
+
+    i = 2
+    while i &lt; n:
+      if password[i] == password[i - 1] and password[i - 1] == password[i - 2]:
+        length = 2  # the length of the repeating password
+        while i &lt; n and password[i] == password[i - 1]:
+          length += 1
+          i += 1
+        replaces += length // 3  # &#x27;aaaaaaa&#x27; -&gt; &#x27;aaxaaxa&#x27;
+        if length % 3 == 0:
+          oneSeq += 1
+        if length % 3 == 1:
+          twoSeq += 1
+      else:
+        i += 1
+
+    if n &lt; 6:
+      return max(6 - n, missing)
+    if n &lt;= 20:
+      return max(replaces, missing)
+
+    deletes = n - 20
+    # Each replacement in (3k)-seqs can be substituted with 1 deletions.
+    replaces -= min(oneSeq, deletes)
+    # Each replacement in (3k + 1)-seqs can be substituted with 2 deletions.
+    replaces -= min(max(deletes - oneSeq, 0), twoSeq * 2) // 2
+    # Each replacement in other seqs can be substituted with 3 deletions.
+    replaces -= max(deletes - oneSeq - twoSeq * 2, 0) // 3
+    return deletes + max(replaces, missing)
+
+  def _getMissing(self, password: str) -&gt; int:
+    return (3
+            - any(c.isupper() for c in password)
+            - any(c.islower() for c in password)
+            - any(c.isdigit() for c in password))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

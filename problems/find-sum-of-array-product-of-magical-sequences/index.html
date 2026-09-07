@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Sum of Array Product of Magical Sequences - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Sum of Array Product of Magical Sequences written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-sum-of-array-product-of-magical-sequences/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/merge-operations-for-minimum-travel-time/" class="btn">← Previous</a>
+            <span>Problem 3539 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-time-to-visit-all-houses/" class="btn">Next →</a>
+        </div>
+        <h1>3539. Find Sum of Array Product of Magical Sequences</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Sum of Array Product of Magical Sequences efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int magicalSum(int m, int k, vector&lt;int&gt;&amp; nums) {
+    const vector&lt;vector&lt;int&gt;&gt; comb = getComb(m, m);
+    vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt; mem(
+        m + 1, vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;(
+                   k + 1, vector&lt;vector&lt;int&gt;&gt;(nums.size() + 1,
+                                              vector&lt;int&gt;(m + 1, -1))));
+    return dp(m, k, 0, 0, nums, mem, comb);
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  int dp(int m, int k, int i, unsigned carry, const vector&lt;int&gt;&amp; nums,
+         vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;&amp; mem,
+         const vector&lt;vector&lt;int&gt;&gt;&amp; comb) {
+    if (m &lt; 0 || k &lt; 0 || (m + popcount(carry) &lt; k))
+      return 0;
+    if (m == 0)
+      return k == popcount(carry) ? 1 : 0;
+    if (i == nums.size())
+      return 0;
+    if (mem[m][k][i][carry] != -1)
+      return mem[m][k][i][carry];
+    int res = 0;
+    for (int count = 0; count &lt;= m; ++count) {
+      const long contribution = comb[m][count] * modPow(nums[i], count) % kMod;
+      const int newCarry = carry + count;
+      res = (res + static_cast&lt;long&gt;(dp(m - count, k - (newCarry % 2), i + 1,
+                                        newCarry / 2, nums, mem, comb)) *
+                       contribution) %
+            kMod;
+    }
+    return mem[m][k][i][carry] = res;
+  }
+
+  // C(n, k) = C(n - 1, k) + C(n - 1, k - 1)
+  vector&lt;vector&lt;int&gt;&gt; getComb(int n, int k) {
+    vector&lt;vector&lt;int&gt;&gt; comb(n + 1, vector&lt;int&gt;(k + 1));
+    for (int i = 0; i &lt;= n; ++i)
+      comb[i][0] = 1;
+    for (int i = 1; i &lt;= n; ++i)
+      for (int j = 1; j &lt;= k; ++j)
+        comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1];
+    return comb;
+  }
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int magicalSum(int m, int k, int[] nums) {
+    int[][] comb = getComb(m, m);
+    Integer[][][][] mem = new Integer[m + 1][k + 1][nums.length + 1][m + 1];
+    return dp(m, k, 0, 0, nums, mem, comb);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private int dp(int m, int k, int i, int carry, int[] nums, Integer[][][][] mem, int[][] comb) {
+    if (m &lt; 0 || k &lt; 0 || (m + Integer.bitCount(carry) &lt; k))
+      return 0;
+    if (m == 0)
+      return k == Integer.bitCount(carry) ? 1 : 0;
+    if (i == nums.length)
+      return 0;
+    if (mem[m][k][i][carry] != null)
+      return mem[m][k][i][carry];
+    int res = 0;
+    for (int count = 0; count &lt;= m; count++) {
+      final long contribution = comb[m][count] * modPow(nums[i], count) % MOD;
+      final int newCarry = carry + count;
+      res = (int) ((res +
+                    (long) dp(m - count, k - (newCarry % 2), i + 1, newCarry / 2, nums, mem, comb) *
+                        contribution) %
+                   MOD);
+    }
+    return mem[m][k][i][carry] = res;
+  }
+
+  // C(n, k) = C(n - 1, k) + C(n - 1, k - 1)
+  private int[][] getComb(int n, int k) {
+    int[][] comb = new int[n + 1][k + 1];
+    for (int i = 0; i &lt;= n; i++)
+      comb[i][0] = 1;
+    for (int i = 1; i &lt;= n; i++)
+      for (int j = 1; j &lt;= k; j++)
+        comb[i][j] = (comb[i - 1][j] + comb[i - 1][j - 1]) % MOD;
+    return comb;
+  }
+
+  private long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % MOD, n - 1) % MOD;
+    return modPow(x * x % MOD, n / 2) % MOD;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def magicalSum(self, m: int, k: int, nums: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+
+    @functools.lru_cache(None)
+    def dp(m: int, k: int, i: int, carry: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the number of magical sequences of length `k` that can be formed
+      from the first `i` numbers in `nums` with at most `m` elements.
+      &quot;&quot;&quot;
+      if m &lt; 0 or k &lt; 0 or (m + carry.bit_count() &lt; k):
+        return 0
+      if m == 0:
+        return int(k == carry.bit_count())
+      if i == len(nums):
+        return 0
+      res = 0
+      for count in range(m + 1):
+        contribution = math.comb(m, count) * pow(nums[i], count, MOD) % MOD
+        newCarry = carry + count
+        res += dp(m - count, k - (newCarry % 2),
+                  i + 1, newCarry // 2) * contribution
+        res %= MOD
+      return res
+
+    return dp(m, k, 0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

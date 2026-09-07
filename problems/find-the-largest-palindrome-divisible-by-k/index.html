@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Largest Palindrome Divisible by K - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Largest Palindrome Divisible by K written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-largest-palindrome-divisible-by-k/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-energy-boost-from-two-drinks/" class="btn">← Previous</a>
+            <span>Problem 3260 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-substrings-that-satisfy-k-constraint-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3260. Find the Largest Palindrome Divisible by K</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Largest Palindrome Divisible by K efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string largestPalindrome(int n, int k) {
+    switch (k) {
+      case 1:
+        return string(n, &#x27;9&#x27;);
+      case 2:
+        return n &lt;= 2 ? string(n, &#x27;8&#x27;) : &quot;8&quot; + string(n - 2, &#x27;9&#x27;) + &quot;8&quot;;
+      case 3:
+      case 9:
+        return string(n, &#x27;9&#x27;);
+      case 4:
+        return n &lt;= 4 ? string(n, &#x27;8&#x27;) : &quot;88&quot; + string(n - 4, &#x27;9&#x27;) + &quot;88&quot;;
+      case 5:
+        return n &lt;= 2 ? string(n, &#x27;5&#x27;) : &quot;5&quot; + string(n - 2, &#x27;9&#x27;) + &quot;5&quot;;
+      case 6:
+        if (n &lt;= 2) {
+          return string(n, &#x27;6&#x27;);
+        } else if (n % 2 == 1) {
+          const int l = n / 2 - 1;
+          return &quot;8&quot; + string(l, &#x27;9&#x27;) + &quot;8&quot; + string(l, &#x27;9&#x27;) + &quot;8&quot;;
+        } else {
+          const int l = n / 2 - 2;
+          return &quot;8&quot; + string(l, &#x27;9&#x27;) + &quot;77&quot; + string(l, &#x27;9&#x27;) + &quot;8&quot;;
+        }
+      case 8:
+        return n &lt;= 6 ? string(n, &#x27;8&#x27;) : &quot;888&quot; + string(n - 6, &#x27;9&#x27;) + &quot;888&quot;;
+      default:
+        const string middle[] = {&quot;&quot;,          &quot;7&quot;,          &quot;77&quot;,
+                                 &quot;959&quot;,       &quot;9779&quot;,       &quot;99799&quot;,
+                                 &quot;999999&quot;,    &quot;9994999&quot;,    &quot;99944999&quot;,
+                                 &quot;999969999&quot;, &quot;9999449999&quot;, &quot;99999499999&quot;};
+        const int q = n / 12;
+        const int r = n % 12;
+        return string(q * 6, &#x27;9&#x27;) + middle[r] + string(q * 6, &#x27;9&#x27;);
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String largestPalindrome(int n, int k) {
+    StringBuilder sb = new StringBuilder();
+
+    switch (k) {
+      case 1:
+        return &quot;9&quot;.repeat(n);
+      case 2:
+        return n &lt;= 2 ? &quot;8&quot;.repeat(n)
+                      : sb.append(&quot;8&quot;) //
+                            .append(&quot;9&quot;.repeat(n - 2))
+                            .append(&quot;8&quot;)
+                            .toString();
+      case 3:
+      case 9:
+        return &quot;9&quot;.repeat(n);
+      case 4:
+        return n &lt;= 4 ? &quot;8&quot;.repeat(n)
+                      : sb.append(&quot;88&quot;) //
+                            .append(&quot;9&quot;.repeat(n - 4))
+                            .append(&quot;88&quot;)
+                            .toString();
+      case 5:
+        return n &lt;= 2 ? &quot;5&quot;.repeat(n)
+                      : sb.append(&quot;5&quot;) //
+                            .append(&quot;9&quot;.repeat(n - 2))
+                            .append(&quot;5&quot;)
+                            .toString();
+      case 6:
+        if (n &lt;= 2) {
+          return &quot;6&quot;.repeat(n);
+        } else if (n % 2 == 1) {
+          final int l = n / 2 - 1;
+          return sb.append(&quot;8&quot;)
+              .append(&quot;9&quot;.repeat(l))
+              .append(&quot;8&quot;)
+              .append(&quot;9&quot;.repeat(l))
+              .append(&quot;8&quot;)
+              .toString();
+        } else {
+          final int l = n / 2 - 2;
+          return sb.append(&quot;8&quot;)
+              .append(&quot;9&quot;.repeat(l))
+              .append(&quot;77&quot;)
+              .append(&quot;9&quot;.repeat(l))
+              .append(&quot;8&quot;)
+              .toString();
+        }
+      case 8:
+        return n &lt;= 6 ? &quot;8&quot;.repeat(n)
+                      : sb.append(&quot;888&quot;) //
+                            .append(&quot;9&quot;.repeat(n - 6))
+                            .append(&quot;888&quot;)
+                            .toString();
+      default:
+        String[] middle = {&quot;&quot;,         &quot;7&quot;,         &quot;77&quot;,         &quot;959&quot;,
+                           &quot;9779&quot;,     &quot;99799&quot;,     &quot;999999&quot;,     &quot;9994999&quot;,
+                           &quot;99944999&quot;, &quot;999969999&quot;, &quot;9999449999&quot;, &quot;99999499999&quot;};
+        final int q = n / 12;
+        final int r = n % 12;
+        return sb.append(&quot;999999&quot;.repeat(q))
+            .append(middle[r])
+            .append(&quot;999999&quot;.repeat(q))
+            .toString();
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestPalindrome(self, n: int, k: int) -&gt; str:
+    match k:
+      case 1:
+        return &#x27;9&#x27; * n
+      case 2:
+        return &#x27;8&#x27; * n if n &lt;= 2 else &#x27;8&#x27; + &#x27;9&#x27; * (n - 2) + &#x27;8&#x27;
+      case 3 | 9:
+        return &#x27;9&#x27; * n
+      case 4:
+        return &#x27;8&#x27; * n if n &lt;= 4 else &#x27;88&#x27; + &#x27;9&#x27; * (n - 4) + &#x27;88&#x27;
+      case 5:
+        return &#x27;5&#x27; * n if n &lt;= 2 else &#x27;5&#x27; + &#x27;9&#x27; * (n - 2) + &#x27;5&#x27;
+      case 6:
+        if n &lt;= 2:
+          return &#x27;6&#x27; * n
+        elif n % 2 == 1:
+          l = n // 2 - 1
+          return &#x27;8&#x27; + &#x27;9&#x27; * l + &#x27;8&#x27; + &#x27;9&#x27; * l + &#x27;8&#x27;
+        else:
+          l = n // 2 - 2
+          return &#x27;8&#x27; + &#x27;9&#x27; * l + &#x27;77&#x27; + &#x27;9&#x27; * l + &#x27;8&#x27;
+      case 8:
+        return &#x27;8&#x27; * n if n &lt;= 6 else &#x27;888&#x27; + &#x27;9&#x27; * (n - 6) + &#x27;888&#x27;
+      case _:
+        middle = {
+            0: &#x27;&#x27;, 1: &#x27;7&#x27;, 2: &#x27;77&#x27;, 3: &#x27;959&#x27;, 4: &#x27;9779&#x27;, 5: &#x27;99799&#x27;,
+            6: &#x27;999999&#x27;, 7: &#x27;9994999&#x27;, 8: &#x27;99944999&#x27;, 9: &#x27;999969999&#x27;,
+            10: &#x27;9999449999&#x27;, 11: &#x27;99999499999&#x27;
+        }
+        q, r = divmod(n, 12)
+        return &#x27;999999&#x27; * q + middle[r] + &#x27;999999&#x27; * q</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

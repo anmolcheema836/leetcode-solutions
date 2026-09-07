@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Equal Numbers Blocks - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Equal Numbers Blocks written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-equal-numbers-blocks/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-strong-pair-xor-ii/" class="btn">← Previous</a>
+            <span>Problem 2936 of 3563</span>
+            <a href="/leetcode-solutions/problems/make-three-strings-equal/" class="btn">Next →</a>
+        </div>
+        <h1>2936. Number of Equal Numbers Blocks</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Equal Numbers Blocks efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">/**
+ * Definition for BigArray.
+ * class BigArray {
+ *  public:
+ *   BigArray(vector&lt;int&gt; elements);
+ *   int at(long long index);
+ *   long long size();
+ * };
+ */
+
+class Solution {
+ public:
+  int countBlocks(BigArray* nums) {
+    return countBlocks(nums, 0, nums-&gt;size() - 1, nums-&gt;at(0),
+                       nums-&gt;at(nums-&gt;size() - 1));
+  }
+
+ private:
+  // Returns the number of maximal blocks in nums[l..r].
+  int countBlocks(BigArray* nums, long l, long r, int leftValue,
+                  int rightValue) {
+    if (leftValue == rightValue)  // nums[l..r] are identical.
+      return 1;
+    if (l + 1 == r)  // nums[l] != nums[r].
+      return 2;
+    const long m = (l + r) / 2;
+    const int midValue = nums-&gt;at(m);
+    // Substract nums[m], which will be counted twice.
+    return countBlocks(nums, l, m, leftValue, midValue) +
+           countBlocks(nums, m, r, midValue, rightValue) - 1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">/**
+ * Definition for BigArray.
+ * class BigArray {
+ *   public BigArray(int[] elements);
+ *   public int at(long index);
+ *   public long size();
+ * }
+ */
+
+class Solution {
+  public int countBlocks(BigArray nums) {
+    return countBlocks(nums, 0, nums.size() - 1, nums.at(0), nums.at(nums.size() - 1));
+  }
+
+  // Returns the number of maximal blocks in nums[l..r].
+  private int countBlocks(BigArray nums, long l, long r, int leftValue, int rightValue) {
+    if (leftValue == rightValue) // nums[l..r] are identical.
+      return 1;
+    if (l + 1 == r) // nums[l] != nums[r].
+      return 2;
+    final long m = (l + r) / 2;
+    final int midValue = nums.at(m);
+    // Substract nums[m], which will be counted twice.
+    return countBlocks(nums, l, m, leftValue, midValue) +
+        countBlocks(nums, m, r, midValue, rightValue) - 1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python"># Definition for BigArray.
+# class BigArray:
+#   def at(self, index: long) -&gt; int:
+#     pass
+#   def size(self) -&gt; long:
+#     pass
+
+class Solution(object):
+  def countBlocks(self, nums: Optional[&#x27;BigArray&#x27;]) -&gt; int:
+    def countBlocks(l: int, r: int, leftValue: int, rightValue: int) -&gt; int:
+      &quot;&quot;&quot;Returns the number of maximal blocks in nums[l..r].&quot;&quot;&quot;
+      if leftValue == rightValue:
+        return 1
+      if l + 1 == r:
+        return 2
+      m = (l + r) // 2
+      midValue = nums.at(m)
+      return (countBlocks(l, m, leftValue, midValue) +
+              countBlocks(m, r, midValue, rightValue) - 1)
+    # Substract nums[m], which will be counted twice.
+    return countBlocks(0, nums.size() - 1,
+                       nums.at(0), nums.at(nums.size() - 1))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

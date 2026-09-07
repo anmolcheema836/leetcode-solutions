@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator III - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Basic Calculator III written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/basic-calculator-iii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/jewels-and-stones/" class="btn">← Previous</a>
+            <span>Problem 772 of 3563</span>
+            <a href="/leetcode-solutions/problems/sliding-puzzle/" class="btn">Next →</a>
+        </div>
+        <h1>772. Basic Calculator III</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Basic Calculator III efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int calculate(string s) {
+    stack&lt;int&gt; nums;
+    stack&lt;int&gt; ops;
+    bool hasPrevNum = false;
+
+    auto calc = [&amp;]() {
+      const int b = nums.top();
+      nums.pop();
+      const int a = nums.top();
+      nums.pop();
+      const char op = ops.top();
+      ops.pop();
+      if (op == &#x27;+&#x27;)
+        nums.push(a + b);
+      else if (op == &#x27;-&#x27;)
+        nums.push(a - b);
+      else if (op == &#x27;*&#x27;)
+        nums.push(a * b);
+      else  // op == &#x27;/&#x27;
+        nums.push(a / b);
+    };
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      const char c = s[i];
+      if (isdigit(c)) {
+        int num = c - &#x27;0&#x27;;
+        while (i + 1 &lt; s.length() &amp;&amp; isdigit(s[i + 1]))
+          num = num * 10 + (s[i++ + 1] - &#x27;0&#x27;);
+        nums.push(num);
+        hasPrevNum = true;
+      } else if (c == &#x27;(&#x27;) {
+        ops.push(&#x27;(&#x27;);
+        hasPrevNum = false;
+      } else if (c == &#x27;)&#x27;) {
+        while (ops.top() != &#x27;(&#x27;)
+          calc();
+        ops.pop();  // Pop &#x27;(&#x27;.
+      } else if (c == &#x27;+&#x27; || c == &#x27;-&#x27; || c == &#x27;*&#x27; || c == &#x27;/&#x27;) {
+        if (!hasPrevNum)
+          nums.push(0);
+        while (!ops.empty() &amp;&amp; precedes(ops.top(), c))
+          calc();
+        ops.push(c);
+      }
+    }
+
+    while (!ops.empty())
+      calc();
+
+    return nums.top();
+  }
+
+ private:
+  // Returns true if the previous character is a operator and the priority of
+  // the previous operator &gt;= the priority of the current character (operator).
+  bool precedes(char prev, char curr) {
+    if (prev == &#x27;(&#x27;)
+      return false;
+    return prev == &#x27;*&#x27; || prev == &#x27;/&#x27; || curr == &#x27;+&#x27; || curr == &#x27;-&#x27;;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int calculate(String s) {
+    Deque&lt;Integer&gt; nums = new ArrayDeque&lt;&gt;();
+    Deque&lt;Character&gt; ops = new ArrayDeque&lt;&gt;();
+    boolean hasPrevNum = false;
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      final char c = s.charAt(i);
+      if (Character.isDigit(c)) {
+        int num = c - &#x27;0&#x27;;
+        while (i + 1 &lt; s.length() &amp;&amp; Character.isDigit(s.charAt(i + 1)))
+          num = num * 10 + (s.charAt(i++ + 1) - &#x27;0&#x27;);
+        nums.push(num);
+        hasPrevNum = true;
+      } else if (c == &#x27;(&#x27;) {
+        ops.push(&#x27;(&#x27;);
+        hasPrevNum = false;
+      } else if (c == &#x27;)&#x27;) {
+        while (ops.peek() != &#x27;(&#x27;)
+          calc(nums, ops);
+        ops.pop(); // Pop &#x27;(&#x27;.
+      } else if (c == &#x27;+&#x27; || c == &#x27;-&#x27; || c == &#x27;*&#x27; || c == &#x27;/&#x27;) {
+        if (!hasPrevNum)
+          nums.push(0);
+        while (!ops.isEmpty() &amp;&amp; precedes(ops.peek(), c))
+          calc(nums, ops);
+        ops.push(c);
+      }
+    }
+
+    while (!ops.isEmpty())
+      calc(nums, ops);
+
+    return nums.peek();
+  }
+
+  private void calc(Deque&lt;Integer&gt; nums, Deque&lt;Character&gt; ops) {
+    final int b = nums.pop();
+    final int a = nums.pop();
+    final char op = ops.pop();
+    if (op == &#x27;+&#x27;)
+      nums.push(a + b);
+    else if (op == &#x27;-&#x27;)
+      nums.push(a - b);
+    else if (op == &#x27;*&#x27;)
+      nums.push(a * b);
+    else // op == &#x27;/&#x27;
+      nums.push(a / b);
+  }
+
+  // Returns true if the previous character is a operator and the priority of
+  // the previous operator &gt;= the priority of the current character (operator).
+  private boolean precedes(char prev, char curr) {
+    if (prev == &#x27;(&#x27;)
+      return false;
+    return prev == &#x27;*&#x27; || prev == &#x27;/&#x27; || curr == &#x27;+&#x27; || curr == &#x27;-&#x27;;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def calculate(self, s: str) -&gt; int:
+    nums = []
+    ops = []
+
+    def calc():
+      b = nums.pop()
+      a = nums.pop()
+      op = ops.pop()
+      if op == &#x27;+&#x27;:
+        nums.append(a + b)
+      elif op == &#x27;-&#x27;:
+        nums.append(a - b)
+      elif op == &#x27;*&#x27;:
+        nums.append(a * b)
+      else:  # op == &#x27;/&#x27;
+        nums.append(int(a / b))
+
+    def precedes(prev: str, curr: str) -&gt; bool:
+      &quot;&quot;&quot;
+      Returns True if the previous character is a operator and the priority of
+      the previous operator &gt;= the priority of the current character (operator).
+      &quot;&quot;&quot;
+      if prev == &#x27;(&#x27;:
+        return False
+      return prev in &#x27;*/&#x27; or curr in &#x27;+-&#x27;
+
+    i = 0
+    hasPrevNum = False
+
+    while i &lt; len(s):
+      c = s[i]
+      if c.isdigit():
+        num = int(c)
+        while i + 1 &lt; len(s) and s[i + 1].isdigit():
+          num = num * 10 + int(s[i + 1])
+          i += 1
+        nums.append(num)
+        hasPrevNum = True
+      elif c == &#x27;(&#x27;:
+        ops.append(&#x27;(&#x27;)
+        hasPrevNum = False
+      elif c == &#x27;)&#x27;:
+        while ops[-1] != &#x27;(&#x27;:
+          calc()
+        ops.pop()  # Pop &#x27;(&#x27;
+      elif c in &#x27;+-*/&#x27;:
+        if not hasPrevNum:  # Handle input like &quot;-1-(-1)&quot;
+          num.append(0)
+        while ops and precedes(ops[-1], c):
+          calc()
+        ops.append(c)
+      i += 1
+
+    while ops:
+      calc()
+
+    return nums.pop()</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

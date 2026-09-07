@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Binary Tree Inserter - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Complete Binary Tree Inserter written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/complete-binary-tree-inserter/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-sum-circular-subarray/" class="btn">← Previous</a>
+            <span>Problem 919 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-music-playlists/" class="btn">Next →</a>
+        </div>
+        <h1>919. Complete Binary Tree Inserter</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Complete Binary Tree Inserter efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class CBTInserter {
+ public:
+  CBTInserter(TreeNode* root) {
+    tree.push_back(root);
+    for (int i = 0; i &lt; tree.size(); ++i) {
+      TreeNode* node = tree[i];
+      if (node-&gt;left)
+        tree.push_back(node-&gt;left);
+      if (node-&gt;right)
+        tree.push_back(node-&gt;right);
+    }
+  }
+
+  int insert(int v) {
+    const int n = tree.size();
+    tree.push_back(new TreeNode(v));
+    auto&amp; parent = tree[(n - 1) / 2];
+    if (n % 2 == 1)
+      parent-&gt;left = tree.back();
+    else
+      parent-&gt;right = tree.back();
+    return parent-&gt;val;
+  }
+
+  TreeNode* get_root() {
+    return tree[0];
+  }
+
+ private:
+  vector&lt;TreeNode*&gt; tree;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class CBTInserter {
+  public CBTInserter(TreeNode root) {
+    tree.add(root);
+    for (int i = 0; i &lt; tree.size(); ++i) {
+      TreeNode node = tree.get(i);
+      if (node.left != null)
+        tree.add(node.left);
+      if (node.right != null)
+        tree.add(node.right);
+    }
+  }
+
+  public int insert(int v) {
+    final int n = tree.size();
+    TreeNode node = new TreeNode(v);
+    TreeNode parent = tree.get((n - 1) / 2);
+    tree.add(node);
+    if (n % 2 == 1)
+      parent.left = node;
+    else
+      parent.right = node;
+    return parent.val;
+  }
+
+  public TreeNode get_root() {
+    return tree.get(0);
+  }
+
+  private List&lt;TreeNode&gt; tree = new ArrayList&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class CBTInserter:
+  def __init__(self, root: TreeNode | None):
+    self.tree = [root]
+    for node in self.tree:
+      if node.left:
+        self.tree.append(node.left)
+      if node.right:
+        self.tree.append(node.right)
+
+  def insert(self, v: int) -&gt; int:
+    n = len(self.tree)
+    self.tree.append(TreeNode(v))
+    parent = self.tree[(n - 1) // 2]
+    if n % 2 == 1:
+      parent.left = self.tree[-1]
+    else:
+      parent.right = self.tree[-1]
+    return parent.val
+
+  def get_root(self) -&gt; TreeNode | None:
+    return self.tree[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

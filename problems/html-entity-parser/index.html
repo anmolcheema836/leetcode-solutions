@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Entity Parser - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for HTML Entity Parser written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/html-entity-parser/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/queries-on-a-permutation-with-key/" class="btn">← Previous</a>
+            <span>Problem 1410 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-ways-to-paint-n-3-grid/" class="btn">Next →</a>
+        </div>
+        <h1>1410. HTML Entity Parser</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve HTML Entity Parser efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string entityParser(string text) {
+    const unordered_map&lt;string, char&gt; entityToChar{
+        {&quot;&amp;quot;&quot;, &#x27;&quot;&#x27;}, {&quot;&amp;apos;&quot;, &#x27;\&#x27;&#x27;}, {&quot;&amp;amp;&quot;, &#x27;&amp;&#x27;},
+        {&quot;&amp;gt;&quot;, &#x27;&gt;&#x27;},   {&quot;&amp;lt;&quot;, &#x27;&lt;&#x27;},    {&quot;&amp;frasl;&quot;, &#x27;/&#x27;}};
+    string ans;
+    int j = 0;  // text[j..ampersandIndex - 1] is the pending substring.
+    int ampersandIndex = -1;
+
+    for (int i = 0; i &lt; text.length(); ++i)
+      if (text[i] == &#x27;&amp;&#x27;) {
+        ampersandIndex = i;
+      } else if (text[i] == &#x27;;&#x27; &amp;&amp; ampersandIndex &gt;= j) {
+        const string sub = text.substr(ampersandIndex, i - ampersandIndex + 1);
+        ans += text.substr(j, ampersandIndex - j);
+        ans += getCharIfMatched(text, sub, entityToChar);
+        j = i + 1;
+      }
+
+    return ans + text.substr(j);
+  }
+
+ private:
+  string getCharIfMatched(const string&amp; text, const string&amp; sub,
+                          const unordered_map&lt;string, char&gt;&amp; entityToChar) {
+    for (const auto&amp; [entity, c] : entityToChar)
+      if (entity == sub)
+        return string(1, c);
+    return sub;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String entityParser(String text) {
+    Map&lt;String, String&gt; entryToChar =
+        Map.of(&quot;&amp;quot;&quot;, &quot;\&quot;&quot;, &quot;&amp;apos;&quot;, &quot;&#x27;&quot;, &quot;&amp;gt;&quot;, &quot;&gt;&quot;, &quot;&amp;lt;&quot;, &quot;&lt;&quot;, &quot;&amp;frasl;&quot;, &quot;/&quot;);
+
+    for (Map.Entry&lt;String, String&gt; entry : entryToChar.entrySet()) {
+      final String entity = entry.getKey();
+      final String c = entry.getValue();
+      text = text.replaceAll(entity, c);
+    }
+
+    // Process &#x27;&amp;&#x27; in last.
+    return text.replaceAll(&quot;&amp;amp;&quot;, &quot;&amp;&quot;);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def entityParser(self, text: str) -&gt; str:
+    entityToChar = {&#x27;&amp;quot;&#x27;: &#x27;&quot;&#x27;, &#x27;&amp;apos;&#x27;: &#x27;\&#x27;&#x27;,
+                    &#x27;&amp;gt;&#x27;: &#x27;&gt;&#x27;, &#x27;&amp;lt;&#x27;: &#x27;&lt;&#x27;, &#x27;&amp;frasl;&#x27;: &#x27;/&#x27;}
+
+    for entity, c in entityToChar.items():
+      text = text.replace(entity, c)
+
+    # Process &#x27;&amp;&#x27; in last.
+    return text.replace(&#x27;&amp;amp;&#x27;, &#x27;&amp;&#x27;)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

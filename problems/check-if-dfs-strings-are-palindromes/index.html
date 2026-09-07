@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check if DFS Strings Are Palindromes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check if DFS Strings Are Palindromes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-dfs-strings-are-palindromes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-division-operations-to-make-array-non-decreasing/" class="btn">← Previous</a>
+            <span>Problem 3327 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-cities-in-each-state-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3327. Check if DFS Strings Are Palindromes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check if DFS Strings Are Palindromes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;bool&gt; findAnswer(vector&lt;int&gt;&amp; parent, string s) {
+    const int n = parent.size();
+    vector&lt;bool&gt; ans(n);
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+    vector&lt;int&gt; start(n);  // start[i] := the start index of `dfsStr` of node i
+    vector&lt;int&gt; end(n);    // end[i] := the end index of `dfsStr` of node i
+    string dfsStr;
+
+    for (int i = 1; i &lt; n; ++i)
+      tree[parent[i]].push_back(i);
+
+    dfs(tree, 0, /*index=*/0, s, start, end, dfsStr);
+    const string t = join(&#x27;@&#x27; + dfsStr + &#x27;$&#x27;, /*delimiter=*/&#x27;#&#x27;);
+    const vector&lt;int&gt; p = manacher(t);
+
+    for (int i = 0; i &lt; n; ++i)
+      ans[i] = isPalindrome(start[i], end[i], p);
+
+    return ans;
+  }
+
+ private:
+  // Returns the start index of the &quot;DFS string&quot; of u&#x27;s next node.
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int index, const string&amp; s,
+          vector&lt;int&gt;&amp; start, vector&lt;int&gt;&amp; end, string&amp; dfsStr) {
+    start[u] = index;
+    for (const int v : tree[u])
+      index = dfs(tree, v, index, s, start, end, dfsStr);
+    end[u] = index;
+    dfsStr += s[u];
+    return index + 1;
+  }
+
+  // Returns an array `p` s.t. `p[i]` is the length of the longest palindrome
+  // centered at `t[i]`, where `t` is a string with delimiters and sentinels.
+  vector&lt;int&gt; manacher(const string&amp; t) {
+    vector&lt;int&gt; p(t.length());
+    int center = 0;
+    for (int i = 1; i &lt; t.length() - 1; ++i) {
+      const int rightBoundary = center + p[center];
+      const int mirrorIndex = center - (i - center);
+      if (rightBoundary &gt; i)
+        p[i] = min(rightBoundary - i, p[mirrorIndex]);
+      // Try to expand the palindrome centered at i.
+      while (t[i + 1 + p[i]] == t[i - 1 - p[i]])
+        ++p[i];
+      // If a palindrome centered at i expands past `rightBoundary`, adjust
+      // the center based on the expanded palindrome.
+      if (i + p[i] &gt; rightBoundary)
+        center = i;
+    }
+    return p;
+  }
+
+  // Returns true if `dfsStr[s..e]` is a palindrome by using the precomputed
+  // array `p` from the Manacher&#x27;s algorithm.
+  //
+  // The precomputed array `p` is based on the string `t` with delimiters and
+  // sentinels. Let `t = &#x27;#&#x27;.join(&#x27;@&#x27; + dfsStr + &#x27;$&#x27;)`. Then, the center of
+  // `dfsStr` maps to `t[s + e + 2]` since `dfsStr[s]` maps to `t[2 * s + 2]`
+  // and `dfsStr[e]` maps to `t[2 * e + 2]`. So, the center of `dfsStr` is
+  // `t[(2 * s + 2 + 2 * e + 2) / 2] = t[s + e + 2]`.
+  bool isPalindrome(int s, int e, const vector&lt;int&gt;&amp; p) {
+    const int length = e - s + 1;
+    const int center = s + e + 2;
+    return p[center] &gt;= length;
+  }
+
+  string join(const string&amp; s, char delimiter) {
+    string joined;
+    for (int i = 0; i &lt; s.length() - 1; ++i) {
+      joined += s[i];
+      joined += delimiter;
+    }
+    joined += s.back();
+    return joined;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean[] findAnswer(int[] parent, String s) {
+    final int n = parent.length;
+    boolean[] ans = new boolean[n];
+    List&lt;Integer&gt;[] tree = new List[n];
+    // start[i] := the start index of `dfsStr` of node i
+    int[] start = new int[n];
+    // end[i] := the end index of `dfsStr` of node i
+    int[] end = new int[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    StringBuilder dfsStr = new StringBuilder();
+
+    for (int i = 1; i &lt; n; ++i)
+      tree[parent[i]].add(i);
+
+    dfs(tree, 0, /*index=*/0, s, start, end, dfsStr);
+    final String t = join(&#x27;@&#x27; + dfsStr.toString() + &#x27;$&#x27;, &#x27;#&#x27;);
+    final int[] p = manacher(t);
+
+    for (int i = 0; i &lt; n; ++i)
+      ans[i] = isPalindrome(start[i], end[i], p);
+
+    return ans;
+  }
+
+  // Returns the start index of the &quot;DFS string&quot; of u&#x27;s next node.
+  private int dfs(List&lt;Integer&gt;[] tree, int u, int index, final String s, int[] start, int[] end,
+                  StringBuilder dfsStr) {
+    start[u] = index;
+    for (final int v : tree.get(u))
+      index = dfs(tree, v, index, s, start, end, dfsStr);
+    end[u] = index;
+    dfsStr.append(s.charAt(u));
+    return index + 1;
+  }
+
+  // Returns true if `dfsStr[s..e]` is a palindrome by using the precomputed
+  // array `p` from the Manacher&#x27;s algorithm.
+  //
+  // The precomputed array `p` is based on the string `t` with delimiters and
+  // sentinels. Let `t = &#x27;#&#x27;.join(&#x27;@&#x27; + dfsStr + &#x27;$&#x27;)`. Then, the center of
+  // `dfsStr` maps to `t[s + e + 2]` since `dfsStr[s]` maps to `t[2 * s + 2]`
+  // and `dfsStr[e]` maps to `t[2 * e + 2]`. So, the center of `dfsStr` is
+  // `t[(2 * s + 2 + 2 * e + 2) / 2] = t[s + e + 2]`.
+  private boolean isPalindrome(int s, int e, int[] p) {
+    final int length = e - s + 1;
+    final int center = s + e + 2;
+    return p[center] &gt;= length;
+  }
+
+  // Returns an array `p` s.t. `p[i]` is the length of the longest palindrome
+  // centered at `t[i]`, where `t` is a string with delimiters and sentinels.
+  private int[] manacher(final String t) {
+    int[] p = new int[t.length()];
+    int center = 0;
+    for (int i = 1; i &lt; t.length() - 1; ++i) {
+      int rightBoundary = center + p[center];
+      int mirrorIndex = center - (i - center);
+      if (rightBoundary &gt; i)
+        p[i] = Math.min(rightBoundary - i, p[mirrorIndex]);
+      // Try to expand the palindrome centered at i.
+      while (i + 1 + p[i] &lt; t.length() &amp;&amp; i - 1 - p[i] &gt;= 0 &amp;&amp;
+             t.charAt(i + 1 + p[i]) == t.charAt(i - 1 - p[i]))
+        ++p[i];
+      // If a palindrome centered at i expands past `rightBoundary`, adjust
+      // the center based on the expanded palindrome.
+      if (i + p[i] &gt; rightBoundary) {
+        center = i;
+      }
+    }
+    return p;
+  }
+
+  private String join(final String s, char delimiter) {
+    StringBuilder joined = new StringBuilder();
+    for (int i = 0; i &lt; s.length() - 1; ++i) {
+      joined.append(s.charAt(i));
+      joined.append(delimiter);
+    }
+    joined.append(s.charAt(s.length() - 1));
+    return joined.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findAnswer(self, parent: list[int], s: str) -&gt; list[bool]:
+    n = len(parent)
+    tree = [[] for _ in parent]
+    start = [0] * n  # start[i] := the start index of `dfsStr` of node i
+    end = [0] * n  # end[i] := the end index of `dfsStr` of node i
+    dfsStr = []
+
+    for i in range(1, n):
+      tree[parent[i]].append(i)
+
+    self._dfs(tree, 0, 0, s, start, end, dfsStr)
+    t = &#x27;#&#x27;.join(&#x27;@&#x27; + &#x27;&#x27;.join(dfsStr) + &#x27;$&#x27;)
+    p = self._manacher(t)
+    return [self._isPalindrome(s, e, p)
+            for s, e in zip(start, end)]
+
+  def _dfs(
+      self,
+      tree: list[list[int]],
+      u: int,
+      index: int,
+      s: str,
+      start: list[int],
+      end: list[int],
+      dfsStr: list[str]
+  ) -&gt; int:
+    &quot;&quot;&quot;Returns the start index of the &quot;DFS string&quot; of u&#x27;s next node.&quot;&quot;&quot;
+    start[u] = index
+    for v in tree[u]:
+      index = self._dfs(tree, v, index, s, start, end, dfsStr)
+    end[u] = index
+    dfsStr.append(s[u])
+    return index + 1
+
+  def _manacher(self, t: str) -&gt; list[int]:
+    &quot;&quot;&quot;
+    Returns an array `p` s.t. `p[i]` is the length of the longest palindrome
+    centered at `t[i]`, where `t` is a string with delimiters and sentinels.
+    &quot;&quot;&quot;
+    p = [0] * len(t)
+    center = 0
+    for i in range(1, len(t) - 1):
+      rightBoundary = center + p[center]
+      mirrorIndex = center - (i - center)
+      if rightBoundary &gt; i:
+        p[i] = min(rightBoundary - i, p[mirrorIndex])
+      # Try to expand the palindrome centered at i.
+      while t[i + 1 + p[i]] == t[i - 1 - p[i]]:
+        p[i] += 1
+      # If a palindrome centered at i expands past `rightBoundary`, adjust
+      # the center based on the expanded palindrome.
+      if i + p[i] &gt; rightBoundary:
+        center = i
+    return p
+
+  def _isPalindrome(self, s: int, e: int, p: list[int]) -&gt; bool:
+    &quot;&quot;&quot;
+    Returns true if `dfsStr[s..e]` is a palindrome by using the precomputed
+    array `p` from the Manacher&#x27;s algorithm.
+
+    The precomputed array `p` is based on the string `t` with delimiters and
+    sentinels. Let `t = &#x27;#&#x27;.join(&#x27;@&#x27; + dfsStr + &#x27;$&#x27;)`. Then, the center of
+    `dfsStr` maps to `t[s + e + 2]` since `dfsStr[s]` maps to `t[2 * s + 2]`
+    and `dfsStr[e]` maps to `t[2 * e + 2]`. So, the center of `dfsStr` is
+    `t[(2 * s + 2 + 2 * e + 2) / 2] = t[s + e + 2]`.
+    &quot;&quot;&quot;
+    length = e - s + 1
+    center = s + e + 2
+    return p[center] &gt;= length</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

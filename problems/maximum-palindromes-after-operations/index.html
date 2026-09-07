@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Palindromes After Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Palindromes After Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-palindromes-after-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-subarrays-that-match-a-pattern-i/" class="btn">← Previous</a>
+            <span>Problem 3035 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-subarrays-that-match-a-pattern-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3035. Maximum Palindromes After Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Palindromes After Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxPalindromesAfterOperations(vector&lt;string&gt;&amp; words) {
+    int ans = 0;
+    int pairs = getPairs(words);
+
+    for (const int length : getSortedLengths(words)) {
+      const int needPairs = length / 2;
+      if (pairs &lt; needPairs)
+        return ans;
+      ++ans;
+      pairs -= needPairs;
+    }
+
+    return ans;
+  }
+
+ private:
+  int getPairs(const vector&lt;string&gt;&amp; words) {
+    int pairs = 0;
+    unordered_map&lt;char, int&gt; count;
+
+    for (const string&amp; word : words)
+      for (const char c : word)
+        ++count[c];
+
+    for (const auto&amp; [_, freq] : count)
+      pairs += freq / 2;
+
+    return pairs;
+  }
+
+  vector&lt;int&gt; getSortedLengths(const vector&lt;string&gt;&amp; words) {
+    vector&lt;int&gt; lengths;
+    for (const string&amp; word : words)
+      lengths.push_back(word.length());
+    ranges::sort(lengths);
+    return lengths;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxPalindromesAfterOperations(String[] words) {
+    int ans = 0;
+    int pairs = getPairs(words);
+
+    for (final int length : getSortedLengths(words)) {
+      final int neededPairs = length / 2;
+      if (pairs &lt; neededPairs)
+        return ans;
+      ++ans;
+      pairs -= neededPairs;
+    }
+
+    return ans;
+  }
+
+  private int getPairs(String[] words) {
+    int pairs = 0;
+    Map&lt;Character, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final String word : words)
+      for (final char c : word.toCharArray())
+        count.merge(c, 1, Integer::sum);
+
+    for (final int freq : count.values())
+      pairs += freq / 2;
+
+    return pairs;
+  }
+
+  private int[] getSortedLengths(String[] words) {
+    int[] lengths = new int[words.length];
+    for (int i = 0; i &lt; words.length; ++i)
+      lengths[i] = words[i].length();
+    Arrays.sort(lengths);
+    return lengths;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxPalindromesAfterOperations(self, words: list[str]) -&gt; int:
+    ans = 0
+    count = collections.Counter(&#x27;&#x27;.join(words))
+    pairs = sum(value // 2 for value in count.values())
+
+    for length in sorted(len(word) for word in words):
+      needPairs = length // 2
+      if pairs &lt; needPairs:
+        return ans
+      ans += 1
+      pairs -= needPairs
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

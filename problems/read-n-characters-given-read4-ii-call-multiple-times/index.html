@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read N Characters Given read4 II - Call Multiple Times - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Read N Characters Given read4 II - Call Multiple Times written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/read-n-characters-given-read4-ii-call-multiple-times/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/read-n-characters-given-read4/" class="btn">← Previous</a>
+            <span>Problem 158 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-substring-with-at-most-two-distinct-characters/" class="btn">Next →</a>
+        </div>
+        <h1>158. Read N Characters Given read4 II - Call Multiple Times</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Read N Characters Given read4 II - Call Multiple Times efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">/**
+ * The read4 API is defined in the parent class Reader4.
+ *     int read4(char *buf4);
+ */
+
+class Solution {
+ public:
+  /**
+   * @param buf Destination buffer
+   * @param n   Number of characters to read
+   * @return    The number of actual characters read
+   */
+  int read(char* buf, int n) {
+    int i = 0;  // buf&#x27;s index
+
+    // Put the remaining characteres in the buf4 to the buf.
+    while (i4 &lt; n4 &amp;&amp; i &lt; n)
+      buf[i++] = buf4[i4++];
+
+    // While we&#x27;re not reaching the tail (&lt; 4 characters).
+    while (i + 4 &lt; n) {
+      const int k = read4(buf + i);  // Directly write to the buf.
+      if (k == 0)                    // Reach the EOF.
+        return i;
+      i += k;
+    }
+
+    // Reach the tail.
+    while (i &lt; n) {
+      if (i4 == n4) {      // All the characters in the buf4 are consumed.
+        i4 = 0;            // Reset the buf4&#x27;s index.
+        n4 = read4(buf4);  // Read &lt;= 4 characters from the file to the buf4.
+        if (n4 == 0)       // Reach the EOF.
+          return i;
+      }
+      buf[i++] = buf4[i4++];
+    }
+
+    return i;
+  }
+
+ private:
+  char* buf4 = new char[4];
+  int i4 = 0;  // buf4&#x27;s index
+  int n4 = 0;  // buf4&#x27;s size
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">/**
+ * The read4 API is defined in the parent class Reader4.
+ *     int read4(char[] buf4);
+ */
+
+public class Solution extends Reader4 {
+  /**
+   * @param buf Destination buffer
+   * @param n   Number of characters to read
+   * @return    The number of actual characters read
+   */
+  public int read(char[] buf, int n) {
+    int i = 0; // buf&#x27;s index
+
+    while (i &lt; n) {
+      if (i4 == n4) {     // All the characters in the buf4 are consumed.
+        i4 = 0;           // Reset the buf4&#x27;s index.
+        n4 = read4(buf4); // Read &lt;= 4 characters from the file to the buf4.
+        if (n4 == 0)      // Reach the EOF.
+          return i;
+      }
+      buf[i++] = buf4[i4++];
+    }
+
+    return i;
+  }
+
+  private char[] buf4 = new char[4];
+  private int i4 = 0; // buf4&#x27;s index
+  private int n4 = 0; // buf4&#x27;s size
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python"># The read4 API is already defined for you.
+# Def read4(buf4: list[str]) -&gt; int:
+
+class Solution:
+  def read(self, buf: list[str], n: int) -&gt; int:
+    i = 0  # buf&#x27;s index
+
+    while i &lt; n:
+      if self.i4 == self.n4:  # All the characters in the buf4 are consumed.
+        self.i4 = 0  # Reset the buf4&#x27;s index.
+        # Read &lt;= 4 characters from the file to the buf4.
+        self.n4 = read4(self.buf4)
+        if self.n4 == 0:  # Reach the EOF.
+          return i
+      buf[i] = self.buf4[self.i4]
+      i += 1
+      self.i4 += 1
+
+    return i
+
+  buf4 = [&#x27; &#x27;] * 4
+  i4 = 0  # buf4&#x27;s index
+  n4 = 0  # buf4&#x27;s size</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

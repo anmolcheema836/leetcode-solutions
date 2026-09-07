@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Score After Removals on a Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Score After Removals on a Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-score-after-removals-on-a-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-score-of-spliced-array/" class="btn">← Previous</a>
+            <span>Problem 2322 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-minimum-time-to-finish-all-jobs-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2322. Minimum Score After Removals on a Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Score After Removals on a Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumScore(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    const int n = nums.size();
+    const int xors = reduce(nums.begin(), nums.end(), 0, bit_xor());
+    vector&lt;int&gt; subXors(nums);
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+    vector&lt;unordered_set&lt;int&gt;&gt; children(n);
+
+    for (int i = 0; i &lt; n; ++i)
+      children[i].insert(i);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      tree[u].push_back(v);
+      tree[v].push_back(u);
+    }
+
+    dfs(tree, 0, -1, subXors, children);
+
+    int ans = INT_MAX;
+
+    for (int i = 0; i &lt; edges.size(); ++i) {
+      int a = edges[i][0];
+      int b = edges[i][1];
+      if (children[a].contains(b))
+        swap(a, b);
+      for (int j = 0; j &lt; i; ++j) {
+        int c = edges[j][0];
+        int d = edges[j][1];
+        if (children[c].contains(d))
+          swap(c, d);
+        vector&lt;int&gt; cands;
+        if (a != c &amp;&amp; children[a].contains(c))
+          cands = {subXors[c], subXors[a] ^ subXors[c], xors ^ subXors[a]};
+        else if (a != c &amp;&amp; children[c].contains(a))
+          cands = {subXors[a], subXors[c] ^ subXors[a], xors ^ subXors[c]};
+        else
+          cands = {subXors[a], subXors[c], xors ^ subXors[a] ^ subXors[c]};
+        ans = min(ans, ranges::max(cands) - ranges::min(cands));
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  pair&lt;int, unordered_set&lt;int&gt;&gt; dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u,
+                                    int prev, vector&lt;int&gt;&amp; subXors,
+                                    vector&lt;unordered_set&lt;int&gt;&gt;&amp; children) {
+    for (const int v : tree[u]) {
+      if (v == prev)
+        continue;
+      const auto&amp; [vXor, vChildren] = dfs(tree, v, u, subXors, children);
+      subXors[u] ^= vXor;
+      children[u].insert(vChildren.begin(), vChildren.end());
+    }
+    return {subXors[u], children[u]};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumScore(int[] nums, int[][] edges) {
+    final int n = nums.length;
+    final int xors = getXors(nums);
+    int[] subXors = nums.clone();
+    List&lt;Integer&gt;[] tree = new List[n];
+    Set&lt;Integer&gt;[] children = new Set[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      children[i] = new HashSet&lt;&gt;(Arrays.asList(i));
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      tree[u].add(v);
+      tree[v].add(u);
+    }
+
+    dfs(tree, 0, -1, subXors, children);
+
+    int ans = Integer.MAX_VALUE;
+
+    for (int i = 0; i &lt; edges.length; ++i) {
+      int a = edges[i][0];
+      int b = edges[i][1];
+      if (children[a].contains(b)) {
+        final int temp = a;
+        a = b;
+        b = a;
+      }
+      for (int j = 0; j &lt; i; ++j) {
+        int c = edges[j][0];
+        int d = edges[j][1];
+        if (children[c].contains(d)) {
+          final int temp = c;
+          c = d;
+          d = temp;
+        }
+        int[] cands;
+        if (a != c &amp;&amp; children[a].contains(c))
+          cands = new int[] {subXors[c], subXors[a] ^ subXors[c], xors ^ subXors[a]};
+        else if (a != c &amp;&amp; children[c].contains(a))
+          cands = new int[] {subXors[a], subXors[c] ^ subXors[a], xors ^ subXors[c]};
+        else
+          cands = new int[] {subXors[a], subXors[c], xors ^ subXors[a] ^ subXors[c]};
+        ans = Math.min(ans, Arrays.stream(cands).max().getAsInt() -
+                                Arrays.stream(cands).min().getAsInt());
+      }
+    }
+
+    return ans;
+  }
+
+  private Pair&lt;Integer, Set&lt;Integer&gt;&gt; dfs(List&lt;Integer&gt;[] tree, int u, int prev, int[] subXors,
+                                          Set&lt;Integer&gt;[] children) {
+    for (final int v : tree[u]) {
+      if (v == prev)
+        continue;
+      final Pair&lt;Integer, Set&lt;Integer&gt;&gt; pair = dfs(tree, v, u, subXors, children);
+      final int vXor = pair.getKey();
+      final Set&lt;Integer&gt; vChildren = pair.getValue();
+      subXors[u] ^= vXor;
+      for (final int child : vChildren)
+        children[u].add(child);
+    }
+    return new Pair&lt;&gt;(subXors[u], children[u]);
+  }
+
+  private int getXors(int[] nums) {
+    int xors = 0;
+    for (final int num : nums)
+      xors ^= num;
+    return xors;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumScore(self, nums: list[int], edges: list[list[int]]) -&gt; int:
+    n = len(nums)
+    xors = functools.reduce(operator.xor, nums)
+    subXors = nums[:]
+    tree = [[] for _ in range(n)]
+    children = [{i} for i in range(n)]
+
+    for u, v in edges:
+      tree[u].append(v)
+      tree[v].append(u)
+
+    def dfs(u: int, prev: int) -&gt; tuple[int, set[int]]:
+      for v in tree[u]:
+        if v == prev:
+          continue
+        vXor, vChildren = dfs(v, u)
+        subXors[u] ^= vXor
+        children[u] |= vChildren
+      return subXors[u], children[u]
+
+    dfs(0, -1)
+
+    ans = math.inf
+    for i in range(len(edges)):
+      a, b = edges[i]
+      if b in children[a]:
+        a, b = b, a
+      for j in range(i):
+        c, d = edges[j]
+        if d in children[c]:
+          c, d = d, c
+
+        if c in children[a] and a != c:
+          cands = [subXors[c], subXors[a] ^ subXors[c], xors ^ subXors[a]]
+        elif a in children[c] and a != c:
+          cands = [subXors[a], subXors[c] ^ subXors[a], xors ^ subXors[c]]
+        else:
+          cands = [subXors[a], subXors[c], xors ^ subXors[a] ^ subXors[c]]
+        ans = min(ans, max(cands) - min(cands))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

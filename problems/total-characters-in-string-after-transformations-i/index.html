@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Characters in String After Transformations I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Total Characters in String After Transformations I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/total-characters-in-string-after-transformations-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-maximum-factor-score-of-array/" class="btn">← Previous</a>
+            <span>Problem 3335 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-number-of-subsequences-with-equal-gcd/" class="btn">Next →</a>
+        </div>
+        <h1>3335. Total Characters in String After Transformations I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Total Characters in String After Transformations I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int lengthAfterTransformations(string s, int t) {
+    // T[i][j] := the number of ways to transform (&#x27;a&#x27; + i) to (&#x27;a&#x27; + j)
+    const vector&lt;vector&lt;int&gt;&gt; T = getTransformationMatrix();
+    const vector poweredT = matrixPow(T, t);
+    vector&lt;int&gt; count(26);
+    // lengths[i] := the total length of (&#x27;a&#x27; + i) after t transformations
+    vector&lt;long&gt; lengths(26);
+
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+
+    for (int i = 0; i &lt; 26; ++i)
+      for (int j = 0; j &lt; 26; ++j) {
+        lengths[j] += static_cast&lt;long&gt;(count[i]) * poweredT[i][j];
+        lengths[j] %= kMod;
+      }
+
+    return accumulate(lengths.begin(), lengths.end(), 0L) % kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  vector&lt;vector&lt;int&gt;&gt; getTransformationMatrix() {
+    vector&lt;vector&lt;int&gt;&gt; T(26, vector&lt;int&gt;(26));
+    // &#x27;z&#x27; -&gt; &#x27;ab&#x27;
+    T[25][0] = 1;
+    T[25][1] = 1;
+    // &#x27;a&#x27; -&gt; &#x27;b&#x27;, &#x27;b&#x27; -&gt; &#x27;c&#x27;, ..., &#x27;y&#x27; -&gt; &#x27;z&#x27;
+    for (int i = 0; i &lt; 25; ++i)
+      T[i][i + 1] = 1;
+    return T;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; getIdentityMatrix(int sz) {
+    vector&lt;vector&lt;int&gt;&gt; I(sz, vector&lt;int&gt;(sz));
+    for (int i = 0; i &lt; sz; ++i)
+      I[i][i] = 1;
+    return I;
+  }
+
+  // Returns A * B.
+  vector&lt;vector&lt;int&gt;&gt; matrixMult(const vector&lt;vector&lt;int&gt;&gt;&amp; A,
+                                 const vector&lt;vector&lt;int&gt;&gt;&amp; B) {
+    const int sz = A.size();
+    vector&lt;vector&lt;int&gt;&gt; C(sz, vector&lt;int&gt;(sz));
+    for (int i = 0; i &lt; sz; ++i)
+      for (int j = 0; j &lt; sz; ++j)
+        for (int k = 0; k &lt; sz; ++k)
+          C[i][j] = (C[i][j] + static_cast&lt;long&gt;(A[i][k]) * B[k][j]) % kMod;
+    return C;
+  }
+
+  // Returns M^n.
+  vector&lt;vector&lt;int&gt;&gt; matrixPow(const vector&lt;vector&lt;int&gt;&gt;&amp; M, int n) {
+    if (n == 0)
+      return getIdentityMatrix(M.size());
+    if (n % 2 == 1)
+      return matrixMult(M, matrixPow(M, n - 1));
+    return matrixPow(matrixMult(M, M), n / 2);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int lengthAfterTransformations(String s, int t) {
+    // T[i][j] := the number of ways to transform (&#x27;a&#x27; + i) to (&#x27;a&#x27; + j)
+    int[][] T = getTransformationMatrix();
+    int[][] poweredT = matrixPow(T, t);
+    int[] count = new int[26];
+    // lengths[i] := the total length of (&#x27;a&#x27; + i) after t transformations
+    long[] lengths = new long[26];
+
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    for (int i = 0; i &lt; 26; ++i)
+      for (int j = 0; j &lt; 26; ++j) {
+        lengths[j] += (long) count[i] * poweredT[i][j];
+        lengths[j] %= MOD;
+      }
+
+    return (int) (Arrays.stream(lengths).sum() % MOD);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private int[][] getTransformationMatrix() {
+    int[][] T = new int[26][26];
+    // &#x27;z&#x27; -&gt; &#x27;ab&#x27;
+    T[25][0] = 1;
+    T[25][1] = 1;
+    // &#x27;a&#x27; -&gt; &#x27;b&#x27;, &#x27;b&#x27; -&gt; &#x27;c&#x27;, ..., &#x27;y&#x27; -&gt; &#x27;z&#x27;
+    for (int i = 0; i &lt; 25; ++i)
+      T[i][i + 1] = 1;
+    return T;
+  }
+
+  private int[][] getIdentityMatrix(int sz) {
+    int[][] I = new int[sz][sz];
+    for (int i = 0; i &lt; sz; ++i)
+      I[i][i] = 1;
+    return I;
+  }
+
+  // Returns A * B.
+  private int[][] matrixMult(int[][] A, int[][] B) {
+    final int sz = A.length;
+    int[][] C = new int[sz][sz];
+    for (int i = 0; i &lt; sz; ++i)
+      for (int j = 0; j &lt; sz; ++j)
+        for (int k = 0; k &lt; sz; ++k)
+          C[i][j] = (int) ((C[i][j] + (long) A[i][k] * B[k][j]) % MOD);
+    return C;
+  }
+
+  // Returns M^n.
+  private int[][] matrixPow(int[][] M, int n) {
+    if (n == 0)
+      return getIdentityMatrix(M.length);
+    if (n % 2 == 1)
+      return matrixMult(M, matrixPow(M, n - 1));
+    return matrixPow(matrixMult(M, M), n / 2);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def lengthAfterTransformations(self, s: str, t: int) -&gt; int:
+    MOD = 1_000_000_007
+
+    def matrixMult(A: list[list[int]], B: list[list[int]]) -&gt; list[list[int]]:
+      &quot;&quot;&quot;Returns A * B.&quot;&quot;&quot;
+      sz = len(A)
+      C = [[0] * sz for _ in range(sz)]
+      for i in range(sz):
+        for j in range(sz):
+          for k in range(sz):
+            C[i][j] += A[i][k] * B[k][j]
+            C[i][j] %= MOD
+      return C
+
+    def matrixPow(M: list[list[int]], n: int) -&gt; list[list[int]]:
+      &quot;&quot;&quot;Returns M^n.&quot;&quot;&quot;
+      if n == 0:
+        return [[1 if i == j else 0  # identity matrix
+                for j in range(len(M))]
+                for i in range(len(M))]
+      if n % 2 == 1:
+        return matrixMult(M, matrixPow(M, n - 1))
+      return matrixPow(matrixMult(M, M), n // 2)
+
+    # T[i][j] := the number of ways to transform (&#x27;a&#x27; + i) to (&#x27;a&#x27; + j)
+    T = self._getTransformationMatrix()
+    poweredT = matrixPow(T, t)
+    count = [0] * 26
+    lengths = [0] * 26
+
+    for c in s:
+      count[ord(c) - ord(&#x27;a&#x27;)] += 1
+
+    for i in range(26):
+      for j in range(26):
+        lengths[j] += count[i] * poweredT[i][j]
+        lengths[j] %= MOD
+
+    return sum(lengths) % MOD
+
+  def _getTransformationMatrix(self) -&gt; list[list[int]]:
+    T = [[0] * 26 for _ in range(26)]
+    # &#x27;z&#x27; -&gt; &#x27;ab&#x27;
+    T[25][0] = 1
+    T[25][1] = 1
+    # &#x27;a&#x27; -&gt; &#x27;b&#x27;, &#x27;b&#x27; -&gt; &#x27;c&#x27;, ..., &#x27;y&#x27; -&gt; &#x27;z&#x27;
+    for i in range(25):
+      T[i][i + 1] = 1
+    return T</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

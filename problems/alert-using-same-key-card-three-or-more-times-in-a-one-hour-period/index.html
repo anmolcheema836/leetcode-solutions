@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Using Same Key-Card Three or More Times in a One Hour Period - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Alert Using Same Key-Card Three or More Times in a One Hour Period written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/alert-using-same-key-card-three-or-more-times-in-a-one-hour-period/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-parking-system/" class="btn">← Previous</a>
+            <span>Problem 1604 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-valid-matrix-given-row-and-column-sums/" class="btn">Next →</a>
+        </div>
+        <h1>1604. Alert Using Same Key-Card Three or More Times in a One Hour Period</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Alert Using Same Key-Card Three or More Times in a One Hour Period efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; alertNames(vector&lt;string&gt;&amp; keyName, vector&lt;string&gt;&amp; keyTime) {
+    vector&lt;string&gt; ans;
+    unordered_map&lt;string, vector&lt;int&gt;&gt; nameToMinutes;
+
+    for (int i = 0; i &lt; keyName.size(); ++i) {
+      const int minutes = getMinutes(keyTime[i]);
+      nameToMinutes[keyName[i]].push_back(minutes);
+    }
+
+    for (auto&amp; [name, minutes] : nameToMinutes)
+      if (hasAlert(minutes))
+        ans.push_back(name);
+
+    ranges::sort(ans);
+    return ans;
+  }
+
+ private:
+  // Returns true if any worker uses the key-card three or more times in an
+  // one-hour period.
+  bool hasAlert(vector&lt;int&gt;&amp; minutes) {
+    if (minutes.size() &gt; 70)
+      return true;
+    ranges::sort(minutes);
+    for (int i = 2; i &lt; minutes.size(); ++i)
+      if (minutes[i - 2] + 60 &gt;= minutes[i])
+        return true;
+    return false;
+  }
+
+  int getMinutes(const string&amp; time) {
+    const int h = stoi(time.substr(0, 2));
+    const int m = stoi(time.substr(3));
+    return 60 * h + m;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; alertNames(String[] keyName, String[] keyTime) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    HashMap&lt;String, List&lt;Integer&gt;&gt; nameToMinutes = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; keyName.length; i++) {
+      final int minutes = getMinutes(keyTime[i]);
+      nameToMinutes.putIfAbsent(keyName[i], new ArrayList&lt;&gt;());
+      nameToMinutes.get(keyName[i]).add(minutes);
+    }
+
+    for (Map.Entry&lt;String, List&lt;Integer&gt;&gt; entry : nameToMinutes.entrySet()) {
+      final String name = entry.getKey();
+      List&lt;Integer&gt; minutes = entry.getValue();
+      if (hasAlert(minutes))
+        ans.add(name);
+    }
+
+    Collections.sort(ans);
+    return ans;
+  }
+
+  private boolean hasAlert(List&lt;Integer&gt; minutes) {
+    if (minutes.size() &gt; 70)
+      return true;
+    Collections.sort(minutes);
+    for (int i = 2; i &lt; minutes.size(); i++)
+      if (minutes.get(i - 2) + 60 &gt;= minutes.get(i))
+        return true;
+    return false;
+  }
+
+  private int getMinutes(String time) {
+    final int h = Integer.parseInt(time.substring(0, 2));
+    final int m = Integer.parseInt(time.substring(3));
+    return 60 * h + m;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def alertNames(self, keyName: list[str], keyTime: list[str]) -&gt; list[str]:
+    nameToMinutes = collections.defaultdict(list)
+
+    for name, time in zip(keyName, keyTime):
+      minutes = self._getMinutes(time)
+      nameToMinutes[name].append(minutes)
+
+    return sorted([name for name, minutes in nameToMinutes.items()
+                   if self._hasAlert(minutes)])
+
+  def _hasAlert(self, minutes: list[int]) -&gt; bool:
+    if len(minutes) &gt; 70:
+      return True
+    minutes.sort()
+    for i in range(2, len(minutes)):
+      if minutes[i - 2] + 60 &gt;= minutes[i]:
+        return True
+    return False
+
+  def _getMinutes(self, time: str) -&gt; int:
+    h, m = map(int, time.split(&#x27;:&#x27;))
+    return 60 * h + m</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

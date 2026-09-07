@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Ways to Assign Edge Weights II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Ways to Assign Edge Weights II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-ways-to-assign-edge-weights-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-ways-to-assign-edge-weights-i/" class="btn">← Previous</a>
+            <span>Problem 3559 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-minimum-log-transportation-cost/" class="btn">Next →</a>
+        </div>
+        <h1>3559. Number of Ways to Assign Edge Weights II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Ways to Assign Edge Weights II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; assignEdgeWeights(vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                                vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const int n = edges.size() + 1;
+    vector&lt;int&gt; ans;
+    vector&lt;int&gt; depth(n + 1);
+    vector&lt;vector&lt;int&gt;&gt; graph(n + 1);
+    vector&lt;vector&lt;int&gt;&gt; parent(kLog, vector&lt;int&gt;(n + 1, -1));
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    dfs(1, -1, graph, parent, depth);
+
+    for (int k = 1; k &lt; kLog; ++k)
+      for (int v = 1; v &lt;= n; ++v)
+        if (parent[k - 1][v] != -1)
+          parent[k][v] = parent[k - 1][parent[k - 1][v]];
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int u = query[0];
+      const int v = query[1];
+      if (u == v) {
+        ans.push_back(0);
+      } else {
+        const int a = lca(u, v, parent, depth);
+        const int d = depth[u] + depth[v] - 2 * depth[a];
+        ans.push_back(modPow(2, d - 1));
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+  static constexpr int kLog = 17;  // since 2^17 &gt; 1e5
+
+  void dfs(int u, int p, const vector&lt;vector&lt;int&gt;&gt;&amp; graph,
+           vector&lt;vector&lt;int&gt;&gt;&amp; parent, vector&lt;int&gt;&amp; depth) {
+    parent[0][u] = p;
+    for (const int v : graph[u])
+      if (v != p) {
+        depth[v] = depth[u] + 1;
+        dfs(v, u, graph, parent, depth);
+      }
+  }
+
+  int lca(int u, int v, const vector&lt;vector&lt;int&gt;&gt;&amp; parent,
+          const vector&lt;int&gt;&amp; depth) {
+    if (depth[u] &lt; depth[v])
+      swap(u, v);
+
+    for (int k = kLog - 1; k &gt;= 0; --k)
+      if (parent[k][u] != -1 &amp;&amp; depth[parent[k][u]] &gt;= depth[v])
+        u = parent[k][u];
+
+    if (u == v)
+      return u;
+
+    for (int k = kLog - 1; k &gt;= 0; --k)
+      if (parent[k][u] != -1 &amp;&amp; parent[k][u] != parent[k][v]) {
+        u = parent[k][u];
+        v = parent[k][v];
+      }
+
+    return parent[0][u];
+  }
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] assignEdgeWeights(int[][] edges, int[][] queries) {
+    final int n = edges.length + 1;
+    int[] ans = new int[queries.length];
+    final int[] depth = new int[n + 1];
+    final int[][] parent = new int[LOG][n + 1];
+    List&lt;Integer&gt;[] graph = new List[n + 1];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    dfs(1, -1, graph, parent, depth);
+
+    for (int k = 1; k &lt; LOG; ++k)
+      for (int v = 1; v &lt;= n; ++v)
+        if (parent[k - 1][v] != -1)
+          parent[k][v] = parent[k - 1][parent[k - 1][v]];
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int u = queries[i][0];
+      final int v = queries[i][1];
+      if (u == v) {
+        ans[i] = 0;
+      } else {
+        final int a = lca(u, v, parent, depth);
+        final int d = depth[u] + depth[v] - 2 * depth[a];
+        ans[i] = modPow(2, d - 1);
+      }
+    }
+
+    return ans;
+  }
+
+  private static final int MOD = 1_000_000_007;
+  private static final int LOG = 17; // since 2^17 &gt; 1e5
+
+  private void dfs(int u, int p, java.util.List&lt;Integer&gt;[] graph, int[][] parent, int[] depth) {
+    parent[0][u] = p;
+    for (int v : graph[u]) {
+      if (v != p) {
+        depth[v] = depth[u] + 1;
+        dfs(v, u, graph, parent, depth);
+      }
+    }
+  }
+
+  private int lca(int u, int v, int[][] parent, int[] depth) {
+    if (depth[u] &lt; depth[v]) {
+      final int temp = u;
+      u = v;
+      v = temp;
+    }
+
+    for (int k = LOG - 1; k &gt;= 0; --k)
+      if (parent[k][u] != -1 &amp;&amp; depth[parent[k][u]] &gt;= depth[v])
+        u = parent[k][u];
+
+    if (u == v)
+      return u;
+
+    for (int k = LOG - 1; k &gt;= 0; --k)
+      if (parent[k][u] != -1 &amp;&amp; parent[k][u] != parent[k][v]) {
+        u = parent[k][u];
+        v = parent[k][v];
+      }
+
+    return parent[0][u];
+  }
+
+  private int modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return (int) (x * modPow(x % MOD, (n - 1)) % MOD);
+    return modPow(x * x % MOD, (n / 2)) % MOD;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def assignEdgeWeights(
+      self,
+      edges: list[list[int]],
+      queries: list[list[int]]
+  ) -&gt; list[int]:
+    MOD = 1_000_000_007
+    LOG = 17  # since 2^17 &gt; 1e5
+    n = len(edges) + 1
+    ans = []
+    depth = [0] * (n + 1)
+    graph = [[] for _ in range(n + 1)]
+    parent = [[-1] * (n + 1) for _ in range(LOG)]
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    def dfs(u: int, p: int) -&gt; None:
+      parent[0][u] = p
+      for v in graph[u]:
+        if v != p:
+          depth[v] = depth[u] + 1
+          dfs(v, u)
+
+    dfs(1, -1)
+
+    for k in range(1, LOG):
+      for v in range(1, n + 1):
+        if parent[k - 1][v] != -1:
+          parent[k][v] = parent[k - 1][parent[k - 1][v]]
+
+    def lca(u: int, v: int) -&gt; int:
+      if depth[u] &lt; depth[v]:
+        u, v = v, u
+
+      for k in reversed(range(LOG)):
+        if parent[k][u] != -1 and depth[parent[k][u]] &gt;= depth[v]:
+          u = parent[k][u]
+
+      if u == v:
+        return u
+
+      for k in reversed(range(LOG)):
+        if parent[k][u] != -1 and parent[k][u] != parent[k][v]:
+          u = parent[k][u]
+          v = parent[k][v]
+
+      return parent[0][u]
+
+    for u, v in queries:
+      if u == v:
+        ans.append(0)
+      else:
+        a = lca(u, v)
+        d = depth[u] + depth[v] - 2 * depth[a]
+        ans.append(pow(2, d - 1, MOD))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

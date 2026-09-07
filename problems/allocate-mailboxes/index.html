@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allocate Mailboxes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Allocate Mailboxes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/allocate-mailboxes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/" class="btn">← Previous</a>
+            <span>Problem 1478 of 3563</span>
+            <a href="/leetcode-solutions/problems/sales-by-day-of-the-week/" class="btn">Next →</a>
+        </div>
+        <h1>1478. Allocate Mailboxes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Allocate Mailboxes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minDistance(vector&lt;int&gt;&amp; houses, int k) {
+    const int n = houses.size();
+    vector&lt;vector&lt;int&gt;&gt; mem(n, vector&lt;int&gt;(k + 1, INT_MAX));
+    // cost[i][j] := the minimum cost to allocate mailboxes between houses[i]
+    // and houses[j]
+    vector&lt;vector&lt;int&gt;&gt; cost(n, vector&lt;int&gt;(n));
+
+    ranges::sort(houses);
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        const int median = houses[(i + j) / 2];
+        for (int x = i; x &lt;= j; ++x)
+          cost[i][j] += abs(houses[x] - median);
+      }
+
+    return minDistance(houses, 0, k, cost, mem);
+  }
+
+ private:
+  static constexpr int kMax = 1&#x27;000&#x27;000;
+
+  // Returns the minimum distance to allocate k mailboxes for houses[i..n).
+  int minDistance(const vector&lt;int&gt;&amp; houses, int i, int k,
+                  const vector&lt;vector&lt;int&gt;&gt;&amp; cost, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i == houses.size() &amp;&amp; k == 0)
+      return 0;
+    if (i == houses.size() || k == 0)
+      return kMax;
+    if (mem[i][k] != INT_MAX)
+      return mem[i][k];
+
+    for (int j = i; j &lt; houses.size(); ++j)
+      mem[i][k] = min(
+          mem[i][k], cost[i][j] + minDistance(houses, j + 1, k - 1, cost, mem));
+
+    return mem[i][k];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minDistance(int[] houses, int k) {
+    final int n = houses.length;
+    int[][] mem = new int[n][k + 1];
+    // cost[i][j] := the minimum cost to allocate mailboxes between houses[i]
+    // and houses[j]
+    int[][] cost = new int[n][n];
+
+    Arrays.stream(mem).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE));
+    Arrays.sort(houses);
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        int median = houses[(i + j) / 2];
+        for (int x = i; x &lt;= j; ++x)
+          cost[i][j] += Math.abs(houses[x] - median);
+      }
+
+    return minDistance(houses, 0, k, cost, mem);
+  }
+
+  private static final int MAX = 1_000_000;
+
+  // Returns the minimum distance to allocate k mailboxes for houses[i..n).
+  private int minDistance(int[] houses, int i, int k, int[][] cost, int[][] mem) {
+    if (i == houses.length &amp;&amp; k == 0)
+      return 0;
+    if (i == houses.length || k == 0)
+      return MAX;
+    if (mem[i][k] != Integer.MAX_VALUE)
+      return mem[i][k];
+
+    for (int j = i; j &lt; houses.length; ++j)
+      mem[i][k] = Math.min(mem[i][k], cost[i][j] + minDistance(houses, j + 1, k - 1, cost, mem));
+
+    return mem[i][k];
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Minimum Characters to Satisfy One of Three Conditions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Change Minimum Characters to Satisfy One of Three Conditions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/change-minimum-characters-to-satisfy-one-of-three-conditions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/latest-time-by-replacing-hidden-digits/" class="btn">← Previous</a>
+            <span>Problem 1737 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-kth-largest-xor-coordinate-value/" class="btn">Next →</a>
+        </div>
+        <h1>1737. Change Minimum Characters to Satisfy One of Three Conditions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Change Minimum Characters to Satisfy One of Three Conditions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minCharacters(string a, string b) {
+    const int m = a.length();
+    const int n = b.length();
+    vector&lt;int&gt; countA(26);
+    vector&lt;int&gt; countB(26);
+
+    for (const char c : a)
+      ++countA[c - &#x27;a&#x27;];
+
+    for (const char c : b)
+      ++countB[c - &#x27;a&#x27;];
+
+    int ans = INT_MAX;
+    int prevA = 0;  // the number of characters in a &lt;= c
+    int prevB = 0;  // the number of characters in b &lt;= c
+
+    for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c) {
+      // the condition 3
+      ans = min(ans, m + n - countA[c - &#x27;a&#x27;] - countB[c - &#x27;a&#x27;]);
+      // the conditions 1 and 2
+      if (c &gt; &#x27;a&#x27;)
+        ans = min({ans, m - prevA + prevB, n - prevB + prevA});
+      prevA += countA[c - &#x27;a&#x27;];
+      prevB += countB[c - &#x27;a&#x27;];
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minCharacters(String a, String b) {
+    final int m = a.length();
+    final int n = b.length();
+    int[] countA = new int[26];
+    int[] countB = new int[26];
+
+    for (final char c : a.toCharArray())
+      ++countA[c - &#x27;a&#x27;];
+
+    for (final char c : b.toCharArray())
+      ++countB[c - &#x27;a&#x27;];
+
+    int ans = Integer.MAX_VALUE;
+    int prevA = 0; // the number of characters in a &lt;= c
+    int prevB = 0; // the number of characters in b &lt;= c
+
+    for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c) {
+      // the condition 3
+      ans = Math.min(ans, m + n - countA[c - &#x27;a&#x27;] - countB[c - &#x27;a&#x27;]);
+      // the conditions 1 and 2
+      if (c &gt; &#x27;a&#x27;)
+        ans = Math.min(ans, Math.min(m - prevA + prevB, n - prevB + prevA));
+      prevA += countA[c - &#x27;a&#x27;];
+      prevB += countB[c - &#x27;a&#x27;];
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check If Digits Are Equal in String After Operations II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check If Digits Are Equal in String After Operations II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-digits-are-equal-in-string-after-operations-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-sum-with-at-most-k-elements/" class="btn">← Previous</a>
+            <span>Problem 3463 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-the-distance-between-points-on-a-square/" class="btn">Next →</a>
+        </div>
+        <h1>3463. Check If Digits Are Equal in String After Operations II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check If Digits Are Equal in String After Operations II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Same as 3461. Check If Digits Are Equal in String After Operations I
+  bool hasSameDigits(const string&amp; s) {
+    const int n = s.length();
+    int num1 = 0;
+    int num2 = 0;
+
+    for (int i = 0; i + 1 &lt; n; ++i) {
+      const int coefficient = nCkMod10(n - 2, i);
+      num1 += (coefficient * (s[i] - &#x27;0&#x27;)) % 10;
+      num1 %= 10;
+      num2 += (coefficient * (s[i + 1] - &#x27;0&#x27;)) % 10;
+      num2 %= 10;
+    }
+
+    return num1 == num2;
+  }
+
+ private:
+  // Returns (n, k) % 10.
+  int nCkMod10(int n, int k) {
+    const int mod2 = lucasTheorem(n, k, 2);
+    const int mod5 = lucasTheorem(n, k, 5);
+    static constexpr int lookup[2][5] = {
+        {0, 6, 2, 8, 4},  // mod2 == 0
+        {5, 1, 7, 3, 9}   // mod2 == 1
+    };
+    return lookup[mod2][mod5];
+  }
+
+  // Returns (n, k) % prime.
+  int lucasTheorem(int n, int k, int prime) {
+    int res = 1;
+    while (n &gt; 0 || k &gt; 0) {
+      const int nMod = n % prime;
+      const int kMod = k % prime;
+      res *= nCk(nMod, kMod);
+      res %= prime;
+      n /= prime;
+      k /= prime;
+    }
+    return res;
+  }
+
+  // Returns (n, k).
+  int nCk(int n, int k) {
+    int res = 1;
+    for (int i = 0; i &lt; k; ++i) {
+      res *= (n - i);
+      res /= (i + 1);
+    }
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Same as 3461. Check If Digits Are Equal in String After Operations I
+  public boolean hasSameDigits(String s) {
+    final int n = s.length();
+    int num1 = 0;
+    int num2 = 0;
+
+    for (int i = 0; i + 1 &lt; n; ++i) {
+      final int coefficient = nCMOD10(n - 2, i);
+      num1 += (coefficient * (s.charAt(i) - &#x27;0&#x27;)) % 10;
+      num1 %= 10;
+      num2 += (coefficient * (s.charAt(i + 1) - &#x27;0&#x27;)) % 10;
+      num2 %= 10;
+    }
+
+    return num1 == num2;
+  }
+
+  // Returns (n, k) % 10.
+  private int nCMOD10(int n, int k) {
+    final int mod2 = lucasTheorem(n, k, 2);
+    final int mod5 = lucasTheorem(n, k, 5);
+    int[][] lookup = {
+        {0, 6, 2, 8, 4}, // mod2 == 0
+        {5, 1, 7, 3, 9}  // mod2 == 1
+    };
+    return lookup[mod2][mod5];
+  }
+
+  // Returns (n, k) % prime.
+  private int lucasTheorem(int n, int k, int prime) {
+    int res = 1;
+    while (n &gt; 0 || k &gt; 0) {
+      final int nMod = n % prime;
+      final int MOD = k % prime;
+      res *= nCk(nMod, MOD);
+      res %= prime;
+      n /= prime;
+      k /= prime;
+    }
+    return res;
+  }
+
+  // Returns (n, k).
+  private int nCk(int n, int k) {
+    int res = 1;
+    for (int i = 0; i &lt; k; ++i) {
+      res *= (n - i);
+      res /= (i + 1);
+    }
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Same as 3461. Check If Digits Are Equal in String After Operations I
+  def hasSameDigits(self, s: str) -&gt; bool:
+    n = len(s)
+    num1 = 0
+    num2 = 0
+
+    for i in range(n - 1):
+      coefficient = self._nCMOD10(n - 2, i)
+      num1 += (coefficient * (int(s[i]) - 0)) % 10
+      num1 %= 10
+      num2 += (coefficient * (int(s[i + 1]) - 0)) % 10
+      num2 %= 10
+
+    return num1 == num2
+
+  def _nCMOD10(self, n: int, k: int) -&gt; int:
+    &quot;&quot;&quot;Returns (n, k) % 10.&quot;&quot;&quot;
+    mod2 = self._lucasTheorem(n, k, 2)
+    mod5 = self._lucasTheorem(n, k, 5)
+    lookup = [
+        [0, 6, 2, 8, 4],  # mod2 == 0
+        [5, 1, 7, 3, 9]   # mod2 == 1
+    ]
+    return lookup[mod2][mod5]
+
+  def _lucasTheorem(self, n: int, k: int, prime: int) -&gt; int:
+    &quot;&quot;&quot;Returns (n, k) % prime.&quot;&quot;&quot;
+    res = 1
+    while n &gt; 0 or k &gt; 0:
+      nMod = n % prime
+      MOD = k % prime
+      res *= math.comb(nMod, MOD)
+      res %= prime
+      n //= prime
+      k //= prime
+    return res</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Score of Students Solving Math Expression - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Score of Students Solving Math Expression written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-score-of-students-solving-math-expression/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-if-word-can-be-placed-in-crossword/" class="btn">← Previous</a>
+            <span>Problem 2019 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-accounts-that-did-not-stream/" class="btn">Next →</a>
+        </div>
+        <h1>2019. The Score of Students Solving Math Expression</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Score of Students Solving Math Expression efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int scoreOfStudents(string s, vector&lt;int&gt;&amp; answers) {
+    const int n = s.length() / 2 + 1;
+    const unordered_map&lt;char, function&lt;int(int, int)&gt;&gt; func{
+        {&#x27;+&#x27;, plus&lt;int&gt;()}, {&#x27;*&#x27;, multiplies&lt;int&gt;()}};
+    int ans = 0;
+    vector&lt;vector&lt;unordered_set&lt;int&gt;&gt;&gt; dp(n, vector&lt;unordered_set&lt;int&gt;&gt;(n));
+    unordered_map&lt;int, int&gt; count;
+
+    for (int i = 0; i &lt; n; ++i)
+      dp[i][i].insert(s[i * 2] - &#x27;0&#x27;);
+
+    for (int d = 1; d &lt; n; ++d)
+      for (int i = 0; i + d &lt; n; ++i) {
+        const int j = i + d;
+        for (int k = i; k &lt; j; ++k) {
+          const char op = s[k * 2 + 1];
+          for (const int a : dp[i][k])
+            for (const int b : dp[k + 1][j]) {
+              const int res = func.at(op)(a, b);
+              if (res &lt;= 1000)
+                dp[i][j].insert(res);
+            }
+        }
+      }
+
+    const int correctAnswer = eval(s);
+
+    for (const int answer : answers)
+      ++count[answer];
+
+    for (const auto&amp; [answer, freq] : count)
+      if (answer == correctAnswer)
+        ans += 5 * freq;
+      else if (dp[0][n - 1].contains(answer))
+        ans += 2 * freq;
+
+    return ans;
+  }
+
+ private:
+  int eval(const string&amp; s) {
+    int ans = 0;
+    int prevNum = 0;
+    int currNum = 0;
+    char op = &#x27;+&#x27;;
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      const char c = s[i];
+      if (isdigit(c))
+        currNum = currNum * 10 + (c - &#x27;0&#x27;);
+      if (!isdigit(c) || i == s.length() - 1) {
+        if (op == &#x27;+&#x27;) {
+          ans += prevNum;
+          prevNum = currNum;
+        } else if (op == &#x27;*&#x27;) {
+          prevNum = prevNum * currNum;
+        }
+        op = c;
+        currNum = 0;
+      }
+    }
+
+    return ans + prevNum;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int scoreOfStudents(String s, int[] answers) {
+    final int n = s.length() / 2 + 1;
+    int ans = 0;
+    Set&lt;Integer&gt;[][] dp = new Set[n][n];
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i; j &lt; n; ++j)
+        dp[i][j] = new HashSet&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      dp[i][i].add(s.charAt(i * 2) - &#x27;0&#x27;);
+
+    for (int d = 1; d &lt; n; ++d)
+      for (int i = 0; i + d &lt; n; ++i) {
+        final int j = i + d;
+        for (int k = i; k &lt; j; ++k) {
+          final char op = s.charAt(k * 2 + 1);
+          for (final int a : dp[i][k])
+            for (final int b : dp[k + 1][j]) {
+              final int res = func(op, a, b);
+              if (res &lt;= 1000)
+                dp[i][j].add(res);
+            }
+        }
+      }
+
+    final int correctAnswer = eval(s);
+
+    for (final int answer : answers)
+      count.merge(answer, 1, Integer::sum);
+
+    for (final int answer : count.keySet())
+      if (answer == correctAnswer)
+        ans += 5 * count.get(answer);
+      else if (dp[0][n - 1].contains(answer))
+        ans += 2 * count.get(answer);
+
+    return ans;
+  }
+
+  private int eval(final String s) {
+    int ans = 0;
+    int currNum = 0;
+    int prevNum = 0;
+    char op = &#x27;+&#x27;;
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+      final char c = s.charAt(i);
+      if (Character.isDigit(c))
+        currNum = currNum * 10 + (c - &#x27;0&#x27;);
+      if (!Character.isDigit(c) || i == s.length() - 1) {
+        if (op == &#x27;+&#x27;) {
+          ans += prevNum;
+          prevNum = currNum;
+        } else if (op == &#x27;*&#x27;) {
+          prevNum = prevNum * currNum;
+        }
+        op = c;
+        currNum = 0;
+      }
+    }
+
+    return ans + prevNum;
+  }
+
+  private int func(char op, int a, int b) {
+    if (op == &#x27;+&#x27;)
+      return a + b;
+    return a * b;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def scoreOfStudents(self, s: str, answers: list[int]) -&gt; int:
+    n = len(s) // 2 + 1
+    ans = 0
+    func = {&#x27;+&#x27;: operator.add, &#x27;*&#x27;: operator.mul}
+    dp = [[set() for j in range(n)] for _ in range(n)]
+
+    for i in range(n):
+      dp[i][i].add(int(s[i * 2]))
+
+    for d in range(1, n):
+      for i in range(n - d):
+        j = i + d
+        for k in range(i, j):
+          op = s[k * 2 + 1]
+          for a in dp[i][k]:
+            for b in dp[k + 1][j]:
+              res = func[op](a, b)
+              if res &lt;= 1000:
+                dp[i][j].add(res)
+
+    correctAnswer = eval(s)
+
+    for answer, freq in collections.Counter(answers).items():
+      if answer == correctAnswer:
+        ans += 5 * freq
+      elif answer in dp[0][n - 1]:
+        ans += 2 * freq
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

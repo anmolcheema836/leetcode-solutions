@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallest Sufficient Team - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Smallest Sufficient Team written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/smallest-sufficient-team/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-well-performing-interval/" class="btn">← Previous</a>
+            <span>Problem 1125 of 3563</span>
+            <a href="/leetcode-solutions/problems/active-businesses/" class="btn">Next →</a>
+        </div>
+        <h1>1125. Smallest Sufficient Team</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Smallest Sufficient Team efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; smallestSufficientTeam(vector&lt;string&gt;&amp; req_skills,
+                                     vector&lt;vector&lt;string&gt;&gt;&amp; people) {
+    const int n = req_skills.size();
+    const int nSkills = 1 &lt;&lt; n;
+    unordered_map&lt;string, int&gt; skillToId;
+    // dp[i] := the minimum people&#x27;s indices to cover skillset of mask i
+    unordered_map&lt;int, vector&lt;int&gt;&gt; dp;
+    dp.reserve(nSkills);  // Avoid rehash.
+    dp[0] = {};
+
+    for (int i = 0; i &lt; n; ++i)
+      skillToId[req_skills[i]] = i;
+
+    auto getSkill = [&amp;](const vector&lt;string&gt;&amp; person) {
+      int mask = 0;
+      for (const string&amp; skill : person)
+        if (const auto it = skillToId.find(skill); it != skillToId.cend())
+          mask |= 1 &lt;&lt; it-&gt;second;
+      return mask;
+    };
+
+    for (int i = 0; i &lt; people.size(); ++i) {
+      const int currSkill = getSkill(people[i]);
+      for (const auto&amp; [mask, indices] : dp) {
+        const int newSkillSet = mask | currSkill;
+        if (newSkillSet == mask)  // Adding people[i] doesn&#x27;t increase skill set
+          continue;
+        if (!dp.contains(newSkillSet) ||
+            dp[newSkillSet].size() &gt; indices.size() + 1) {
+          dp[newSkillSet] = indices;
+          dp[newSkillSet].push_back(i);
+        }
+      }
+    }
+
+    return dp[nSkills - 1];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] smallestSufficientTeam(String[] req_skills, List&lt;List&lt;String&gt;&gt; people) {
+    final int n = req_skills.length;
+    final int nSkills = 1 &lt;&lt; n;
+    Map&lt;String, Integer&gt; skillToId = new HashMap();
+    // dp[i] := the minimum people&#x27;s indices to cover skillset of mask i
+    List&lt;Integer&gt;[] dp = new List[nSkills];
+    dp[0] = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; req_skills.length; ++i)
+      skillToId.put(req_skills[i], i);
+
+    for (int i = 0; i &lt; people.size(); ++i) {
+      final int currSkill = getSkill(people.get(i), skillToId);
+      for (int j = 0; j &lt; nSkills; ++j) {
+        if (dp[j] == null)
+          continue;
+        final int newSkillSet = currSkill | j;
+        if (newSkillSet == j) // Adding people[i] doesn&#x27;t increase skill set
+          continue;
+        if (dp[newSkillSet] == null || dp[newSkillSet].size() &gt; dp[j].size() + 1) {
+          dp[newSkillSet] = new ArrayList&lt;&gt;(dp[j]);
+          dp[newSkillSet].add(i);
+        }
+      }
+    }
+
+    return dp[nSkills - 1].stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  private int getSkill(List&lt;String&gt; person, Map&lt;String, Integer&gt; skillToId) {
+    int mask = 0;
+    for (final String skill : person)
+      if (skillToId.containsKey(skill))
+        mask |= 1 &lt;&lt; skillToId.get(skill);
+    return mask;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

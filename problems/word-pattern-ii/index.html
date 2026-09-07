@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Pattern II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Word Pattern II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/word-pattern-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/word-pattern/" class="btn">← Previous</a>
+            <span>Problem 291 of 3563</span>
+            <a href="/leetcode-solutions/problems/nim-game/" class="btn">Next →</a>
+        </div>
+        <h1>291. Word Pattern II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Word Pattern II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool wordPatternMatch(string pattern, string s) {
+    return isMatch(pattern, 0, s, 0, unordered_map&lt;char, string&gt;(),
+                   unordered_set&lt;string&gt;());
+  }
+
+ private:
+  bool isMatch(const string&amp; pattern, int i, const string&amp; s, int j,
+               unordered_map&lt;char, string&gt;&amp;&amp; charToString,
+               unordered_set&lt;string&gt;&amp;&amp; seen) {
+    if (i == pattern.length() &amp;&amp; j == s.length())
+      return true;
+    if (i == pattern.length() || j == s.length())
+      return false;
+
+    const char c = pattern[i];
+
+    if (const auto it = charToString.find(c); it != charToString.cend()) {
+      const string&amp; t = it-&gt;second;
+      // See if we can match t with s[j..n).
+      if (s.substr(j).find(t) == string::npos)
+        return false;
+
+      // If there&#x27;s a match, continue to match the rest.
+      return isMatch(pattern, i + 1, s, j + t.length(), std::move(charToString),
+                     std::move(seen));
+    }
+
+    for (int k = j; k &lt; s.length(); ++k) {
+      const string&amp; t = s.substr(j, k - j + 1);
+
+      // This string is mapped by another character.
+      if (seen.contains(t))
+        continue;
+
+      charToString[c] = t;
+      seen.insert(t);
+
+      if (isMatch(pattern, i + 1, s, k + 1, std::move(charToString),
+                  std::move(seen)))
+        return true;
+
+      // Backtrack.
+      charToString.erase(c);
+      seen.erase(t);
+    }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean wordPatternMatch(String pattern, String s) {
+    return isMatch(pattern, 0, s, 0, new HashMap&lt;&gt;(), new HashSet&lt;&gt;());
+  }
+
+  private boolean isMatch(final String pattern, int i, final String s, int j,
+                          Map&lt;Character, String&gt; charToString, Set&lt;String&gt; seen) {
+    if (i == pattern.length() &amp;&amp; j == s.length())
+      return true;
+    if (i == pattern.length() || j == s.length())
+      return false;
+
+    final char c = pattern.charAt(i);
+
+    if (charToString.containsKey(c)) {
+      final String t = charToString.get(c);
+      // See if we can match t with s[j..n).
+      if (!s.startsWith(t, j))
+        return false;
+
+      // If there&#x27;s a match, continue to match the rest.
+      return isMatch(pattern, i + 1, s, j + t.length(), charToString, seen);
+    }
+
+    for (int k = j; k &lt; s.length(); ++k) {
+      final String t = s.substring(j, k + 1);
+
+      // This string is mapped by another character.
+      if (seen.contains(t))
+        continue;
+
+      charToString.put(c, t);
+      seen.add(t);
+
+      if (isMatch(pattern, i + 1, s, k + 1, charToString, seen))
+        return true;
+
+      // Backtrack.
+      charToString.remove(c);
+      seen.remove(t);
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def wordPatternMatch(self, pattern: str, s: str) -&gt; bool:
+    def isMatch(
+            i: int, j: int, charToString: dict[str, str],
+            seen: set[str]) -&gt; bool:
+      if i == len(pattern) and j == len(s):
+        return True
+      if i == len(pattern) or j == len(s):
+        return False
+
+      c = pattern[i]
+
+      if c in charToString:
+        t = charToString[c]
+        # See if we can match t with s[j..n).
+        if t not in s[j:]:
+          return False
+
+        # If there&#x27;s a match, continue to match the rest.
+        return isMatch(i + 1, j + len(t), charToString, seen)
+
+      for k in range(j, len(s)):
+        t = s[j:k + 1]
+
+        # This string is mapped by another character.
+        if t in seen:
+          continue
+
+        charToString[c] = t
+        seen.add(t)
+
+        if isMatch(i + 1, k + 1, charToString, seen):
+          return True
+
+        # Backtrack.
+        del charToString[c]
+        seen.remove(t)
+
+      return False
+
+    return isMatch(0, 0, {}, set())</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

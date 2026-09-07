@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reachable Nodes In Subdivided Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Reachable Nodes In Subdivided Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/reachable-nodes-in-subdivided-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/boats-to-save-people/" class="btn">← Previous</a>
+            <span>Problem 882 of 3563</span>
+            <a href="/leetcode-solutions/problems/projection-area-of-3d-shapes/" class="btn">Next →</a>
+        </div>
+        <h1>882. Reachable Nodes In Subdivided Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Reachable Nodes In Subdivided Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int reachableNodes(vector&lt;vector&lt;int&gt;&gt;&amp; edges, int maxMoves, int n) {
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+    vector&lt;int&gt; dist(graph.size(), maxMoves + 1);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int cnt = edge[2];
+      graph[u].emplace_back(v, cnt);
+      graph[v].emplace_back(u, cnt);
+    }
+
+    const int reachableNodes = dijkstra(graph, 0, maxMoves, dist);
+    int reachableSubnodes = 0;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int cnt = edge[2];
+      // the number of reachable nodes of `edge` from `u`
+      const int a = dist[u] &gt; maxMoves ? 0 : min(maxMoves - dist[u], cnt);
+      // the number of reachable nodes of `edge` from `v`
+      const int b = dist[v] &gt; maxMoves ? 0 : min(maxMoves - dist[v], cnt);
+      reachableSubnodes += min(a + b, cnt);
+    }
+
+    return reachableNodes + reachableSubnodes;
+  }
+
+ private:
+  int dijkstra(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int src,
+               int maxMoves, vector&lt;int&gt;&amp; dist) {
+    dist[src] = 0;
+    using P = pair&lt;int, int&gt;;  // (d, u)
+    priority_queue&lt;P, vector&lt;P&gt;, greater&lt;&gt;&gt; minHeap;
+    minHeap.emplace(dist[src], src);
+
+    while (!minHeap.empty()) {
+      const auto [d, u] = minHeap.top();
+      minHeap.pop();
+      // Already took `maxMoves` to reach `u`, so can&#x27;t explore anymore.
+      if (d &gt;= maxMoves)
+        break;
+      if (d &gt; dist[u])
+        continue;
+      for (const auto&amp; [v, w] : graph[u])
+        if (d + w + 1 &lt; dist[v]) {
+          dist[v] = d + w + 1;
+          minHeap.emplace(dist[v], v);
+        }
+    }
+
+    return ranges::count_if(dist, [&amp;](int d) { return d &lt;= maxMoves; });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int reachableNodes(int[][] edges, int maxMoves, int n) {
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    int[] dist = new int[n];
+    Arrays.fill(dist, maxMoves + 1);
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      final int cnt = edge[2];
+      graph[u].add(new Pair&lt;&gt;(v, cnt));
+      graph[v].add(new Pair&lt;&gt;(u, cnt));
+    }
+
+    final int reachableNodes = dijkstra(graph, 0, maxMoves, dist);
+    int reachableSubnodes = 0;
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      final int cnt = edge[2];
+      // the number of reachable nodes of `edge` from `u`
+      final int a = dist[u] &gt; maxMoves ? 0 : Math.min(maxMoves - dist[u], cnt);
+      // the number of reachable nodes of `edge` from `v`
+      final int b = dist[v] &gt; maxMoves ? 0 : Math.min(maxMoves - dist[v], cnt);
+      reachableSubnodes += Math.min(a + b, cnt);
+    }
+
+    return reachableNodes + reachableSubnodes;
+  }
+
+  private int dijkstra(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int src, int maxMoves, int[] dist) {
+    dist[src] = 0;
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; minHeap =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair::getKey)) {
+          { offer(new Pair&lt;&gt;(dist[src], src)); } // (d, u)
+        };
+
+    while (!minHeap.isEmpty()) {
+      final int d = minHeap.peek().getKey();
+      final int u = minHeap.poll().getValue();
+      // Already took `maxMoves` to reach `u`, so can&#x27;t explore anymore.
+      if (d &gt;= maxMoves)
+        break;
+      if (d &gt; dist[u])
+        continue;
+      for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+        final int v = pair.getKey();
+        final int w = pair.getValue();
+        if (d + w + 1 &lt; dist[v]) {
+          dist[v] = d + w + 1;
+          minHeap.offer(new Pair&lt;&gt;(dist[v], v));
+        }
+      }
+    }
+
+    return (int) Arrays.stream(dist).filter(d -&gt; d &lt;= maxMoves).count();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def reachableNodes(
+      self,
+      edges: list[list[int]],
+      maxMoves: int,
+      n: int,
+  ) -&gt; int:
+    graph = [[] for _ in range(n)]
+    dist = [maxMoves + 1] * n
+
+    for u, v, cnt in edges:
+      graph[u].append((v, cnt))
+      graph[v].append((u, cnt))
+
+    reachableNodes = self._dijkstra(graph, 0, maxMoves, dist)
+    reachableSubnodes = 0
+
+    for u, v, cnt in edges:
+      # the number of reachable nodes of (u, v) from `u`
+      a = 0 if dist[u] &gt; maxMoves else min(maxMoves - dist[u], cnt)
+      # the number of reachable nodes of (u, v) from `v`
+      b = 0 if dist[v] &gt; maxMoves else min(maxMoves - dist[v], cnt)
+      reachableSubnodes += min(a + b, cnt)
+
+    return reachableNodes + reachableSubnodes
+
+  def _dijkstra(
+      self,
+      graph: list[list[tuple[int, int]]],
+      src: int,
+      maxMoves: int,
+      dist: list[int],
+  ) -&gt; int:
+    dist[src] = 0
+    minHeap = [(dist[src], src)]  # (d, u)
+
+    while minHeap:
+      d, u = heapq.heappop(minHeap)
+      # Already took `maxMoves` to reach `u`, so can&#x27;t explore anymore.
+      if dist[u] &gt;= maxMoves:
+        break
+      if d &gt; dist[u]:
+        continue
+      for v, w in graph[u]:
+        newDist = d + w + 1
+        if newDist &lt; dist[v]:
+          dist[v] = newDist
+          heapq.heappush(minHeap, (newDist, v))
+
+    return sum(d &lt;= maxMoves for d in dist)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

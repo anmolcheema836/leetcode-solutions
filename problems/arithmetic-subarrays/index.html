@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arithmetic Subarrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Arithmetic Subarrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/arithmetic-subarrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/slowest-key/" class="btn">← Previous</a>
+            <span>Problem 1630 of 3563</span>
+            <a href="/leetcode-solutions/problems/path-with-minimum-effort/" class="btn">Next →</a>
+        </div>
+        <h1>1630. Arithmetic Subarrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Arithmetic Subarrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;bool&gt; checkArithmeticSubarrays(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; l,
+                                        vector&lt;int&gt;&amp; r) {
+    vector&lt;bool&gt; ans;
+
+    for (int i = 0; i &lt; l.size(); ++i)
+      ans.push_back(isArithmetic(nums, l[i], r[i]));
+
+    return ans;
+  }
+
+ private:
+  bool isArithmetic(vector&lt;int&gt;&amp; nums, int l, int r) {
+    if (r - l &lt; 2)
+      return true;
+
+    unordered_set&lt;int&gt; numsSet;
+    int mn = INT_MAX;
+    int mx = INT_MIN;
+
+    for (int i = l; i &lt;= r; ++i) {
+      mn = min(mn, nums[i]);
+      mx = max(mx, nums[i]);
+      numsSet.insert(nums[i]);
+    }
+
+    if ((mx - mn) % (r - l) != 0)
+      return false;
+
+    const int interval = (mx - mn) / (r - l);
+
+    for (int k = 1; k &lt;= r - l; ++k)
+      if (!numsSet.contains(mn + k * interval))
+        return false;
+
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Boolean&gt; checkArithmeticSubarrays(int[] nums, int[] l, int[] r) {
+    List&lt;Boolean&gt; ans = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; l.length; ++i)
+      ans.add(isArithmetic(nums, l[i], r[i]));
+
+    return ans;
+  }
+
+  private boolean isArithmetic(int[] nums, int l, int r) {
+    if (r - l &lt; 2)
+      return true;
+
+    int mn = Integer.MAX_VALUE;
+    int mx = Integer.MIN_VALUE;
+    Set&lt;Integer&gt; numsSet = new HashSet&lt;&gt;();
+
+    for (int i = l; i &lt;= r; ++i) {
+      mn = Math.min(mn, nums[i]);
+      mx = Math.max(mx, nums[i]);
+      numsSet.add(nums[i]);
+    }
+
+    if ((mx - mn) % (r - l) != 0)
+      return false;
+
+    final int interval = (mx - mn) / (r - l);
+
+    for (int k = 1; k &lt;= r - l; ++k)
+      if (!numsSet.contains(mn + k * interval))
+        return false;
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def checkArithmeticSubarrays(
+      self,
+      nums: list[int],
+      l: list[int],
+      r: list[int],
+  ) -&gt; list[bool]:
+    return [self._isArithmetic(nums, a, b) for a, b in zip(l, r)]
+
+  def _isArithmetic(self, nums: list[int], l: int, r: int) -&gt; bool:
+    if r - l &lt; 2:
+      return True
+
+    numsSet = set()
+    mn = math.inf
+    mx = -math.inf
+
+    for i in range(l, r+1):
+      mn = min(mn, nums[i])
+      mx = max(mx, nums[i])
+      numsSet.add(nums[i])
+
+    if (mx - mn) % (r - l) != 0:
+      return False
+
+    interval = (mx - mn) // (r - l)
+    return all(mn + k * interval in numsSet
+               for k in range(1, r - l + 1))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

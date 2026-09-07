@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find All People With Secret - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find All People With Secret written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-all-people-with-secret/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/removing-minimum-and-maximum-from-array/" class="btn">← Previous</a>
+            <span>Problem 2092 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-to-reach-city-with-discounts/" class="btn">Next →</a>
+        </div>
+        <h1>2092. Find All People With Secret</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find All People With Secret efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), rank(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  bool connected(int u, int v) {
+    return find(u) == find(v);
+  }
+
+  void reset(int u) {
+    id[u] = u;
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; rank;
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; findAllPeople(int n, vector&lt;vector&lt;int&gt;&gt;&amp; meetings,
+                            int firstPerson) {
+    vector&lt;int&gt; ans;
+    UnionFind uf(n);
+    map&lt;int, vector&lt;pair&lt;int, int&gt;&gt;&gt; timeToPairs;
+
+    uf.unionByRank(0, firstPerson);
+
+    for (const vector&lt;int&gt;&amp; meeting : meetings) {
+      const int x = meeting[0];
+      const int y = meeting[1];
+      const int time = meeting[2];
+      timeToPairs[time].push_back({x, y});
+    }
+
+    for (const auto&amp; [_, pairs] : timeToPairs) {
+      unordered_set&lt;int&gt; peopleUnioned;
+      for (const auto&amp; [x, y] : pairs) {
+        uf.unionByRank(x, y);
+        peopleUnioned.insert(x);
+        peopleUnioned.insert(y);
+      }
+      for (const int person : peopleUnioned)
+        if (!uf.connected(person, 0))
+          uf.reset(person);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      if (uf.connected(i, 0))
+        ans.push_back(i);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    id = new int[n];
+    rank = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+  }
+
+  public void unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  public boolean connected(int u, int v) {
+    return find(u) == find(v);
+  }
+
+  public void reset(int u) {
+    id[u] = u;
+  }
+
+  private int[] id;
+  private int[] rank;
+
+  private int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+}
+
+class Solution {
+  public List&lt;Integer&gt; findAllPeople(int n, int[][] meetings, int firstPerson) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    UnionFind uf = new UnionFind(n);
+    TreeMap&lt;Integer, List&lt;Pair&lt;Integer, Integer&gt;&gt;&gt; timeToPairs = new TreeMap&lt;&gt;();
+
+    uf.unionByRank(0, firstPerson);
+
+    for (int[] meeting : meetings) {
+      final int x = meeting[0];
+      final int y = meeting[1];
+      final int time = meeting[2];
+      timeToPairs.putIfAbsent(time, new ArrayList&lt;&gt;());
+      timeToPairs.get(time).add(new Pair&lt;&gt;(x, y));
+    }
+
+    for (List&lt;Pair&lt;Integer, Integer&gt;&gt; pairs : timeToPairs.values()) {
+      Set&lt;Integer&gt; peopleUnioned = new HashSet&lt;&gt;();
+      for (Pair&lt;Integer, Integer&gt; pair : pairs) {
+        final int x = pair.getKey();
+        final int y = pair.getValue();
+        uf.unionByRank(x, y);
+        peopleUnioned.add(x);
+        peopleUnioned.add(y);
+      }
+      for (final int person : peopleUnioned)
+        if (!uf.connected(person, 0))
+          uf.reset(person);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      if (uf.connected(i, 0))
+        ans.add(i);
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.id = list(range(n))
+    self.rank = [0] * n
+
+  def unionByRank(self, u: int, v: int) -&gt; None:
+    i = self._find(u)
+    j = self._find(v)
+    if i == j:
+      return
+    if self.rank[i] &lt; self.rank[j]:
+      self.id[i] = j
+    elif self.rank[i] &gt; self.rank[j]:
+      self.id[j] = i
+    else:
+      self.id[i] = j
+      self.rank[j] += 1
+
+  def connected(self, u: int, v: int) -&gt; bool:
+    return self._find(self.id[u]) == self._find(self.id[v])
+
+  def reset(self, u: int) -&gt; None:
+    self.id[u] = u
+
+  def _find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self._find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def findAllPeople(
+      self,
+      n: int,
+      meetings: list[list[int]],
+      firstPerson: int,
+  ) -&gt; list[int]:
+    uf = UnionFind(n)
+    timeToPairs = collections.defaultdict(list)
+
+    uf.unionByRank(0, firstPerson)
+
+    for x, y, time in meetings:
+      timeToPairs[time].append((x, y))
+
+    for _, pairs in sorted(timeToPairs.items(), key=lambda x: x[0]):
+      peopleUnioned = set()
+      for x, y in pairs:
+        uf.unionByRank(x, y)
+        peopleUnioned.add(x)
+        peopleUnioned.add(y)
+      for person in peopleUnioned:
+        if not uf.connected(person, 0):
+          uf.reset(person)
+
+    return [i for i in range(n) if uf.connected(i, 0)]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

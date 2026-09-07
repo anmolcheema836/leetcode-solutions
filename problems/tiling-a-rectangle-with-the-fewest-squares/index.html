@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiling a Rectangle with the Fewest Squares - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Tiling a Rectangle with the Fewest Squares written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/tiling-a-rectangle-with-the-fewest-squares/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-length-of-a-concatenated-string-with-unique-characters/" class="btn">← Previous</a>
+            <span>Problem 1240 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-comments-per-post/" class="btn">Next →</a>
+        </div>
+        <h1>1240. Tiling a Rectangle with the Fewest Squares</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Tiling a Rectangle with the Fewest Squares efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int tilingRectangle(int n, int m) {
+    unordered_map&lt;long, int&gt; mem;
+    return tilingRectangle(n, m, 0, /*heights=*/vector&lt;int&gt;(m), mem);
+  }
+
+ private:
+  static constexpr int kBase = 13;
+
+  int tilingRectangle(int n, int m, long hashedHeights, vector&lt;int&gt;&amp;&amp; heights,
+                      unordered_map&lt;long, int&gt;&amp; mem) {
+    if (const auto it = mem.find(hashedHeights); it != mem.cend())
+      return it-&gt;second;
+
+    const auto it = ranges::min_element(heights);
+    const int minHeight = *it;
+    if (minHeight == n)  // All filled.
+      return 0;
+
+    int ans = m * n;
+    const int start = it - heights.begin();
+    // Try to put square of different size that doesn&#x27;t exceed the width/height.
+    for (int sz = 1; sz &lt;= min(m - start, n - minHeight); ++sz) {
+      // heights[start..start + sz) must has the same height.
+      if (heights[start + sz - 1] != minHeight)
+        break;
+      // Put a square of size `sz` to cover heights[start..start + sz).
+      for (int i = start; i &lt; start + sz; ++i)
+        heights[i] += sz;
+      ans = min(ans,
+                tilingRectangle(n, m, hash(heights), std::move(heights), mem));
+      for (int i = start; i &lt; start + sz; ++i)
+        heights[i] -= sz;
+    }
+
+    return mem[hashedHeights] = 1 + ans;
+  }
+
+  long hash(const vector&lt;int&gt;&amp; heights) {
+    long hashed = 0;
+    for (int i = heights.size() - 1; i &gt;= 0; --i)
+      hashed = hashed * kBase + heights[i];
+    return hashed;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int tilingRectangle(int n, int m) {
+    return tilingRectangle(n, m, 0, new int[m]);
+  }
+
+  private static final int BASE = 13;
+  private Map&lt;Long, Integer&gt; dp = new HashMap&lt;&gt;();
+
+  private int tilingRectangle(int n, int m, long hashedHeights, int[] heights) {
+    if (dp.containsKey(hashedHeights))
+      return dp.get(hashedHeights);
+
+    final int minHeight = Arrays.stream(heights).min().getAsInt();
+    if (minHeight == n) // All filled.
+      return 0;
+
+    int ans = m * n;
+    int start = -1;
+
+    for (int i = 0; i &lt; m; ++i)
+      if (heights[i] == minHeight) {
+        start = i;
+        break;
+      }
+
+    // Try to put square of different size that doesn&#x27;t exceed the width/height.
+    for (int sz = 1; sz &lt;= Math.min(m - start, n - minHeight); ++sz) {
+      // heights[start..start + sz) must has the same height.
+      if (heights[start + sz - 1] != minHeight)
+        break;
+      // Put a square of size `sz` to cover heights[start..start + sz).
+      for (int i = start; i &lt; start + sz; ++i)
+        heights[i] += sz;
+      ans = Math.min(ans, tilingRectangle(n, m, hash(heights), heights));
+      for (int i = start; i &lt; start + sz; ++i)
+        heights[i] -= sz;
+    }
+
+    dp.put(hashedHeights, 1 + ans);
+    return 1 + ans;
+  }
+
+  private long hash(int[] heights) {
+    long hashed = 0;
+    for (int i = heights.length - 1; i &gt;= 0; --i)
+      hashed = hashed * BASE + heights[i];
+    return hashed;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def tilingRectangle(self, n: int, m: int) -&gt; int:
+    @functools.lru_cache(None)
+    def dp(heights: int) -&gt; int:
+      minHeight = min(heights)
+      if minHeight == n:  # All filled.
+        return 0
+
+      ans = m * n
+      heightsList = list(heights)
+      start = heightsList.index(minHeight)
+
+      # Try to put square of different size that doesn&#x27;t exceed the width/height.
+      for sz in range(1, min(m - start + 1, n - minHeight + 1)):
+        # heights[start..start + sz) must has the same height.
+        if heights[start + sz - 1] != minHeight:
+          break
+        # Put a square of size `sz` to cover heights[start..start + sz).
+        heightslist[start:start + sz] = [minHeight + sz] * sz
+        ans = min(ans, dp(tuple(heightsList)))
+
+      return 1 + ans
+
+    return dp(tuple([0] * m))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

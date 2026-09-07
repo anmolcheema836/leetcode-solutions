@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Grid of Region Average - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Grid of Region Average written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-grid-of-region-average/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-time-to-revert-word-to-initial-state-i/" class="btn">← Previous</a>
+            <span>Problem 3030 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-time-to-revert-word-to-initial-state-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3030. Find the Grid of Region Average</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Grid of Region Average efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; resultGrid(vector&lt;vector&lt;int&gt;&gt;&amp; image, int threshold) {
+    const int m = image.size();
+    const int n = image[0].size();
+    vector&lt;vector&lt;int&gt;&gt; sums(m, vector&lt;int&gt;(n));
+    vector&lt;vector&lt;int&gt;&gt; counts(m, vector&lt;int&gt;(n));
+
+    for (int i = 0; i &lt; m - 2; ++i)
+      for (int j = 0; j &lt; n - 2; ++j)
+        if (isRegion(image, i, j, threshold)) {
+          const int subgridSum = getSubgridSum(image, i, j);
+          for (int x = i; x &lt; i + 3; ++x)
+            for (int y = j; y &lt; j + 3; ++y) {
+              sums[x][y] += subgridSum / 9;
+              counts[x][y] += 1;
+            }
+        }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (counts[i][j] &gt; 0)
+          image[i][j] = sums[i][j] / counts[i][j];
+
+    return image;
+  }
+
+ private:
+  // Returns true if image[i..i + 2][j..j + 2] is a region.
+  bool isRegion(const vector&lt;vector&lt;int&gt;&gt;&amp; image, int i, int j, int threshold) {
+    for (int x = i; x &lt; i + 3; ++x)
+      for (int y = j; y &lt; j + 3; ++y) {
+        if (x &gt; i &amp;&amp; abs(image[x][y] - image[x - 1][y]) &gt; threshold)
+          return false;
+        if (y &gt; j &amp;&amp; abs(image[x][y] - image[x][y - 1]) &gt; threshold)
+          return false;
+      }
+    return true;
+  }
+
+  // Returns the sum of image[i..i + 2][j..j + 2].
+  int getSubgridSum(const vector&lt;vector&lt;int&gt;&gt;&amp; image, int i, int j) {
+    int subgridSum = 0;
+    for (int x = i; x &lt; i + 3; ++x)
+      for (int y = j; y &lt; j + 3; ++y)
+        subgridSum += image[x][y];
+    return subgridSum;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] resultGrid(int[][] image, int threshold) {
+    final int m = image.length;
+    final int n = image[0].length;
+    int[][] sums = new int[m][n];
+    int[][] counts = new int[m][n];
+
+    for (int i = 0; i &lt; m - 2; ++i)
+      for (int j = 0; j &lt; n - 2; ++j)
+        if (isRegion(image, i, j, threshold)) {
+          final int subgridSum = getSubgridSum(image, i, j);
+          for (int x = i; x &lt; i + 3; ++x)
+            for (int y = j; y &lt; j + 3; ++y) {
+              sums[x][y] += subgridSum / 9;
+              counts[x][y] += 1;
+            }
+        }
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (counts[i][j] &gt; 0)
+          image[i][j] = sums[i][j] / counts[i][j];
+
+    return image;
+  }
+
+  // Returns true if image[i..i + 2][j..j + 2] is a region.
+  private boolean isRegion(int[][] image, int i, int j, int threshold) {
+    for (int x = i; x &lt; i + 3; ++x)
+      for (int y = j; y &lt; j + 3; ++y) {
+        if (x &gt; i &amp;&amp; Math.abs(image[x][y] - image[x - 1][y]) &gt; threshold)
+          return false;
+        if (y &gt; j &amp;&amp; Math.abs(image[x][y] - image[x][y - 1]) &gt; threshold)
+          return false;
+      }
+    return true;
+  }
+
+  // Returns the sum of image[i..i + 2][j..j + 2].
+  private int getSubgridSum(int[][] image, int i, int j) {
+    int subgridSum = 0;
+    for (int x = i; x &lt; i + 3; ++x)
+      for (int y = j; y &lt; j + 3; ++y)
+        subgridSum += image[x][y];
+    return subgridSum;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def resultGrid(
+      self,
+      image: list[list[int]],
+      threshold: int,
+  ) -&gt; list[list[int]]:
+    m = len(image)
+    n = len(image[0])
+    sums = [[0] * n for _ in range(m)]
+    counts = [[0] * n for _ in range(m)]
+
+    for i in range(m - 2):
+      for j in range(n - 2):
+        if self._isRegion(image, i, j, threshold):
+          subgridSum = sum(image[x][y]
+                           for x in range(i, i + 3)
+                           for y in range(j, j + 3))
+          for x in range(i, i + 3):
+            for y in range(j, j + 3):
+              sums[x][y] += subgridSum // 9
+              counts[x][y] += 1
+
+    for i in range(m):
+      for j in range(n):
+        if counts[i][j] &gt; 0:
+          image[i][j] = sums[i][j] // counts[i][j]
+
+    return image
+
+  def _isRegion(
+      self,
+      image: list[list[int]],
+      i: int,
+      j: int,
+      threshold: int,
+  ) -&gt; bool:
+    &quot;&quot;&quot;Returns True if image[i..i + 2][j..j + 2] is a region.&quot;&quot;&quot;
+    for x in range(i, i + 3):
+      for y in range(j, j + 3):
+        if x &gt; i and abs(image[x][y] - image[x - 1][y]) &gt; threshold:
+          return False
+        if y &gt; j and abs(image[x][y] - image[x][y - 1]) &gt; threshold:
+          return False
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

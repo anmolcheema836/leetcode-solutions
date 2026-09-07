@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Safe Walk Through a Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find a Safe Walk Through a Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-a-safe-walk-through-a-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-indices-of-stable-mountains/" class="btn">← Previous</a>
+            <span>Problem 3286 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-maximum-sequence-value-of-array/" class="btn">Next →</a>
+        </div>
+        <h1>3286. Find a Safe Walk Through a Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find a Safe Walk Through a Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool findSafeWalk(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int health) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    const int m = grid.size();
+    const int n = grid[0].size();
+    const int initialHealth = health - grid[0][0];
+    using T = tuple&lt;int, int, int&gt;;  // (i, j, h)
+    queue&lt;T&gt; q{{{0, 0, initialHealth}}};
+    vector&lt;vector&lt;vector&lt;bool&gt;&gt;&gt; seen(
+        m, vector&lt;vector&lt;bool&gt;&gt;(n, vector&lt;bool&gt;(health + 1)));
+    seen[0][0][initialHealth] = true;
+
+    while (!q.empty())
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [i, j, h] = q.front();
+        q.pop();
+        if (i == m - 1 &amp;&amp; j == n - 1 &amp;&amp; h &gt; 0)
+          return true;
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          const int nextHealth = h - grid[x][y];
+          if (nextHealth &lt;= 0 || seen[x][y][nextHealth])
+            continue;
+          q.emplace(x, y, nextHealth);
+          seen[x][y][nextHealth] = true;
+        }
+      }
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean findSafeWalk(List&lt;List&lt;Integer&gt;&gt; grid, int health) {
+    record T(int i, int j, int h) {}
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int m = grid.size();
+    final int n = grid.get(0).size();
+    final int initialHealth = health - grid.get(0).get(0);
+    Queue&lt;T&gt; q = new ArrayDeque&lt;&gt;(List.of(new T(0, 0, initialHealth)));
+    boolean[][][] seen = new boolean[m][n][health + 1];
+    seen[0][0][initialHealth] = true;
+
+    while (!q.isEmpty())
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int i = q.peek().i;
+        final int j = q.peek().j;
+        final int h = q.poll().h;
+        if (i == m - 1 &amp;&amp; j == n - 1 &amp;&amp; h &gt; 0)
+          return true;
+        for (int k = 0; k &lt; 4; ++k) {
+          final int x = i + DIRS[k][0];
+          final int y = j + DIRS[k][1];
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          final int nextHealth = h - grid.get(x).get(y);
+          if (nextHealth &lt;= 0 || seen[x][y][nextHealth])
+            continue;
+          q.offer(new T(x, y, nextHealth));
+          seen[x][y][nextHealth] = true;
+        }
+      }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findSafeWalk(self, grid: list[list[int]], health: int) -&gt; bool:
+    DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    m = len(grid)
+    n = len(grid[0])
+    initialHealth = health - grid[0][0]
+    q = collections.deque([(0, 0, initialHealth)])
+    seen = {(0, 0, initialHealth)}
+
+    while q:
+      for _ in range(len(q)):
+        i, j, h = q.popleft()
+        if i == m - 1 and j == n - 1 and h &gt; 0:
+          return True
+        for dx, dy in DIRS:
+          x = i + dx
+          y = j + dy
+          if x &lt; 0 or x == m or y &lt; 0 or y == n:
+            continue
+          nextHealth = h - grid[x][y]
+          if nextHealth &lt;= 0 or (x, y, nextHealth) in seen:
+            continue
+          q.append((x, y, nextHealth))
+          seen.add((x, y, nextHealth))
+
+    return False</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

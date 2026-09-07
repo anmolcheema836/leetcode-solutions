@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Earliest and Latest Rounds Where Players Compete - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Earliest and Latest Rounds Where Players Compete written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-earliest-and-latest-rounds-where-players-compete/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/merge-triplets-to-form-target-triplet/" class="btn">← Previous</a>
+            <span>Problem 1900 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-a-peak-element-ii/" class="btn">Next →</a>
+        </div>
+        <h1>1900. The Earliest and Latest Rounds Where Players Compete</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Earliest and Latest Rounds Where Players Compete efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; earliestAndLatest(int n, int firstPlayer, int secondPlayer) {
+    using P = pair&lt;int, int&gt;;
+    vector&lt;vector&lt;vector&lt;P&gt;&gt;&gt; mem(n + 1,
+                                  vector&lt;vector&lt;P&gt;&gt;(n + 1, vector&lt;P&gt;(n + 1)));
+    const auto [a, b] = solve(firstPlayer, n - secondPlayer + 1, n, mem);
+    return {a, b};
+  }
+
+ private:
+  // Returns the (earliest, latest) pair, the first player is the l-th player
+  // from the front, the second player is the r-th player from the end, and
+  // there&#x27;re k people.
+  pair&lt;int, int&gt; solve(int l, int r, int k,
+                       vector&lt;vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&gt;&amp; mem) {
+    if (l == r)
+      return {1, 1};
+    if (l &gt; r)
+      swap(l, r);
+    if (mem[l][r][k] != pair&lt;int, int&gt;{0, 0})
+      return mem[l][r][k];
+
+    int a = INT_MAX;
+    int b = INT_MIN;
+
+    // Enumerate all the possible positions.
+    for (int i = 1; i &lt;= l; ++i)
+      for (int j = l - i + 1; j &lt;= r - i; ++j) {
+        if (i + j &gt; (k + 1) / 2 || i + j &lt; l + r - k / 2)
+          continue;
+        const auto [x, y] = solve(i, j, (k + 1) / 2, mem);
+        a = min(a, x + 1);
+        b = max(b, y + 1);
+      }
+
+    return mem[l][r][k] = {a, b};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] earliestAndLatest(int n, int firstPlayer, int secondPlayer) {
+    int[][][][] mem = new int[n + 1][n + 1][n + 1][2];
+    return solve(firstPlayer, n - secondPlayer + 1, n, mem);
+  }
+
+  // Returns the (earliest, latest) pair, the first player is the l-th player
+  // from the front, the second player is the r-th player from the end, and
+  // there&#x27;re k people.
+  private int[] solve(int l, int r, int k, int[][][][] mem) {
+    if (l == r)
+      return new int[] {1, 1};
+    if (l &gt; r)
+      return solve(r, l, k, mem);
+    if (!Arrays.equals(mem[l][r][k], new int[] {0, 0}))
+      return mem[l][r][k];
+
+    int a = Integer.MAX_VALUE;
+    int b = Integer.MIN_VALUE;
+
+    // Enumerate all the possible positions.
+    for (int i = 1; i &lt;= l; ++i)
+      for (int j = l - i + 1; j &lt;= r - i; ++j) {
+        if (i + j &gt; (k + 1) / 2 || i + j &lt; l + r - k / 2)
+          continue;
+        int[] res = solve(i, j, (k + 1) / 2, mem);
+        a = Math.min(a, res[0] + 1);
+        b = Math.max(b, res[1] + 1);
+      }
+
+    return mem[l][r][k] = new int[] {a, b};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def earliestAndLatest(self, n: int,
+                        firstPlayer: int, secondPlayer: int) -&gt; list[int]:
+    @functools.lru_cache(None)
+    def dp(l: int, r: int, k: int) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Returns the (earliest, latest) pair, the first player is the l-th player
+      from the front, the second player is the r-th player from the end, and
+      there&#x27;re k people.
+      &quot;&quot;&quot;
+      if l == r:
+        return [1, 1]
+      if l &gt; r:
+        return dp(r, l, k)
+
+      a = math.inf
+      b = -math.inf
+
+      # Enumerate all the possible positions.
+      for i in range(1, l + 1):
+        for j in range(l - i + 1, r - i + 1):
+          if not l + r - k // 2 &lt;= i + j &lt;= (k + 1) // 2:
+            continue
+          x, y = dp(i, j, (k + 1) // 2)
+          a = min(a, x + 1)
+          b = max(b, y + 1)
+
+      return [a, b]
+
+    return dp(firstPlayer, n - secondPlayer + 1, n)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

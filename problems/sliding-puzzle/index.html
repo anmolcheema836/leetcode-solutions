@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Puzzle - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sliding Puzzle written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sliding-puzzle/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/basic-calculator-iii/" class="btn">← Previous</a>
+            <span>Problem 773 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimize-max-distance-to-gas-station/" class="btn">Next →</a>
+        </div>
+        <h1>773. Sliding Puzzle</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sliding Puzzle efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int slidingPuzzle(vector&lt;vector&lt;int&gt;&gt;&amp; board) {
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    constexpr int m = 2;
+    constexpr int n = 3;
+    constexpr char goal[] = &quot;123450&quot;;
+    string start;
+
+    // Hash the 2D vector into a string.
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        start += &#x27;0&#x27; + board[i][j];
+
+    if (start == goal)
+      return 0;
+
+    queue&lt;string&gt; q{{start}};
+    unordered_set&lt;string&gt; seen{start};
+
+    for (int step = 1; !q.empty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        string s = q.front();
+        q.pop();
+        const int zeroIndex = s.find(&#x27;0&#x27;);
+        const int i = zeroIndex / n;
+        const int j = zeroIndex % n;
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          const int swappedIndex = x * n + y;
+          swap(s[zeroIndex], s[swappedIndex]);
+          if (s == goal)
+            return step;
+          if (!seen.contains(s)) {
+            q.push(s);
+            seen.insert(s);
+          }
+          swap(s[zeroIndex], s[swappedIndex]);
+        }
+      }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int slidingPuzzle(int[][] board) {
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int m = 2;
+    final int n = 3;
+    final String goal = &quot;123450&quot;;
+    StringBuilder startSb = new StringBuilder();
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        startSb.append((char) (&#x27;0&#x27; + board[i][j]));
+
+    final String start = startSb.toString();
+    if (start.equals(goal))
+      return 0;
+
+    Queue&lt;String&gt; q = new ArrayDeque&lt;&gt;(List.of(start));
+    Set&lt;String&gt; seen = new HashSet&lt;&gt;(Arrays.asList(start));
+
+    for (int step = 1; !q.isEmpty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final String s = q.poll();
+        final int zeroIndex = s.indexOf(&quot;0&quot;);
+        final int i = zeroIndex / n;
+        final int j = zeroIndex % n;
+        for (int[] dir : DIRS) {
+          final int x = i + dir[0];
+          final int y = j + dir[1];
+          if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+            continue;
+          final int swappedIndex = x * n + y;
+          StringBuilder sb = new StringBuilder(s);
+          sb.setCharAt(zeroIndex, s.charAt(swappedIndex));
+          sb.setCharAt(swappedIndex, s.charAt(zeroIndex));
+          final String t = sb.toString();
+          if (t.equals(goal))
+            return step;
+          if (!seen.contains(t)) {
+            q.offer(t);
+            seen.add(t);
+          }
+        }
+      }
+
+    return -1;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

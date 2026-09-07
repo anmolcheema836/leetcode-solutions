@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Determine the Winner of a Bowling Game - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Determine the Winner of a Bowling Game written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/determine-the-winner-of-a-bowling-game/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/make-array-empty/" class="btn">← Previous</a>
+            <span>Problem 2660 of 3563</span>
+            <a href="/leetcode-solutions/problems/first-completely-painted-row-or-column/" class="btn">Next →</a>
+        </div>
+        <h1>2660. Determine the Winner of a Bowling Game</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Determine the Winner of a Bowling Game efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int isWinner(vector&lt;int&gt;&amp; player1, vector&lt;int&gt;&amp; player2) {
+    const int score1 = getScore(player1);
+    const int score2 = getScore(player2);
+    if (score1 &gt; score2)
+      return 1;
+    if (score2 &gt; score1)
+      return 2;
+    return 0;
+  }
+
+ private:
+  int getScore(const vector&lt;int&gt;&amp; player) {
+    constexpr int kInvalid = -3;
+    int score = 0;
+    int last10 = kInvalid;
+    for (int i = 0; i &lt; player.size(); ++i) {
+      score += i - last10 &gt; 2 ? player[i] : player[i] * 2;
+      if (player[i] == 10)
+        last10 = i;
+    }
+    return score;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int isWinner(int[] player1, int[] player2) {
+    final int score1 = getScore(player1);
+    final int score2 = getScore(player2);
+    if (score1 &gt; score2)
+      return 1;
+    if (score2 &gt; score1)
+      return 2;
+    return 0;
+  }
+
+  private int getScore(int[] player) {
+    final int INVALID = -3;
+    int score = 0;
+    int last10 = INVALID;
+    for (int i = 0; i &lt; player.length; ++i) {
+      score += i - last10 &gt; 2 ? player[i] : player[i] * 2;
+      if (player[i] == 10)
+        last10 = i;
+    }
+    return score;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isWinner(self, player1: list[int], player2: list[int]) -&gt; int:
+    def getScore(player: list[int]) -&gt; int:
+      INVALID = -3
+      score = 0
+      last10 = INVALID
+      for i, p in enumerate(player):
+        score += p if i - last10 &gt; 2 else p * 2
+        if p == 10:
+          last10 = i
+      return score
+
+    score1 = getScore(player1)
+    score2 = getScore(player2)
+    if score1 &gt; score2:
+      return 1
+    if score2 &gt; score1:
+      return 2
+    return 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

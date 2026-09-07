@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose K Elements With Maximum Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Choose K Elements With Maximum Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/choose-k-elements-with-maximum-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/fruits-into-baskets-ii/" class="btn">← Previous</a>
+            <span>Problem 3478 of 3563</span>
+            <a href="/leetcode-solutions/problems/fruits-into-baskets-iii/" class="btn">Next →</a>
+        </div>
+        <h1>3478. Choose K Elements With Maximum Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Choose K Elements With Maximum Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;long long&gt; findMaxSum(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2, int k) {
+    const int n = nums1.size();
+    vector&lt;long long&gt; ans(n);
+    vector&lt;pair&lt;int, int&gt;&gt; numAndIndexes;
+    priority_queue&lt;long long, vector&lt;long long&gt;, greater&lt;long long&gt;&gt; minHeap;
+
+    for (int i = 0; i &lt; n; i++)
+      numAndIndexes.emplace_back(nums1[i], i);
+
+    ranges::sort(numAndIndexes);
+
+    const int firstIndex = numAndIndexes[0].second;
+    minHeap.push(nums2[firstIndex]);
+    long sum = nums2[firstIndex];
+
+    for (int i = 1; i &lt; n; ++i) {
+      const auto&amp; [currNum, currIndex] = numAndIndexes[i];
+      const auto&amp; [prevNum, prevIndex] = numAndIndexes[i - 1];
+      if (currNum == prevNum)
+        ans[currIndex] = ans[prevIndex];
+      else
+        ans[currIndex] = sum;
+      minHeap.push(nums2[currIndex]);
+      sum += nums2[currIndex];
+      if (minHeap.size() == k + 1)
+        sum -= minHeap.top(), minHeap.pop();
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long[] findMaxSum(int[] nums1, int[] nums2, int k) {
+    final int n = nums1.length;
+    long[] ans = new long[n];
+    Pair&lt;Integer, Integer&gt;[] numAndIndexes = new Pair[n];
+    Queue&lt;Long&gt; minHeap = new PriorityQueue&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      numAndIndexes[i] = new Pair&lt;&gt;(nums1[i], i);
+
+    Arrays.sort(numAndIndexes, Comparator.comparingInt(Pair::getKey));
+
+    final int firstIndex = numAndIndexes[0].getValue();
+    minHeap.offer((long) nums2[firstIndex]);
+    long sum = nums2[firstIndex];
+
+    for (int i = 1; i &lt; n; ++i) {
+      final int currNum = numAndIndexes[i].getKey();
+      final int currIndex = numAndIndexes[i].getValue();
+      final int prevNum = numAndIndexes[i - 1].getKey();
+      final int prevIndex = numAndIndexes[i - 1].getValue();
+      if (currNum == prevNum)
+        ans[currIndex] = ans[prevIndex];
+      else
+        ans[currIndex] = sum;
+      minHeap.offer((long) nums2[currIndex]);
+      sum += nums2[currIndex];
+      if (minHeap.size() == k + 1)
+        sum -= minHeap.poll();
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findMaxSum(self, nums1: list[int], nums2: list[int], k: int) -&gt; list[int]:
+    ans = [0] * len(nums1)
+    numAndIndexes = sorted([(num, i) for i, num in enumerate(nums1)])
+    minHeap = []
+
+    firstIndex = numAndIndexes[0][1]
+    heapq.heappush(minHeap, nums2[firstIndex])
+    summ = nums2[firstIndex]
+
+    for (prevNum, prevIndex), (currNum, currIndex) in itertools.pairwise(numAndIndexes):
+      if currNum == prevNum:
+        ans[currIndex] = ans[prevIndex]
+      else:
+        ans[currIndex] = summ
+      heapq.heappush(minHeap, nums2[currIndex])
+      summ += nums2[currIndex]
+      if len(minHeap) == k + 1:
+        summ -= heapq.heappop(minHeap)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

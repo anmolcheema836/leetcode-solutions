@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Fluctuation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Stock Price Fluctuation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/stock-price-fluctuation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-operations-to-make-a-uni-value-grid/" class="btn">← Previous</a>
+            <span>Problem 2034 of 3563</span>
+            <a href="/leetcode-solutions/problems/partition-array-into-two-arrays-to-minimize-sum-difference/" class="btn">Next →</a>
+        </div>
+        <h1>2034. Stock Price Fluctuation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Stock Price Fluctuation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class StockPrice {
+ public:
+  void update(int timestamp, int price) {
+    if (const auto it = timestampToPrice.find(timestamp);
+        it != timestampToPrice.cend()) {
+      const int prevPrice = it-&gt;second;
+      prices.erase(prices.equal_range(prevPrice).first);
+    }
+    timestampToPrice[timestamp] = price;
+    prices.insert(price);
+  }
+
+  int current() {
+    return timestampToPrice.rbegin()-&gt;second;
+  }
+
+  int maximum() {
+    return *prices.rbegin();
+  }
+
+  int minimum() {
+    return *prices.begin();
+  }
+
+ private:
+  map&lt;int, int&gt; timestampToPrice;
+  multiset&lt;int&gt; prices;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class StockPrice {
+  public void update(int timestamp, int price) {
+    if (timestampToPrice.containsKey(timestamp)) {
+      final int prevPrice = timestampToPrice.get(timestamp);
+      if (pricesCount.merge(prevPrice, -1, Integer::sum) == 0)
+        pricesCount.remove(prevPrice);
+    }
+    timestampToPrice.put(timestamp, price);
+    pricesCount.merge(price, 1, Integer::sum);
+  }
+
+  public int current() {
+    return timestampToPrice.lastEntry().getValue();
+  }
+
+  public int maximum() {
+    return pricesCount.lastKey();
+  }
+
+  public int minimum() {
+    return pricesCount.firstKey();
+  }
+
+  private TreeMap&lt;Integer, Integer&gt; timestampToPrice = new TreeMap&lt;&gt;();
+  private TreeMap&lt;Integer, Integer&gt; pricesCount = new TreeMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedDict
+
+
+class StockPrice:
+  def __init__(self):
+    self.timestampToPrice = SortedDict()
+    self.pricesCount = SortedDict()
+
+  def update(self, timestamp: int, price: int) -&gt; None:
+    if timestamp in self.timestampToPrice:
+      prevPrice = self.timestampToPrice[timestamp]
+      self.pricesCount[prevPrice] -= 1
+      if self.pricesCount[prevPrice] == 0:
+        del self.pricesCount[prevPrice]
+    self.timestampToPrice[timestamp] = price
+    self.pricesCount[price] = self.pricesCount.get(price, 0) + 1
+
+  def current(self) -&gt; int:
+    return self.timestampToPrice.peekitem(-1)[1]
+
+  def maximum(self) -&gt; int:
+    return self.pricesCount.peekitem(-1)[0]
+
+  def minimum(self) -&gt; int:
+    return self.pricesCount.peekitem(0)[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

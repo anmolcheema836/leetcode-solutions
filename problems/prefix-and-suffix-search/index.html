@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefix and Suffix Search - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Prefix and Suffix Search written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/prefix-and-suffix-search/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-smallest-letter-greater-than-target/" class="btn">← Previous</a>
+            <span>Problem 745 of 3563</span>
+            <a href="/leetcode-solutions/problems/min-cost-climbing-stairs/" class="btn">Next →</a>
+        </div>
+        <h1>745. Prefix and Suffix Search</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Prefix and Suffix Search efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  int weight = -1;
+  TrieNode() : children(27) {}
+};
+
+class Trie {
+ public:
+  void insert(const string&amp; word, int weight) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        node-&gt;children[i] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[i];
+      node-&gt;weight = weight;
+    }
+  }
+
+  int startsWith(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        return -1;
+      node = node-&gt;children[i];
+    }
+    return node-&gt;weight;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+};
+
+class WordFilter {
+ public:
+  WordFilter(vector&lt;string&gt;&amp; words) {
+    for (int i = 0; i &lt; words.size(); ++i)
+      for (int j = 0; j &lt;= words[i].length(); ++j)
+        trie.insert(words[i].substr(j) + &#x27;{&#x27; + words[i], i);
+  }
+
+  int f(string prefix, string suffix) {
+    return trie.startsWith(suffix + &#x27;{&#x27; + prefix);
+  }
+
+ private:
+  Trie trie;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class WordFilter {
+  public WordFilter(String[] words) {
+    for (int i = 0; i &lt; words.length; ++i) {
+      final String word = words[i];
+      List&lt;String&gt; prefixes = new ArrayList&lt;&gt;();
+      List&lt;String&gt; suffixes = new ArrayList&lt;&gt;();
+      for (int j = 0; j &lt;= word.length(); ++j) {
+        final String prefix = word.substring(0, j);
+        final String suffix = word.substring(j);
+        prefixes.add(prefix);
+        suffixes.add(suffix);
+      }
+      for (final String prefix : prefixes)
+        for (final String suffix : suffixes)
+          keyToIndex.put(prefix + &#x27;_&#x27; + suffix, i);
+    }
+  }
+
+  public int f(String prefix, String suffix) {
+    final String key = prefix + &#x27;_&#x27; + suffix;
+    if (keyToIndex.containsKey(key))
+      return keyToIndex.get(key);
+    return -1;
+  }
+
+  private Map&lt;String, Integer&gt; keyToIndex = new HashMap&lt;&gt;();
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

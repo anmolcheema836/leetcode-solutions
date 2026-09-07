@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Connected Components in LCM Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Connected Components in LCM Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-connected-components-in-lcm-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/digit-operations-to-make-two-integers-equal/" class="btn">← Previous</a>
+            <span>Problem 3378 of 3563</span>
+            <a href="/leetcode-solutions/problems/transformed-array/" class="btn">Next →</a>
+        </div>
+        <h1>3378. Count Connected Components in LCM Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Connected Components in LCM Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  void unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  int find(int u) {
+    if (!id.contains(u))
+      id[u] = u;
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+
+ private:
+  unordered_map&lt;int, int&gt; id;
+  unordered_map&lt;int, int&gt; rank;
+};
+
+class Solution {
+ public:
+  int countComponents(vector&lt;int&gt;&amp; nums, int threshold) {
+    UnionFind uf;
+
+    for (const int num : nums)
+      for (int multiple = 2 * num; multiple &lt;= threshold; multiple += num)
+        uf.unionByRank(num, multiple);
+
+    unordered_set&lt;int&gt; components;
+    for (const int num : nums)
+      components.insert(uf.find(num));
+    return components.size();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public void unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (rank.get(i) &lt; rank.get(j)) {
+      id.put(i, j);
+    } else if (rank.get(i) &gt; rank.get(j)) {
+      id.put(j, i);
+    } else {
+      id.put(i, j);
+      rank.merge(j, 1, Integer::sum);
+    }
+  }
+
+  public int find(int u) {
+    if (!id.containsKey(u)) {
+      id.put(u, u);
+      rank.put(u, 0);
+    }
+    if (id.get(u) != u)
+      id.put(u, find(id.get(u)));
+    return id.get(u);
+  }
+
+  private Map&lt;Integer, Integer&gt; id = new HashMap&lt;&gt;();
+  private Map&lt;Integer, Integer&gt; rank = new HashMap&lt;&gt;();
+}
+
+class Solution {
+  public int countComponents(int[] nums, int threshold) {
+    UnionFind uf = new UnionFind();
+
+    for (final int num : nums)
+      for (int multiple = 2 * num; multiple &lt;= threshold; multiple += num)
+        uf.unionByRank(num, multiple);
+
+    return Arrays.stream(nums).map(uf::find).boxed().collect(Collectors.toSet()).size();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self):
+    self.id = {}
+    self.rank = collections.Counter()
+
+  def unionByRank(self, u: int, v: int) -&gt; None:
+    i = self.find(u)
+    j = self.find(v)
+    if i == j:
+      return
+    if self.rank[i] &lt; self.rank[j]:
+      self.id[i] = j
+    elif self.rank[i] &gt; self.rank[j]:
+      self.id[j] = i
+    else:
+      self.id[i] = j
+      self.rank[j] += 1
+
+  def find(self, u: int) -&gt; int:
+    if u not in self.id:
+      self.id[u] = u
+    if self.id[u] != u:
+      self.id[u] = self.find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def countComponents(self, nums: list[int], threshold: int) -&gt; int:
+    uf = UnionFind()
+
+    for num in nums:
+      for multiple in range(2 * num, threshold + 1, num):
+        uf.unionByRank(num, multiple)
+
+    return len(set(uf.find(num) for num in nums))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

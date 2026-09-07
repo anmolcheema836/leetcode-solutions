@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Moves to Get a Peaceful Board - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Moves to Get a Peaceful Board written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-moves-to-get-a-peaceful-board/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-top-scoring-students-ii/" class="btn">← Previous</a>
+            <span>Problem 3189 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-minimum-operations-to-make-all-elements-divisible-by-three/" class="btn">Next →</a>
+        </div>
+        <h1>3189. Minimum Moves to Get a Peaceful Board</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Moves to Get a Peaceful Board efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minMoves(vector&lt;vector&lt;int&gt;&gt;&amp; rooks) {
+    const int n = rooks.size();
+    int ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; sortedByRow(rooks);
+    vector&lt;vector&lt;int&gt;&gt; sortedByCol(rooks);
+
+    ranges::sort(sortedByRow, ranges::less{},
+                 [](const vector&lt;int&gt;&amp; rook) { return rook[0]; });
+
+    ranges::sort(sortedByCol, ranges::less{},
+                 [](const vector&lt;int&gt;&amp; rook) { return rook[1]; });
+
+    for (int i = 0; i &lt; n; ++i) {
+      ans += abs(sortedByRow[i][0] - /*targetRow=*/i);
+      ans += abs(sortedByCol[i][1] - /*targetCol=*/i);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minMoves(int[][] rooks) {
+    final int n = rooks.length;
+    int ans = 0;
+    int[][] sortedByRow = rooks.clone();
+    int[][] sortedByCol = rooks.clone();
+
+    Arrays.sort(sortedByRow, Comparator.comparingInt(a -&gt; a[0]));
+    Arrays.sort(sortedByCol, Comparator.comparingInt(a -&gt; a[1]));
+
+    for (int i = 0; i &lt; n; ++i) {
+      ans += Math.abs(sortedByRow[i][0] - /*targetRow=*/i);
+      ans += Math.abs(sortedByCol[i][1] - /*targetCol=*/i);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minMoves(self, rooks: list[list[int]]) -&gt; int:
+    n = len(rooks)
+    sortedByRow = sorted(rooks, key=lambda x: x[0])
+    sortedByCol = sorted(rooks, key=lambda x: x[1])
+    return (sum(abs(i - row) for (i, _), row in zip(sortedByRow, range(n))) +
+            sum(abs(j - col) for (_, j), col in zip(sortedByCol, range(n))))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

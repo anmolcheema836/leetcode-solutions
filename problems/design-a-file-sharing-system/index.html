@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design a File Sharing System - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design a File Sharing System written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-a-file-sharing-system/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/max-value-of-equation/" class="btn">← Previous</a>
+            <span>Problem 1500 of 3563</span>
+            <a href="/leetcode-solutions/problems/countries-you-can-safely-invest-in/" class="btn">Next →</a>
+        </div>
+        <h1>1500. Design a File Sharing System</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design a File Sharing System efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FileSharing {
+ public:
+  FileSharing(int m) {}
+
+  int join(vector&lt;int&gt; ownedChunks) {
+    const int userId = getMinUserId();
+    userToChunks[userId] = {ownedChunks.begin(), ownedChunks.end()};
+    for (const int chunk : ownedChunks)
+      chunkToUsers[chunk].insert(userId);
+    return userId;
+  }
+
+  void leave(int userID) {
+    for (const int chunk : userToChunks[userID]) {
+      chunkToUsers[chunk].erase(userID);
+      if (chunkToUsers[chunk].empty())
+        chunkToUsers.erase(chunk);
+    }
+    userToChunks.erase(userID);
+    availableUserIds.push(userID);
+  }
+
+  vector&lt;int&gt; request(int userID, int chunkID) {
+    const auto it = chunkToUsers.find(chunkID);
+    if (it == chunkToUsers.end())
+      return {};
+    vector&lt;int&gt; userIds{it-&gt;second.begin(), it-&gt;second.end()};
+    userToChunks[userID].insert(chunkID);
+    chunkToUsers[chunkID].insert(userID);
+    return userIds;
+  }
+
+ private:
+  unordered_map&lt;int, set&lt;int&gt;&gt; userToChunks;
+  unordered_map&lt;int, set&lt;int&gt;&gt; chunkToUsers;
+  priority_queue&lt;int, vector&lt;int&gt;, greater&lt;&gt;&gt; availableUserIds;
+
+  int getMinUserId() {
+    if (availableUserIds.empty())
+      return userToChunks.size() + 1;
+    const int minUserId = availableUserIds.top();
+    availableUserIds.pop();
+    return minUserId;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FileSharing {
+  public FileSharing(int m) {}
+
+  public int join(List&lt;Integer&gt; ownedChunks) {
+    final int userId =
+        availableUserIds.isEmpty() ? userToChunks.size() + 1 : availableUserIds.poll();
+    userToChunks.put(userId, new HashSet&lt;&gt;(ownedChunks));
+    for (final int chunk : ownedChunks) {
+      chunkToUsers.putIfAbsent(chunk, new TreeSet&lt;&gt;());
+      chunkToUsers.get(chunk).add(userId);
+    }
+    return userId;
+  }
+
+  public void leave(int userID) {
+    for (final int chunk : userToChunks.get(userID)) {
+      chunkToUsers.get(chunk).remove(userID);
+      if (chunkToUsers.get(chunk).isEmpty())
+        chunkToUsers.remove(chunk);
+    }
+    userToChunks.remove(userID);
+    availableUserIds.offer(userID);
+  }
+
+  public List&lt;Integer&gt; request(int userID, int chunkID) {
+    if (!chunkToUsers.containsKey(chunkID))
+      return new ArrayList&lt;&gt;();
+    List&lt;Integer&gt; userIds = new ArrayList&lt;&gt;(chunkToUsers.get(chunkID));
+    userToChunks.get(userID).add(chunkID);
+    chunkToUsers.get(chunkID).add(userID);
+    return userIds;
+  }
+
+  private Map&lt;Integer, Set&lt;Integer&gt;&gt; userToChunks = new HashMap&lt;&gt;();
+  private Map&lt;Integer, Set&lt;Integer&gt;&gt; chunkToUsers = new HashMap&lt;&gt;();
+  private Queue&lt;Integer&gt; availableUserIds = new PriorityQueue&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedSet
+
+
+class FileSharing:
+  def __init__(self, m: int):
+    self.userToChunks: dict[int, SortedSet[int]] = {}
+    self.chunkToUsers: dict[int, SortedSet[int]] = {}
+    self.availableUserIds: list[int] = []
+
+  def join(self, ownedChunks: list[int]) -&gt; int:
+    userId = (heapq.heappop(self.availableUserIds) if self.availableUserIds
+              else len(self.userToChunks) + 1)
+    self.userToChunks[userId] = SortedSet(ownedChunks)
+    for chunk in ownedChunks:
+      self.chunkToUsers.setdefault(chunk, SortedSet()).add(userId)
+    return userId
+
+  def leave(self, userID: int) -&gt; None:
+    if userID not in self.userToChunks:
+      return
+    for chunk in self.userToChunks[userID]:
+      self.chunkToUsers[chunk].discard(userID)
+      if not self.chunkToUsers[chunk]:
+        del self.chunkToUsers[chunk]
+    del self.userToChunks[userID]
+    heapq.heappush(self.availableUserIds, userID)
+
+  def request(self, userID: int, chunkID: int) -&gt; list[int]:
+    if chunkID not in self.chunkToUsers:
+      return []
+    userIds = list(self.chunkToUsers[chunkID])
+    self.userToChunks[userID].add(chunkID)
+    self.chunkToUsers[chunkID].add(userID)
+    return userIds</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

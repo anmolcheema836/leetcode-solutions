@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimize Rounding Error to Meet Target - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimize Rounding Error to Meet Target written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimize-rounding-error-to-meet-target/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/campus-bikes/" class="btn">← Previous</a>
+            <span>Problem 1058 of 3563</span>
+            <a href="/leetcode-solutions/problems/all-paths-from-source-lead-to-destination/" class="btn">Next →</a>
+        </div>
+        <h1>1058. Minimize Rounding Error to Meet Target</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimize Rounding Error to Meet Target efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string minimizeError(vector&lt;string&gt;&amp; prices, int target) {
+    // A[i] := (costCeil - costFloor, costCeil, costFloor)
+    // The lower the costCeil - costFloor is, the cheaper to ceil it.
+    vector&lt;tuple&lt;double, double, double&gt;&gt; A;
+    int sumFloored = 0;
+    int sumCeiled = 0;
+
+    for (const string&amp; p : prices) {
+      const double price = stod(p);
+      const int floored = floor(price);
+      const int ceiled = ceil(price);
+      sumFloored += floored;
+      sumCeiled += ceiled;
+      const double costFloor = price - static_cast&lt;double&gt;(floored);
+      const double costCeil = static_cast&lt;double&gt;(ceiled) - price;
+      A.emplace_back(costCeil - costFloor, costCeil, costFloor);
+    }
+
+    if (sumFloored &gt; target || sumCeiled &lt; target)
+      return &quot;-1&quot;;
+
+    ranges::sort(A);
+
+    double sumError = 0.0;
+    const int nCeiled = target - sumFloored;
+    for (int i = 0; i &lt; nCeiled; ++i)
+      sumError += get&lt;1&gt;(A[i]);
+    for (int i = nCeiled; i &lt; A.size(); ++i)
+      sumError += get&lt;2&gt;(A[i]);
+
+    stringstream ss;
+    ss &lt;&lt; std::fixed &lt;&lt; std::setprecision(3) &lt;&lt; sumError;
+    return ss.str();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String minimizeError(String[] prices, int target) {
+    // A[i] := (costCeil - costFloor, costCeil, costFloor)
+    // The lower the costCeil - costFloor is, the cheaper to ceil it.
+    List&lt;double[]&gt; A = new ArrayList&lt;&gt;();
+    int sumFloored = 0;
+    int sumCeiled = 0;
+
+    for (final String p : prices) {
+      final double price = Double.parseDouble(p);
+      final int floored = (int) Math.floor(price);
+      final int ceiled = (int) Math.ceil(price);
+      sumFloored += floored;
+      sumCeiled += ceiled;
+      final double costFloor = price - (double) floored;
+      final double costCeil = (double) ceiled - price;
+      A.add(new double[] {costCeil - costFloor, costCeil, costFloor});
+    }
+
+    if (sumFloored &gt; target || sumCeiled &lt; target)
+      return &quot;-1&quot;;
+
+    Collections.sort(A, new Comparator&lt;double[]&gt;() {
+      @Override
+      public int compare(double[] a, double[] b) {
+        return Double.compare(a[0], b[0]);
+      }
+    });
+
+    double sumError = 0.0;
+    final int nCeiled = target - sumFloored;
+    for (int i = 0; i &lt; nCeiled; ++i)
+      sumError += A.get(i)[1];
+    for (int i = nCeiled; i &lt; A.size(); ++i)
+      sumError += A.get(i)[2];
+
+    return String.format(&quot;%.3f&quot;, sumError);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimizeError(self, prices: list[str], target: int) -&gt; str:
+    # A[i] := (costCeil - costFloor, costCeil, costFloor)
+    # The lower the costCeil - costFloor is, the cheaper to ceil it.
+    A = []
+    sumFloored = 0
+    sumCeiled = 0
+
+    for price in map(float, prices):
+      floored = math.floor(price)
+      ceiled = math.ceil(price)
+      sumFloored += floored
+      sumCeiled += ceiled
+      costFloor = price - floored
+      costCeil = ceiled - price
+      A.append((costCeil - costFloor, costCeil, costFloor))
+
+    if not sumFloored &lt;= target &lt;= sumCeiled:
+      return &#x27;-1&#x27;
+
+    A.sort()
+    nCeiled = target - sumFloored
+    return &#x27;{:.3f}&#x27;.format(sum(a[1] for a in A[:nCeiled]) +
+                           sum(a[2] for a in A[nCeiled:]))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

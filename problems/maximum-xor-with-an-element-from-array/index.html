@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum XOR With an Element From Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum XOR With an Element From Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-xor-with-an-element-from-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/where-will-the-ball-fall/" class="btn">← Previous</a>
+            <span>Problem 1707 of 3563</span>
+            <a href="/leetcode-solutions/problems/largest-subarray-length-k/" class="btn">Next →</a>
+        </div>
+        <h1>1707. Maximum XOR With an Element From Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum XOR With an Element From Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  TrieNode() : children(2) {}
+};
+
+class BitTrie {
+ public:
+  BitTrie(int maxBit) : maxBit(maxBit) {}
+
+  void insert(int num) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      const int bit = num &gt;&gt; i &amp; 1;
+      if (node-&gt;children[bit] == nullptr)
+        node-&gt;children[bit] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[bit];
+    }
+  }
+
+  int getMaxXor(int num) {
+    int maxXor = 0;
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      const int bit = num &gt;&gt; i &amp; 1;
+      const int toggleBit = bit ^ 1;
+      if (node-&gt;children[toggleBit] != nullptr) {
+        maxXor = maxXor | 1 &lt;&lt; i;
+        node = node-&gt;children[toggleBit];
+      } else if (node-&gt;children[bit] != nullptr) {
+        node = node-&gt;children[bit];
+      } else {  // There&#x27;s nothing in the Bit Trie.
+        return 0;
+      }
+    }
+    return maxXor;
+  }
+
+ private:
+  const int maxBit;
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+};
+
+struct IndexedQuery {
+  int queryIndex;
+  int x;
+  int m;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; maximizeXor(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;int&gt; ans(queries.size(), -1);
+    const int maxNumInNums = ranges::max(nums);
+    const int maxNumInQuery = ranges::max_element(queries, ranges::less{},
+                                                  [](const vector&lt;int&gt;&amp; query) {
+      return query[0];
+    })-&gt;at(0);
+    const int maxBit = static_cast&lt;int&gt;(log2(max(maxNumInNums, maxNumInQuery)));
+    BitTrie bitTrie(maxBit);
+
+    ranges::sort(nums);
+
+    int i = 0;  // nums&#x27; index
+    for (const auto&amp; [queryIndex, x, m] : getIndexedQueries(queries)) {
+      while (i &lt; nums.size() &amp;&amp; nums[i] &lt;= m)
+        bitTrie.insert(nums[i++]);
+      if (i &gt; 0 &amp;&amp; nums[i - 1] &lt;= m)
+        ans[queryIndex] = bitTrie.getMaxXor(x);
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;IndexedQuery&gt; getIndexedQueries(const vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;IndexedQuery&gt; indexedQueries;
+    for (int i = 0; i &lt; queries.size(); ++i)
+      indexedQueries.emplace_back(i, queries[i][0], queries[i][1]);
+    ranges::sort(
+        indexedQueries, ranges::less{},
+        [](const IndexedQuery&amp; indexedQuery) { return indexedQuery.m; });
+    return indexedQueries;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[2];
+}
+
+class BitTrie {
+  public BitTrie(int maxBit) {
+    this.maxBit = maxBit;
+  }
+
+  public void insert(int num) {
+    TrieNode node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      final int bit = (int) (num &gt;&gt; i &amp; 1);
+      if (node.children[bit] == null)
+        node.children[bit] = new TrieNode();
+      node = node.children[bit];
+    }
+  }
+
+  public int getMaxXor(int num) {
+    int maxXor = 0;
+    TrieNode node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      final int bit = (int) (num &gt;&gt; i &amp; 1);
+      final int toggleBit = bit ^ 1;
+      if (node.children[toggleBit] != null) {
+        maxXor = maxXor | 1 &lt;&lt; i;
+        node = node.children[toggleBit];
+      } else if (node.children[bit] != null) {
+        node = node.children[bit];
+      } else { // There&#x27;s nothing in the Bit Trie.
+        return 0;
+      }
+    }
+    return maxXor;
+  }
+
+  private int maxBit;
+  private TrieNode root = new TrieNode();
+}
+
+class Solution {
+  public int[] maximizeXor(int[] nums, int[][] queries) {
+    int[] ans = new int[queries.length];
+    Arrays.fill(ans, -1);
+    final int maxNumInNums = Arrays.stream(nums).max().getAsInt();
+    final int maxNumInQuery = Arrays.stream(queries).mapToInt(query -&gt; query[0]).max().getAsInt();
+    final int maxBit = (int) (Math.log(Math.max(maxNumInNums, maxNumInQuery)) / Math.log(2));
+    BitTrie bitTrie = new BitTrie(maxBit);
+
+    Arrays.sort(nums);
+
+    int i = 0; // nums&#x27; index
+    for (IndexedQuery indexedQuery : getIndexedQueries(queries)) {
+      final int queryIndex = indexedQuery.queryIndex;
+      final int x = indexedQuery.x;
+      final int m = indexedQuery.m;
+      while (i &lt; nums.length &amp;&amp; nums[i] &lt;= m)
+        bitTrie.insert(nums[i++]);
+      if (i &gt; 0 &amp;&amp; nums[i - 1] &lt;= m)
+        ans[queryIndex] = bitTrie.getMaxXor(x);
+    }
+
+    return ans;
+  }
+
+  private record IndexedQuery(int queryIndex, int x, int m){};
+
+  private IndexedQuery[] getIndexedQueries(int[][] queries) {
+    IndexedQuery[] indexedQueries = new IndexedQuery[queries.length];
+    for (int i = 0; i &lt; queries.length; ++i)
+      indexedQueries[i] = new IndexedQuery(i, queries[i][0], queries[i][1]);
+    Arrays.sort(indexedQueries, Comparator.comparingInt(IndexedQuery::m));
+    return indexedQueries;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+class TrieNode:
+  def __init__(self):
+    self.children: list[TrieNode | None] = [None] * 2
+
+
+class BitTrie:
+  def __init__(self, maxBit: int):
+    self.maxBit = maxBit
+    self.root = TrieNode()
+
+  def insert(self, num: int) -&gt; None:
+    node = self.root
+    for i in range(self.maxBit, -1, -1):
+      bit = num &gt;&gt; i &amp; 1
+      if not node.children[bit]:
+        node.children[bit] = TrieNode()
+      node = node.children[bit]
+
+  def getMaxXor(self, num: int) -&gt; int:
+    maxXor = 0
+    node = self.root
+    for i in range(self.maxBit, -1, -1):
+      bit = num &gt;&gt; i &amp; 1
+      toggleBit = bit ^ 1
+      if node.children[toggleBit]:
+        maxXor = maxXor | 1 &lt;&lt; i
+        node = node.children[toggleBit]
+      elif node.children[bit]:
+        node = node.children[bit]
+      else:  # There&#x27;s nothing in the Bit Trie.
+        return 0
+    return maxXor
+
+
+@dataclass(frozen=True)
+class IndexedQuery:
+  queryIndex: int
+  x: int
+  m: int
+
+  def __iter__(self):
+    yield self.queryIndex
+    yield self.x
+    yield self.m
+
+
+class Solution:
+  def maximizeXor(self, nums: list[int], queries: list[list[int]]) -&gt; list[int]:
+    ans = [-1] * len(queries)
+    maxBit = int(math.log2(max(max(nums), max(x for x, _ in queries))))
+    bitTrie = BitTrie(maxBit)
+
+    nums.sort()
+
+    i = 0  # nums&#x27; index
+    for queryIndex, x, m in sorted([IndexedQuery(i, x, m)
+                                    for i, (x, m) in enumerate(queries)],
+                                   key=lambda x: x.m):
+      while i &lt; len(nums) and nums[i] &lt;= m:
+        bitTrie.insert(nums[i])
+        i += 1
+      if i &gt; 0 and nums[i - 1] &lt;= m:
+        ans[queryIndex] = bitTrie.getMaxXor(x)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

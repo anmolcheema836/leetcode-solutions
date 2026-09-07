@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closest Equal Element Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Closest Equal Element Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/closest-equal-element-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-unique-subarray-sum-after-deletion/" class="btn">← Previous</a>
+            <span>Problem 3488 of 3563</span>
+            <a href="/leetcode-solutions/problems/zero-array-transformation-iv/" class="btn">Next →</a>
+        </div>
+        <h1>3488. Closest Equal Element Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Closest Equal Element Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; solveQueries(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; queries) {
+    const int n = nums.size();
+    vector&lt;int&gt; ans;
+    // minDist[i] := the minimum distance between nums[i], and any other index j
+    // in the circular array, where nums[j] == nums[i]
+    vector&lt;int&gt; minDist(n, n);
+    unordered_map&lt;int, int&gt; lastSeen;
+
+    for (int i = 0; i &lt; n * 2; ++i) {
+      const int index = i % n;
+      const int num = nums[index];
+      if (const auto it = lastSeen.find(num); it != lastSeen.cend()) {
+        const int prevIndex = it-&gt;second % n;
+        const int d = i - prevIndex;
+        minDist[index] = min(minDist[index], d);
+        minDist[prevIndex] = min(minDist[prevIndex], d);
+      }
+      lastSeen[num] = i;
+    }
+
+    for (const int query : queries)
+      ans.push_back(minDist[query] == n ? -1 : minDist[query]);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; solveQueries(int[] nums, int[] queries) {
+    final int n = nums.length;
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    // minDist[i] := the minimum distance between nums[i], and any other index j in the circular
+    // array, where nums[j] == nums[i]
+    int[] minDist = new int[n];
+    Arrays.fill(minDist, n);
+    Map&lt;Integer, Integer&gt; lastSeen = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; n * 2; ++i) {
+      final int index = i % n;
+      final int num = nums[index];
+      if (lastSeen.containsKey(num)) {
+        final int prevIndex = lastSeen.get(num) % n;
+        final int d = i - prevIndex;
+        minDist[index] = Math.min(minDist[index], d);
+        minDist[prevIndex] = Math.min(minDist[prevIndex], d);
+      }
+      lastSeen.put(num, i);
+    }
+
+    for (final int query : queries)
+      ans.add(minDist[query] == n ? -1 : minDist[query]);
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def solveQueries(self, nums: list[int], queries: list[int]) -&gt; list[int]:
+    n = len(nums)
+    # minDist[i] := the minimum distance between nums[i], and any other index j
+    # in the circular array, where nums[j] == nums[i]
+    minDist = [n] * n
+    lastSeen = {}
+
+    for i in range(n * 2):
+      index = i % n
+      num = nums[index]
+      if num in lastSeen:
+        prevIndex = lastSeen[num] % n
+        d = i - prevIndex
+        minDist[index] = min(minDist[index], d)
+        minDist[prevIndex] = min(minDist[prevIndex], d)
+      lastSeen[num] = i
+
+    return [-1 if minDist[query] == n
+            else minDist[query]
+            for query in queries]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

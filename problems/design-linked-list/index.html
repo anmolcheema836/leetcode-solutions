@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Linked List - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Linked List written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-linked-list/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-hashmap/" class="btn">← Previous</a>
+            <span>Problem 707 of 3563</span>
+            <a href="/leetcode-solutions/problems/insert-into-a-sorted-circular-linked-list/" class="btn">Next →</a>
+        </div>
+        <h1>707. Design Linked List</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Linked List efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class MyLinkedList {
+  struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x) : val(x), next(nullptr) {}
+  };
+
+ public:
+  int get(int index) {
+    if (index &lt; 0 || index &gt;= length)
+      return -1;
+    ListNode* curr = dummy.next;
+    for (int i = 0; i &lt; index; ++i)
+      curr = curr-&gt;next;
+    return curr-&gt;val;
+  }
+
+  void addAtHead(int val) {
+    ListNode* head = dummy.next;
+    ListNode* node = new ListNode(val);
+    node-&gt;next = head;
+    dummy.next = node;
+    ++length;
+  }
+
+  void addAtTail(int val) {
+    ListNode* curr = &amp;dummy;
+    while (curr-&gt;next != nullptr)
+      curr = curr-&gt;next;
+    curr-&gt;next = new ListNode(val);
+    ++length;
+  }
+
+  void addAtIndex(int index, int val) {
+    if (index &gt; length)
+      return;
+    ListNode* curr = &amp;dummy;
+    for (int i = 0; i &lt; index; ++i)
+      curr = curr-&gt;next;
+    ListNode* cache = curr-&gt;next;
+    ListNode* node = new ListNode(val);
+    node-&gt;next = cache;
+    curr-&gt;next = node;
+    ++length;
+  }
+
+  void deleteAtIndex(int index) {
+    if (index &lt; 0 || index &gt;= length)
+      return;
+    ListNode* curr = &amp;dummy;
+    for (int i = 0; i &lt; index; ++i)
+      curr = curr-&gt;next;
+    ListNode* cache = curr-&gt;next;
+    curr-&gt;next = cache-&gt;next;
+    --length;
+    delete cache;
+  }
+
+ private:
+  int length = 0;
+  ListNode dummy = ListNode(0);
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class MyLinkedList {
+  private class ListNode {
+    int val;
+    ListNode next;
+    public ListNode(int val) {
+      this.val = val;
+      this.next = null;
+    }
+  }
+
+  public int get(int index) {
+    if (index &lt; 0 || index &gt;= length)
+      return -1;
+    ListNode curr = dummy.next;
+    for (int i = 0; i &lt; index; ++i)
+      curr = curr.next;
+    return curr.val;
+  }
+
+  public void addAtHead(int val) {
+    ListNode head = dummy.next;
+    ListNode node = new ListNode(val);
+    node.next = head;
+    dummy.next = node;
+    ++length;
+  }
+
+  public void addAtTail(int val) {
+    ListNode curr = dummy;
+    while (curr.next != null)
+      curr = curr.next;
+    curr.next = new ListNode(val);
+    ++length;
+  }
+
+  public void addAtIndex(int index, int val) {
+    if (index &gt; length)
+      return;
+    ListNode curr = dummy;
+    for (int i = 0; i &lt; index; ++i)
+      curr = curr.next;
+    ListNode cache = curr.next;
+    ListNode node = new ListNode(val);
+    node.next = cache;
+    curr.next = node;
+    ++length;
+  }
+
+  public void deleteAtIndex(int index) {
+    if (index &lt; 0 || index &gt;= length)
+      return;
+    ListNode curr = dummy;
+    for (int i = 0; i &lt; index; ++i)
+      curr = curr.next;
+    ListNode cache = curr.next;
+    curr.next = cache.next;
+    --length;
+  }
+
+  int length = 0;
+  ListNode dummy = new ListNode(0);
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class ListNode:
+  val: int
+  next: ListNode | None = None
+
+
+class MyLinkedList:
+  def __init__(self):
+    self.length = 0
+    self.dummy = ListNode(0)
+
+  def get(self, index: int) -&gt; int:
+    if index &lt; 0 or index &gt;= self.length:
+      return -1
+    curr = self.dummy.next
+    for _ in range(index):
+      curr = curr.next
+    return curr.val
+
+  def addAtHead(self, val: int) -&gt; None:
+    curr = self.dummy.next
+    self.dummy.next = ListNode(val)
+    self.dummy.next.next = curr
+    self.length += 1
+
+  def addAtTail(self, val: int) -&gt; None:
+    curr = self.dummy
+    while curr.next:
+      curr = curr.next
+    curr.next = ListNode(val)
+    self.length += 1
+
+  def addAtIndex(self, index: int, val: int) -&gt; None:
+    if index &gt; self.length:
+      return
+    curr = self.dummy
+    for _ in range(index):
+      curr = curr.next
+    temp = curr.next
+    curr.next = ListNode(val)
+    curr.next.next = temp
+    self.length += 1
+
+  def deleteAtIndex(self, index: int) -&gt; None:
+    if index &lt; 0 or index &gt;= self.length:
+      return
+    curr = self.dummy
+    for _ in range(index):
+      curr = curr.next
+    temp = curr.next
+    curr.next = temp.next
+    self.length -= 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

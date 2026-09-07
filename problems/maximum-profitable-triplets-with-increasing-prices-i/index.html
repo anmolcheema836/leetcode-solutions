@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Profitable Triplets With Increasing Prices I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Profitable Triplets With Increasing Prices I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-profitable-triplets-with-increasing-prices-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/construct-product-matrix/" class="btn">← Previous</a>
+            <span>Problem 2907 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-sum-of-mountain-triplets-i/" class="btn">Next →</a>
+        </div>
+        <h1>2907. Maximum Profitable Triplets With Increasing Prices I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Profitable Triplets With Increasing Prices I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FenwickTree {
+ public:
+  FenwickTree(int n) : vals(n + 1) {}
+
+  void maximize(int i, int val) {
+    while (i &lt; vals.size()) {
+      vals[i] = max(vals[i], val);
+      i += lowbit(i);
+    }
+  }
+
+  int get(int i) const {
+    int res = 0;
+    while (i &gt; 0) {
+      res = max(res, vals[i]);
+      i -= lowbit(i);
+    }
+    return res;
+  }
+
+ private:
+  vector&lt;int&gt; vals;
+
+  static int lowbit(int i) {
+    return i &amp; -i;
+  }
+};
+
+class Solution {
+ public:
+  int maxProfit(vector&lt;int&gt;&amp; prices, vector&lt;int&gt;&amp; profits) {
+    const int maxPrice = ranges::max(prices);
+    int ans = -1;
+    FenwickTree maxProfitTree1(maxPrice);
+    FenwickTree maxProfitTree2(maxPrice);
+
+    for (int i = 0; i &lt; prices.size(); ++i) {
+      const int price = prices[i];
+      const int profit = profits[i];
+      // max(proftis[i])
+      const int maxProfit1 = maxProfitTree1.get(price - 1);
+      // max(proftis[i]) + max(profits[j])
+      const int maxProfit2 = maxProfitTree2.get(price - 1);
+      maxProfitTree1.maximize(price, profit);
+      if (maxProfit1 &gt; 0)
+        maxProfitTree2.maximize(price, profit + maxProfit1);
+      if (maxProfit2 &gt; 0)
+        ans = max(ans, profit + maxProfit2);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FenwickTree {
+  public FenwickTree(int n) {
+    vals = new int[n + 1];
+  }
+
+  public void maximize(int i, int val) {
+    while (i &lt; vals.length) {
+      vals[i] = Math.max(vals[i], val);
+      i += lowbit(i);
+    }
+  }
+
+  public int get(int i) {
+    int res = 0;
+    while (i &gt; 0) {
+      res = Math.max(res, vals[i]);
+      i -= lowbit(i);
+    }
+    return res;
+  }
+
+  private int[] vals;
+
+  private static int lowbit(int i) {
+    return i &amp; -i;
+  }
+}
+
+class Solution {
+  public int maxProfit(int[] prices, int[] profits) {
+    final int maxPrice = Arrays.stream(prices).max().getAsInt();
+    int ans = -1;
+    FenwickTree maxProfitTree1 = new FenwickTree(maxPrice);
+    FenwickTree maxProfitTree2 = new FenwickTree(maxPrice);
+
+    for (int i = 0; i &lt; prices.length; ++i) {
+      final int price = prices[i];
+      final int profit = profits[i];
+      // max(profits[i])
+      final int maxProfit1 = maxProfitTree1.get(price - 1);
+      // max(proftis[i]) + max(profits[j])
+      final int maxProfit2 = maxProfitTree2.get(price - 1);
+      maxProfitTree1.maximize(price, profit);
+      if (maxProfit1 &gt; 0)
+        maxProfitTree2.maximize(price, profit + maxProfit1);
+      if (maxProfit2 &gt; 0)
+        ans = Math.max(ans, profit + maxProfit2);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class FenwickTree:
+  def __init__(self, n: int):
+    self.vals = [0] * (n + 1)
+
+  def maximize(self, i: int, val: int) -&gt; None:
+    while i &lt; len(self.vals):
+      self.vals[i] = max(self.vals[i], val)
+      i += FenwickTree.lowbit(i)
+
+  def get(self, i: int) -&gt; int:
+    res = 0
+    while i &gt; 0:
+      res = max(res, self.vals[i])
+      i -= FenwickTree.lowbit(i)
+    return res
+
+  @staticmethod
+  def lowbit(i: int) -&gt; int:
+    return i &amp; -i
+
+
+class Solution:
+  def maxProfit(self, prices: list[int], profits: list[int]) -&gt; int:
+    ans = -1
+    maxPrice = max(prices)
+    maxProfitTree1 = FenwickTree(maxPrice)
+    maxProfitTree2 = FenwickTree(maxPrice)
+
+    for price, profit in zip(prices, profits):
+      # max(proftis[i])
+      maxProfit1 = maxProfitTree1.get(price - 1)
+      # max(proftis[i]) + max(profits[j])
+      maxProfit2 = maxProfitTree2.get(price - 1)
+      maxProfitTree1.maximize(price, profit)
+      if maxProfit1 &gt; 0:
+        maxProfitTree2.maximize(price, profit + maxProfit1)
+      if maxProfit2 &gt; 0:
+        ans = max(ans, profit + maxProfit2)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

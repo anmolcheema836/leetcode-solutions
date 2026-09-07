@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paths in Matrix Whose Sum Is Divisible by K - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Paths in Matrix Whose Sum Is Divisible by K written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/paths-in-matrix-whose-sum-is-divisible-by-k/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/using-a-robot-to-print-the-lexicographically-smallest-string/" class="btn">← Previous</a>
+            <span>Problem 2435 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-split-into-subarrays-with-gcd-greater-than-one/" class="btn">Next →</a>
+        </div>
+        <h1>2435. Paths in Matrix Whose Sum Is Divisible by K</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Paths in Matrix Whose Sum Is Divisible by K efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numberOfPaths(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int k) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int m = grid.size();
+    const int n = grid[0].size();
+    // dp[i][j][sum] : = the number of paths to(i, j), where the sum / k == sum
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(m, vector&lt;vector&lt;int&gt;&gt;(n, vector&lt;int&gt;(k)));
+    dp[0][0][grid[0][0] % k] = 1;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int sum = 0; sum &lt; k; ++sum) {
+          const int newSum = (sum + grid[i][j]) % k;
+          if (i &gt; 0)
+            dp[i][j][newSum] += dp[i - 1][j][sum];
+          if (j &gt; 0)
+            dp[i][j][newSum] += dp[i][j - 1][sum];
+          dp[i][j][newSum] %= kMod;
+        }
+
+    return dp[m - 1][n - 1][0];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numberOfPaths(int[][] grid, int k) {
+    final int MOD = 1_000_000_007;
+    final int m = grid.length;
+    final int n = grid[0].length;
+    // dp[i][j][sum] : = the number of paths to(i, j), where the sum / k == sum
+    int[][][] dp = new int[m][n][k];
+    dp[0][0][grid[0][0] % k] = 1;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int sum = 0; sum &lt; k; ++sum) {
+          final int newSum = (sum + grid[i][j]) % k;
+          if (i &gt; 0)
+            dp[i][j][newSum] += dp[i - 1][j][sum];
+          if (j &gt; 0)
+            dp[i][j][newSum] += dp[i][j - 1][sum];
+          dp[i][j][newSum] %= MOD;
+        }
+
+    return dp[m - 1][n - 1][0];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numberOfPaths(self, grid: list[list[int]], k: int) -&gt; int:
+    MOD = 1_000_000_007
+    m = len(grid)
+    n = len(grid[0])
+    # dp[i][j][sum] := the number of paths to (i, j), where the sum / k == sum
+    dp = [[[0] * k for j in range(n)] for i in range(m)]
+    dp[0][0][grid[0][0] % k] = 1
+
+    for i in range(m):
+      for j in range(n):
+        for summ in range(k):
+          newSum = (summ + grid[i][j]) % k
+          if i &gt; 0:
+            dp[i][j][newSum] += dp[i - 1][j][summ]
+          if j &gt; 0:
+            dp[i][j][newSum] += dp[i][j - 1][summ]
+          dp[i][j][newSum] %= MOD
+
+    return dp[m - 1][n - 1][0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

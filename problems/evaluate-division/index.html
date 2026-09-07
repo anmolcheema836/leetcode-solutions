@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluate Division - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Evaluate Division written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/evaluate-division/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/random-pick-index/" class="btn">← Previous</a>
+            <span>Problem 399 of 3563</span>
+            <a href="/leetcode-solutions/problems/nth-digit/" class="btn">Next →</a>
+        </div>
+        <h1>399. Evaluate Division</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Evaluate Division efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;double&gt; calcEquation(vector&lt;vector&lt;string&gt;&gt;&amp; equations,
+                              vector&lt;double&gt;&amp; values,
+                              vector&lt;vector&lt;string&gt;&gt;&amp; queries) {
+    vector&lt;double&gt; ans;
+    // graph[A][B] := A / B
+    unordered_map&lt;string, unordered_map&lt;string, double&gt;&gt; graph;
+
+    for (int i = 0; i &lt; equations.size(); ++i) {
+      const string&amp; A = equations[i][0];
+      const string&amp; B = equations[i][1];
+      graph[A][B] = values[i];
+      graph[B][A] = 1 / values[i];
+    }
+
+    for (const vector&lt;string&gt;&amp; query : queries) {
+      const string&amp; A = query[0];
+      const string&amp; C = query[1];
+      if (!graph.contains(A) || !graph.contains(C))
+        ans.push_back(-1);
+      else
+        ans.push_back(divide(graph, A, C, unordered_set&lt;string&gt;()));
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns A / C.
+  double divide(
+      const unordered_map&lt;string, unordered_map&lt;string, double&gt;&gt;&amp; graph,
+      const string&amp; A, const string&amp; C, unordered_set&lt;string&gt;&amp;&amp; seen) {
+    if (A == C)
+      return 1.0;
+
+    seen.insert(A);
+
+    // value := A / B
+    for (const auto&amp; [B, value] : graph.at(A)) {
+      if (seen.contains(B))
+        continue;
+      const double res = divide(graph, B, C, std::move(seen));  // B / C
+      if (res &gt; 0)                                              // valid result
+        return value * res;  // A / C = (A / B) * (B / C)
+    }
+
+    return -1;  // invalid result
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double[] calcEquation(List&lt;List&lt;String&gt;&gt; equations, double[] values,
+                               List&lt;List&lt;String&gt;&gt; queries) {
+    double[] ans = new double[queries.size()];
+    // graph.get(A).get(B) := A / B
+    Map&lt;String, Map&lt;String, Double&gt;&gt; graph = new HashMap&lt;&gt;();
+
+    // Construct the graph.
+    for (int i = 0; i &lt; equations.size(); ++i) {
+      final String A = equations.get(i).get(0);
+      final String B = equations.get(i).get(1);
+      graph.putIfAbsent(A, new HashMap&lt;&gt;());
+      graph.putIfAbsent(B, new HashMap&lt;&gt;());
+      graph.get(A).put(B, values[i]);
+      graph.get(B).put(A, 1.0 / values[i]);
+    }
+
+    for (int i = 0; i &lt; queries.size(); ++i) {
+      final String A = queries.get(i).get(0);
+      final String C = queries.get(i).get(1);
+      if (!graph.containsKey(A) || !graph.containsKey(C))
+        ans[i] = -1.0;
+      else
+        ans[i] = divide(graph, A, C, new HashSet&lt;&gt;());
+    }
+
+    return ans;
+  }
+
+  // Returns A / C.
+  private double divide(Map&lt;String, Map&lt;String, Double&gt;&gt; graph, final String A, final String C,
+                        Set&lt;String&gt; seen) {
+    if (A.equals(C))
+      return 1.0;
+
+    seen.add(A);
+
+    for (final String B : graph.get(A).keySet()) {
+      if (seen.contains(B))
+        continue;
+      final double res = divide(graph, B, C, seen); // B / C
+      if (res &gt; 0)                                  // valid result
+        return graph.get(A).get(B) * res;           // A / C = (A / B) * (B / C)
+    }
+
+    return -1.0; // invalid result
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def calcEquation(
+      self,
+      equations: list[list[str]],
+      values: list[float],
+      queries: list[list[str]],
+  ) -&gt; list[float]:
+    ans = []
+    # graph[A][B] := A / B
+    graph = collections.defaultdict(dict)
+
+    for (A, B), value in zip(equations, values):
+      graph[A][B] = value
+      graph[B][A] = 1 / value
+
+    def devide(A: str, C: str, seen: set[str]) -&gt; float:
+      &quot;&quot;&quot;Returns A / C.&quot;&quot;&quot;
+      if A == C:
+        return 1.0
+
+      seen.add(A)
+
+      # value := A / B
+      for B, value in graph[A].items():
+        if B in seen:
+          continue
+        res = devide(B, C, seen)  # B / C
+        if res &gt; 0:  # valid result
+          return value * res  # (A / B) * (B / C) = A / C
+
+      return -1.0  # invalid result
+
+    for A, C in queries:
+      if A not in graph or C not in graph:
+        ans.append(-1.0)
+      else:
+        ans.append(devide(A, C, set()))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

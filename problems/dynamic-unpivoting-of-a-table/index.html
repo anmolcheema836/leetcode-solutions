@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Unpivoting of a Table - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Dynamic Unpivoting of a Table written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/dynamic-unpivoting-of-a-table/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/dynamic-pivoting-of-a-table/" class="btn">← Previous</a>
+            <span>Problem 2253 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-video-sharing-platform/" class="btn">Next →</a>
+        </div>
+        <h1>2253. Dynamic Unpivoting of a Table</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Dynamic Unpivoting of a Table efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">SQL</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-clike">CREATE PROCEDURE UnpivotProducts()
+BEGIN
+  # Override GROUP_CONCAT length which has a default limit of 1024.
+  SET SESSION group_concat_max_len = 1000000;
+
+  SELECT GROUP_CONCAT(
+      CONCAT(
+        &#x27;SELECT product_id, &quot;&#x27;,
+        `column_name`, &#x27;&quot; AS store, &#x27;,
+        `column_name`, &#x27; AS price &#x27;,
+        &#x27;FROM products &#x27;,
+        &#x27;WHERE &#x27;,
+        `column_name`, &#x27; IS NOT NULL&#x27;
+      ) SEPARATOR &#x27; UNION &#x27;
+    ) INTO @stmt
+  FROM `information_schema`.`columns`
+  WHERE
+    `table_schema` = &#x27;test&#x27;
+    AND `table_name` = &#x27;Products&#x27;
+    AND `column_name` != &#x27;product_id&#x27;;
+
+  PREPARE final_query FROM @stmt;
+  EXECUTE final_query;
+  DEALLOCATE PREPARE final_query;
+END</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

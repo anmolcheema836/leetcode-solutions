@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time to Cross a Bridge - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Time to Cross a Bridge written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/time-to-cross-a-bridge/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/make-number-of-distinct-characters-equal/" class="btn">← Previous</a>
+            <span>Problem 2532 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-good-binary-strings/" class="btn">Next →</a>
+        </div>
+        <h1>2532. Time to Cross a Bridge</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Time to Cross a Bridge efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findCrossingTime(int n, int k, vector&lt;vector&lt;int&gt;&gt;&amp; time) {
+    int ans = 0;
+    using P = pair&lt;int, int&gt;;
+    // (leftToRight + rightToLeft, i)
+    priority_queue&lt;P&gt; leftBridgeQueue;
+    priority_queue&lt;P&gt; rightBridgeQueue;
+    // (time to be idle, i)
+    priority_queue&lt;P, vector&lt;P&gt;, greater&lt;&gt;&gt; leftWorkers;
+    priority_queue&lt;P, vector&lt;P&gt;, greater&lt;&gt;&gt; rightWorkers;
+
+    for (int i = 0; i &lt; k; ++i)
+      leftBridgeQueue.emplace(
+          /*leftToRight*/ time[i][0] + /*rightToLeft*/ time[i][2], i);
+
+    while (n &gt; 0 || !rightBridgeQueue.empty() || !rightWorkers.empty()) {
+      // Idle left workers get on the left bridge.
+      while (!leftWorkers.empty() &amp;&amp; leftWorkers.top().first &lt;= ans) {
+        const int i = leftWorkers.top().second;
+        leftWorkers.pop();
+        leftBridgeQueue.emplace(
+            /*leftToRight*/ time[i][0] + /*rightToLeft*/ time[i][2], i);
+      }
+      // Idle right workers get on the right bridge.
+      while (!rightWorkers.empty() &amp;&amp; rightWorkers.top().first &lt;= ans) {
+        const int i = rightWorkers.top().second;
+        rightWorkers.pop();
+        rightBridgeQueue.emplace(
+            /*leftToRight*/ time[i][0] + /*rightToLeft*/ time[i][2], i);
+      }
+
+      if (!rightBridgeQueue.empty()) {
+        // If the bridge is free, the worker waiting on the right side of the
+        // bridge gets to cross the bridge. If more than one worker is waiting
+        // on the right side, the one with the lowest efficiency crosses first.
+        const int i = rightBridgeQueue.top().second;
+        rightBridgeQueue.pop();
+        ans += /*rightToLeft*/ time[i][2];
+        leftWorkers.emplace(ans + /*putNew*/ time[i][3], i);
+      } else if (!leftBridgeQueue.empty() &amp;&amp; n &gt; 0) {
+        // If the bridge is free and no worker is waiting on the right side, and
+        // at least one box remains at the old warehouse, the worker on the left
+        // side of the river gets to cross the bridge. If more than one worker
+        // is waiting on the left side, the one with the lowest efficiency
+        // crosses first.
+        const int i = leftBridgeQueue.top().second;
+        leftBridgeQueue.pop();
+        ans += /*leftToRight*/ time[i][0];
+        rightWorkers.emplace(ans + /*pickOld*/ time[i][1], i);
+        --n;
+      } else {
+        // Advance the time of the last crossing worker.
+        ans = min(
+            !leftWorkers.empty() &amp;&amp; n &gt; 0 ? leftWorkers.top().first : INT_MAX,
+            !rightWorkers.empty() ? rightWorkers.top().first : INT_MAX);
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findCrossingTime(int n, int k, int[][] time) {
+    int ans = 0;
+    // (leftToRight + rightToLeft, i)
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; leftBridgeQueue = createMaxHeap();
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; rightBridgeQueue = createMaxHeap();
+    // (time to be idle, i)
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; leftWorkers = createMinHeap();
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; rightWorkers = createMinHeap();
+
+    for (int i = 0; i &lt; k; ++i)
+      leftBridgeQueue.offer(new Pair&lt;&gt;(
+          /*leftToRight*/ time[i][0] + /*rightToLeft*/ time[i][2], i));
+
+    while (n &gt; 0 || !rightBridgeQueue.isEmpty() || !rightWorkers.isEmpty()) {
+      // Idle left workers get on the left bridge.
+      while (!leftWorkers.isEmpty() &amp;&amp; leftWorkers.peek().getKey() &lt;= ans) {
+        final int i = leftWorkers.poll().getValue();
+        leftBridgeQueue.offer(new Pair&lt;&gt;(
+            /*leftToRight*/ time[i][0] + /*rightToLeft*/ time[i][2], i));
+      }
+      // Idle right workers get on the right bridge.
+      while (!rightWorkers.isEmpty() &amp;&amp; rightWorkers.peek().getKey() &lt;= ans) {
+        final int i = rightWorkers.poll().getValue();
+        rightBridgeQueue.offer(new Pair&lt;&gt;(
+            /*leftToRight*/ time[i][0] + /*rightToLeft*/ time[i][2], i));
+      }
+
+      if (!rightBridgeQueue.isEmpty()) {
+        // If the bridge is free, the worker waiting on the right side of the
+        // bridge gets to cross the bridge. If more than one worker is waiting
+        // on the right side, the one with the lowest efficiency crosses first.
+        final int i = rightBridgeQueue.poll().getValue();
+        ans += /*rightToLeft*/ time[i][2];
+        leftWorkers.offer(new Pair&lt;&gt;(ans + /*putNew*/ time[i][3], i));
+      } else if (!leftBridgeQueue.isEmpty() &amp;&amp; n &gt; 0) {
+        // If the bridge is free and no worker is waiting on the right side, and
+        // at least one box remains at the old warehouse, the worker on the left
+        // side of the river gets to cross the bridge. If more than one worker
+        // is waiting on the left side, the one with the lowest efficiency
+        // crosses first.
+        final int i = leftBridgeQueue.poll().getValue();
+        ans += /*leftToRight*/ time[i][0];
+        rightWorkers.offer(new Pair&lt;&gt;(ans + /*pickOld*/ time[i][1], i));
+        --n;
+      } else {
+        // Advance the time of the last crossing worker.
+        ans = Math.min(!leftWorkers.isEmpty() &amp;&amp; n &gt; 0 ? leftWorkers.peek().getKey()
+                                                       : Integer.MAX_VALUE,
+                       !rightWorkers.isEmpty() ? rightWorkers.peek().getKey() : Integer.MAX_VALUE);
+      }
+    }
+
+    return ans;
+  }
+
+  private Queue&lt;Pair&lt;Integer, Integer&gt;&gt; createMaxHeap() {
+    return new PriorityQueue&lt;&gt;(
+        Comparator.comparing(Pair&lt;Integer, Integer&gt;::getKey, Comparator.reverseOrder())
+            .thenComparing(Pair&lt;Integer, Integer&gt;::getValue, Comparator.reverseOrder()));
+  }
+
+  private Queue&lt;Pair&lt;Integer, Integer&gt;&gt; createMinHeap() {
+    return new PriorityQueue&lt;&gt;(Comparator.comparingInt(Pair&lt;Integer, Integer&gt;::getKey)
+                                   .thenComparingInt(Pair&lt;Integer, Integer&gt;::getValue));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findCrossingTime(self, n: int, k: int, time: list[list[int]]) -&gt; int:
+    ans = 0
+    # (leftToRight + rightToLeft, i)
+    leftBridgeQueue = [
+        (-leftToRight - rightToLeft, -i) for i,
+        (leftToRight, pickOld, rightToLeft, pickNew) in enumerate(time)]
+    rightBridgeQueue = []
+    # (time to be idle, i)
+    leftWorkers = []
+    rightWorkers = []
+
+    heapq.heapify(leftBridgeQueue)
+
+    while n &gt; 0 or rightBridgeQueue or rightWorkers:
+      # Idle left workers get on the left bridge.
+      while leftWorkers and leftWorkers[0][0] &lt;= ans:
+        i = heapq.heappop(leftWorkers)[1]
+        leftWorkers.pop()
+        heapq.heappush(leftBridgeQueue, (-time[i][0] - time[i][2], -i))
+      # Idle right workers get on the right bridge.
+      while rightWorkers and rightWorkers[0][0] &lt;= ans:
+        i = heapq.heappop(rightWorkers)[1]
+        heapq.heappush(rightBridgeQueue, (-time[i][0] - time[i][2], -i))
+      if rightBridgeQueue:
+        # If the bridge is free, the worker waiting on the right side of the
+        # bridge gets to cross the bridge. If more than one worker is waiting
+        # on the right side, the one with the lowest efficiency crosses first.
+        i = -heapq.heappop(rightBridgeQueue)[1]
+        ans += time[i][2]
+        heapq.heappush(leftWorkers, (ans + time[i][3], i))
+      elif leftBridgeQueue and n &gt; 0:
+        # If the bridge is free and no worker is waiting on the right side, and
+       # at least one box remains at the old warehouse, the worker on the left
+       # side of the river gets to cross the bridge. If more than one worker
+       # is waiting on the left side, the one with the lowest efficiency
+       # crosses first.
+        i = -heapq.heappop(leftBridgeQueue)[1]
+        ans += time[i][0]
+        heapq.heappush(rightWorkers, (ans + time[i][1], i))
+        n -= 1
+      else:
+        # Advance the time of the last crossing worker.
+        ans = min(leftWorkers[0][0] if leftWorkers and n &gt; 0 else math.inf,
+                  rightWorkers[0][0] if rightWorkers else math.inf)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

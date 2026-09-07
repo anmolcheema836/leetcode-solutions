@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Value of Function in a Ball Passing Game - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize Value of Function in a Ball Passing Game written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-value-of-function-in-a-ball-passing-game/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-operations-to-form-subsequence-with-target-sum/" class="btn">← Previous</a>
+            <span>Problem 2836 of 3563</span>
+            <a href="/leetcode-solutions/problems/total-traveled-distance/" class="btn">Next →</a>
+        </div>
+        <h1>2836. Maximize Value of Function in a Ball Passing Game</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize Value of Function in a Ball Passing Game efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long getMaxFunctionValue(vector&lt;int&gt;&amp; receiver, long long k) {
+    const int n = receiver.size();
+    const int m = log2(k) + 1;
+    long ans = 0;
+    // jump[i][j] := the the node you reach after jumping 2^j steps from i
+    vector&lt;vector&lt;int&gt;&gt; jump(n, vector&lt;int&gt;(m));
+    // sum[i][j] := the sum of the first 2^j nodes you reach when jumping from i
+    vector&lt;vector&lt;long&gt;&gt; sum(n, vector&lt;long&gt;(m));
+
+    for (int i = 0; i &lt; n; ++i) {
+      jump[i][0] = receiver[i];
+      sum[i][0] = receiver[i];
+    }
+
+    // Calculate binary lifting.
+    for (int j = 1; j &lt; m; ++j)
+      for (int i = 0; i &lt; n; ++i) {
+        const int midNode = jump[i][j - 1];
+        //   the the node you reach after jumping 2^j steps from i
+        // = the node you reach after jumping 2^(j - 1) steps from i
+        // + the node you reach after jumping another 2^(j - 1) steps
+        jump[i][j] = jump[midNode][j - 1];
+        //   the sum of the first 2^j nodes you reach when jumping from i
+        // = the sum of the first 2^(j - 1) nodes you reach when jumping from i
+        // + the sum of another 2^(j - 1) nodes you reach
+        sum[i][j] = sum[i][j - 1] + sum[midNode][j - 1];
+      }
+
+    for (int i = 0; i &lt; n; ++i) {
+      long currSum = i;
+      int currPos = i;
+      for (int j = 0; j &lt; m; ++j)
+        if (k &gt;&gt; j &amp; 1) {
+          currSum += sum[currPos][j];
+          currPos = jump[currPos][j];
+        }
+      ans = max(ans, currSum);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long getMaxFunctionValue(List&lt;Integer&gt; receiver, long k) {
+    final int n = receiver.size();
+    final int m = (int) (Math.log(k) / Math.log(2)) + 1;
+    long ans = 0;
+    // jump[i][j] := the the node you reach after jumping 2^j steps from i
+    int[][] jump = new int[n][m];
+    // sum[i][j] := the sum of the first 2^j nodes you reach when jumping from i
+    long[][] sum = new long[n][m];
+
+    for (int i = 0; i &lt; n; ++i) {
+      jump[i][0] = receiver.get(i);
+      sum[i][0] = receiver.get(i);
+    }
+
+    // Calculate binary lifting.
+    for (int j = 1; j &lt; m; ++j)
+      for (int i = 0; i &lt; n; ++i) {
+        final int midNode = jump[i][j - 1];
+        //   the the node you reach after jumping 2^j steps from i
+        // = the node you reach after jumping 2^(j - 1) steps from i
+        // + the node you reach after jumping another 2^(j - 1) steps
+        jump[i][j] = jump[midNode][j - 1];
+        //   the sum of the first 2^j nodes you reach when jumping from i
+        // = the sum of the first 2^(j - 1) nodes you reach when jumping from i
+        // + the sum of another 2^(j - 1) nodes you reach
+        sum[i][j] = sum[i][j - 1] + sum[midNode][j - 1];
+      }
+
+    for (int i = 0; i &lt; n; ++i) {
+      long currSum = i;
+      int currPos = i;
+      for (int j = 0; j &lt; m; ++j)
+        if ((k &gt;&gt; j &amp; 1) == 1) {
+          currSum += sum[currPos][j];
+          currPos = jump[currPos][j];
+        }
+      ans = Math.max(ans, currSum);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getMaxFunctionValue(self, receiver: list[int], k: int) -&gt; int:
+    n = len(receiver)
+    m = int(math.log2(k)) + 1
+    ans = 0
+    # jump[i][j] := the the node you reach after jumping 2^j steps from i
+    jump = [[0] * m for _ in range(n)]
+    # summ[i][j] := the sum of the first 2^j nodes you reach when jumping from i
+    summ = [[0] * m for _ in range(n)]
+
+    for i in range(n):
+      jump[i][0] = receiver[i]
+      summ[i][0] = receiver[i]
+
+    # Calculate binary lifting.
+    for j in range(1, m):
+      for i in range(n):
+        midNode = jump[i][j - 1]
+        #   the the node you reach after jumping 2^j steps from i
+        # = the node you reach after jumping 2^(j - 1) steps from i
+        # + the node you reach after jumping another 2^(j - 1) steps
+        jump[i][j] = jump[midNode][j - 1]
+        #   the sum of the first 2^j nodes you reach when jumping from i
+        # = the sum of the first 2^(j - 1) nodes you reach when jumping from i
+        # + the sum of another 2^(j - 1) nodes you reach
+        summ[i][j] = summ[i][j - 1] + summ[midNode][j - 1]
+
+    for i in range(n):
+      currSum = i
+      currPos = i
+      for j in range(m):
+        if (k &gt;&gt; j) &amp; 1 == 1:
+          currSum += summ[currPos][j]
+          currPos = jump[currPos][j]
+      ans = max(ans, currSum)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

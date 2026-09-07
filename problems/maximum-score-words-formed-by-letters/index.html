@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Score Words Formed by Letters - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Score Words Formed by Letters written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-score-words-formed-by-letters/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-closed-islands/" class="btn">← Previous</a>
+            <span>Problem 1255 of 3563</span>
+            <a href="/leetcode-solutions/problems/encode-number/" class="btn">Next →</a>
+        </div>
+        <h1>1255. Maximum Score Words Formed by Letters</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Score Words Formed by Letters efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxScoreWords(vector&lt;string&gt;&amp; words, vector&lt;char&gt;&amp; letters,
+                    vector&lt;int&gt;&amp; score) {
+    vector&lt;int&gt; count(26);
+    for (const char c : letters)
+      ++count[c - &#x27;a&#x27;];
+    return dfs(words, 0, count, score);
+  }
+
+ private:
+  // Returns the maximum score you can get from words[s..n).
+  int dfs(const vector&lt;string&gt;&amp; words, int s, vector&lt;int&gt;&amp; count,
+          const vector&lt;int&gt;&amp; score) {
+    int ans = 0;
+    for (int i = s; i &lt; words.size(); ++i) {
+      const int earned = useWord(words, i, count, score);
+      if (earned &gt; 0)
+        ans = max(ans, earned + dfs(words, i + 1, count, score));
+      unuseWord(words, i, count);
+    }
+    return ans;
+  }
+
+  int useWord(const vector&lt;string&gt;&amp; words, int i, vector&lt;int&gt;&amp; count,
+              const vector&lt;int&gt;&amp; score) {
+    bool isValid = true;
+    int earned = 0;
+    for (const char c : words[i]) {
+      if (--count[c - &#x27;a&#x27;] &lt; 0)
+        isValid = false;
+      earned += score[c - &#x27;a&#x27;];
+    }
+    return isValid ? earned : -1;
+  }
+
+  void unuseWord(const vector&lt;string&gt;&amp; words, int i, vector&lt;int&gt;&amp; count) {
+    for (const char c : words[i])
+      ++count[c - &#x27;a&#x27;];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxScoreWords(String[] words, char[] letters, int[] score) {
+    int[] count = new int[26];
+    for (final char c : letters)
+      ++count[c - &#x27;a&#x27;];
+    return dfs(words, 0, count, score);
+  }
+
+  // Returns the maximum score you can get from words[s..n).
+  private int dfs(String[] words, int s, int[] count, int[] score) {
+    int ans = 0;
+    for (int i = s; i &lt; words.length; ++i) {
+      final int earned = useWord(words, i, count, score);
+      if (earned &gt; 0)
+        ans = Math.max(ans, earned + dfs(words, i + 1, count, score));
+      unuseWord(words, i, count);
+    }
+    return ans;
+  }
+
+  int useWord(String[] words, int i, int[] count, int[] score) {
+    boolean isValid = true;
+    int earned = 0;
+    for (final char c : words[i].toCharArray()) {
+      if (--count[c - &#x27;a&#x27;] &lt; 0)
+        isValid = false;
+      earned += score[c - &#x27;a&#x27;];
+    }
+    return isValid ? earned : -1;
+  }
+
+  void unuseWord(String[] words, int i, int[] count) {
+    for (final char c : words[i].toCharArray())
+      ++count[c - &#x27;a&#x27;];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxScoreWords(
+      self,
+      words: list[str],
+      letters: list[str],
+      score: list[int],
+  ) -&gt; int:
+    count = collections.Counter(letters)
+
+    def useWord(i: int) -&gt; int:
+      isValid = True
+      earned = 0
+      for c in words[i]:
+        count[c] -= 1
+        if count[c] &lt; 0:
+          isValid = False
+        earned += score[ord(c) - ord(&#x27;a&#x27;)]
+      return earned if isValid else -1
+
+    def unuseWord(i: int) -&gt; None:
+      for c in words[i]:
+        count[c] += 1
+
+    def dfs(s: int) -&gt; int:
+      &quot;&quot;&quot;Returns the maximum score you can get from words[s..n).&quot;&quot;&quot;
+      ans = 0
+      for i in range(s, len(words)):
+        earned = useWord(i)
+        if earned &gt; 0:
+          ans = max(ans, earned + dfs(i + 1))
+        unuseWord(i)
+      return ans
+
+    return dfs(0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

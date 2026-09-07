@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for 4Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/4sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/letter-combinations-of-a-phone-number/" class="btn">← Previous</a>
+            <span>Problem 18 of 3563</span>
+            <a href="/leetcode-solutions/problems/remove-nth-node-from-end-of-list/" class="btn">Next →</a>
+        </div>
+        <h1>18. 4Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve 4Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; fourSum(vector&lt;int&gt;&amp; nums, int target) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    vector&lt;int&gt; path;
+    ranges::sort(nums);
+    nSum(nums, 4, target, 0, nums.size() - 1, path, ans);
+    return ans;
+  }
+
+ private:
+  // Finds n numbers that add up to the target in [l, r].
+  void nSum(const vector&lt;int&gt;&amp; nums, long n, long target, int l, int r,
+            vector&lt;int&gt;&amp; path, vector&lt;vector&lt;int&gt;&gt;&amp; ans) {
+    if (r - l + 1 &lt; n || target &lt; nums[l] * n || target &gt; nums[r] * n)
+      return;
+    if (n == 2) {
+      // Similar to the sub procedure in 15. 3Sum
+      while (l &lt; r) {
+        const int sum = nums[l] + nums[r];
+        if (sum == target) {
+          path.push_back(nums[l]);
+          path.push_back(nums[r]);
+          ans.push_back(path);
+          path.pop_back();
+          path.pop_back();
+          ++l;
+          --r;
+          while (l &lt; r &amp;&amp; nums[l] == nums[l - 1])
+            ++l;
+          while (l &lt; r &amp;&amp; nums[r] == nums[r + 1])
+            --r;
+        } else if (sum &lt; target) {
+          ++l;
+        } else {
+          --r;
+        }
+      }
+      return;
+    }
+
+    for (int i = l; i &lt;= r; ++i) {
+      if (i &gt; l &amp;&amp; nums[i] == nums[i - 1])
+        continue;
+      path.push_back(nums[i]);
+      nSum(nums, n - 1, target - nums[i], i + 1, r, path, ans);
+      path.pop_back();
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; fourSum(int[] nums, int target) {
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+    Arrays.sort(nums);
+    nSum(nums, 4, target, 0, nums.length - 1, new ArrayList&lt;&gt;(), ans);
+    return ans;
+  }
+
+  // Finds n numbers that add up to the target in [l, r].
+  private void nSum(int[] nums, long n, long target, int l, int r, List&lt;Integer&gt; path,
+                    List&lt;List&lt;Integer&gt;&gt; ans) {
+    if (r - l + 1 &lt; n || target &lt; nums[l] * n || target &gt; nums[r] * n)
+      return;
+    if (n == 2) {
+      // Similar to the sub procedure in 15. 3Sum
+      while (l &lt; r) {
+        final int sum = nums[l] + nums[r];
+        if (sum == target) {
+          path.add(nums[l]);
+          path.add(nums[r]);
+          ans.add(new ArrayList&lt;&gt;(path));
+          path.remove(path.size() - 1);
+          path.remove(path.size() - 1);
+          ++l;
+          --r;
+          while (l &lt; r &amp;&amp; nums[l] == nums[l - 1])
+            ++l;
+          while (l &lt; r &amp;&amp; nums[r] == nums[r + 1])
+            --r;
+        } else if (sum &lt; target) {
+          ++l;
+        } else {
+          --r;
+        }
+      }
+      return;
+    }
+
+    for (int i = l; i &lt;= r; ++i) {
+      if (i &gt; l &amp;&amp; nums[i] == nums[i - 1])
+        continue;
+      path.add(nums[i]);
+      nSum(nums, n - 1, target - nums[i], i + 1, r, path, ans);
+      path.remove(path.size() - 1);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def fourSum(self, nums: list[int], target: int):
+    ans = []
+
+    def nSum(
+            l: int, r: int, target: int, n: int, path: list[int],
+            ans: list[list[int]]) -&gt; None:
+      &quot;&quot;&quot;Finds n numbers that add up to the target in [l, r].&quot;&quot;&quot;
+      if r - l + 1 &lt; n or n &lt; 2 or target &lt; nums[l] * n or target &gt; nums[r] * n:
+        return
+      if n == 2:
+        while l &lt; r:
+          summ = nums[l] + nums[r]
+          if summ == target:
+            ans.append(path + [nums[l], nums[r]])
+            l += 1
+            while nums[l] == nums[l - 1] and l &lt; r:
+              l += 1
+          elif summ &lt; target:
+            l += 1
+          else:
+            r -= 1
+        return
+
+      for i in range(l, r + 1):
+        if i &gt; l and nums[i] == nums[i - 1]:
+          continue
+
+        nSum(i + 1, r, target - nums[i], n - 1, path + [nums[i]], ans)
+
+    nums.sort()
+    nSum(0, len(nums) - 1, target, 4, [], ans)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

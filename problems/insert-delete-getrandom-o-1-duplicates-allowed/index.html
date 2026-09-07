@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert Delete GetRandom O(1) - Duplicates allowed - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Insert Delete GetRandom O(1) - Duplicates allowed written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/insert-delete-getrandom-o-1-duplicates-allowed/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/insert-delete-getrandom-o-1/" class="btn">← Previous</a>
+            <span>Problem 381 of 3563</span>
+            <a href="/leetcode-solutions/problems/linked-list-random-node/" class="btn">Next →</a>
+        </div>
+        <h1>381. Insert Delete GetRandom O(1) - Duplicates allowed</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Insert Delete GetRandom O(1) - Duplicates allowed efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Item {
+  int val;
+  int indexInMap;
+};
+
+class RandomizedCollection {
+ public:
+  bool insert(int val) {
+    valToIndices[val].push_back(items.size());
+    items.emplace_back(val, valToIndices[val].size() - 1);
+    return valToIndices[val].size() == 1;
+  }
+
+  bool remove(int val) {
+    if (!valToIndices.contains(val))
+      return false;
+
+    const int index = valToIndices[val].back();
+    valToIndices[items.back().val][items.back().indexInMap] = index;
+    valToIndices[val].pop_back();
+    if (valToIndices[val].empty())
+      valToIndices.erase(val);
+    items[index] = items.back();
+    items.pop_back();
+    return true;
+  }
+
+  int getRandom() {
+    const int index = rand() % items.size();
+    return items[index].val;
+  }
+
+ private:
+  unordered_map&lt;int, vector&lt;int&gt;&gt; valToIndices;
+  vector&lt;Item&gt; items;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class RandomizedCollection {
+  public boolean insert(int val) {
+    valToIndices.putIfAbsent(val, new ArrayList&lt;&gt;());
+    valToIndices.get(val).add(items.size());
+    items.add(new Item(val, valToIndices.get(val).size() - 1));
+    return valToIndices.get(val).size() == 1;
+  }
+
+  public boolean remove(int val) {
+    if (!valToIndices.containsKey(val))
+      return false;
+
+    final int index = lastIndex(valToIndices.get(val));
+    valToIndices.get(last(items).val).set(last(items).indexInMap, index);
+    final int indicesSize = valToIndices.get(val).size();
+    valToIndices.get(val).remove(indicesSize - 1);
+    if (valToIndices.get(val).isEmpty())
+      valToIndices.remove(val);
+    items.set(index, last(items));
+    items.remove(items.size() - 1);
+    return true;
+  }
+
+  public int getRandom() {
+    final int index = rand.nextInt(items.size());
+    return items.get(index).val;
+  }
+
+  private record Item(int val, int indexInMap) {}
+
+  private Map&lt;Integer, List&lt;Integer&gt;&gt; valToIndices = new HashMap&lt;&gt;();
+  private List&lt;Item&gt; items = new ArrayList&lt;&gt;();
+  private Random rand = new Random();
+
+  private int lastIndex(List&lt;Integer&gt; indices) {
+    return indices.get(indices.size() - 1);
+  }
+
+  private Item last(List&lt;Item&gt; items) {
+    return items.get(items.size() - 1);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class RandomizedCollection:
+  def __init__(self):
+    self.vals = []
+    self.valToIndices = collections.defaultdict(list)
+
+  def insert(self, val: int) -&gt; bool:
+    self.valToIndices[val].append(len(self.vals))
+    self.vals.append([val, len(self.valToIndices[val]) - 1])
+    return len(self.valToIndices[val]) == 1
+
+  def remove(self, val: int) -&gt; bool:
+    if val not in self.valToIndices or self.valToIndices[val] == []:
+      return False
+
+    index = self.valToIndices[val][-1]
+    self.valToIndices[self.vals[-1][0]][self.vals[-1][1]] = index
+    self.valToIndices[val].pop()
+    self.vals[index] = self.vals[-1]
+    self.vals.pop()
+    return True
+
+  def getRandom(self) -&gt; int:
+    index = random.randint(0, len(self.vals) - 1)
+    return self.vals[index][0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

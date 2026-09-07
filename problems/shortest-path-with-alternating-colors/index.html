@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Path with Alternating Colors - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shortest Path with Alternating Colors written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shortest-path-with-alternating-colors/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-equivalent-domino-pairs/" class="btn">← Previous</a>
+            <span>Problem 1129 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-tree-from-leaf-values/" class="btn">Next →</a>
+        </div>
+        <h1>1129. Shortest Path with Alternating Colors</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shortest Path with Alternating Colors efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">enum class Color { kInit, kRed, kBlue };
+
+class Solution {
+ public:
+  vector&lt;int&gt; shortestAlternatingPaths(int n, vector&lt;vector&lt;int&gt;&gt;&amp; redEdges,
+                                       vector&lt;vector&lt;int&gt;&gt;&amp; blueEdges) {
+    vector&lt;int&gt; ans(n, -1);
+    vector&lt;vector&lt;pair&lt;int, Color&gt;&gt;&gt; graph(n);  // graph[u] := [(v, edgeColor)]
+    queue&lt;pair&lt;int, Color&gt;&gt; q{{{0, Color::kInit}}};  // [(u, prevColor)]
+
+    for (const vector&lt;int&gt;&amp; edge : redEdges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace_back(v, Color::kRed);
+    }
+
+    for (const vector&lt;int&gt;&amp; edge : blueEdges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace_back(v, Color::kBlue);
+    }
+
+    for (int step = 0; !q.empty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [u, prevColor] = q.front();
+        q.pop();
+        ans[u] = ans[u] == -1 ? step : ans[u];
+        for (auto&amp; [v, edgeColor] : graph[u]) {
+          if (v == -1 || edgeColor == prevColor)
+            continue;
+          q.emplace(v, edgeColor);
+          v = -1;  // Mark (u, v) as used.
+        }
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">enum Color { INIT, RED, BLUE }
+
+class Solution {
+  public int[] shortestAlternatingPaths(int n, int[][] redEdges, int[][] blueEdges) {
+    int[] ans = new int[n];
+    Arrays.fill(ans, -1);
+    // graph[u] := [(v, edgeColor)]
+    List&lt;Pair&lt;Integer, Color&gt;&gt;[] graph = new List[n];
+    // [(u, prevColor)]
+    Queue&lt;Pair&lt;Integer, Color&gt;&gt; q = new ArrayDeque&lt;&gt;(List.of(new Pair&lt;&gt;(0, Color.INIT)));
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : redEdges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(new Pair&lt;&gt;(v, Color.RED));
+    }
+
+    for (int[] edge : blueEdges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(new Pair&lt;&gt;(v, Color.BLUE));
+    }
+
+    for (int step = 0; !q.isEmpty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int u = q.peek().getKey();
+        Color prevColor = q.poll().getValue();
+        ans[u] = ans[u] == -1 ? step : ans[u];
+        for (int i = 0; i &lt; graph[u].size(); ++i) {
+          Pair&lt;Integer, Color&gt; node = graph[u].get(i);
+          final int v = node.getKey();
+          Color edgeColor = node.getValue();
+          if (v == -1 || edgeColor == prevColor)
+            continue;
+          q.add(new Pair&lt;&gt;(v, edgeColor));
+          // Mark (u, v) as used.
+          graph[u].set(i, new Pair&lt;&gt;(-1, edgeColor));
+        }
+      }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from enum import Enum
+
+
+class Color(Enum):
+  INIT = 0
+  RED = 1
+  BLUE = 2
+
+
+class Solution:
+  def shortestAlternatingPaths(
+      self,
+      n: int,
+      redEdges: list[list[int]],
+      blueEdges: list[list[int]],
+  ) -&gt; list[int]:
+    ans = [-1] * n
+    graph = [[] for _ in range(n)]  # graph[u] := [(v, edgeColor)]
+    q = collections.deque([(0, Color.INIT)])  # [(u, prevColor)]
+
+    for u, v in redEdges:
+      graph[u].append((v, Color.RED))
+
+    for u, v in blueEdges:
+      graph[u].append((v, Color.BLUE))
+
+    step = 0
+    while q:
+      for _ in range(len(q)):
+        u, prevColor = q.popleft()
+        if ans[u] == -1:
+          ans[u] = step
+        for i, (v, edgeColor) in enumerate(graph[u]):
+          if v == -1 or edgeColor == prevColor:
+            continue
+          q.append((v, edgeColor))
+          graph[u][i] = (-1, edgeColor)  # Mark (u, v) as used.
+      step += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

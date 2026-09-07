@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squirrel Simulation - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Squirrel Simulation written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/squirrel-simulation/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/subtree-of-another-tree/" class="btn">← Previous</a>
+            <span>Problem 573 of 3563</span>
+            <a href="/leetcode-solutions/problems/winning-candidate/" class="btn">Next →</a>
+        </div>
+        <h1>573. Squirrel Simulation</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Squirrel Simulation efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minDistance(int height, int width, vector&lt;int&gt;&amp; tree,
+                  vector&lt;int&gt;&amp; squirrel, vector&lt;vector&lt;int&gt;&gt;&amp; nuts) {
+    int totDist = 0;
+    int maxSave = INT_MIN;
+
+    for (const vector&lt;int&gt;&amp; nut : nuts) {
+      totDist += dist(nut, tree) * 2;
+      maxSave = max(maxSave, dist(nut, tree) - dist(nut, squirrel));
+    }
+
+    return totDist - maxSave;
+  }
+
+ private:
+  int dist(const vector&lt;int&gt;&amp; a, const vector&lt;int&gt;&amp; b) {
+    return abs(a[0] - b[0]) + abs(a[1] - b[1]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minDistance(int height, int width, int[] tree, int[] squirrel, int[][] nuts) {
+    int totDist = 0;
+    int maxSave = Integer.MIN_VALUE;
+
+    for (int[] nut : nuts) {
+      totDist += dist(nut, tree) * 2;
+      maxSave = Math.max(maxSave, dist(nut, tree) - dist(nut, squirrel));
+    }
+
+    return totDist - maxSave;
+  }
+
+  private int dist(int[] a, int[] b) {
+    return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minDistance(
+      self,
+      height: int,
+      width: int,
+      tree: list[int],
+      squirrel: list[int],
+      nuts: list[list[int]],
+  ) -&gt; int:
+    def dist(a: list[int], b: list[int]) -&gt; int:
+      return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+    totDist = sum(dist(nut, tree) for nut in nuts) * 2
+    maxSave = max(dist(nut, tree) - dist(nut, squirrel) for nut in nuts)
+    return totDist - maxSave</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

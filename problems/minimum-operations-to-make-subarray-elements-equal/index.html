@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Operations to Make Subarray Elements Equal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Operations to Make Subarray Elements Equal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-operations-to-make-subarray-elements-equal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-students-who-improved/" class="btn">← Previous</a>
+            <span>Problem 3422 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-difference-between-adjacent-elements-in-a-circular-array/" class="btn">Next →</a>
+        </div>
+        <h1>3422. Minimum Operations to Make Subarray Elements Equal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Operations to Make Subarray Elements Equal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct SumMultiset {
+  multiset&lt;int&gt; nums;
+  long sum = 0;
+
+  void insert(int val) {
+    nums.insert(val);
+    sum += val;
+  }
+
+  void erase(int val) {
+    nums.erase(nums.find(val));
+    sum -= val;
+  }
+};
+
+class MedianTracker {
+ public:
+  MedianTracker(int k) : k(k) {}
+
+  void add(int val) {
+    below.insert(val);
+    balance();
+  }
+
+  void remove(int val) {
+    if (const auto it = below.nums.find(val); it != below.nums.cend())
+      below.erase(val);
+    else
+      above.erase(val);
+  }
+
+  long getCost() const {
+    return above.sum - below.sum - (k % 2 == 1 ? *above.nums.begin() : 0);
+  }
+
+ private:
+  SumMultiset below;
+  SumMultiset above;
+  const int k;
+
+  void balance() {
+    // Move excessive numbers from `below` to `above`.
+    while (below.nums.size() &gt; k / 2) {
+      const int mx = *prev(below.nums.end());
+      below.erase(mx);
+      above.insert(mx);
+    }
+
+    // Balance `below` and `above`.
+    while (!above.nums.empty()) {
+      const int mx = *prev(below.nums.end());
+      const int mn = *above.nums.begin();
+      if (mx &lt;= mn)
+        break;
+      below.erase(mx);
+      above.erase(mn);
+      below.insert(mn);
+      above.insert(mx);
+    }
+  }
+};
+
+class Solution {
+ public:
+  long long minOperations(vector&lt;int&gt;&amp; nums, int k) {
+    MedianTracker tracker(k);
+
+    for (int i = 0; i &lt; k; ++i)
+      tracker.add(nums[i]);
+
+    long ans = tracker.getCost();
+
+    for (int i = k; i &lt; nums.size(); ++i) {
+      tracker.remove(nums[i - k]);
+      tracker.add(nums[i]);
+      ans = min(ans, tracker.getCost());
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class SumMultiset {
+  public TreeMap&lt;Integer, Integer&gt; nums = new TreeMap&lt;&gt;();
+  public long sum = 0;
+  public int size = 0;
+
+  public void insert(int val) {
+    nums.merge(val, 1, Integer::sum);
+    sum += val;
+    ++size;
+  }
+
+  public void erase(int val) {
+    nums.merge(val, -1, Integer::sum);
+    if (nums.get(val) == 0)
+      nums.remove(val);
+    sum -= val;
+    --size;
+  }
+}
+
+class MedianTracker {
+  public MedianTracker(int k) {
+    this.k = k;
+  }
+
+  public void add(int val) {
+    below.insert(val);
+    balance();
+  }
+
+  public void remove(int val) {
+    if (below.nums.containsKey(val))
+      below.erase(val);
+    else
+      above.erase(val);
+  }
+
+  public long getCost() {
+    return above.sum - below.sum - (k % 2 == 1 ? above.nums.firstKey() : 0L);
+  }
+
+  private SumMultiset below = new SumMultiset();
+  private SumMultiset above = new SumMultiset();
+  private int k;
+
+  private void balance() {
+    // Move excessive numbers from `below` to `above`.
+    while (below.size &gt; k / 2) {
+      final int mx = below.nums.lastKey();
+      below.erase(mx);
+      above.insert(mx);
+    }
+
+    // Balance `below` and `above`.
+    while (!above.nums.isEmpty()) {
+      final int mx = below.nums.lastKey();
+      final int mn = above.nums.firstKey();
+      if (mx &lt;= mn)
+        break;
+      below.erase(mx);
+      above.erase(mn);
+      below.insert(mn);
+      above.insert(mx);
+    }
+  }
+}
+
+class Solution {
+  public long minOperations(int[] nums, int k) {
+    MedianTracker tracker = new MedianTracker(k);
+
+    for (int i = 0; i &lt; k; ++i)
+      tracker.add(nums[i]);
+
+    long ans = tracker.getCost();
+
+    for (int i = k; i &lt; nums.length; ++i) {
+      tracker.remove(nums[i - k]);
+      tracker.add(nums[i]);
+      ans = Math.min(ans, tracker.getCost());
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minOperations(self, nums: list[int], k: int) -&gt; int:
+    window = SortedList(nums[:k])
+    median = window[(k - 1) // 2]
+    ops = sum(abs(median - nums[j]) for j in range(k))
+    ans = ops
+
+    for i in range(k, len(nums)):
+      window.remove(nums[i - k])
+      window.add(nums[i])
+      ops -= abs(median - nums[i - k])
+      ops += abs(median - nums[i])
+      newMedian = window[(k - 1) // 2]
+      medianMultiplier = (
+          2
+          if k % 2 == 0 and median &lt;= newMedian &lt;= window[k // 2]
+          else k % 2)
+      ops -= abs(newMedian - median) * medianMultiplier
+      median = newMedian
+      ans = min(ans, ops)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encode String with Shortest Length - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Encode String with Shortest Length written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/encode-string-with-shortest-length/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/implement-rand10-using-rand7/" class="btn">← Previous</a>
+            <span>Problem 471 of 3563</span>
+            <a href="/leetcode-solutions/problems/concatenated-words/" class="btn">Next →</a>
+        </div>
+        <h1>471. Encode String with Shortest Length</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Encode String with Shortest Length efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string encode(string s) {
+    const int n = s.length();
+    // dp[i][j] := the shortest encoded string of s[i..j]
+    vector&lt;vector&lt;string&gt;&gt; dp(n, vector&lt;string&gt;(n));
+
+    for (int d = 0; d &lt; n; ++d) {
+      for (int i = 0; i + d &lt; n; ++i) {
+        const int j = i + d;
+        const string&amp; curr = s.substr(i, j - i + 1);
+        dp[i][j] = curr;
+
+        if (dp[i][j].length() &lt; 5)
+          continue;
+
+        // Try all the possible partitions.
+        for (int k = i; k &lt; j; ++k)
+          if (dp[i][k].length() + dp[k + 1][j].length() &lt; dp[i][j].length())
+            dp[i][j] = dp[i][k] + dp[k + 1][j];
+
+        // Try to compress the string.
+        // e.g. s = aabaabaab -&gt; 3[aab]
+        for (int k = i; k &lt; j; ++k) {
+          const string&amp; pattern = s.substr(i, k - i + 1);
+          if (curr.length() % pattern.length() == 0 &amp;&amp;
+              regex_replace(curr, regex(pattern), &quot;&quot;).empty()) {
+            const string candidate =
+                to_string(curr.length() / pattern.length()) + &#x27;[&#x27; + dp[i][k] +
+                &#x27;]&#x27;;
+            if (candidate.length() &lt; dp[i][j].length())
+              dp[i][j] = candidate;
+          }
+        }
+      }
+    }
+
+    return dp[0][n - 1];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String encode(String s) {
+    final int n = s.length();
+    // dp[i][j] := shortest encoded String of s[i..j]
+    String[][] dp = new String[n][n];
+
+    for (int d = 0; d &lt; n; ++d) {
+      for (int i = 0; i + d &lt; n; ++i) {
+        final int j = i + d;
+        final String curr = s.substring(i, j + 1);
+        dp[i][j] = curr;
+
+        if (dp[i][j].length() &lt; 5)
+          continue;
+
+        // Try all the possible partitions.
+        for (int k = i; k &lt; j; ++k)
+          if (dp[i][k].length() + dp[k + 1][j].length() &lt; dp[i][j].length())
+            dp[i][j] = dp[i][k] + dp[k + 1][j];
+
+        // Try to compress the string.
+        // e.g. s = aabaabaab -&gt; 3[aab]
+        for (int k = i; k &lt; j; ++k) {
+          final String pattern = s.substring(i, k + 1);
+          if (curr.length() % pattern.length() == 0 &amp;&amp; curr.replaceAll(pattern, &quot;&quot;).isEmpty()) {
+            final String candidate =
+                String.valueOf(curr.length() / pattern.length()) + &quot;[&quot; + dp[i][k] + &quot;]&quot;;
+            if (candidate.length() &lt; dp[i][j].length())
+              dp[i][j] = candidate;
+          }
+        }
+      }
+    }
+
+    return dp[0][n - 1];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def encode(self, s: str) -&gt; str:
+    n = len(s)
+    # dp[i][j] := the shortest encoded string of s[i..j]
+    dp = [[&#x27;&#x27;] * n for _ in range(n)]
+
+    for d in range(n):
+      for i in range(n - d):
+        j = i + d
+        curr = s[i:j + 1]
+        dp[i][j] = curr
+
+        if len(dp[i][j]) &lt; 5:
+          continue
+
+        # Try all the possible partitions.
+        for k in range(i, j):
+          if len(dp[i][k]) + len(dp[k + 1][j]) &lt; len(dp[i][j]):
+            dp[i][j] = dp[i][k] + dp[k + 1][j]
+
+        # Try to compress the string.
+        # e.g. s = aabaabaab -&gt; 3[aab]
+        for k in range(i, j):
+          pattern = s[i:k + 1]
+          if len(curr) % len(pattern) == 0 and pattern * (len(curr) //
+                                                          len(pattern)) == curr:
+            candidate = f&quot;{len(curr) // len(pattern)}[{dp[i][k]}]&quot;
+            if len(candidate) &lt; len(dp[i][j]):
+              dp[i][j] = candidate
+
+    return dp[0][n - 1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

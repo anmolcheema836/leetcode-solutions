@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strobogrammatic Number III - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Strobogrammatic Number III written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/strobogrammatic-number-iii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/strobogrammatic-number-ii/" class="btn">← Previous</a>
+            <span>Problem 248 of 3563</span>
+            <a href="/leetcode-solutions/problems/group-shifted-strings/" class="btn">Next →</a>
+        </div>
+        <h1>248. Strobogrammatic Number III</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Strobogrammatic Number III efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int strobogrammaticInRange(string low, string high) {
+    int ans = 0;
+
+    for (int n = low.length(); n &lt;= high.length(); ++n) {
+      string s(n, &#x27; &#x27;);
+      dfs(low, high, s, 0, n - 1, ans);
+    }
+
+    return ans;
+  }
+
+ private:
+  const vector&lt;pair&lt;char, char&gt;&gt; pairs{
+      {&#x27;0&#x27;, &#x27;0&#x27;}, {&#x27;1&#x27;, &#x27;1&#x27;}, {&#x27;6&#x27;, &#x27;9&#x27;}, {&#x27;8&#x27;, &#x27;8&#x27;}, {&#x27;9&#x27;, &#x27;6&#x27;}};
+
+  void dfs(const string&amp; low, const string&amp; high, string&amp; s, int l, int r,
+           int&amp; ans) {
+    if (l &gt; r) {
+      if (s.length() == low.length() &amp;&amp; s &lt; low)
+        return;
+      if (s.length() == high.length() &amp;&amp; s &gt; high)
+        return;
+      ++ans;
+      return;
+    }
+
+    for (const auto&amp; [leftDigit, rightDigit] : pairs) {
+      if (l == r &amp;&amp; leftDigit != rightDigit)
+        continue;
+      s[l] = leftDigit;
+      s[r] = rightDigit;
+      if (s.length() &gt; 1 &amp;&amp; s[0] == &#x27;0&#x27;)
+        continue;
+      dfs(low, high, s, l + 1, r - 1, ans);
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int strobogrammaticInRange(String low, String high) {
+    for (int n = low.length(); n &lt;= high.length(); ++n) {
+      char[] c = new char[n];
+      dfs(low, high, c, 0, n - 1);
+    }
+
+    return ans;
+  }
+
+  private int ans = 0;
+
+  private static final char[][] pairs = {
+      {&#x27;0&#x27;, &#x27;0&#x27;}, {&#x27;1&#x27;, &#x27;1&#x27;}, {&#x27;6&#x27;, &#x27;9&#x27;}, {&#x27;8&#x27;, &#x27;8&#x27;}, {&#x27;9&#x27;, &#x27;6&#x27;}};
+
+  private void dfs(final String low, final String high, char[] c, int l, int r) {
+    if (l &gt; r) {
+      final String s = new String(c);
+      if (s.length() == low.length() &amp;&amp; s.compareTo(low) &lt; 0)
+        return;
+      if (s.length() == high.length() &amp;&amp; s.compareTo(high) &gt; 0)
+        return;
+      ++ans;
+      return;
+    }
+
+    for (char[] pair : pairs) {
+      if (l == r &amp;&amp; pair[0] != pair[1])
+        continue;
+      c[l] = pair[0];
+      c[r] = pair[1];
+      if (c.length &gt; 1 &amp;&amp; c[0] == &#x27;0&#x27;)
+        continue;
+      dfs(low, high, c, l + 1, r - 1);
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def strobogrammaticInRange(self, low: str, high: str) -&gt; int:
+    pairs = [[&#x27;0&#x27;, &#x27;0&#x27;], [&#x27;1&#x27;, &#x27;1&#x27;], [&#x27;6&#x27;, &#x27;9&#x27;], [&#x27;8&#x27;, &#x27;8&#x27;], [&#x27;9&#x27;, &#x27;6&#x27;]]
+    ans = 0
+
+    def dfs(s: list[str], l: int, r: int) -&gt; None:
+      nonlocal ans
+      if l &gt; r:
+        if len(s) == len(low) and &#x27;&#x27;.join(s) &lt; low:
+          return
+        if len(s) == len(high) and &#x27;&#x27;.join(s) &gt; high:
+          return
+        ans += 1
+        return
+
+      for leftDigit, rightDigit in pairs:
+        if l == r and leftDigit != rightDigit:
+          continue
+        s[l] = leftDigit
+        s[r] = rightDigit
+        if len(s) &gt; 1 and s[0] == &#x27;0&#x27;:
+          continue
+        dfs(s, l + 1, r - 1)
+
+    for n in range(len(low), len(high) + 1):
+      dfs([&#x27; &#x27;] * n, 0, n - 1)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

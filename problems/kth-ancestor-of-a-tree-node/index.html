@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kth Ancestor of a Tree Node - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Kth Ancestor of a Tree Node written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/kth-ancestor-of-a-tree-node/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-days-to-make-m-bouquets/" class="btn">← Previous</a>
+            <span>Problem 1483 of 3563</span>
+            <a href="/leetcode-solutions/problems/group-sold-products-by-the-date/" class="btn">Next →</a>
+        </div>
+        <h1>1483. Kth Ancestor of a Tree Node</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Kth Ancestor of a Tree Node efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class TreeAncestor {
+ public:
+  TreeAncestor(int n, vector&lt;int&gt;&amp; parent)
+      : maxLevel(32 - __builtin_clz(n)), dp(n, vector&lt;int&gt;(maxLevel)) {
+    // Node i&#x27;s 2^0 ancestor is its direct parent.
+    for (int i = 0; i &lt; n; ++i)
+      dp[i][0] = parent[i];
+
+    for (int j = 1; j &lt; maxLevel; ++j)
+      for (int i = 0; i &lt; n; ++i)
+        if (dp[i][j - 1] == -1)  // There&#x27;s no such ancestor.
+          dp[i][j] = -1;
+        else  // A(i, 2^j) = A(A(i, 2^{j - 1}), 2^{j - 1})
+          dp[i][j] = dp[dp[i][j - 1]][j - 1];
+  }
+
+  int getKthAncestor(int node, int k) {
+    for (int j = 0; j &lt; maxLevel &amp;&amp; node != -1; ++j)
+      if (k &gt;&gt; j &amp; 1)
+        node = dp[node][j];
+    return node;
+  }
+
+ private:
+  const int maxLevel;
+  vector&lt;vector&lt;int&gt;&gt; dp;  // dp[i][j] := node i&#x27;s 2^j-th ancestor
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TreeAncestor {
+  public TreeAncestor(int n, int[] parent) {
+    this.maxLevel = 32 - Integer.numberOfLeadingZeros(n);
+    this.dp = new int[n][maxLevel];
+
+    // Node i&#x27;s 2^0 ancestor is its direct parent.
+    for (int i = 0; i &lt; n; ++i)
+      dp[i][0] = parent[i];
+
+    for (int j = 1; j &lt; maxLevel; ++j)
+      for (int i = 0; i &lt; n; ++i)
+        if (dp[i][j - 1] == -1) // There&#x27;s no such ancestor.
+          dp[i][j] = -1;
+        else // A(i, 2^j) = A(A(i, 2^{j - 1}), 2^{j - 1})
+          dp[i][j] = dp[dp[i][j - 1]][j - 1];
+  }
+
+  public int getKthAncestor(int node, int k) {
+    for (int j = 0; j &lt; maxLevel &amp;&amp; node != -1; ++j)
+      if ((k &gt;&gt; j &amp; 1) == 1)
+        node = dp[node][j];
+    return node;
+  }
+
+  private final int maxLevel;
+  private int[][] dp; // dp[i][j] := node i&#x27;s 2^j-th ancestor
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TreeAncestor:
+  def __init__(self, n: int, parent: list[int]):
+    self.maxLevel = n.bit_length()
+    # dp[i][j] := node i&#x27;s 2^j-th ancestor
+    self.dp = [[0] * self.maxLevel for _ in range(n)]
+
+    # Node i&#x27;s 2^0 ancestor is its direct parent
+    for i in range(n):
+      self.dp[i][0] = parent[i]
+
+    for j in range(1, self.maxLevel):
+      for i in range(n):
+        if self.dp[i][j - 1] == -1:  # There&#x27;s no such ancestor
+          self.dp[i][j] = -1
+        else:  # A(i, 2^j) = A(A(i, 2^{j - 1}), 2^{j - 1})
+          self.dp[i][j] = self.dp[self.dp[i][j - 1]][j - 1]
+
+  def getKthAncestor(self, node: int, k: int) -&gt; int:
+    for j in range(self.maxLevel):
+      if node == -1:
+        break
+      if k &gt;&gt; j &amp; 1:
+        node = self.dp[node][j]
+    return node</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

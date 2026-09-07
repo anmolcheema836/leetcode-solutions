@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicographically Smallest String After Adjacent Removals - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Lexicographically Smallest String After Adjacent Removals written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/lexicographically-smallest-string-after-adjacent-removals/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-profit-from-trading-stocks-with-discounts/" class="btn">← Previous</a>
+            <span>Problem 3563 of 3563</span>
+            <a href="#" class="btn disabled">Next →</a>
+        </div>
+        <h1>3563. Lexicographically Smallest String After Adjacent Removals</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Lexicographically Smallest String After Adjacent Removals efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string lexicographicallySmallestString(string s) {
+    const int n = s.size();
+    // dp[i][j] := the lexicographically smallest string by removing adjacent
+    // letters from s[i..j)
+    vector&lt;vector&lt;string&gt;&gt; dp(n + 1, vector&lt;string&gt;(n + 1));
+
+    for (int d = 1; d &lt;= n; ++d)
+      for (int i = 0; i + d &lt;= n; ++i) {
+        const int j = i + d;
+        // 1. Keep s[i].
+        string minString = s[i] + dp[i + 1][j];
+        // 2. Remove s[i] and s[k] if possible.
+        for (int k = i + 1; k &lt; j; ++k)
+          if (isConsecutive(s[i], s[k]) &amp;&amp; dp[i + 1][k].empty())
+            minString = min(minString, dp[k + 1][j]);
+        dp[i][j] = minString;
+      }
+
+    return dp[0][n];
+  }
+
+ private:
+  bool isConsecutive(char a, char b) {
+    return abs(a - b) == 1 || abs(a - b) == 25;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String lexicographicallySmallestString(String s) {
+    final int n = s.length();
+    // dp[i][j]: the lexicographically smallest string by removing adjacent letters from s[i..j)
+    String[][] dp = new String[n + 1][n + 1];
+
+    // Initialize dp[i][i] = &quot;&quot; for all i.
+    for (int i = 0; i &lt;= n; ++i)
+      dp[i][i] = &quot;&quot;;
+
+    for (int d = 1; d &lt;= n; ++d)
+      for (int i = 0; i + d &lt;= n; ++i) {
+        final int j = i + d;
+        // 1. Keep s[i].
+        String minString = s.charAt(i) + dp[i + 1][j];
+        // 2. Remove s[i] and s[k] if possible.
+        for (int k = i + 1; k &lt; j; ++k)
+          if (isConsecutive(s.charAt(i), s.charAt(k)) &amp;&amp; dp[i + 1][k].isEmpty()) {
+            final String candidate = dp[k + 1][j];
+            if (candidate.compareTo(minString) &lt; 0)
+              minString = candidate;
+          }
+        dp[i][j] = minString;
+      }
+
+    return dp[0][n];
+  }
+
+  private boolean isConsecutive(char a, char b) {
+    return Math.abs(a - b) == 1 || Math.abs(a - b) == 25;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def lexicographicallySmallestString(self, s: str) -&gt; str:
+    n = len(s)
+    # dp[i][j]: the lexicographically smallest string by removing adjacent
+    # letters from s[i..j)
+    dp = [[&#x27;&#x27;] * (n + 1) for _ in range(n + 1)]
+
+    for d in range(1, n + 1):
+      for i in range(n - d + 1):
+        j = i + d
+        # 1. Keep s[i].
+        minString = s[i] + dp[i + 1][j]
+        # 2. Remove s[i] and s[k] if possible.
+        for k in range(i + 1, j):
+          if self._isConsecutive(s[i], s[k]) and dp[i + 1][k] == &#x27;&#x27;:
+            candidate = dp[k + 1][j]
+            if candidate &lt; minString:
+              minString = candidate
+        dp[i][j] = minString
+
+    return dp[0][n]
+
+  def _isConsecutive(self, a: str, b: str) -&gt; bool:
+    return abs(ord(a) - ord(b)) == 1 or abs(ord(a) - ord(b)) == 25</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

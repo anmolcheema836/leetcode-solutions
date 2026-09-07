@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Maximum Number - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Create Maximum Number written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/create-maximum-number/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/generalized-abbreviation/" class="btn">← Previous</a>
+            <span>Problem 321 of 3563</span>
+            <a href="/leetcode-solutions/problems/coin-change/" class="btn">Next →</a>
+        </div>
+        <h1>321. Create Maximum Number</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Create Maximum Number efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; maxNumber(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2, int k) {
+    vector&lt;int&gt; ans;
+
+    for (int k1 = 0; k1 &lt;= k; ++k1) {
+      const int k2 = k - k1;
+      if (k1 &gt; nums1.size() || k2 &gt; nums2.size())
+        continue;
+      ans = max(ans, merge(maxArray(nums1, k1), maxArray(nums2, k2)));
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; maxArray(const vector&lt;int&gt;&amp; nums, int k) {
+    vector&lt;int&gt; res;
+    int toPop = nums.size() - k;
+    for (const int num : nums) {
+      while (!res.empty() &amp;&amp; res.back() &lt; num &amp;&amp; toPop-- &gt; 0)
+        res.pop_back();
+      res.push_back(num);
+    }
+    return {res.begin(), res.begin() + k};
+  }
+
+  // Merges nums1 and nums2.
+  vector&lt;int&gt; merge(const vector&lt;int&gt;&amp; nums1, const vector&lt;int&gt;&amp; nums2) {
+    vector&lt;int&gt; res;
+    auto s1 = nums1.cbegin();
+    auto s2 = nums2.cbegin();
+    while (s1 != nums1.cend() || s2 != nums2.cend())
+      if (lexicographical_compare(s1, nums1.cend(), s2, nums2.cend()))
+        res.push_back(*s2++);
+      else
+        res.push_back(*s1++);
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maxNumber(int[] nums1, int[] nums2, int k) {
+    int[] ans = new int[k];
+
+    for (int k1 = 0; k1 &lt;= k; ++k1) {
+      final int k2 = k - k1;
+      if (k1 &gt; nums1.length || k2 &gt; nums2.length)
+        continue;
+      int[] candidate = merge(maxArray(nums1, k1), maxArray(nums2, k2));
+      if (greater(candidate, 0, ans, 0))
+        ans = candidate;
+    }
+    return ans;
+  }
+
+  private int[] maxArray(int[] nums, int k) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int toPop = nums.length - k;
+    for (final int num : nums) {
+      while (!res.isEmpty() &amp;&amp; res.get(res.size() - 1) &lt; num &amp;&amp; toPop &gt; 0) {
+        res.remove(res.size() - 1);
+        --toPop;
+      }
+      res.add(num);
+    }
+    return res.subList(0, k).stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  // Merges nums1 and nums2.
+  private int[] merge(int[] nums1, int[] nums2) {
+    int[] res = new int[nums1.length + nums2.length];
+    for (int i = 0, j = 0, k = 0; k &lt; res.length; ++k)
+      res[k] = greater(nums1, i, nums2, j) ? nums1[i++] : nums2[j++];
+    return res;
+  }
+
+  // Returns true if nums1[i..n) &gt; nums2[j..n).
+  private boolean greater(int[] nums1, int i, int[] nums2, int j) {
+    while (i &lt; nums1.length &amp;&amp; j &lt; nums2.length &amp;&amp; nums1[i] == nums2[j]) {
+      ++i;
+      ++j;
+    }
+    return j == nums2.length || (i &lt; nums1.length &amp;&amp; nums1[i] &gt; nums2[j]);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxNumber(self, nums1: list[int], nums2: list[int], k: int) -&gt; list[int]:
+    def maxArray(nums: list[int], k: int) -&gt; list[int]:
+      res = []
+      toTop = len(nums) - k
+      for num in nums:
+        while res and res[-1] &lt; num and toTop &gt; 0:
+          res.pop()
+          toTop -= 1
+        res.append(num)
+      return res[:k]
+
+    def merge(nums1: list[int], nums2: list[int]) -&gt; list[int]:
+      return [max(nums1, nums2).pop(0) for _ in nums1 + nums2]
+
+    return max(merge(maxArray(nums1, i), maxArray(nums2, k - i))
+               for i in range(k + 1)
+               if i &lt;= len(nums1) and k - i &lt;= len(nums2))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

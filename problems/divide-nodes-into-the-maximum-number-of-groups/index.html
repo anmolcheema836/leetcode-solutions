@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divide Nodes Into the Maximum Number of Groups - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Divide Nodes Into the Maximum Number of Groups written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/divide-nodes-into-the-maximum-number-of-groups/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-score-of-a-path-between-two-cities/" class="btn">← Previous</a>
+            <span>Problem 2493 of 3563</span>
+            <a href="/leetcode-solutions/problems/merge-overlapping-events-in-the-same-hall/" class="btn">Next →</a>
+        </div>
+        <h1>2493. Divide Nodes Into the Maximum Number of Groups</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Divide Nodes Into the Maximum Number of Groups efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), rank(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; rank;
+};
+
+class Solution {
+ public:
+  int magnificentSets(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    UnionFind uf(n);
+    unordered_map&lt;int, int&gt; rootToGroupSize;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0] - 1;
+      const int v = edge[1] - 1;
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+      uf.unionByRank(u, v);
+    }
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int newGroupSize = bfs(graph, i);
+      if (newGroupSize == -1)
+        return -1;
+      const int root = uf.find(i);
+      auto&amp; groupSize = rootToGroupSize[root];
+      groupSize = max(groupSize, newGroupSize);
+    }
+
+    int ans = 0;
+    for (const auto&amp; [_, groupSize] : rootToGroupSize)
+      ans += groupSize;
+
+    return ans;
+  }
+
+ private:
+  int bfs(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u) {
+    int step = 0;
+    queue&lt;int&gt; q{{u}};
+    unordered_map&lt;int, int&gt; nodeToStep{{u, 1}};
+
+    while (!q.empty()) {
+      ++step;
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const int u = q.front();
+        q.pop();
+        for (const int v : graph[u]) {
+          if (!nodeToStep.contains(v)) {
+            q.push(v);
+            nodeToStep[v] = step + 1;
+          } else if (nodeToStep[v] == step) {
+            // There is an odd number of edges in the cycle.
+            return -1;
+          }
+        }
+      }
+    }
+
+    return step;
+  }
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

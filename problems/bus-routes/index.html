@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Routes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Bus Routes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/bus-routes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/binary-tree-pruning/" class="btn">← Previous</a>
+            <span>Problem 815 of 3563</span>
+            <a href="/leetcode-solutions/problems/ambiguous-coordinates/" class="btn">Next →</a>
+        </div>
+        <h1>815. Bus Routes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Bus Routes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numBusesToDestination(vector&lt;vector&lt;int&gt;&gt;&amp; routes, int source,
+                            int target) {
+    if (source == target)
+      return 0;
+
+    unordered_map&lt;int, vector&lt;int&gt;&gt; graph;  // {route: [buses]}
+    unordered_set&lt;int&gt; usedBuses;
+
+    for (int i = 0; i &lt; routes.size(); ++i)
+      for (const int route : routes[i])
+        graph[route].push_back(i);
+
+    queue&lt;int&gt; q{{source}};
+
+    for (int step = 1; !q.empty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const int route = q.front();
+        q.pop();
+        for (const int bus : graph[route])
+          if (usedBuses.insert(bus).second)
+            for (const int nextRoute : routes[bus]) {
+              if (nextRoute == target)
+                return step;
+              q.push(nextRoute);
+            }
+      }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numBusesToDestination(int[][] routes, int source, int target) {
+    if (source == target)
+      return 0;
+
+    Map&lt;Integer, List&lt;Integer&gt;&gt; graph = new HashMap&lt;&gt;(); // {route: [buses]}
+    Set&lt;Integer&gt; usedBuses = new HashSet&lt;&gt;();
+
+    for (int i = 0; i &lt; routes.length; ++i)
+      for (final int route : routes[i]) {
+        graph.putIfAbsent(route, new ArrayList&lt;&gt;());
+        graph.get(route).add(i);
+      }
+
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;(List.of(source));
+
+    for (int step = 1; !q.isEmpty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        for (final int bus : graph.getOrDefault(q.poll(), new ArrayList&lt;&gt;()))
+          if (usedBuses.add(bus))
+            for (final int nextRoute : routes[bus]) {
+              if (nextRoute == target)
+                return step;
+              q.offer(nextRoute);
+            }
+      }
+
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numBusesToDestination(
+      self,
+      routes: list[list[int]],
+      source: int,
+      target: int,
+  ) -&gt; int:
+    if source == target:
+      return 0
+
+    graph = collections.defaultdict(list)
+    usedBuses = set()
+
+    for i in range(len(routes)):
+      for route in routes[i]:
+        graph[route].append(i)
+
+    q = collections.deque([source])
+
+    step = 1
+    while q:
+      for _ in range(len(q)):
+        for bus in graph[q.popleft()]:
+          if bus in usedBuses:
+            continue
+          usedBuses.add(bus)
+          for nextRoute in routes[bus]:
+            if nextRoute == target:
+              return step
+            q.append(nextRoute)
+      step += 1
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

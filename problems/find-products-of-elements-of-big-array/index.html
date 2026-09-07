@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Products of Elements of Big Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Products of Elements of Big Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-products-of-elements-of-big-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-substring-partition-of-equal-character-frequency/" class="btn">← Previous</a>
+            <span>Problem 3145 of 3563</span>
+            <a href="/leetcode-solutions/problems/permutation-difference-between-two-strings/" class="btn">Next →</a>
+        </div>
+        <h1>3145. Find Products of Elements of Big Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Products of Elements of Big Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; findProductsOfElements(vector&lt;vector&lt;long long&gt;&gt;&amp; queries) {
+    vector&lt;int&gt; ans;
+
+    for (const vector&lt;long long&gt;&amp; query : queries) {
+      const long a = query[0];
+      const long b = query[1];
+      const int mod = query[2];
+      const int product = modPow(2,
+                                 sumPowersFirstKBigNums(b + 1) -  //
+                                     sumPowersFirstKBigNums(a),
+                                 mod);
+      ans.push_back(product);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the sum of powers of the first k numbers in `big_nums`.
+  long sumPowersFirstKBigNums(long k) {
+    const long num = firstNumberHavingSumBitsTillGreaterThan(k);
+    long sumPowers = sumPowersTill(num - 1);
+    long remainingCount = k - sumBitsTill(num - 1);
+    for (int power = 0; power &lt; bitLength(num); ++power) {
+      if (num &gt;&gt; power &amp; 1) {
+        sumPowers += power;
+        --remainingCount;
+        if (remainingCount == 0)
+          break;
+      }
+    }
+    return sumPowers;
+  }
+
+  // Returns the first number in [1, k] that has sumBitsTill(num) &gt;= k.
+  long firstNumberHavingSumBitsTillGreaterThan(long k) {
+    long l = 1;
+    long r = k;
+    while (l &lt; r) {
+      const long m = (l + r) / 2;
+      if (sumBitsTill(m) &lt; k)
+        l = m + 1;
+      else
+        r = m;
+    }
+    return l;
+  }
+
+  // Returns sum(i.bit_count()), where 1 &lt;= i &lt;= x.
+  long sumBitsTill(long x) {
+    long sumBits = 0;
+    for (long powerOfTwo = 1; powerOfTwo &lt;= x; powerOfTwo *= 2) {
+      sumBits += (x / (2L * powerOfTwo)) * powerOfTwo;
+      sumBits += max(0L, x % (2L * powerOfTwo) + 1 - powerOfTwo);
+    }
+    return sumBits;
+  }
+
+  // Returns sum(all powers of i), where 1 &lt;= i &lt;= x.
+  long sumPowersTill(long x) {
+    long sumPowers = 0;
+    long powerOfTwo = 1;
+    for (int power = 0; power &lt; bitLength(x); ++power) {
+      sumPowers += (x / (2L * powerOfTwo)) * powerOfTwo * power;
+      sumPowers += max(0L, x % (2L * powerOfTwo) + 1 - powerOfTwo) * power;
+      powerOfTwo *= 2;
+    }
+    return sumPowers;
+  }
+
+  long modPow(long x, long n, int mod) {
+    if (n == 0)
+      return 1 % mod;
+    if (n % 2 == 1)
+      return x * modPow(x % mod, (n - 1), mod) % mod;
+    return modPow(x * x % mod, (n / 2), mod) % mod;
+  }
+
+  int bitLength(long x) {
+    return x == 0 ? 0 : 64 - __builtin_clzl(x);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] findProductsOfElements(long[][] queries) {
+    int[] ans = new int[queries.length];
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final long a = queries[i][0];
+      final long b = queries[i][1];
+      final int mod = (int) queries[i][2];
+      ans[i] = (int) modPow(2,
+                            sumPowersFirstKBigNums(b + 1) - //
+                                sumPowersFirstKBigNums(a),
+                            mod);
+    }
+
+    return ans;
+  }
+
+  // Returns the sum of powers of the first k numbers in `big_nums`.
+  private long sumPowersFirstKBigNums(long k) {
+    final long num = firstNumberHavingSumBitsTillGreaterThan(k);
+    long sumPowers = sumPowersTill(num - 1);
+    long remainingCount = k - sumBitsTill(num - 1);
+    for (int power = 0; power &lt; bitLength(num); ++power) {
+      if ((num &gt;&gt; power &amp; 1) == 1) {
+        sumPowers += power;
+        --remainingCount;
+        if (remainingCount == 0)
+          break;
+      }
+    }
+    return sumPowers;
+  }
+
+  // Returns the first number in [1, k] that has sumBitsTill(num) &gt;= k.
+  private long firstNumberHavingSumBitsTillGreaterThan(long k) {
+    long l = 1;
+    long r = k;
+    while (l &lt; r) {
+      final long m = (l + r) / 2;
+      if (sumBitsTill(m) &lt; k)
+        l = m + 1;
+      else
+        r = m;
+    }
+    return l;
+  }
+
+  // Returns sum(i.bit_count()), where 1 &lt;= i &lt;= x.
+  private long sumBitsTill(long x) {
+    long sumBits = 0;
+    for (long powerOfTwo = 1; powerOfTwo &lt;= x; powerOfTwo *= 2) {
+      sumBits += (x / (2 * powerOfTwo)) * powerOfTwo;
+      sumBits += Math.max(0, x % (2 * powerOfTwo) + 1 - powerOfTwo);
+    }
+    return sumBits;
+  }
+
+  // Returns sum(all powers of i), where 1 &lt;= i &lt;= x.
+  private long sumPowersTill(long x) {
+    long sumPowers = 0;
+    long powerOfTwo = 1;
+    for (int power = 0; power &lt; bitLength(x); ++power) {
+      sumPowers += (x / (2 * powerOfTwo)) * powerOfTwo * power;
+      sumPowers += Math.max(0, x % (2 * powerOfTwo) + 1 - powerOfTwo) * power;
+      powerOfTwo *= 2;
+    }
+    return sumPowers;
+  }
+
+  private long modPow(long x, long n, int mod) {
+    if (n == 0)
+      return 1 % mod;
+    if (n % 2 == 1)
+      return x * modPow(x % mod, (n - 1), mod) % mod;
+    return modPow(x * x % mod, (n / 2), mod) % mod;
+  }
+
+  private int bitLength(long x) {
+    return Long.SIZE - Long.numberOfLeadingZeros(x);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findProductsOfElements(self, queries: list[list[int]]) -&gt; list[int]:
+    def sumBitsTill(x: int) -&gt; int:
+      &quot;&quot;&quot;Returns sum(i.bit_count()), where 1 &lt;= i &lt;= x.&quot;&quot;&quot;
+      sumBits = 0
+      powerOfTwo = 1
+      while powerOfTwo &lt;= x:
+        sumBits += (x // (2 * powerOfTwo)) * powerOfTwo
+        sumBits += max(0, x % (2 * powerOfTwo) + 1 - powerOfTwo)
+        powerOfTwo *= 2
+      return sumBits
+
+    def sumPowersTill(x: int) -&gt; int:
+      &quot;&quot;&quot;Returns sum(all powers of i), where 1 &lt;= i &lt;= x.&quot;&quot;&quot;
+      sumPowers = 0
+      powerOfTwo = 1
+      for power in range(x.bit_length()):
+        sumPowers += (x // (2 * powerOfTwo)) * powerOfTwo * power
+        sumPowers += max(0, x % (2 * powerOfTwo) + 1 - powerOfTwo) * power
+        powerOfTwo *= 2
+      return sumPowers
+
+    def sumPowersFirstKBigNums(k: int) -&gt; int:
+      &quot;&quot;&quot;Returns the sum of powers of the first k numbers in `big_nums`.&quot;&quot;&quot;
+      # Find the first number in [1, k] that has sumBitsTill(num) &gt;= k.
+      num = bisect.bisect_left(range(k), k, key=sumBitsTill)
+      sumPowers = sumPowersTill(num - 1)
+      remainingCount = k - sumBitsTill(num - 1)
+      for power in range(num.bit_length()):
+        if num &gt;&gt; power &amp; 1:
+          sumPowers += power
+          remainingCount -= 1
+          if remainingCount == 0:
+            break
+      return sumPowers
+
+    return [pow(2,
+                sumPowersFirstKBigNums(b + 1) -
+                sumPowersFirstKBigNums(a), mod)
+            for a, b, mod in queries]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

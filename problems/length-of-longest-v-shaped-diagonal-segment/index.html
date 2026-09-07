@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Length of Longest V-Shaped Diagonal Segment - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Length of Longest V-Shaped Diagonal Segment written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/length-of-longest-v-shaped-diagonal-segment/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/select-k-disjoint-special-substrings/" class="btn">← Previous</a>
+            <span>Problem 3459 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-common-prefix-after-at-most-one-removal/" class="btn">Next →</a>
+        </div>
+        <h1>3459. Length of Longest V-Shaped Diagonal Segment</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Length of Longest V-Shaped Diagonal Segment efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int lenOfVDiagonal(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    vector&lt;vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;&gt; mem(
+        m, vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;(
+               n, vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;(
+                      2, vector&lt;vector&lt;int&gt;&gt;(2, vector&lt;int&gt;(4, -1)))));
+    int res = 0;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 1)
+          for (int d = 0; d &lt; 4; ++d) {
+            const auto&amp; [dx, dy] = kDirs[d];
+            res = max(res, 1 + dfs(grid, i + dx, j + dy, /*turned=*/false, 2, d,
+                                   mem));
+          }
+
+    return res;
+  }
+
+ private:
+  static constexpr int kDirs[4][2] = {{-1, 1}, {1, 1}, {1, -1}, {-1, -1}};
+
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; grid, int i, int j, bool turned, int num,
+          int dir, vector&lt;vector&lt;vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&gt;&gt;&amp; mem) {
+    if (i &lt; 0 || i == grid.size() || j &lt; 0 || j == grid[0].size())
+      return 0;
+    if (grid[i][j] != num)
+      return 0;
+
+    const int hashNum = max(0, num - 1);
+    if (mem[i][j][turned][hashNum][dir] != -1)
+      return mem[i][j][turned][hashNum][dir];
+
+    const int nextNum = num == 2 ? 0 : 2;
+    const auto&amp; [dx, dy] = kDirs[dir];
+    int res = 1 + dfs(grid, i + dx, j + dy, turned, nextNum, dir, mem);
+
+    if (!turned) {
+      const int nextDir = (dir + 1) % 4;
+      const auto&amp; [nextDx, nextDy] = kDirs[nextDir];
+      res = max(res, 1 + dfs(grid, i + nextDx, j + nextDy, /*turned=*/true,
+                             nextNum, nextDir, mem));
+    }
+
+    return mem[i][j][turned][hashNum][dir] = res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int lenOfVDiagonal(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    Integer[][][][][] mem = new Integer[m][n][2][2][4];
+
+    int ans = 0;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 1)
+          for (int d = 0; d &lt; 4; ++d) {
+            final int dx = DIRS[d][0];
+            final int dy = DIRS[d][1];
+            ans = Math.max(ans, 1 + dfs(grid, i + dx, j + dy, /*turned=*/false, 2, d, mem));
+          }
+
+    return ans;
+  }
+
+  private static final int[][] DIRS = {{-1, 1}, {1, 1}, {1, -1}, {-1, -1}};
+
+  private int dfs(int[][] grid, int i, int j, boolean turned, int num, int dir,
+                  Integer[][][][][] mem) {
+    if (i &lt; 0 || i == grid.length || j &lt; 0 || j == grid[0].length)
+      return 0;
+    if (grid[i][j] != num)
+      return 0;
+
+    final int hashNum = Math.max(0, num - 1);
+    if (mem[i][j][turned ? 1 : 0][hashNum][dir] != null)
+      return mem[i][j][turned ? 1 : 0][hashNum][dir];
+
+    final int nextNum = num == 2 ? 0 : 2;
+    final int dx = DIRS[dir][0], dy = DIRS[dir][1];
+    int res = 1 + dfs(grid, i + dx, j + dy, turned, nextNum, dir, mem);
+
+    if (!turned) {
+      final int nextDir = (dir + 1) % 4;
+      final int nextDx = DIRS[nextDir][0], nextDy = DIRS[nextDir][1];
+      res = Math.max(res,
+                     1 + dfs(grid, i + nextDx, j + nextDy, /*turned=*/true, nextNum, nextDir, mem));
+    }
+
+    return mem[i][j][turned ? 1 : 0][hashNum][dir] = res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def lenOfVDiagonal(self, grid: list[list[int]]) -&gt; int:
+    DIRS = ((-1, 1), (1, 1), (1, -1), (-1, -1))
+
+    @functools.lru_cache(None)
+    def dfs(i: int, j: int, turned: bool, num: int, dir: int) -&gt; int:
+      if i &lt; 0 or i == len(grid) or j &lt; 0 or j == len(grid[0]):
+        return 0
+      if grid[i][j] != num:
+        return 0
+
+      nextNum = 0 if num == 2 else 2
+      dx, dy = DIRS[dir]
+      res = 1 + dfs(i + dx, j + dy, turned, nextNum, dir)
+
+      if not turned:
+        nextDir = (dir + 1) % 4
+        nextDx, nextDy = DIRS[nextDir]
+        res = max(res, 1 + dfs(i + nextDx, j + nextDy, 1, nextNum, nextDir))
+
+      return res
+
+    return max((1 + dfs(i + dx, j + dy, 0, 2, d)
+                for i, row in enumerate(grid)
+                for j, num in enumerate(row)
+                if num == 1
+                for d, (dx, dy) in enumerate(DIRS)),
+               default=0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

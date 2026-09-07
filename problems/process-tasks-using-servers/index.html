@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Tasks Using Servers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Process Tasks Using Servers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/process-tasks-using-servers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-value-after-insertion/" class="btn">← Previous</a>
+            <span>Problem 1882 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-skips-to-arrive-at-meeting-on-time/" class="btn">Next →</a>
+        </div>
+        <h1>1882. Process Tasks Using Servers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Process Tasks Using Servers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  int weight;
+  int index;
+  int freeTime;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; assignTasks(vector&lt;int&gt;&amp; servers, vector&lt;int&gt;&amp; tasks) {
+    const int n = servers.size();
+    const int m = tasks.size();
+    vector&lt;int&gt; ans(m);
+    auto compareFree = [](const T&amp; a, const T&amp; b) {
+      return a.weight == b.weight ? a.index &gt; b.index : a.weight &gt; b.weight;
+    };
+    auto compareUsed = [](const T&amp; a, const T&amp; b) {
+      if (a.freeTime != b.freeTime)
+        return a.freeTime &gt; b.freeTime;
+      if (a.weight != b.weight)
+        return a.weight &gt; b.weight;
+      return a.index &gt; b.index;
+    };
+    priority_queue&lt;T, vector&lt;T&gt;, decltype(compareFree)&gt; free(compareFree);
+    priority_queue&lt;T, vector&lt;T&gt;, decltype(compareUsed)&gt; used(compareUsed);
+
+    for (int i = 0; i &lt; n; ++i)
+      free.emplace(servers[i], i, 0);
+
+    for (int i = 0; i &lt; m; ++i) {  // i := the current time
+      const int executionTime = tasks[i];
+      // Pop all the servers that&#x27;ll be free at time i.
+      while (!used.empty() &amp;&amp; used.top().freeTime &lt;= i) {
+        const T curr = used.top();
+        used.pop();
+        free.push(curr);
+      }
+      if (free.empty()) {
+        T server = used.top();
+        used.pop();
+        ans[i] = server.index;
+        server.freeTime += executionTime;
+        used.push(server);
+      } else {
+        T server = free.top();
+        free.pop();
+        ans[i] = server.index;
+        server.freeTime = i + executionTime;
+        used.push(server);
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class T {
+  public int weight;
+  public int index;
+  public int freeTime;
+  public T(int weight, int index, int freeTime) {
+    this.weight = weight;
+    this.index = index;
+    this.freeTime = freeTime;
+  }
+}
+
+class Solution {
+  public int[] assignTasks(int[] servers, int[] tasks) {
+    final int n = servers.length;
+    final int m = tasks.length;
+    int[] ans = new int[m];
+    Queue&lt;T&gt; free = new PriorityQueue&lt;&gt;(
+        Comparator.comparing((T t) -&gt; t.weight).thenComparing((T t) -&gt; t.index));
+    Queue&lt;T&gt; used = new PriorityQueue&lt;&gt;(Comparator.comparing((T t) -&gt; t.freeTime)
+                                            .thenComparing((T t) -&gt; t.weight)
+                                            .thenComparing((T t) -&gt; t.index));
+
+    for (int i = 0; i &lt; n; ++i)
+      free.offer(new T(servers[i], i, 0));
+
+    for (int i = 0; i &lt; m; ++i) { // i := the current time
+      final int executionTime = tasks[i];
+      // Poll all servers that&#x27;ll be free at time i.
+      while (!used.isEmpty() &amp;&amp; used.peek().freeTime &lt;= i)
+        free.offer(used.poll());
+      if (free.isEmpty()) {
+        T server = used.poll();
+        ans[i] = server.index;
+        server.freeTime += executionTime;
+        used.offer(server);
+      } else {
+        T server = free.poll();
+        ans[i] = server.index;
+        server.freeTime = i + executionTime;
+        used.offer(server);
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def assignTasks(self, servers: list[int], tasks: list[int]) -&gt; list[int]:
+    ans = []
+    free = []  # (weight, index, freeTime)
+    used = []  # (freeTime, weight, index)
+
+    for i, weight in enumerate(servers):
+      heapq.heappush(free, (weight, i, 0))
+
+    for i, executionTime in enumerate(tasks):  # i := the current time
+      # Poll all servers that&#x27;ll be free at time i.
+      while used and used[0][0] &lt;= i:
+        curr = heapq.heappop(used)
+        heapq.heappush(free, (curr[1], curr[2], curr[0]))
+      if free:
+        curr = heapq.heappop(free)
+        ans.append(curr[1])
+        heapq.heappush(used, (i + executionTime, curr[0], curr[1]))
+      else:
+        curr = heapq.heappop(used)
+        ans.append(curr[2])
+        heapq.heappush(used, (curr[0] + executionTime, curr[1], curr[2]))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

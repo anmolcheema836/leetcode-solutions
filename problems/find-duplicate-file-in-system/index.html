@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Duplicate File in System - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Duplicate File in System written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-duplicate-file-in-system/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/tree-node/" class="btn">← Previous</a>
+            <span>Problem 609 of 3563</span>
+            <a href="/leetcode-solutions/problems/triangle-judgement/" class="btn">Next →</a>
+        </div>
+        <h1>609. Find Duplicate File in System</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Duplicate File in System efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;string&gt;&gt; findDuplicate(vector&lt;string&gt;&amp; paths) {
+    vector&lt;vector&lt;string&gt;&gt; ans;
+    unordered_map&lt;string, vector&lt;string&gt;&gt; contentToFilePaths;
+
+    for (const string&amp; path : paths) {
+      istringstream iss(path);
+      string rootPath;
+      iss &gt;&gt; rootPath;  // &quot;root/d1/d2/.../dm&quot;
+
+      string fileAndContent;
+      while (iss &gt;&gt; fileAndContent) {  // &quot;fn.txt(fn_content)&quot;
+        const int l = fileAndContent.find(&#x27;(&#x27;);
+        const int r = fileAndContent.find(&#x27;)&#x27;);
+        // &quot;fn.txt&quot;
+        const string file = fileAndContent.substr(0, l);
+        // &quot;fn_content&quot;
+        const string content = fileAndContent.substr(l + 1, r - l - 1);
+        // &quot;root/d1/d2/.../dm/fn.txt&quot;
+        const string filePath = rootPath + &#x27;/&#x27; + file;
+        contentToFilePaths[content].push_back(filePath);
+      }
+    }
+
+    for (const auto&amp; [_, filePaths] : contentToFilePaths)
+      if (filePaths.size() &gt; 1)
+        ans.push_back(filePaths);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;String&gt;&gt; findDuplicate(String[] paths) {
+    List&lt;List&lt;String&gt;&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;String, List&lt;String&gt;&gt; contentToFilePaths = new HashMap&lt;&gt;();
+
+    for (final String path : paths) {
+      final String[] words = path.split(&quot; &quot;);
+      final String rootPath = words[0]; // &quot;root/d1/d2/.../dm&quot;
+      for (int i = 1; i &lt; words.length; ++i) {
+        final String fileAndContent = words[i]; // &quot;fn.txt(fn_content)&quot;
+        final int l = fileAndContent.indexOf(&#x27;(&#x27;);
+        final int r = fileAndContent.indexOf(&#x27;)&#x27;);
+        // &quot;fn.txt&quot;
+        final String file = fileAndContent.substring(0, l);
+        // &quot;fn_content&quot;
+        final String content = fileAndContent.substring(l + 1, r);
+        // &quot;root/d1/d2/.../dm/fn.txt&quot;
+        final String filePath = rootPath + &#x27;/&#x27; + file;
+        contentToFilePaths.putIfAbsent(content, new ArrayList&lt;&gt;());
+        contentToFilePaths.get(content).add(filePath);
+      }
+    }
+
+    for (List&lt;String&gt; filePaths : contentToFilePaths.values())
+      if (filePaths.size() &gt; 1)
+        ans.add(filePaths);
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findDuplicate(self, paths: list[str]) -&gt; list[list[str]]:
+    contentToPathFiles = collections.defaultdict(list)
+
+    for path in paths:
+      words = path.split(&#x27; &#x27;)
+      rootPath = words[0]  # &quot;root/d1/d2/.../dm&quot;
+      for fileAndContent in words[1:]:  # &quot;fn.txt(fn_content)&quot;
+        l = fileAndContent.find(&#x27;(&#x27;)
+        r = fileAndContent.find(&#x27;)&#x27;)
+        # &quot;fn.txt&quot;
+        file = fileAndContent[:l]
+        # &quot;fn_content&quot;
+        content = fileAndContent[l + 1:r]
+        # &quot;root/d1/d2/.../dm/fn.txt&quot;
+        filePath = rootPath + &#x27;/&#x27; + file
+        contentToPathFiles[content].append(filePath)
+
+    return [filePath for filePath in contentToPathFiles.values() if len(filePath) &gt; 1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

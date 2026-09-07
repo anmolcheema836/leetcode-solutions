@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Maximum Removals From Source String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Maximum Removals From Source String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-maximum-removals-from-source-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/construct-the-minimum-bitwise-array-ii/" class="btn">← Previous</a>
+            <span>Problem 3316 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-number-of-possible-ways-for-an-event/" class="btn">Next →</a>
+        </div>
+        <h1>3316. Find Maximum Removals From Source String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Maximum Removals From Source String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxRemovals(string source, string pattern, vector&lt;int&gt;&amp; targetIndices) {
+    const int m = source.length();
+    const int n = pattern.length();
+    const unordered_set&lt;int&gt; target{targetIndices.begin(), targetIndices.end()};
+    // dp[j] := the maximum number of operations that can be performed for
+    // source so far and pattern[j..n)
+    vector&lt;int&gt; dp(n + 1, INT_MIN);
+    dp[n] = 0;
+
+    for (int i = m - 1; i &gt;= 0; --i) {
+      vector&lt;int&gt; newDp(dp);
+      newDp[n] = (target.contains(i) ? 1 : 0) + dp[n];
+      for (int j = n - 1; j &gt;= 0; --j) {
+        const int pick = source[i] == pattern[j] ? dp[j + 1] : INT_MIN;
+        const int skip = (target.contains(i) ? 1 : 0) + dp[j];
+        newDp[j] = max(pick, skip);
+      }
+      dp = std::move(newDp);
+    }
+
+    return dp[0] == INT_MIN ? 0 : dp[0];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxRemovals(String source, String pattern, int[] targetIndices) {
+    final int m = source.length();
+    final int n = pattern.length();
+    Set&lt;Integer&gt; target = Arrays.stream(targetIndices).boxed().collect(Collectors.toSet());
+    // dp[j] := the maximum number of operations that can be performed for
+    // source so far and pattern[j..n)
+    int[] dp = new int[n + 1];
+    Arrays.fill(dp, Integer.MIN_VALUE);
+    dp[n] = 0;
+
+    for (int i = m - 1; i &gt;= 0; --i) {
+      int[] newDp = dp.clone();
+      newDp[n] = (target.contains(i) ? 1 : 0) + dp[n];
+      for (int j = n - 1; j &gt;= 0; --j) {
+        final int pick = source.charAt(i) == pattern.charAt(j) ? dp[j + 1] : Integer.MIN_VALUE;
+        final int skip = (target.contains(i) ? 1 : 0) + dp[j];
+        newDp[j] = Math.max(pick, skip);
+      }
+      dp = newDp;
+    }
+
+    return dp[0] == Integer.MIN_VALUE ? 0 : dp[0];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxRemovals(
+      self,
+      source: str,
+      pattern: str,
+      targetIndices: list[int]
+  ) -&gt; int:
+    m = len(source)
+    n = len(pattern)
+    target = set(targetIndices)
+    # dp[j] := the maximum number of operations that can be performed for
+    # source so far and pattern[j..n)
+    dp = [-math.inf] * (n + 1)
+    dp[n] = 0
+
+    for i in reversed(range(m)):
+      newDp = dp[:]
+      newDp[n] = int(i in target) + dp[n]
+      for j in range(n):
+        pick = dp[j + 1] if source[i] == pattern[j] else -math.inf
+        skip = int(i in target) + dp[j]
+        newDp[j] = max(pick, skip)
+      dp = newDp
+
+    return 0 if dp[0] == -math.inf else dp[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate IP Address - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Validate IP Address written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/validate-ip-address/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/unique-substrings-in-wraparound-string/" class="btn">← Previous</a>
+            <span>Problem 468 of 3563</span>
+            <a href="/leetcode-solutions/problems/convex-polygon/" class="btn">Next →</a>
+        </div>
+        <h1>468. Validate IP Address</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Validate IP Address efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string validIPAddress(string queryIP) {
+    string digit;
+    istringstream iss(queryIP);
+
+    if (ranges::count(queryIP, &#x27;.&#x27;) == 3) {
+      for (int i = 0; i &lt; 4; ++i)  // Make sure that we have four parts.
+        if (!getline(iss, digit, &#x27;.&#x27;) || !isIPv4(digit))
+          return &quot;Neither&quot;;
+      return &quot;IPv4&quot;;
+    }
+
+    if (ranges::count(queryIP, &#x27;:&#x27;) == 7) {
+      for (int i = 0; i &lt; 8; ++i)  // Make sure that we have eight parts.
+        if (!getline(iss, digit, &#x27;:&#x27;) || !isIPv6(digit))
+          return &quot;Neither&quot;;
+      return &quot;IPv6&quot;;
+    }
+
+    return &quot;Neither&quot;;
+  }
+
+ private:
+  static inline string validIPv6Chars = &quot;0123456789abcdefABCDEF&quot;;
+
+  bool isIPv4(const string&amp; digit) {
+    if (digit.empty() || digit.length() &gt; 3)
+      return false;
+    if (digit.length() &gt; 1 &amp;&amp; digit[0] == &#x27;0&#x27;)
+      return false;
+
+    for (const char c : digit)
+      if (c &lt; &#x27;0&#x27; || c &gt; &#x27;9&#x27;)
+        return false;
+
+    const int num = stoi(digit);
+    return 0 &lt;= num &amp;&amp; num &lt;= 255;
+  }
+
+  bool isIPv6(const string&amp; digit) {
+    if (digit.empty() || digit.length() &gt; 4)
+      return false;
+
+    for (const char c : digit)
+      if (validIPv6Chars.find(c) == string::npos)
+        return false;
+
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String validIPAddress(String queryIP) {
+    if (queryIP.chars().filter(c -&gt; c == &#x27;.&#x27;).count() == 3) {
+      for (final String digit : queryIP.split(&quot;\\.&quot;, -1))
+        if (!isIPv4(digit))
+          return &quot;Neither&quot;;
+      return &quot;IPv4&quot;;
+    }
+
+    if (queryIP.chars().filter(c -&gt; c == &#x27;:&#x27;).count() == 7) {
+      for (final String digit : queryIP.split(&quot;\\:&quot;, -1))
+        if (!isIPv6(digit))
+          return &quot;Neither&quot;;
+      return &quot;IPv6&quot;;
+    }
+
+    return &quot;Neither&quot;;
+  }
+
+  private static final String validIPv6Chars = &quot;0123456789abcdefABCDEF&quot;;
+
+  private boolean isIPv4(final String digit) {
+    if (digit.isEmpty() || digit.length() &gt; 3)
+      return false;
+    if (digit.length() &gt; 1 &amp;&amp; digit.charAt(0) == &#x27;0&#x27;)
+      return false;
+
+    for (final char c : digit.toCharArray())
+      if (c &lt; &#x27;0&#x27; || c &gt; &#x27;9&#x27;)
+        return false;
+
+    final int num = Integer.parseInt(digit);
+    return 0 &lt;= num &amp;&amp; num &lt;= 255;
+  }
+
+  private boolean isIPv6(final String digit) {
+    if (digit.isEmpty() || digit.length() &gt; 4)
+      return false;
+
+    for (final char c : digit.toCharArray())
+      if (!validIPv6Chars.contains(&quot;&quot; + c))
+        return false;
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def validIPAddress(self, queryIP: str) -&gt; str:
+    if queryIP.count(&#x27;.&#x27;) == 3:
+      parts = queryIP.split(&#x27;.&#x27;)
+      if len(parts) == 4 and all(self._isIPv4(part) for part in parts):
+        return &#x27;IPv4&#x27;
+
+    if queryIP.count(&#x27;:&#x27;) == 7:
+      parts = queryIP.split(&#x27;:&#x27;)
+      if len(parts) == 8 and all(self._isIPv6(part) for part in parts):
+        return &#x27;IPv6&#x27;
+
+    return &#x27;Neither&#x27;
+
+  def _isIPv4(self, digit: str) -&gt; bool:
+    if not digit or len(digit) &gt; 3:
+      return False
+    if len(digit) &gt; 1 and digit[0] == &#x27;0&#x27;:
+      return False
+    if not all(c.isdigit() for c in digit):
+      return False
+    num = int(digit)
+    return 0 &lt;= num &lt;= 255
+
+  def _isIPv6(self, digit: str) -&gt; bool:
+    if not digit or len(digit) &gt; 4:
+      return False
+    validChars = set(&#x27;0123456789abcdefABCDEF&#x27;)
+    return all(c in validChars for c in digit)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

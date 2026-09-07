@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zuma Game - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Zuma Game written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/zuma-game/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/max-consecutive-ones-ii/" class="btn">← Previous</a>
+            <span>Problem 488 of 3563</span>
+            <a href="/leetcode-solutions/problems/robot-room-cleaner/" class="btn">Next →</a>
+        </div>
+        <h1>488. Zuma Game</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Zuma Game efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findMinStep(string board, string hand) {
+    const int ans = dfs(board + &quot;#&quot;, hand, {});
+    return ans == INT_MAX ? -1 : ans;
+  }
+
+ private:
+  int dfs(string&amp;&amp; board, const string&amp; hand,
+          unordered_map&lt;string, int&gt;&amp;&amp; mem) {
+    const string hashKey = board + &#x27;#&#x27; + hand;
+    if (const auto it = mem.find(hashKey); it != mem.cend())
+      return it-&gt;second;
+    board = deDup(board);
+    if (board == &quot;#&quot;)
+      return 0;
+
+    unordered_set&lt;char&gt; boardSet = unordered_set(board.begin(), board.end());
+
+    string hs;  // hand that is in board
+    for (const char h : hand)
+      if (boardSet.contains(h))
+        hs += h;
+    if (hs.empty())  // infeasible
+      return INT_MAX;
+
+    int ans = INT_MAX;
+
+    for (int i = 0; i &lt; board.size(); ++i)
+      for (int j = 0; j &lt; hs.size(); ++j) {
+        // Place hs[j] in board[i].
+        const string&amp; newHand = hs.substr(0, j) + hs.substr(j + 1);
+        string newBoard = board.substr(0, i) + hs[j] + board.substr(i);
+        const int res = dfs(std::move(newBoard), newHand, std::move(mem));
+        if (res &lt; INT_MAX)
+          ans = min(ans, 1 + res);
+      }
+
+    return mem[hashKey] = ans;
+  }
+
+  string deDup(string board) {
+    int start = 0;  // the start index of a color sequenece
+    for (int i = 0; i &lt; board.size(); ++i)
+      if (board[i] != board[start]) {
+        if (i - start &gt;= 3)
+          return deDup(board.substr(0, start) + board.substr(i));
+        start = i;  // Meet a new sequence.
+      }
+    return board;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findMinStep(String board, String hand) {
+    Map&lt;String, Integer&gt; mem = new HashMap&lt;&gt;();
+    final int ans = dfs(board + &#x27;#&#x27;, hand, mem);
+    return ans == Integer.MAX_VALUE ? -1 : ans;
+  }
+
+  private int dfs(String board, final String hand, Map&lt;String, Integer&gt; mem) {
+    final String hashKey = board + &#x27;#&#x27; + hand;
+    if (mem.containsKey(hashKey))
+      return mem.get(hashKey);
+    board = deDup(board);
+    if (board.equals(&quot;#&quot;))
+      return 0;
+
+    Set&lt;Character&gt; boardSet = new HashSet&lt;&gt;();
+    for (final char c : board.toCharArray())
+      boardSet.add(c);
+
+    StringBuilder sb = new StringBuilder();
+    for (final char h : hand.toCharArray())
+      if (boardSet.contains(h))
+        sb.append(h);
+    final String hs = sb.toString();
+    if (sb.length() == 0) // infeasible
+      return Integer.MAX_VALUE;
+
+    int ans = Integer.MAX_VALUE;
+
+    for (int i = 0; i &lt; board.length(); ++i)
+      for (int j = 0; j &lt; hs.length(); ++j) {
+        // Place hs[j] in board[i].
+        final String newHand = hs.substring(0, j) + hs.substring(j + 1);
+        String newBoard = board.substring(0, i) + hs.charAt(j) + board.substring(i);
+        final int res = dfs(newBoard, newHand, mem);
+        if (res &lt; Integer.MAX_VALUE)
+          ans = Math.min(ans, 1 + res);
+      }
+
+    mem.put(hashKey, ans);
+    return ans;
+  }
+
+  private String deDup(String board) {
+    int start = 0; // the start index of a color sequenece
+    for (int i = 0; i &lt; board.length(); ++i)
+      if (board.charAt(i) != board.charAt(start)) {
+        if (i - start &gt;= 3)
+          return deDup(board.substring(0, start) + board.substring(i));
+        start = i; // Meet a new sequence.
+      }
+    return board;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findMinStep(self, board: str, hand: str) -&gt; int:
+    def deDup(board):
+      start = 0  # the start index of a color sequenece
+      for i, c in enumerate(board):
+        if c != board[start]:
+          if i - start &gt;= 3:
+            return deDup(board[:start] + board[i:])
+          start = i  # Meet a new sequence.
+      return board
+
+    @functools.lru_cache(None)
+    def dfs(board: str, hand: str):
+      board = deDup(board)
+      if board == &#x27;#&#x27;:
+        return 0
+
+      boardSet = set(board)
+      # hand that is in board
+      hand = &#x27;&#x27;.join(h for h in hand if h in boardSet)
+      if not hand:  # infeasible
+        return math.inf
+
+      ans = math.inf
+
+      for i in range(len(board)):
+        for j, h in enumerate(hand):
+          # Place hs[j] in board[i].
+          newHand = hand[:j] + hand[j + 1:]
+          newBoard = board[:i] + h + board[i:]
+          ans = min(ans, 1 + dfs(newBoard, newHand))
+
+      return ans
+
+    ans = dfs(board + &#x27;#&#x27;, hand)
+    return -1 if ans == math.inf else ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

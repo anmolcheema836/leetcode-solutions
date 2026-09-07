@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Cells in Grid With Maximum Score - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Select Cells in Grid With Maximum Score written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/select-cells-in-grid-with-maximum-score/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/k-th-nearest-obstacle-queries/" class="btn">← Previous</a>
+            <span>Problem 3276 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-xor-score-subarray-queries/" class="btn">Next →</a>
+        </div>
+        <h1>3276. Select Cells in Grid With Maximum Score</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Select Cells in Grid With Maximum Score efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxScore(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    unordered_map&lt;int, unordered_set&lt;int&gt;&gt; numToIndices;
+    for (int index = 0; index &lt; grid.size(); ++index)
+      for (const int num : grid[index])
+        numToIndices[num].insert(index);
+    vector&lt;vector&lt;int&gt;&gt; mem(numToIndices.size(), vector&lt;int&gt;(1 &lt;&lt; grid.size()));
+    return maxScore({numToIndices.begin(), numToIndices.end()}, 0, 0, mem);
+  }
+
+ private:
+  // Returns the maximum score by selecting numbers from numToIndices[i..],
+  // where `mask` is the bitmask of the used row indices.
+  int maxScore(const vector&lt;pair&lt;int, unordered_set&lt;int&gt;&gt;&gt;&amp; numToIndices, int i,
+               int mask, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i == numToIndices.size())
+      return 0;
+    if (mem[i][mask] != 0)
+      return mem[i][mask];
+    // Skip numToIndices[i].first.
+    int res = maxScore(numToIndices, i + 1, mask, mem);
+    for (const int index : numToIndices[i].second)
+      if ((mask &gt;&gt; index &amp; 1) == 0)
+        // Take numToIndices[i].first.
+        res =
+            max(res, numToIndices[i].first +
+                         maxScore(numToIndices, i + 1, mask | 1 &lt;&lt; index, mem));
+    return mem[i][mask] = res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxScore(List&lt;List&lt;Integer&gt;&gt; grid) {
+    Map&lt;Integer, Set&lt;Integer&gt;&gt; numToIndices = new HashMap&lt;&gt;();
+    for (int index = 0; index &lt; grid.size(); ++index)
+      for (final int num : grid.get(index)) {
+        numToIndices.putIfAbsent(num, new HashSet&lt;&gt;());
+        numToIndices.get(num).add(index);
+      }
+    int[][] mem = new int[numToIndices.size()][1 &lt;&lt; grid.size()];
+    return maxScore(new ArrayList&lt;&gt;(numToIndices.entrySet()), 0, 0, mem);
+  }
+
+  // Returns the maximum score by selecting numbers from numToIndices[i..],
+  // where `mask` is the bitmask of the used row indices.
+  private int maxScore(List&lt;Map.Entry&lt;Integer, Set&lt;Integer&gt;&gt;&gt; numToIndices, int i, int mask,
+                       int[][] mem) {
+    if (i == numToIndices.size())
+      return 0;
+    if (mem[i][mask] != 0)
+      return mem[i][mask];
+    // Skip numToIndices[i].getKey().
+    int res = maxScore(numToIndices, i + 1, mask, mem);
+    for (int index : numToIndices.get(i).getValue())
+      if ((mask &gt;&gt; index &amp; 1) == 0)
+        // Take numToIndices[i].getKey().
+        res = Math.max(res, numToIndices.get(i).getKey() +
+                                maxScore(numToIndices, i + 1, mask | (1 &lt;&lt; index), mem));
+    return mem[i][mask] = res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxScore(self, grid: list[list[int]]) -&gt; int:
+    numToIndices = collections.defaultdict(set)
+    for index, row in enumerate(grid):
+      for num in row:
+        numToIndices[num].add(index)
+    numToIndices = list(numToIndices.items())
+
+    @functools.lru_cache(None)
+    def dp(i: int, mask: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the maximum score by selecting numbers from numToIndices[i..],
+      where `mask` is the bitmask of the used row indices.
+      &quot;&quot;&quot;
+      if i == len(numToIndices):
+        return 0
+      # Skip numToIndices[i][0].
+      res = dp(i + 1, mask)
+      for index in numToIndices[i][1]:
+        if (mask &gt;&gt; index &amp; 1) == 0:
+          # Take numToIndices[i][0].
+          res = max(res, numToIndices[i][0] + dp(i + 1, mask | 1 &lt;&lt; index))
+      return res
+
+    return dp(0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

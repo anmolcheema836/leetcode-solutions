@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Number of People to Teach - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Number of People to Teach written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-number-of-people-to-teach/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-highest-altitude/" class="btn">← Previous</a>
+            <span>Problem 1733 of 3563</span>
+            <a href="/leetcode-solutions/problems/decode-xored-permutation/" class="btn">Next →</a>
+        </div>
+        <h1>1733. Minimum Number of People to Teach</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Number of People to Teach efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumTeachings(int n, vector&lt;vector&lt;int&gt;&gt;&amp; languages,
+                       vector&lt;vector&lt;int&gt;&gt;&amp; friendships) {
+    vector&lt;unordered_set&lt;int&gt;&gt; languageSets;
+    unordered_set&lt;int&gt; needTeach;
+    unordered_map&lt;int, int&gt; languageCount;
+
+    for (const vector&lt;int&gt;&amp; language : languages)
+      languageSets.push_back({language.begin(), language.end()});
+
+    // Find friends that can&#x27;t communicate.
+    for (const vector&lt;int&gt;&amp; friendship : friendships) {
+      const int u = friendship[0] - 1;
+      const int v = friendship[1] - 1;
+      if (cantTalk(languageSets, u, v)) {
+        needTeach.insert(u);
+        needTeach.insert(v);
+      }
+    }
+
+    // Find the most popular language.
+    for (const int u : needTeach)
+      for (const int language : languageSets[u])
+        ++languageCount[language];
+
+    // Teach the most popular language to people who don&#x27;t understand.
+    int maxCount = 0;
+    for (const auto&amp; [_, freq] : languageCount)
+      maxCount = max(maxCount, freq);
+
+    return needTeach.size() - maxCount;
+  }
+
+ private:
+  // Returns true if u can&#x27;t talk with v.
+  bool cantTalk(const vector&lt;unordered_set&lt;int&gt;&gt;&amp; languageSets, int u, int v) {
+    for (const int language : languageSets[u])
+      if (languageSets[v].contains(language))
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumTeachings(int n, int[][] languages, int[][] friendships) {
+    List&lt;Set&lt;Integer&gt;&gt; languageSets = new ArrayList&lt;&gt;();
+    Set&lt;Integer&gt; needTeach = new HashSet&lt;&gt;();
+    Map&lt;Integer, Integer&gt; languageCount = new HashMap&lt;&gt;();
+
+    for (int[] language : languages)
+      languageSets.add(new HashSet&lt;&gt;(Arrays.stream(language).boxed().toList()));
+
+    // Find friends that can&#x27;t communicate.
+    for (int[] friendship : friendships) {
+      final int u = friendship[0] - 1;
+      final int v = friendship[1] - 1;
+      if (cantTalk(languageSets, u, v)) {
+        needTeach.add(u);
+        needTeach.add(v);
+      }
+    }
+
+    // Find the most popular language.
+    for (int u : needTeach)
+      for (final int language : languageSets.get(u))
+        languageCount.merge(language, 1, Integer::sum);
+
+    // Teach the most popular language to people who don&#x27;t understand.
+    int maxCount = 0;
+    for (int freq : languageCount.values())
+      maxCount = Math.max(maxCount, freq);
+
+    return needTeach.size() - maxCount;
+  }
+
+  // Returns true if u can&#x27;t talk with v.
+  private boolean cantTalk(List&lt;Set&lt;Integer&gt;&gt; languageSets, int u, int v) {
+    for (int language : languageSets.get(u))
+      if (languageSets.get(v).contains(language))
+        return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumTeachings(
+      self,
+      n: int,
+      languages: list[list[int]],
+      friendships: list[list[int]],
+  ) -&gt; int:
+    languageSets = [set(languages) for languages in languages]
+    needTeach = set()
+    languageCount = collections.Counter()
+
+    # Find friends that can&#x27;t communicate.
+    for u, v in friendships:
+      if not languageSets[u - 1] &amp; languageSets[v - 1]:
+        needTeach.add(u - 1)
+        needTeach.add(v - 1)
+
+    # Find the most popular language.
+    for u in needTeach:
+      for language in languageSets[u]:
+        languageCount[language] += 1
+
+    # Teach the most popular language to people don&#x27;t understand.
+    return len(needTeach) - max(languageCount.values(), default=0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

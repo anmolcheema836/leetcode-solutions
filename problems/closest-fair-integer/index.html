@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closest Fair Integer - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Closest Fair Integer written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/closest-fair-integer/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-prefix-scores-of-strings/" class="btn">← Previous</a>
+            <span>Problem 2417 of 3563</span>
+            <a href="/leetcode-solutions/problems/sort-the-people/" class="btn">Next →</a>
+        </div>
+        <h1>2417. Closest Fair Integer</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Closest Fair Integer efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int closestFair(int n) {
+    const int digitsCount = to_string(n).length();
+    return digitsCount % 2 == 0 ? getEvenDigits(n) : getOddDigits(digitsCount);
+  }
+
+ private:
+  long getOddDigits(int digitsCount) {
+    const int zeros = (digitsCount + 1) / 2;
+    const int ones = (digitsCount - 1) / 2;
+    return stoi(&#x27;1&#x27; + string(zeros, &#x27;0&#x27;) + string(ones, &#x27;1&#x27;));
+  }
+
+  int getEvenDigits(int n) {
+    const int digitsCount = to_string(n).length();
+    const long maxNum = stol(&#x27;1&#x27; + string(digitsCount, &#x27;0&#x27;));
+    for (long num = n; num &lt; maxNum; ++num)
+      if (isValidNum(num))
+        return num;
+    return getOddDigits(digitsCount + 1);
+  }
+
+  bool isValidNum(long num) {
+    int count = 0;
+    for (const char c : to_string(num))
+      count += (c - &#x27;0&#x27;) % 2 == 0 ? 1 : -1;
+    return count == 0;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int closestFair(int n) {
+    final int digitsCount = String.valueOf(n).length();
+    return digitsCount % 2 == 0 ? getEvenDigits(n) : (int) getOddDigits(digitsCount);
+  }
+
+  private long getOddDigits(int digitsCount) {
+    final int zeros = (digitsCount + 1) / 2;
+    final int ones = (digitsCount - 1) / 2;
+    return Integer.valueOf(&#x27;1&#x27; + &quot;0&quot;.repeat(zeros) + &quot;1&quot;.repeat(ones));
+  }
+
+  private int getEvenDigits(int n) {
+    final int digitsCount = String.valueOf(n).length();
+    final long maxNum = Long.valueOf(&#x27;1&#x27; + &quot;0&quot;.repeat(digitsCount));
+    for (long num = n; num &lt; maxNum; ++num)
+      if (isValidNum(num))
+        return (int) num;
+    return (int) getOddDigits(digitsCount + 1);
+  }
+
+  private boolean isValidNum(long num) {
+    int count = 0;
+    for (final char c : String.valueOf(num).toCharArray())
+      count += (c - &#x27;0&#x27;) % 2 == 0 ? 1 : -1;
+    return count == 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def closestFair(self, n: int) -&gt; int:
+    digitsCount = len(str(n))
+    return (self._getEvenDigits(n) if digitsCount % 2 == 0 else
+            self._getOddDigits(digitsCount))
+
+  def _getOddDigits(self, digitsCount: int) -&gt; int:
+    zeros = (digitsCount + 1) // 2
+    ones = (digitsCount - 1) // 2
+    return int(&#x27;1&#x27; + &#x27;0&#x27; * zeros + &#x27;1&#x27; * ones)
+
+  def _getEvenDigits(self, n: int) -&gt; int:
+    digitsCount = len(str(n))
+    maxNum = int(&#x27;1&#x27; + &#x27;0&#x27; * digitsCount)
+    for num in range(n, maxNum):
+      if self._isValidNum(num):
+        return num
+    return self._getOddDigits(digitsCount + 1)
+
+  def _isValidNum(self, num: int) -&gt; bool:
+    count = 0
+    for c in str(num):
+      count += 1 if int(c) % 2 == 0 else -1
+    return count == 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

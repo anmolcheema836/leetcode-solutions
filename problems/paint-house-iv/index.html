@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint House IV - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Paint House IV written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/paint-house-iv/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-and-minimum-sums-of-at-most-size-k-subsequences/" class="btn">← Previous</a>
+            <span>Problem 3429 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-and-minimum-sums-of-at-most-size-k-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>3429. Paint House IV</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Paint House IV efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minCost(int n, vector&lt;vector&lt;int&gt;&gt;&amp; costs) {
+    constexpr int kInvalidColor = 3;
+    vector&lt;vector&lt;vector&lt;long&gt;&gt;&gt; mem(
+        n / 2, vector&lt;vector&lt;long&gt;&gt;(4, vector&lt;long&gt;(4, -1)));
+    return minCost(costs, 0, kInvalidColor, kInvalidColor, mem);
+  }
+
+ private:
+  long minCost(const vector&lt;vector&lt;int&gt;&gt;&amp; costs, int i, int prevLeftColor,
+               int prevRightColor, vector&lt;vector&lt;vector&lt;long&gt;&gt;&gt;&amp; mem) {
+    if (i == costs.size() / 2)
+      return 0;
+    if (mem[i][prevLeftColor][prevRightColor] != -1)
+      return mem[i][prevLeftColor][prevRightColor];
+
+    long res = LONG_MAX;
+
+    for (const int leftColor : getValidColors(prevLeftColor))
+      for (const int rightColor : getValidColors(prevRightColor)) {
+        if (leftColor == rightColor)
+          continue;
+        const long leftCost = costs[i][leftColor];
+        const long rightCost = costs[costs.size() - 1 - i][rightColor];
+        res = min(res, leftCost + rightCost +
+                           minCost(costs, i + 1, leftColor, rightColor, mem));
+      }
+
+    return mem[i][prevLeftColor][prevRightColor] = res;
+  }
+
+  vector&lt;int&gt; getValidColors(int prevColor) {
+    vector&lt;int&gt; validColors;
+    for (int color = 0; color &lt; 3; ++color)
+      if (color != prevColor)
+        validColors.push_back(color);
+    return validColors;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minCost(int n, int[][] costs) {
+    final int INVALID_COLOR = 3;
+    Long[][][] mem = new Long[n / 2][4][4];
+    return minCost(costs, 0, INVALID_COLOR, INVALID_COLOR, mem);
+  }
+
+  private long minCost(int[][] costs, int i, int prevLeftColor, int prevRightColor,
+                       Long[][][] mem) {
+    if (i == costs.length / 2)
+      return 0;
+    if (mem[i][prevLeftColor][prevRightColor] != null)
+      return mem[i][prevLeftColor][prevRightColor];
+
+    long res = Long.MAX_VALUE;
+
+    for (final int leftColor : getValidColors(prevLeftColor))
+      for (final int rightColor : getValidColors(prevRightColor)) {
+        if (leftColor == rightColor)
+          continue;
+        final long leftCost = costs[i][leftColor];
+        final long rightCost = costs[costs.length - 1 - i][rightColor];
+        res =
+            Math.min(res, leftCost + rightCost + minCost(costs, i + 1, leftColor, rightColor, mem));
+      }
+
+    return mem[i][prevLeftColor][prevRightColor] = res;
+  }
+
+  private List&lt;Integer&gt; getValidColors(int prevColor) {
+    List&lt;Integer&gt; validColors = new ArrayList&lt;&gt;();
+    for (int color = 0; color &lt; 3; ++color)
+      if (color != prevColor)
+        validColors.add(color);
+    return validColors;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minCost(self, n: int, costs: list[list[int]]) -&gt; int:
+    INVALID_COLOR = 3
+
+    def getValidColors(prevColor: int) -&gt; list[int]:
+      return [color for color in range(3) if color != prevColor]
+
+    @functools.lru_cache(None)
+    def minCost(i: int, prevLeftColor: int, prevRightColor: int) -&gt; int:
+      if i == len(costs) // 2:
+        return 0
+      res = math.inf
+      for leftColor in getValidColors(prevLeftColor):
+        for rightColor in getValidColors(prevRightColor):
+          if leftColor == rightColor:
+            continue
+          leftCost = costs[i][leftColor]
+          rightCost = costs[-1 - i][rightColor]
+          res = min(res, leftCost + rightCost +
+                    minCost(i + 1, leftColor, rightColor))
+      return res
+
+    return minCost(0, INVALID_COLOR, INVALID_COLOR)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

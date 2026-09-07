@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Points Inside the Square - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Points Inside the Square written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-points-inside-the-square/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-if-grid-satisfies-conditions/" class="btn">← Previous</a>
+            <span>Problem 3143 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-substring-partition-of-equal-character-frequency/" class="btn">Next →</a>
+        </div>
+        <h1>3143. Maximum Points Inside the Square</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Points Inside the Square efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxPointsInsideSquare(vector&lt;vector&lt;int&gt;&gt;&amp; points, string s) {
+    int secondMinSize = INT_MAX;
+    vector&lt;int&gt; minSizes(26, INT_MAX);
+
+    for (int i = 0; i &lt; points.size(); ++i) {
+      const int x = points[i][0];
+      const int y = points[i][1];
+      const int sz = max(abs(x), abs(y));
+      const int j = s[i] - &#x27;a&#x27;;
+      if (minSizes[j] == INT_MAX) {
+        minSizes[j] = sz;
+      } else if (sz &lt; minSizes[j]) {
+        // This is because minSizes[j] is about to be replaced by a smaller
+        // value, so it becomes a candidate for the second minimum size.
+        secondMinSize = min(secondMinSize, minSizes[j]);
+        minSizes[j] = sz;
+      } else {
+        // `sz` is not smaller than the current minimum size, but it could be
+        // smaller than the current second minimum size.
+        secondMinSize = min(secondMinSize, sz);
+      }
+    }
+
+    return ranges::count_if(minSizes,
+                            [&amp;](int sz) { return sz &lt; secondMinSize; });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxPointsInsideSquare(int[][] points, String s) {
+    int secondMinSize = Integer.MAX_VALUE;
+    int[] minSizes = new int[26];
+    Arrays.fill(minSizes, Integer.MAX_VALUE);
+
+    for (int i = 0; i &lt; points.length; ++i) {
+      final int x = points[i][0];
+      final int y = points[i][1];
+      final int sz = Math.max(Math.abs(x), Math.abs(y));
+      final int j = s.charAt(i) - &#x27;a&#x27;;
+      if (minSizes[j] == Integer.MAX_VALUE) {
+        minSizes[j] = sz;
+      } else if (sz &lt; minSizes[j]) {
+        // This is because minSizes[j] is about to be replaced by a smaller
+        // value, so it becomes a candidate for the second minimum size.
+        secondMinSize = Math.min(secondMinSize, minSizes[j]);
+        minSizes[j] = sz;
+      } else {
+        // `sz` is not smaller than the current minimum size, but it could be
+        // smaller than the current second minimum size.
+        secondMinSize = Math.min(secondMinSize, sz);
+      }
+    }
+
+    final int finalSecondMinSize = secondMinSize;
+    return (int) Arrays.stream(minSizes).filter(sz -&gt; sz &lt; finalSecondMinSize).count();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxPointsInsideSquare(self, points: list[list[int]], s: str) -&gt; int:
+    secondMinSize = math.inf
+    minSizes = {}
+
+    for (x, y), c in zip(points, s):
+      sz = max(abs(x), abs(y))
+      if c not in minSizes:
+        minSizes[c] = sz
+      elif sz &lt; minSizes[c]:
+        # This is because minSizes[j] is about to be replaced by a smaller
+        # value, so it becomes a candidate for the second minimum size.
+        secondMinSize = min(secondMinSize, minSizes[c])
+        minSizes[c] = sz
+      else:
+        # `sz` is not smaller than the current minimum size, but it could be
+        # smaller than the current second minimum size.
+        secondMinSize = min(secondMinSize, sz)
+
+    return sum(sz &lt; secondMinSize for sz in minSizes.values())</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peeking Iterator - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Peeking Iterator written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/peeking-iterator/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/move-zeroes/" class="btn">← Previous</a>
+            <span>Problem 284 of 3563</span>
+            <a href="/leetcode-solutions/problems/inorder-successor-in-bst/" class="btn">Next →</a>
+        </div>
+        <h1>284. Peeking Iterator</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Peeking Iterator efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class PeekingIterator : public Iterator {
+ public:
+  PeekingIterator(const vector&lt;int&gt;&amp; nums) : Iterator(nums) {}
+
+  // Returns the next element in the iteration without advancing the iterator.
+  int peek() {
+    // Iterator(*this) makes a copy of current iterator, then call next on the
+    // Copied iterator to get the next value without affecting current iterator
+    return Iterator(*this).next();
+  }
+
+  // hasNext() and next() should behave the same as in the Iterator interface.
+  // Override them if needed.
+  int next() {
+    return Iterator::next();
+  }
+
+  bool hasNext() const {
+    return Iterator::hasNext();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">// Java Iterator interface reference:
+// https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html
+
+class PeekingIterator implements Iterator&lt;Integer&gt; {
+  public PeekingIterator(Iterator&lt;Integer&gt; iterator) {
+    this.iterator = iterator;
+    buffer = iterator.hasNext() ? iterator.next() : null;
+  }
+
+  // Returns the next element in the iteration without advancing the iterator.
+  public Integer peek() {
+    return buffer;
+  }
+
+  // hasNext() and next() should behave the same as in the Iterator interface.
+  // Override them if needed.
+  @Override
+  public Integer next() {
+    Integer next = buffer;
+    buffer = iterator.hasNext() ? iterator.next() : null;
+    return next;
+  }
+
+  @Override
+  public boolean hasNext() {
+    return buffer != null;
+  }
+
+  private Iterator&lt;Integer&gt; iterator;
+  private Integer buffer;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class PeekingIterator:
+  def __init__(self, iterator: Iterator):
+    self.iterator = iterator
+    self.buffer = self.iterator.next() if self.iterator.hasNext() else None
+
+  def peek(self) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the next element in the iteration without advancing the iterator.
+    &quot;&quot;&quot;
+    return self.buffer
+
+  def next(self) -&gt; int:
+    next = self.buffer
+    self.buffer = self.iterator.next() if self.iterator.hasNext() else None
+    return next
+
+  def hasNext(self) -&gt; bool:
+    return self.buffer is not None</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

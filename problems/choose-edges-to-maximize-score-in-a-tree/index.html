@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Edges to Maximize Score in a Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Choose Edges to Maximize Score in a Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/choose-edges-to-maximize-score-in-a-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sort-the-olympic-table/" class="btn">← Previous</a>
+            <span>Problem 2378 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-recolors-to-get-k-consecutive-black-blocks/" class="btn">Next →</a>
+        </div>
+        <h1>2378. Choose Edges to Maximize Score in a Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Choose Edges to Maximize Score in a Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxScore(vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    const int n = edges.size();
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int parent = edges[i][0];
+      const int weight = edges[i][1];
+      if (parent != -1)
+        graph[parent].emplace_back(i, weight);
+    }
+
+    const auto [takeRoot, notTakeRoot] = dfs(graph, 0);
+    return max(takeRoot, notTakeRoot);
+  }
+
+ private:
+  // Returns (the maximum sum at u if we take one u-&gt;v edge,
+  //          the maximum sum at u if we don&#x27;t take any child edge).
+  pair&lt;long, long&gt; dfs(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int u) {
+    long bestEdge = 0;
+    long notTakeU = 0;
+
+    for (const auto&amp; [v, w] : graph[u]) {
+      const auto [takeV, notTakeV] = dfs(graph, v);
+      bestEdge = max(bestEdge, w + notTakeV - takeV);
+      notTakeU += takeV;
+    }
+
+    return {bestEdge + notTakeU, notTakeU};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxScore(int[][] edges) {
+    final int n = edges.length;
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int parent = edges[i][0];
+      final int weight = edges[i][1];
+      if (parent != -1)
+        graph[parent].add(new Pair&lt;&gt;(i, weight));
+    }
+
+    Pair&lt;Long, Long&gt; pair = dfs(graph, 0);
+    final long takeRoot = pair.getKey();
+    final long notTakeRoot = pair.getValue();
+    return Math.max(takeRoot, notTakeRoot);
+  }
+
+  // Returns (the maximum sum at u if we take one u-&gt;v edge,
+  //          the maximum sum at u if we don&#x27;t take any child edge).
+  private Pair&lt;Long, Long&gt; dfs(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int u) {
+    long bestEdge = 0;
+    long notTakeU = 0;
+
+    for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final int w = pair.getValue();
+      Pair&lt;Long, Long&gt; res = dfs(graph, v);
+      final long takeV = res.getKey();
+      final long notTakeV = res.getValue();
+      bestEdge = Math.max(bestEdge, w + notTakeV - takeV);
+      notTakeU += takeV;
+    }
+
+    return new Pair&lt;&gt;(bestEdge + notTakeU, notTakeU);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxScore(self, edges: list[list[int]]) -&gt; int:
+    n = len(edges)
+    graph = [[] for _ in range(n)]
+
+    for i, (parent, weight) in enumerate(edges):
+      if parent != -1:
+        graph[parent].append((i, weight))
+
+    takeRoot, notTakeRoot = self._dfs(graph, 0)
+    return max(takeRoot, notTakeRoot)
+
+  def _dfs(self, graph: list[list[int]], u: int) -&gt; tuple[int, int]:
+    &quot;&quot;&quot;
+    Returns (the maximum sum at u if we take one u-&gt;v edge,
+             the maximum sum at u if we don&#x27;t take any child edge).
+    &quot;&quot;&quot;
+    bestEdge = 0
+    notTakeU = 0
+
+    for v, w in graph[u]:
+      takeV, notTakeV = self._dfs(graph, v)
+      bestEdge = max(bestEdge, w + notTakeV - takeV)
+      notTakeU += takeV
+
+    return (bestEdge + notTakeU, notTakeU)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

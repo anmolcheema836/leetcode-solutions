@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construct Target Array With Multiple Sums - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Construct Target Array With Multiple Sums written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/construct-target-array-with-multiple-sums/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-of-events-that-can-be-attended/" class="btn">← Previous</a>
+            <span>Problem 1354 of 3563</span>
+            <a href="/leetcode-solutions/problems/activity-participants/" class="btn">Next →</a>
+        </div>
+        <h1>1354. Construct Target Array With Multiple Sums</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Construct Target Array With Multiple Sums efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isPossible(vector&lt;int&gt;&amp; target) {
+    if (target.size() == 1)
+      return target[0] == 1;
+
+    long sum = accumulate(target.begin(), target.end(), 0L);
+    priority_queue&lt;int&gt; maxHeap;
+
+    for (const int num : target)
+      maxHeap.push(num);
+
+    while (maxHeap.top() &gt; 1) {
+      const long mx = maxHeap.top();
+      maxHeap.pop();
+      const long restSum = sum - mx;
+      // Only occurs if n == 2.
+      if (restSum == 1)
+        return true;
+      const long updated = mx % restSum;
+      // updated == 0 (invalid) or didn&#x27;t change.
+      if (updated == 0 || updated == mx)
+        return false;
+      maxHeap.push(updated);
+      sum = sum - mx + updated;
+    }
+
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isPossible(int[] target) {
+    if (target.length == 1)
+      return target[0] == 1;
+
+    long sum = Arrays.stream(target).asLongStream().sum();
+    Queue&lt;Integer&gt; maxHeap = new PriorityQueue&lt;&gt;(Collections.reverseOrder());
+
+    for (final int num : target)
+      maxHeap.offer(num);
+
+    while (maxHeap.peek() &gt; 1) {
+      final long mx = maxHeap.poll();
+      final long restSum = sum - mx;
+      // Only occurs if n == 2.
+      if (restSum == 1)
+        return true;
+      final long updated = mx % restSum;
+      // updated == 0 (invalid) or didn&#x27;t change.
+      if (updated == 0 || updated == mx)
+        return false;
+      maxHeap.offer((int) updated);
+      sum = sum - mx + updated;
+    }
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isPossible(self, target: list[int]) -&gt; bool:
+    if len(target) == 1:
+      return target[0] == 1
+
+    summ = sum(target)
+    maxHeap = [-num for num in target]
+    heapq.heapify(maxHeap)
+
+    while -maxHeap[0] &gt; 1:
+      mx = -heapq.heappop(maxHeap)
+      restSum = summ - mx
+      # Only occurs if n == 2.
+      if restSum == 1:
+        return True
+      updated = mx % restSum
+      # updated == 0 (invalid) or didn&#x27;t change.
+      if updated == 0 or updated == mx:
+        return False
+      heapq.heappush(maxHeap, -updated)
+      summ = summ - mx + updated
+
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

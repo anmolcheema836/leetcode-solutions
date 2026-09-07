@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design a Food Rating System - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design a Food Rating System written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-a-food-rating-system/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/equal-row-and-column-pairs/" class="btn">← Previous</a>
+            <span>Problem 2353 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-excellent-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>2353. Design a Food Rating System</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design a Food Rating System efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FoodRatings {
+ public:
+  FoodRatings(vector&lt;string&gt;&amp; foods, vector&lt;string&gt;&amp; cuisines,
+              vector&lt;int&gt;&amp; ratings) {
+    for (int i = 0; i &lt; foods.size(); ++i) {
+      cuisineToRatingAndFoods[cuisines[i]].insert({-ratings[i], foods[i]});
+      foodToCuisine[foods[i]] = cuisines[i];
+      foodToRating[foods[i]] = ratings[i];
+    }
+  }
+
+  void changeRating(string food, int newRating) {
+    const string cuisine = foodToCuisine[food];
+    const int oldRating = foodToRating[food];
+    auto&amp; ratingAndFoods = cuisineToRatingAndFoods[cuisine];
+    ratingAndFoods.erase({-oldRating, food});
+    ratingAndFoods.insert({-newRating, food});
+    foodToRating[food] = newRating;
+  }
+
+  string highestRated(string cuisine) {
+    return cuisineToRatingAndFoods[cuisine].begin()-&gt;second;
+  }
+
+ private:
+  // {cuisine: {(-rating, food)}} stores negative rating for smarter comparison
+  unordered_map&lt;string, set&lt;pair&lt;int, string&gt;&gt;&gt; cuisineToRatingAndFoods;
+  unordered_map&lt;string, string&gt; foodToCuisine;
+  unordered_map&lt;string, int&gt; foodToRating;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FoodRatings {
+  public FoodRatings(String[] foods, String[] cuisines, int[] ratings) {
+    for (int i = 0; i &lt; foods.length; ++i) {
+      cuisineToRatingAndFoods.putIfAbsent(
+          cuisines[i],
+          new TreeSet&lt;&gt;(
+              Comparator.comparing(Pair&lt;Integer, String&gt;::getKey, Comparator.reverseOrder())
+                  .thenComparing(Pair&lt;Integer, String&gt;::getValue)));
+      cuisineToRatingAndFoods.get(cuisines[i]).add(new Pair&lt;&gt;(ratings[i], foods[i]));
+      foodToCuisine.put(foods[i], cuisines[i]);
+      foodToRating.put(foods[i], ratings[i]);
+    }
+  }
+
+  public void changeRating(String food, int newRating) {
+    final String cuisine = foodToCuisine.get(food);
+    final int oldRating = foodToRating.get(food);
+    TreeSet&lt;Pair&lt;Integer, String&gt;&gt; ratingAndFoods = cuisineToRatingAndFoods.get(cuisine);
+    ratingAndFoods.remove(new Pair&lt;&gt;(oldRating, food));
+    ratingAndFoods.add(new Pair&lt;&gt;(newRating, food));
+    foodToRating.put(food, newRating);
+  }
+
+  public String highestRated(String cuisine) {
+    return cuisineToRatingAndFoods.get(cuisine).first().getValue();
+  }
+
+  // {cuisine: {(rating, food)}}
+  Map&lt;String, TreeSet&lt;Pair&lt;Integer, String&gt;&gt;&gt; cuisineToRatingAndFoods = new HashMap&lt;&gt;();
+  Map&lt;String, String&gt; foodToCuisine = new HashMap&lt;&gt;();
+  Map&lt;String, Integer&gt; foodToRating = new HashMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedSet
+
+
+class FoodRatings:
+  def __init__(self, foods: list[str], cuisines: list[str], ratings: list[int]):
+    self.cuisineToRatingAndFoods = collections.defaultdict(
+        lambda: SortedSet(key=lambda x: (-x[0], x[1])))
+    self.foodToCuisine = {}
+    self.foodToRating = {}
+
+    for food, cuisine, rating in zip(foods, cuisines, ratings):
+      self.cuisineToRatingAndFoods[cuisine].add((rating, food))
+      self.foodToCuisine[food] = cuisine
+      self.foodToRating[food] = rating
+
+  def changeRating(self, food: str, newRating: int) -&gt; None:
+    cuisine = self.foodToCuisine[food]
+    oldRating = self.foodToRating[food]
+    ratingAndFoods = self.cuisineToRatingAndFoods[cuisine]
+    ratingAndFoods.remove((oldRating, food))
+    ratingAndFoods.add((newRating, food))
+    self.foodToRating[food] = newRating
+
+  def highestRated(self, cuisine: str) -&gt; str:
+    return self.cuisineToRatingAndFoods[cuisine][0][1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

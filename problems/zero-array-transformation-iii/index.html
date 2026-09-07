@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Array Transformation III - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Zero Array Transformation III written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/zero-array-transformation-iii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/shift-distance-between-two-strings/" class="btn">← Previous</a>
+            <span>Problem 3362 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-maximum-number-of-fruits-collected/" class="btn">Next →</a>
+        </div>
+        <h1>3362. Zero Array Transformation III</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Zero Array Transformation III efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxRemoval(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    int queryIndex = 0;
+    priority_queue&lt;int&gt; available;                        // available `r`s
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;&gt;&gt; running;  // running `r`s
+
+    ranges::sort(queries);
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      while (queryIndex &lt; queries.size() &amp;&amp; queries[queryIndex][0] &lt;= i)
+        available.push(queries[queryIndex++][1]);
+      while (!running.empty() &amp;&amp; running.top() &lt; i)
+        running.pop();
+      while (nums[i] &gt; running.size()) {
+        if (available.empty() || available.top() &lt; i)
+          return -1;
+        running.push(available.top()), available.pop();
+      }
+    }
+
+    return available.size();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxRemoval(int[] nums, int[][] queries) {
+    int queryIndex = 0;
+    Queue&lt;Integer&gt; available = new PriorityQueue&lt;&gt;(Collections.reverseOrder()); // available `r`s
+    Queue&lt;Integer&gt; running = new PriorityQueue&lt;&gt;();                             // running `r`s
+
+    Arrays.sort(queries, Comparator.comparingInt((int[] query) -&gt; query[0]));
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      while (queryIndex &lt; queries.length &amp;&amp; queries[queryIndex][0] &lt;= i)
+        available.offer(queries[queryIndex++][1]);
+      while (!running.isEmpty() &amp;&amp; running.peek() &lt; i)
+        running.poll();
+      while (nums[i] &gt; running.size()) {
+        if (available.isEmpty() || available.peek() &lt; i)
+          return -1;
+        running.offer(available.poll());
+      }
+    }
+
+    return available.size();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class Solution:
+  def maxRemoval(self, nums: list[int], queries: list[list[int]]) -&gt; int:
+    q = collections.deque(sorted(queries))
+    available = SortedList()  # available `r`s
+    running = SortedList()  # running `r`s
+
+    for i, num in enumerate(nums):
+      while q and q[0][0] &lt;= i:
+        available.add(q.popleft()[1])
+      while running and running[0] &lt; i:
+        running.pop(0)
+      while num &gt; len(running):
+        if not available or available[-1] &lt; i:
+          return -1
+        running.add(available.pop())
+
+    return len(available)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

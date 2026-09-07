@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Height by Stacking Cuboids - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Height by Stacking Cuboids written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-height-by-stacking-cuboids/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/stone-game-vii/" class="btn">← Previous</a>
+            <span>Problem 1691 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-ways-to-distribute-candies/" class="btn">Next →</a>
+        </div>
+        <h1>1691. Maximum Height by Stacking Cuboids</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Height by Stacking Cuboids efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxHeight(vector&lt;vector&lt;int&gt;&gt;&amp; cuboids) {
+    // For each cuboid, sort it so that c[0] &lt;= c[1] &lt;= c[2].
+    for (vector&lt;int&gt;&amp; cuboid : cuboids)
+      ranges::sort(cuboid);
+
+    ranges::sort(cuboids);
+
+    // dp[i] := the maximum height with cuboids[i] in the bottom
+    vector&lt;int&gt; dp(cuboids.size());
+
+    for (int i = 0; i &lt; cuboids.size(); ++i)
+      dp[i] = cuboids[i][2];
+
+    for (int i = 1; i &lt; cuboids.size(); ++i)
+      for (int j = 0; j &lt; i; ++j)
+        if (cuboids[j][0] &lt;= cuboids[i][0] &amp;&amp;  //
+            cuboids[j][1] &lt;= cuboids[i][1] &amp;&amp;  //
+            cuboids[j][2] &lt;= cuboids[i][2])
+          dp[i] = max(dp[i], dp[j] + cuboids[i][2]);
+
+    return ranges::max(dp);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxHeight(int[][] cuboids) {
+    // For each cuboid, sort it so that c[0] &lt;= c[1] &lt;= c[2].
+    for (int[] cuboid : cuboids)
+      Arrays.sort(cuboid);
+
+    Arrays.sort(cuboids, new Comparator&lt;int[]&gt;() {
+      @Override
+      public int compare(int[] a, int[] b) {
+        if (a[0] != b[0])
+          return a[0] - b[0];
+        if (a[1] != b[1])
+          return a[1] - b[1];
+        return a[2] - b[2];
+      }
+    });
+
+    // dp[i] := the maximum height with cuboids[i] in the bottom
+    int[] dp = new int[cuboids.length];
+
+    for (int i = 0; i &lt; cuboids.length; ++i)
+      dp[i] = cuboids[i][2];
+
+    for (int i = 1; i &lt; cuboids.length; ++i)
+      for (int j = 0; j &lt; i; ++j)
+        if (cuboids[j][0] &lt;= cuboids[i][0] &amp;&amp; //
+            cuboids[j][1] &lt;= cuboids[i][1] &amp;&amp; //
+            cuboids[j][2] &lt;= cuboids[i][2])
+          dp[i] = Math.max(dp[i], dp[j] + cuboids[i][2]);
+
+    return Arrays.stream(dp).max().getAsInt();
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

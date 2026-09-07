@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost to Separate Sentence Into Rows - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost to Separate Sentence Into Rows written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-to-separate-sentence-into-rows/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/the-category-of-each-member-in-the-store/" class="btn">← Previous</a>
+            <span>Problem 2052 of 3563</span>
+            <a href="/leetcode-solutions/problems/kth-distinct-string-in-an-array/" class="btn">Next →</a>
+        </div>
+        <h1>2052. Minimum Cost to Separate Sentence Into Rows</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost to Separate Sentence Into Rows efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumCost(string sentence, int k) {
+    if (sentence.length() &lt;= k)
+      return 0;
+
+    vector&lt;string&gt; words = getWords(sentence);
+
+    // dp[i] := the minimum cost of the first i words
+    vector&lt;int&gt; dp(words.size() + 1);
+
+    for (int i = 1; i &lt;= words.size(); ++i) {
+      int n = words[i - 1].length();  // the length of the current row
+      dp[i] = dp[i - 1] + (k - n) * (k - n);
+      // Gradually add words[j - 1], words[j - 2], ....
+      for (int j = i - 1; j &gt; 0; --j) {
+        n += words[j - 1].length() + 1;
+        if (n &gt; k)
+          break;
+        dp[i] = min(dp[i], dp[j - 1] + (k - n) * (k - n));
+      }
+    }
+
+    int lastRowLen = words.back().length();
+    int i = words.size() - 2;
+
+    while (i &gt; 0 &amp;&amp; lastRowLen + words[i].length() + 1 &lt;= k)
+      lastRowLen += words[i--].length() + 1;
+
+    return *min_element(dp.begin() + i + 1, dp.end());
+  }
+
+ private:
+  vector&lt;string&gt; getWords(const string&amp; sentence) {
+    vector&lt;string&gt; words;
+    istringstream iss(sentence);
+    for (string token; iss &gt;&gt; token;)
+      words.push_back(token);
+    return words;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumCost(String sentence, int k) {
+    if (sentence.length() &lt;= k)
+      return 0;
+
+    String[] words = sentence.split(&quot; &quot;);
+    // dp[i] := the minimum cost of the first i words
+    int[] dp = new int[words.length + 1];
+
+    for (int i = 1; i &lt;= words.length; ++i) {
+      int n = words[i - 1].length(); // the length of the current row
+      dp[i] = dp[i - 1] + (k - n) * (k - n);
+      // Gradually add words[j - 1], words[j - 2], ....
+      for (int j = i - 1; j &gt; 0; --j) {
+        n += words[j - 1].length() + 1;
+        if (n &gt; k)
+          break;
+        dp[i] = Math.min(dp[i], dp[j - 1] + (k - n) * (k - n));
+      }
+    }
+
+    int lastRowLen = words[words.length - 1].length();
+    int i = words.length - 2;
+
+    while (i &gt; 0 &amp;&amp; lastRowLen + words[i].length() + 1 &lt;= k)
+      lastRowLen += words[i--].length();
+
+    return Arrays.stream(dp, i + 1, words.length).min().getAsInt();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumCost(self, sentence: str, k: int) -&gt; int:
+    if len(sentence) &lt;= k:
+      return 0
+
+    words = sentence.split()
+
+    # dp[i] := the minimum cost of the first i words
+    dp = [0] * (len(words) + 1)
+
+    for i in range(1, len(words) + 1):
+      n = len(words[i - 1])  # the length of the current row
+      dp[i] = dp[i - 1] + (k - n)**2
+      # Gradually add words[j - 1], words[j - 2], ....
+      for j in range(i - 1, 0, -1):
+        n += len(words[j - 1]) + 1
+        if n &gt; k:
+          break
+        dp[i] = min(dp[i], dp[j - 1] + (k - n)**2)
+
+    lastRowLen = len(words[-1])
+    i = len(words) - 2  # Greedily put words into last row
+
+    while i &gt; 0 and lastRowLen + len(words[i]) + 1 &lt;= k:
+      lastRowLen += len(words[i]) + 1
+      i -= 1
+
+    return min(dp[i + 1:len(words)])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

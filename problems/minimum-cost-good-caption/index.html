@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost Good Caption - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost Good Caption written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-good-caption/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/reschedule-meetings-for-maximum-free-time-ii/" class="btn">← Previous</a>
+            <span>Problem 3441 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-difference-between-even-and-odd-frequency-i/" class="btn">Next →</a>
+        </div>
+        <h1>3441. Minimum Cost Good Caption</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost Good Caption efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string minCostGoodCaption(string caption) {
+    const int n = caption.length();
+    if (n &lt; 3)
+      return &quot;&quot;;
+
+    constexpr int kMaxCost = 1&#x27;000&#x27;000&#x27;000;
+    // dp[i][j][k] := the minimum cost of caption[i..n - 1], where j is the last
+    // letter used, and k is the count of consecutive letters
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(
+        n, vector&lt;vector&lt;int&gt;&gt;(26, vector&lt;int&gt;(3, kMaxCost)));
+
+    for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c)
+      dp[n - 1][c - &#x27;a&#x27;][0] = abs(caption[n - 1] - c);
+
+    int minCost = kMaxCost;
+    for (int i = n - 2; i &gt;= 0; --i) {
+      int newMinCost = kMaxCost;
+      for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c) {
+        const int j = c - &#x27;a&#x27;;
+        const int changeCost = abs(caption[i] - c);
+        dp[i][j][0] = changeCost + minCost;
+        dp[i][j][1] = changeCost + dp[i + 1][j][0];
+        dp[i][j][2] = changeCost + min(dp[i + 1][j][1], dp[i + 1][j][2]);
+        newMinCost = min(newMinCost, dp[i][j][2]);
+      }
+      minCost = newMinCost;
+    }
+
+    // Reconstruct the string.
+    string ans;
+    int cost = kMaxCost;
+    int letter = -1;
+
+    // Find the initial best letter.
+    for (int c = 25; c &gt;= 0; --c)
+      if (dp[0][c][2] &lt;= cost) {
+        letter = c;
+        cost = dp[0][c][2];
+      }
+
+    // Add the initial triplet.
+    cost -= appendLetter(caption, 0, &#x27;a&#x27; + letter, ans);
+    cost -= appendLetter(caption, 1, &#x27;a&#x27; + letter, ans);
+    cost -= appendLetter(caption, 2, &#x27;a&#x27; + letter, ans);
+
+    // Build the rest of the string.
+    for (int i = 3; i &lt; n;) {
+      // Check if we should switch to a new letter.
+      const int nextLetter = getNextLetter(dp, i, cost);
+      if (nextLetter &lt; letter || ranges::min(dp[i][letter]) &gt; cost) {
+        letter = nextLetter;
+        cost -= appendLetter(caption, i, &#x27;a&#x27; + letter, ans);
+        cost -= appendLetter(caption, i + 1, &#x27;a&#x27; + letter, ans);
+        cost -= appendLetter(caption, i + 2, &#x27;a&#x27; + letter, ans);
+        i += 3;
+      } else {
+        cost -= appendLetter(caption, i, &#x27;a&#x27; + letter, ans);
+        i += 1;
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  int getNextLetter(const vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&amp; dp, int i, int cost) {
+    int nextLetter = 26;  // invalid letter as the sentinel
+    for (int c = 25; c &gt;= 0; --c)
+      if (cost == dp[i][c][2])
+        nextLetter = c;
+    return nextLetter;
+  }
+
+  int appendLetter(const string&amp; caption, int i, char letter, string&amp; ans) {
+    ans += letter;
+    return abs(caption[i] - letter);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String minCostGoodCaption(String caption) {
+    final int n = caption.length();
+    if (n &lt; 3)
+      return &quot;&quot;;
+
+    final int MAX_COST = 1_000_000_000;
+    int[][][] dp = new int[n][26][3];
+    Arrays.stream(dp).forEach(A -&gt; Arrays.stream(A).forEach(B -&gt; Arrays.fill(B, MAX_COST)));
+    // dp[i][j][k] := the minimum cost of caption[i..n - 1], where j is the last
+    // letter used, and k is the count of consecutive letters
+    for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c)
+      dp[n - 1][c - &#x27;a&#x27;][0] = Math.abs(caption.charAt(n - 1) - c);
+
+    int minCost = MAX_COST;
+    for (int i = n - 2; i &gt;= 0; --i) {
+      int newMinCost = MAX_COST;
+      for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c) {
+        final int j = c - &#x27;a&#x27;;
+        final int changeCost = Math.abs(caption.charAt(i) - c);
+        dp[i][j][0] = changeCost + minCost;
+        dp[i][j][1] = changeCost + dp[i + 1][j][0];
+        dp[i][j][2] = changeCost + Math.min(dp[i + 1][j][1], dp[i + 1][j][2]);
+        newMinCost = Math.min(newMinCost, dp[i][j][2]);
+      }
+      minCost = newMinCost;
+    }
+
+    // Reconstruct the string.
+    StringBuilder sb = new StringBuilder();
+    int cost = MAX_COST;
+    int letter = -1;
+
+    // Find the initial best letter.
+    for (int c = 25; c &gt;= 0; --c)
+      if (dp[0][c][2] &lt;= cost) {
+        letter = c;
+        cost = dp[0][c][2];
+      }
+
+    // Add the initial triplet.
+    cost -= appendLetter(caption, 0, (char) (&#x27;a&#x27; + letter), sb);
+    cost -= appendLetter(caption, 1, (char) (&#x27;a&#x27; + letter), sb);
+    cost -= appendLetter(caption, 2, (char) (&#x27;a&#x27; + letter), sb);
+
+    // Build the rest of the string.
+    for (int i = 3; i &lt; n;) {
+      // Check if we should switch to a new letter.
+      final int nextLetter = getNextLetter(dp, i, cost);
+      if (nextLetter &lt; letter || Arrays.stream(dp[i][letter]).min().getAsInt() &gt; cost) {
+        letter = nextLetter;
+        cost -= appendLetter(caption, i, (char) (&#x27;a&#x27; + letter), sb);
+        cost -= appendLetter(caption, i + 1, (char) (&#x27;a&#x27; + letter), sb);
+        cost -= appendLetter(caption, i + 2, (char) (&#x27;a&#x27; + letter), sb);
+        i += 3;
+      } else {
+        cost -= appendLetter(caption, i, (char) (&#x27;a&#x27; + letter), sb);
+        i += 1;
+      }
+    }
+
+    return sb.toString();
+  }
+
+  private int getNextLetter(int[][][] dp, int i, int cost) {
+    int nextLetter = 26;
+    for (int c = 25; c &gt;= 0; --c)
+      if (cost == dp[i][c][2])
+        nextLetter = c;
+    return nextLetter;
+  }
+
+  private int appendLetter(String caption, int i, char letter, StringBuilder sb) {
+    sb.append(letter);
+    return Math.abs(caption.charAt(i) - letter);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+
+  def minCostGoodCaption(self, caption: str) -&gt; str:
+    n = len(caption)
+    if n &lt; 3:
+      return &#x27;&#x27;
+
+    MAX_COST = 1_000_000_000
+    # dp[i][j][k] := the minimum cost of caption[i..n - 1], where j is the last
+    # letter used, and k is the count of consecutive letters
+    dp = [[[MAX_COST] * 3 for _ in range(26)] for _ in range(n)]
+
+    for c in range(26):
+      dp[-1][c][0] = abs(string.ascii_lowercase.index(caption[-1]) - c)
+
+    minCost = MAX_COST
+
+    for i in range(n - 2, -1, -1):
+      newMinCost = MAX_COST
+      for c in range(26):
+        changeCost = abs(string.ascii_lowercase.index(caption[i]) - c)
+        dp[i][c][0] = changeCost + minCost
+        dp[i][c][1] = changeCost + dp[i + 1][c][0]
+        dp[i][c][2] = changeCost + min(dp[i + 1][c][1], dp[i + 1][c][2])
+        newMinCost = min(newMinCost, dp[i][c][2])
+      minCost = newMinCost
+
+    # Reconstruct the string.
+    ans = []
+    cost = MAX_COST
+    letter = -1
+
+    # Find the initial best letter.
+    for c in range(25, -1, -1):
+      if dp[0][c][2] &lt;= cost:
+        letter = c
+        cost = dp[0][c][2]
+
+    # Add the initial triplet.
+    cost -= self._appendLetter(caption, 0, chr(ord(&#x27;a&#x27;) + letter), ans)
+    cost -= self._appendLetter(caption, 1, chr(ord(&#x27;a&#x27;) + letter), ans)
+    cost -= self._appendLetter(caption, 2, chr(ord(&#x27;a&#x27;) + letter), ans)
+
+    # Build the rest of the string.
+    i = 3
+    while i &lt; n:
+      nextLetter = self._getNextLetter(dp, i, cost)
+      if nextLetter &lt; letter or min(dp[i][letter]) &gt; cost:
+        letter = nextLetter
+        cost -= self._appendLetter(caption, i, chr(ord(&#x27;a&#x27;) + letter), ans)
+        cost -= self._appendLetter(caption, i + 1, chr(ord(&#x27;a&#x27;) + letter), ans)
+        cost -= self._appendLetter(caption, i + 2, chr(ord(&#x27;a&#x27;) + letter), ans)
+        i += 3
+      else:
+        cost -= self._appendLetter(caption, i, chr(ord(&#x27;a&#x27;) + letter), ans)
+        i += 1
+
+    return &#x27;&#x27;.join(ans)
+
+  def _getNextLetter(self, dp: list[list[list[int]]], i: int, cost: int) -&gt; int:
+    nextLetter = 26
+    for c in range(25, -1, -1):
+      if cost == dp[i][c][2]:
+        nextLetter = c
+    return nextLetter
+
+  def _appendLetter(
+      self,
+      caption: str,
+      i: int,
+      letter: str,
+      ans: list[str]
+  ) -&gt; int:
+    ans.append(letter)
+    return abs(ord(caption[i]) - ord(letter))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

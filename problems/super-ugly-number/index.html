@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Ugly Number - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Super Ugly Number written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/super-ugly-number/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/burst-balloons/" class="btn">← Previous</a>
+            <span>Problem 313 of 3563</span>
+            <a href="/leetcode-solutions/problems/binary-tree-vertical-order-traversal/" class="btn">Next →</a>
+        </div>
+        <h1>313. Super Ugly Number</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Super Ugly Number efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct UglyNum {
+  int prime;
+  int index;   // the next index in `uglyNums`
+  long value;  // prime * uglyNums[index]
+  UglyNum(int prime, int index, long value)
+      : prime(prime), index(index), value(value) {}
+};
+
+class Solution {
+ public:
+  int nthSuperUglyNumber(int n, vector&lt;int&gt;&amp; primes) {
+    auto compare = [&amp;](const UglyNum&amp; a, const UglyNum&amp; b) {
+      return a.value &gt; b.value;
+    };
+    priority_queue&lt;UglyNum, vector&lt;UglyNum&gt;, decltype(compare)&gt; minHeap(
+        compare);
+    vector&lt;int&gt; uglyNums{1};
+
+    for (const int prime : primes)
+      minHeap.emplace(prime, 1, prime * uglyNums[0]);
+
+    while (uglyNums.size() &lt; n) {
+      uglyNums.push_back(minHeap.top().value);
+      while (minHeap.top().value == uglyNums.back()) {
+        const auto [prime, index, _] = minHeap.top();
+        minHeap.pop();
+        minHeap.emplace(prime, index + 1,
+                        static_cast&lt;long&gt;(prime) * uglyNums[index]);
+      }
+    }
+
+    return uglyNums.back();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int nthSuperUglyNumber(int n, int[] primes) {
+    // index := the next index in `uglyNums`
+    // value := prime * uglyNums[index]
+    record UglyNum(int prime, int index, long value) {}
+    Queue&lt;UglyNum&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingLong(UglyNum::value));
+    int[] uglyNums = new int[n];
+    uglyNums[0] = 1;
+
+    for (final int prime : primes)
+      minHeap.offer(new UglyNum(prime, 1, (long) prime * uglyNums[0]));
+
+    for (int i = 1; i &lt; n; ++i) {
+      uglyNums[i] = (int) minHeap.peek().value;
+      while (minHeap.peek().value == uglyNums[i]) {
+        final UglyNum u = minHeap.poll();
+        minHeap.offer(new UglyNum(u.prime, u.index + 1, (long) u.prime * uglyNums[u.index]));
+      }
+    }
+
+    return uglyNums[n - 1];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UglyNum:
+  def __init__(self, prime: int, index: int, value: int):
+    self.prime = prime
+    self.index = index  # Point the next index of uglyNums.
+    self.value = value  # prime * uglyNums[index]
+
+
+class Solution:
+  def nthSuperUglyNumber(self, n: int, primes: list[int]) -&gt; int:
+    minHeap = []  # (value, prime, index)
+    uglyNums = [1]
+
+    for prime in primes:
+      heapq.heappush(minHeap, (prime * uglyNums[0], prime, 1))
+
+    while len(uglyNums) &lt; n:
+      uglyNums.append(minHeap[0][0])
+      while minHeap[0][0] == uglyNums[-1]:
+        _, prime, index = heapq.heappop(minHeap)
+        heapq.heappush(minHeap, (prime * uglyNums[index], prime, index + 1))
+
+    return uglyNums[-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

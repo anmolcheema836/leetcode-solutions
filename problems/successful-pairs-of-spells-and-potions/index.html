@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Successful Pairs of Spells and Potions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Successful Pairs of Spells and Potions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/successful-pairs-of-spells-and-potions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/strong-password-checker-ii/" class="btn">← Previous</a>
+            <span>Problem 2300 of 3563</span>
+            <a href="/leetcode-solutions/problems/match-substring-after-replacement/" class="btn">Next →</a>
+        </div>
+        <h1>2300. Successful Pairs of Spells and Potions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Successful Pairs of Spells and Potions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; successfulPairs(vector&lt;int&gt;&amp; spells, vector&lt;int&gt;&amp; potions,
+                              long long success) {
+    vector&lt;int&gt; ans;
+    ranges::sort(potions);
+
+    for (const int spell : spells)
+      ans.push_back(potions.size() -
+                    firstIndexSuccess(spell, potions, success));
+
+    return ans;
+  }
+
+ private:
+  // Returns the first index i s.t. spell * potions[i] &gt;= success.
+  int firstIndexSuccess(int spell, const vector&lt;int&gt;&amp; potions, long success) {
+    int l = 0;
+    int r = potions.size();
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (static_cast&lt;long&gt;(spell) * potions[m] &gt;= success)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] successfulPairs(int[] spells, int[] potions, long success) {
+    int[] ans = new int[spells.length];
+    Arrays.sort(potions);
+
+    for (int i = 0; i &lt; spells.length; ++i)
+      ans[i] = potions.length - firstIndexSuccess(spells[i], potions, success);
+
+    return ans;
+  }
+
+  // Returns the first index i s.t. spell * potions[i] &gt;= success.
+  private int firstIndexSuccess(int spell, int[] potions, long success) {
+    int l = 0;
+    int r = potions.length;
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if ((long) spell * potions[m] &gt;= success)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def successfulPairs(
+      self,
+      spells: list[int],
+      potions: list[int],
+      success: int,
+  ) -&gt; list[int]:
+    potions.sort()
+
+    def firstIndexSuccess(spell: int):
+      &quot;&quot;&quot;Returns the first index i s.t. spell * potions[i] &gt;= success.&quot;&quot;&quot;
+      l = 0
+      r = len(potions)
+      while l &lt; r:
+        m = (l + r) // 2
+        if spell * potions[m] &gt;= success:
+          r = m
+        else:
+          l = m + 1
+      return l
+
+    return [len(potions) - firstIndexSuccess(spell) for spell in spells]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

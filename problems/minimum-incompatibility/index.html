@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Incompatibility - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Incompatibility written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-incompatibility/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/concatenation-of-consecutive-binary-numbers/" class="btn">← Previous</a>
+            <span>Problem 1681 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-palindromic-subsequence-ii/" class="btn">Next →</a>
+        </div>
+        <h1>1681. Minimum Incompatibility</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Incompatibility efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumIncompatibility(vector&lt;int&gt;&amp; nums, int k) {
+    constexpr int kMaxCompatibility = (16 - 1) * (16 / 2);
+    const int n = nums.size();
+    const int subsetSize = n / k;
+    const int maxMask = 1 &lt;&lt; n;
+    const vector&lt;int&gt; incompatibilities =
+        getIncompatibilities(nums, subsetSize);
+    // dp[i] := the minimum possible sum of incompatibilities of the subset
+    // of numbers represented by the bitmask i
+    vector&lt;int&gt; dp(maxMask, kMaxCompatibility);
+    dp[0] = 0;
+
+    for (unsigned mask = 1; mask &lt; maxMask; ++mask) {
+      // The number of 1s in `mask` isn&#x27;t a multiple of `subsetSize`.
+      if (popcount(mask) % subsetSize != 0)
+        continue;
+      // https://cp-algorithms.com/algebra/all-submasks.html
+      for (int submask = mask; submask &gt; 0; submask = (submask - 1) &amp; mask)
+        if (incompatibilities[submask] != -1)  // valid subset
+          dp[mask] =
+              min(dp[mask], dp[mask - submask] + incompatibilities[submask]);
+    }
+
+    return dp.back() == kMaxCompatibility ? -1 : dp.back();
+  }
+
+ private:
+  static constexpr int kMaxNum = 16;
+
+  // Returns an incompatibilities array where
+  // * incompatibilities[i] := the incompatibility of the subset of numbers
+  //   represented by the bitmask i
+  // * incompatibilities[i] := -1 if the number of 1s in the bitmask i is not
+  //   `subsetSize`
+  vector&lt;int&gt; getIncompatibilities(const vector&lt;int&gt;&amp; nums, int subsetSize) {
+    const int maxMask = 1 &lt;&lt; nums.size();
+    vector&lt;int&gt; incompatibilities(maxMask, -1);
+    for (unsigned mask = 0; mask &lt; maxMask; ++mask)
+      if (popcount(mask) == subsetSize &amp;&amp; isUnique(nums, mask, subsetSize))
+        incompatibilities[mask] = getIncompatibility(nums, mask);
+    return incompatibilities;
+  }
+
+  // Returns true if the numbers selected by `mask` are unique.
+  //
+  // e.g. If we call isUnique(0b1010, 2, [1, 2, 1, 4]), `used` variable
+  // will be 0b1, which only has one 1 (less than `subsetSize`). In this case,
+  // we should return false.
+  bool isUnique(const vector&lt;int&gt;&amp; nums, int mask, int subsetSize) {
+    unsigned used = 0;
+    for (int i = 0; i &lt; nums.size(); ++i)
+      if (mask &gt;&gt; i &amp; 1)
+        used |= 1 &lt;&lt; nums[i];
+    return popcount(used) == subsetSize;
+  }
+
+  // Returns the incompatibility of the selected numbers represented by the
+  // `mask`.
+  int getIncompatibility(const vector&lt;int&gt;&amp; nums, int mask) {
+    int mn = kMaxNum;
+    int mx = 0;
+    for (int i = 0; i &lt; nums.size(); ++i)
+      if (mask &gt;&gt; i &amp; 1) {
+        mx = max(mx, nums[i]);
+        mn = min(mn, nums[i]);
+      }
+    return mx - mn;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumIncompatibility(int[] nums, int k) {
+    final int MAX_COMPATIBILITY = (16 - 1) * (16 / 2);
+    final int n = nums.length;
+    final int subsetSize = n / k;
+    final int maxMask = 1 &lt;&lt; n;
+    final int[] incompatibilities = getIncompatibilities(nums, subsetSize);
+    // dp[i] := the minimum possible sum of incompatibilities of the subset
+    // of numbers represented by the bitmask i
+    int[] dp = new int[maxMask];
+    Arrays.fill(dp, MAX_COMPATIBILITY);
+    dp[0] = 0;
+
+    for (int mask = 1; mask &lt; maxMask; ++mask) {
+      // The number of 1s in `mask` isn&#x27;t a multiple of `subsetSize`.
+      if (Integer.bitCount(mask) % subsetSize != 0)
+        continue;
+      // https://cp-algorithms.com/algebra/all-submasks.html
+      for (int submask = mask; submask &gt; 0; submask = (submask - 1) &amp; mask)
+        if (incompatibilities[submask] != -1) // valid submask
+          dp[mask] = Math.min(dp[mask], dp[mask - submask] + incompatibilities[submask]);
+    }
+
+    return dp[maxMask - 1] == MAX_COMPATIBILITY ? -1 : dp[maxMask - 1];
+  }
+
+  private static final int MAX_NUM = 16;
+
+  // Returns an incompatibilities array where
+  // * incompatibilities[i] := the incompatibility of the subset of numbers
+  //   represented by the bitmask i
+  // * incompatibilities[i] := -1 if the number of 1s in the bitmask i is not
+  //   `subsetSize`
+  private int[] getIncompatibilities(int[] nums, int subsetSize) {
+    final int maxMask = 1 &lt;&lt; nums.length;
+    int[] incompatibilities = new int[maxMask];
+    Arrays.fill(incompatibilities, -1);
+    for (int mask = 0; mask &lt; maxMask; ++mask)
+      if (Integer.bitCount(mask) == subsetSize &amp;&amp; isUnique(nums, mask, subsetSize))
+        incompatibilities[mask] = getIncompatibility(nums, mask);
+    return incompatibilities;
+  }
+
+  // Returns true if the numbers selected by `mask` are unique.
+  //
+  // e.g. If we call isUnique(0b1010, 2, [1, 2, 1, 4]), `used` variable
+  // will be 0b1, which only has one 1 (less than `subsetSize`). In this case,
+  // we should return false.
+  private boolean isUnique(int[] nums, int mask, int subsetSize) {
+    int used = 0;
+    for (int i = 0; i &lt; nums.length; ++i)
+      if ((mask &gt;&gt; i &amp; 1) == 1)
+        used |= 1 &lt;&lt; nums[i];
+    return Integer.bitCount(used) == subsetSize;
+  }
+
+  // Returns the incompatibility of the selected numbers represented by the
+  // `mask`.
+  private int getIncompatibility(int[] nums, int mask) {
+    int mn = MAX_NUM;
+    int mx = 0;
+    for (int i = 0; i &lt; nums.length; ++i)
+      if ((mask &gt;&gt; i &amp; 1) == 1) {
+        mx = Math.max(mx, nums[i]);
+        mn = Math.min(mn, nums[i]);
+      }
+    return mx - mn;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def __init__(self):
+    self.MAX_NUM = 16
+
+  def minimumIncompatibility(self, nums: list[int], k: int) -&gt; int:
+    MAX_COMPATIBILITY = (16 - 1) * (16 // 2)
+    n = len(nums)
+    subsetSize = n // k
+    maxMask = 1 &lt;&lt; n
+    incompatibilities = self._getIncompatibilities(nums, subsetSize)
+
+    # dp[i] := the minimum possible sum of incompatibilities of the subset
+    # of numbers represented by the bitmask i
+    dp = [MAX_COMPATIBILITY] * maxMask
+    dp[0] = 0
+
+    for mask in range(1, maxMask):
+      # The number of 1s in `mask` isn&#x27;t a multiple of `subsetSize`.
+      if mask.bit_count() % subsetSize != 0:
+        continue
+      # https://cp-algorithms.com/algebra/all-submasks.html
+      submask = mask
+      while submask &gt; 0:
+        if incompatibilities[submask] != -1:  # valid submask
+          dp[mask] = min(dp[mask], dp[mask - submask] +
+                         incompatibilities[submask])
+        submask = (submask - 1) &amp; mask
+
+    return dp[-1] if dp[-1] != MAX_COMPATIBILITY else -1
+
+  def _getIncompatibilities(
+      self,
+      nums: list[int],
+      subsetSize: int,
+  ) -&gt; list[int]:
+    &quot;&quot;&quot;
+    Returns an incompatibilities array where
+    * incompatibilities[i] := the incompatibility of the subset of numbers
+      represented by the bitmask i
+    * incompatibilities[i] := -1 if the number of 1s in the bitmask i is not
+      `subsetSize`
+    &quot;&quot;&quot;
+    maxMask = 1 &lt;&lt; len(nums)
+    incompatibilities = [-1] * maxMask
+    for mask in range(maxMask):
+      if mask.bit_count() == subsetSize and self._isUnique(nums, mask, subsetSize):
+        incompatibilities[mask] = self._getIncompatibility(nums, mask)
+    return incompatibilities
+
+  def _isUnique(self, nums: list[int], mask: int, subsetSize: int) -&gt; bool:
+    &quot;&quot;&quot;Returns True if the numbers selected by `mask` are unique.&quot;&quot;&quot;
+    used = 0
+    for i, num in enumerate(nums):
+      if mask &gt;&gt; i &amp; 1:
+        used |= 1 &lt;&lt; num
+    return used.bit_count() == subsetSize
+
+  def _getIncompatibility(self, nums: list[int], mask: int) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the incompatibility of the selected numbers represented by the
+    `mask`.
+    &quot;&quot;&quot;
+    mn = self.MAX_NUM
+    mx = 0
+    for i, num in enumerate(nums):
+      if mask &gt;&gt; i &amp; 1:
+        mx = max(mx, num)
+        mn = min(mn, num)
+    return mx - mn</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

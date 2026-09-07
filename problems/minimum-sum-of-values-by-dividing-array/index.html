@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Sum of Values by Dividing Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Sum of Values by Dividing Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-sum-of-values-by-dividing-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/kth-smallest-amount-with-single-denomination-combination/" class="btn">← Previous</a>
+            <span>Problem 3117 of 3563</span>
+            <a href="/leetcode-solutions/problems/friday-purchase-iii/" class="btn">Next →</a>
+        </div>
+        <h1>3117. Minimum Sum of Values by Dividing Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Sum of Values by Dividing Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumValueSum(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; andValues) {
+    vector&lt;vector&lt;unordered_map&lt;int, int&gt;&gt;&gt; mem(
+        nums.size(), vector&lt;unordered_map&lt;int, int&gt;&gt;(andValues.size()));
+    const int ans = minimumValueSum(nums, andValues, 0, 0, kFullMask, mem);
+    return ans == kInf ? -1 : ans;
+  }
+
+ private:
+  static constexpr int kInf = 1&#x27;000&#x27;000&#x27;000;
+  static constexpr int kFullMask = (1 &lt;&lt; 17) - 1;
+
+  // Returns the minimum value sum of nums[i..n) and andValues[j..m), where
+  // `mask` is the running value of the current subarray.
+  int minimumValueSum(const vector&lt;int&gt;&amp; nums, const vector&lt;int&gt;&amp; andValues,
+                      int i, int j, int mask,
+                      vector&lt;vector&lt;unordered_map&lt;int, int&gt;&gt;&gt;&amp; mem) {
+    if (i == nums.size() &amp;&amp; j == andValues.size())
+      return 0;
+    if (i == nums.size() || j == andValues.size())
+      return kInf;
+    if (const auto it = mem[i][j].find(mask); it != mem[i][j].cend())
+      return it-&gt;second;
+    mask &amp;= nums[i];
+    if (mask &lt; andValues[j])
+      return mem[i][j][mask] = kInf;
+    if (mask == andValues[j])
+      // 1. Keep going.
+      // 2. End the subarray here and pick nums[i], then fresh start.
+      return mem[i][j][mask] =
+                 min(minimumValueSum(nums, andValues, i + 1, j, mask, mem),
+                     nums[i] + minimumValueSum(nums, andValues, i + 1, j + 1,
+                                               kFullMask, mem));
+    // Keep going.
+    return mem[i][j][mask] =
+               minimumValueSum(nums, andValues, i + 1, j, mask, mem);
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumValueSum(int[] nums, int[] andValues) {
+    Map&lt;Integer, Integer&gt;[][] mem = new Map[nums.length][andValues.length];
+    Arrays.stream(mem).forEach(A -&gt; Arrays.setAll(A, j -&gt; new HashMap&lt;&gt;()));
+    final int ans = minimumValueSum(nums, andValues, 0, 0, FULL_MASK, mem);
+    return ans == INF ? -1 : ans;
+  }
+
+  private static final int INF = 1_000_000_000;
+  private static final int FULL_MASK = (1 &lt;&lt; 17) - 1;
+
+  // Returns the minimum value sum of nums[i..n) and andValues[j..m), where
+  // `mask` is the running value of the current subarray.
+  private int minimumValueSum(int[] nums, int[] andValues, int i, int j, int mask,
+                              Map&lt;Integer, Integer&gt;[][] mem) {
+    if (i == nums.length &amp;&amp; j == andValues.length)
+      return 0;
+    if (i == nums.length || j == andValues.length)
+      return INF;
+    if (mem[i][j].containsKey(mask))
+      return mem[i][j].get(mask);
+    mask &amp;= nums[i];
+    if (mask &lt; andValues[j]) {
+      mem[i][j].put(mask, INF);
+      return INF;
+    }
+    if (mask == andValues[j]) {
+      // 1. Keep going.
+      // 2. End the subarray here and pick nums[i], then fresh start.
+      final int res =
+          Math.min(minimumValueSum(nums, andValues, i + 1, j, mask, mem),
+                   nums[i] + minimumValueSum(nums, andValues, i + 1, j + 1, FULL_MASK, mem));
+      mem[i][j].put(mask, res);
+      return res;
+    }
+    // Keep going.
+    final int res = minimumValueSum(nums, andValues, i + 1, j, mask, mem);
+    mem[i][j].put(mask, res);
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumValueSum(self, nums: list[int], andValues: list[int]) -&gt; int:
+    n = len(nums)
+    m = len(andValues)
+
+    @functools.lru_cache(None)
+    def dp(i: int, j: int, mask: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the minimum value sum of nums[i..n) and andValues[j..m), where
+      `mask` is the running value of the current subarray.
+      &quot;&quot;&quot;
+      if i == n and j == m:
+        return 0
+      if i == n or j == m:
+        return math.inf
+      mask &amp;= nums[i]
+      if mask &lt; andValues[j]:
+        return math.inf
+      if mask == andValues[j]:
+        # 1. Keep going.
+        # 2. End the subarray here and pick nums[i], then fresh start.
+        return min(dp(i + 1, j, mask),
+                   nums[i] + dp(i + 1, j + 1, -1))
+      return dp(i + 1, j, mask)  # Keep going.
+
+    ans = dp(0, 0, -1)
+    return ans if ans &lt; math.inf else -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convex Polygon - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Convex Polygon written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/convex-polygon/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/validate-ip-address/" class="btn">← Previous</a>
+            <span>Problem 469 of 3563</span>
+            <a href="/leetcode-solutions/problems/implement-rand10-using-rand7/" class="btn">Next →</a>
+        </div>
+        <h1>469. Convex Polygon</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Convex Polygon efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isConvex(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    const int n = points.size();
+    long sign = 0;
+
+    for (int i = 0; i &lt; points.size(); ++i) {
+      const int cross =
+          getCross(points[i], points[(i + 1) % n], points[(i + 2) % n]);
+      if (cross == 0)  // p, q, r are collinear.
+        continue;
+      if (sign == 0)  // Find the first cross that&#x27;s not 0.
+        sign = cross;
+      else if (cross * sign &lt; 0)
+        return false;
+    }
+
+    return true;
+  }
+
+ private:
+  // Returns pq x qr.
+  int getCross(const vector&lt;int&gt;&amp; p, const vector&lt;int&gt;&amp; q,
+               const vector&lt;int&gt;&amp; r) {
+    return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isConvex(List&lt;List&lt;Integer&gt;&gt; points) {
+    final int n = points.size();
+    long sign = 0;
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int cross = getCross(points.get(i), points.get((i + 1) % n), points.get((i + 2) % n));
+      if (cross == 0) // p, q, r are collinear.
+        continue;
+      if (sign == 0) // Find the first cross that&#x27;s not 0.
+        sign = cross;
+      else if (cross * sign &lt; 0)
+        return false;
+    }
+
+    return true;
+  }
+
+  // Returns pq x qr.
+  private int getCross(List&lt;Integer&gt; p, List&lt;Integer&gt; q, List&lt;Integer&gt; r) {
+    return (q.get(0) - p.get(0)) * (r.get(1) - p.get(1)) -
+        (q.get(1) - p.get(1)) * (r.get(0) - p.get(0));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isConvex(self, points: list[list[int]]) -&gt; bool:
+    def getCross(p: list[int], q: list[int], r: list[int]):
+      &quot;&quot;&quot;Returns pq x qr.&quot;&quot;&quot;
+      return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+
+    sign = 0
+    for i in range(len(points)):
+      cross = getCross(points[i - 2], points[i - 1], points[i])
+      if cross == 0:  # p, q, r are collinear.
+        continue
+      if sign == 0:  # Find the first cross that&#x27;s not 0.
+        sign = cross
+      elif cross * sign &lt; 0:
+        return False
+
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Square Area by Removing Fences From a Field - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Square Area by Removing Fences From a Field written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-square-area-by-removing-fences-from-a-field/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-game/" class="btn">← Previous</a>
+            <span>Problem 2975 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-to-convert-string-i/" class="btn">Next →</a>
+        </div>
+        <h1>2975. Maximum Square Area by Removing Fences From a Field</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Square Area by Removing Fences From a Field efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximizeSquareArea(int m, int n, vector&lt;int&gt;&amp; hFences,
+                         vector&lt;int&gt;&amp; vFences) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+    hFences.push_back(1);
+    hFences.push_back(m);
+    vFences.push_back(1);
+    vFences.push_back(n);
+
+    ranges::sort(hFences);
+    ranges::sort(vFences);
+
+    const unordered_set&lt;int&gt; hGaps = getGaps(hFences);
+    const unordered_set&lt;int&gt; vGaps = getGaps(vFences);
+    int maxGap = -1;
+
+    for (const int hGap : hGaps)
+      if (vGaps.contains(hGap))
+        maxGap = max(maxGap, hGap);
+
+    return maxGap == -1 ? -1 : static_cast&lt;long&gt;(maxGap) * maxGap % kMod;
+  }
+
+ private:
+  unordered_set&lt;int&gt; getGaps(const vector&lt;int&gt;&amp; fences) {
+    unordered_set&lt;int&gt; gaps;
+    for (int i = 0; i &lt; fences.size(); ++i)
+      for (int j = 0; j &lt; i; ++j)
+        gaps.insert(fences[i] - fences[j]);
+    return gaps;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximizeSquareArea(int m, int n, int[] hFences, int[] vFences) {
+    final int MOD = 1_000_000_007;
+
+    hFences = Arrays.copyOf(hFences, hFences.length + 2);
+    vFences = Arrays.copyOf(vFences, vFences.length + 2);
+
+    hFences[hFences.length - 2] = 1;
+    hFences[hFences.length - 1] = m;
+    vFences[vFences.length - 2] = 1;
+    vFences[vFences.length - 1] = n;
+
+    Arrays.sort(hFences);
+    Arrays.sort(vFences);
+
+    Set&lt;Integer&gt; hGaps = getGaps(hFences);
+    Set&lt;Integer&gt; vGaps = getGaps(vFences);
+    int maxGap = -1;
+
+    for (final int hGap : hGaps)
+      if (vGaps.contains(hGap))
+        maxGap = Math.max(maxGap, hGap);
+
+    return maxGap == -1 ? -1 : (int) ((long) maxGap * maxGap % MOD);
+  }
+
+  private Set&lt;Integer&gt; getGaps(int[] fences) {
+    Set&lt;Integer&gt; gaps = new HashSet&lt;&gt;();
+    for (int i = 0; i &lt; fences.length; ++i)
+      for (int j = 0; j &lt; i; ++j)
+        gaps.add(fences[i] - fences[j]);
+    return gaps;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximizeSquareArea(
+      self,
+      m: int,
+      n: int,
+      hFences: list[int],
+      vFences: list[int],
+  ) -&gt; int:
+    hFences = sorted(hFences + [1, m])
+    vFences = sorted(vFences + [1, n])
+    hGaps = {hFences[i] - hFences[j]
+             for i in range(len(hFences))
+             for j in range(i)}
+    vGaps = {vFences[i] - vFences[j]
+             for i in range(len(vFences))
+             for j in range(i)}
+    maxGap = next((hGap
+                  for hGap in sorted(hGaps, reverse=True)
+                  if hGap in vGaps), -1)
+    return -1 if maxGap == -1 else maxGap**2 % (10**9 + 7)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

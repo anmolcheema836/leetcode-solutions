@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Valid Move Combinations On Chessboard - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Valid Move Combinations On Chessboard written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-valid-move-combinations-on-chessboard/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/plates-between-candles/" class="btn">← Previous</a>
+            <span>Problem 2056 of 3563</span>
+            <a href="/leetcode-solutions/problems/smallest-index-with-equal-value/" class="btn">Next →</a>
+        </div>
+        <h1>2056. Number of Valid Move Combinations On Chessboard</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Valid Move Combinations On Chessboard efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countCombinations(vector&lt;string&gt;&amp; pieces,
+                        vector&lt;vector&lt;int&gt;&gt;&amp; positions) {
+    const int n = pieces.size();
+    unordered_set&lt;long long&gt; hashedBoards;
+    // Stores all possible move combinations for `pieces`. Each element is a
+    // vector of moves, one for each piece in the input order. e.g., if pieces =
+    // [&quot;rook&quot;, &quot;bishop&quot;], one element might be [[1,0], [1,1]], representing a
+    // rook moving right and a bishop moving diagonally up-right.
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; pieceMovesList;
+
+    getPieceMovesList(pieces, 0, {}, pieceMovesList);
+
+    for (const vector&lt;pair&lt;int, int&gt;&gt;&amp; pieceMoves : pieceMovesList)
+      dfs(positions, n, pieceMoves, (1 &lt;&lt; n) - 1, hashedBoards);
+
+    return hashedBoards.size();
+  }
+
+ private:
+  const unordered_map&lt;string, vector&lt;pair&lt;int, int&gt;&gt;&gt; kPieceToMoves{
+      {&quot;rook&quot;, {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}},
+      {&quot;bishop&quot;, {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}}},
+      {&quot;queen&quot;,
+       {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}}}};
+
+  // Generates all possible combinations of moves.
+  void getPieceMovesList(const vector&lt;string&gt;&amp; pieces, int i,
+                         vector&lt;pair&lt;int, int&gt;&gt;&amp;&amp; path,
+                         vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; pieceMovesList) {
+    if (i == pieces.size()) {
+      pieceMovesList.push_back(path);
+      return;
+    }
+    for (const pair&lt;int, int&gt;&amp; move : kPieceToMoves.at(pieces[i])) {
+      path.push_back(move);
+      getPieceMovesList(pieces, i + 1, std::move(path), pieceMovesList);
+      path.pop_back();
+    }
+  }
+
+  // Performs a depth-first search to explore all possible board states.
+  void dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; board, int n,
+           const vector&lt;pair&lt;int, int&gt;&gt;&amp; pieceMoves, int activeMask,
+           unordered_set&lt;long long&gt;&amp; hashedBoards) {
+    if (activeMask == 0)
+      return;
+    hashedBoards.insert(getHash(board));
+    for (int nextActiveMask = 1; nextActiveMask &lt; 1 &lt;&lt; n; ++nextActiveMask) {
+      if ((activeMask &amp; nextActiveMask) != nextActiveMask)
+        continue;
+
+      // Copy the board.
+      vector&lt;vector&lt;int&gt;&gt; nextBoard = board;
+
+      // Move the pieces that are active in this turn.
+      for (int i = 0; i &lt; n; ++i)
+        if (nextActiveMask &gt;&gt; i &amp; 1) {
+          nextBoard[i][0] += pieceMoves[i].first;
+          nextBoard[i][1] += pieceMoves[i].second;
+        }
+
+      // No two or more pieces occupy the same square.
+      if (getUniqueSize(nextBoard) &lt; n)
+        continue;
+
+      // Every piece needs to be in the boundary.
+      if (ranges::all_of(nextBoard, [](const vector&lt;int&gt;&amp; pos) {
+        return 1 &lt;= pos[0] &amp;&amp; pos[0] &lt;= 8 &amp;&amp; 1 &lt;= pos[1] &amp;&amp; pos[1] &lt;= 8;
+      }))
+        dfs(nextBoard, n, pieceMoves, nextActiveMask, hashedBoards);
+    }
+  }
+
+  long long getHash(const vector&lt;vector&lt;int&gt;&gt;&amp; board) {
+    long long hash = 0;
+    for (const vector&lt;int&gt;&amp; pos : board)
+      hash = (hash * 64) + ((pos[0] - 1) &lt;&lt; 3) + (pos[1] - 1);
+    return hash;
+  }
+
+  int getUniqueSize(const vector&lt;vector&lt;int&gt;&gt;&amp; board) {
+    unordered_set&lt;int&gt; unique;
+    for (const vector&lt;int&gt;&amp; pos : board)
+      unique.insert(pos[0] * 8 + pos[1]);
+    return unique.size();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countCombinations(String[] pieces, int[][] positions) {
+    final int n = pieces.length;
+    Set&lt;Long&gt; hashedBoards = new HashSet&lt;&gt;();
+    // Stores all possible move combinations for `pieces`. Each element is a
+    // vector of moves, one for each piece in the input order. e.g., if pieces =
+    // [&quot;rook&quot;, &quot;bishop&quot;], one element might be [[1,0], [1,1]], representing a
+    // rook moving right and a bishop moving diagonally up-right.
+    List&lt;List&lt;int[]&gt;&gt; combMoves = new ArrayList&lt;&gt;();
+
+    getCombMoves(pieces, 0, new ArrayList&lt;&gt;(), combMoves);
+
+    for (List&lt;int[]&gt; combMove : combMoves)
+      dfs(positions, n, combMove, (1 &lt;&lt; n) - 1, hashedBoards);
+
+    return hashedBoards.size();
+  }
+
+  private static Map&lt;String, int[][]&gt; MOVES = new HashMap&lt;&gt;();
+
+  static {
+    MOVES.put(&quot;rook&quot;, new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
+    MOVES.put(&quot;bishop&quot;, new int[][] {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}});
+    MOVES.put(&quot;queen&quot;,
+              new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}});
+  }
+
+  // Generates all possible combinations of moves for the given pieces.
+  private void getCombMoves(String[] pieces, int ithPiece, List&lt;int[]&gt; path,
+                            List&lt;List&lt;int[]&gt;&gt; combMoves) {
+    if (ithPiece == pieces.length) {
+      combMoves.add(new ArrayList&lt;&gt;(path));
+      return;
+    }
+
+    for (int[] move : MOVES.get(pieces[ithPiece])) {
+      path.add(move);
+      getCombMoves(pieces, ithPiece + 1, path, combMoves);
+      path.remove(path.size() - 1);
+    }
+  }
+
+  // Performs a depth-first search to explore all possible board states.
+  private void dfs(int[][] board, int n, List&lt;int[]&gt; combMove, int activeMask,
+                   Set&lt;Long&gt; hashedBoards) {
+    if (activeMask == 0)
+      return;
+    hashedBoards.add(getHash(board));
+
+    for (int nextActiveMask = 1; nextActiveMask &lt; 1 &lt;&lt; n; ++nextActiveMask) {
+      if ((activeMask &amp; nextActiveMask) != nextActiveMask)
+        continue;
+
+      // Copy the board.
+      int[][] nextBoard = new int[n][];
+      for (int i = 0; i &lt; n; ++i)
+        nextBoard[i] = board[i].clone();
+
+      // Move the pieces that are active in this turn.
+      for (int i = 0; i &lt; n; ++i)
+        if ((nextActiveMask &gt;&gt; i &amp; 1) == 1) {
+          nextBoard[i][0] += combMove.get(i)[0];
+          nextBoard[i][1] += combMove.get(i)[1];
+        }
+
+      // No two or more pieces occupy the same square.
+      if (getUniqueSize(nextBoard) &lt; n)
+        continue;
+
+      // Every piece needs to be in the boundary.
+      if (Arrays.stream(nextBoard).allMatch(p -&gt; 1 &lt;= p[0] &amp;&amp; p[0] &lt;= 8 &amp;&amp; 1 &lt;= p[1] &amp;&amp; p[1] &lt;= 8))
+        dfs(nextBoard, n, combMove, nextActiveMask, hashedBoards);
+    }
+  }
+
+  // Generates a unique hash for the given board state.
+  private long getHash(int[][] board) {
+    long hash = 0;
+    for (int[] pos : board)
+      hash = (hash * 64) + (pos[0] - 1 &lt;&lt; 3) + (pos[1] - 1);
+    return hash;
+  }
+
+  // Counts the number of unique positions on the board occupied by the pieces.
+  private int getUniqueSize(int[][] board) {
+    Set&lt;Integer&gt; unique = new HashSet&lt;&gt;();
+    for (int[] pos : board)
+      unique.add(pos[0] * 8 + pos[1]);
+    return unique.size();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countCombinations(
+      self,
+      pieces: list[str],
+      positions: list[list[int]],
+  ) -&gt; int:
+    n = len(pieces)
+    moves = {&quot;rook&quot;: [(1, 0), (-1, 0), (0, 1), (0, -1)],
+             &quot;bishop&quot;: [(1, 1), (1, -1), (-1, 1), (-1, -1)],
+             &quot;queen&quot;: [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]}
+    hashedBoards = set()
+
+    def getHash(board: list[list[int]]) -&gt; Tuple:
+      return tuple([tuple(pos) for pos in board])
+
+    def dfs(
+        board: list[list[int]],
+        pieceMoves: list[tuple[int, int]],
+        activeMask: int,
+    ) -&gt; None:
+      &quot;&quot;&quot;Performs a depth-first search to explore all possible board states.&quot;&quot;&quot;
+      if activeMask == 0:
+        return
+      hashedBoards.add(getHash(board))
+
+      for nextActiveMask in range(1, 1 &lt;&lt; n):
+        if activeMask &amp; nextActiveMask != nextActiveMask:
+          continue
+
+        # Copy the board.
+        nextBoard = [pos.copy() for pos in board]
+
+        # Move the pieces that are active in this turn.
+        for i in range(n):
+          if nextActiveMask &gt;&gt; i &amp; 1:
+            nextBoard[i][0] += pieceMoves[i][0]
+            nextBoard[i][1] += pieceMoves[i][1]
+
+        # No two or more pieces occupy the same square.
+        if len(set(getHash(nextBoard))) &lt; n:
+          continue
+
+        # Every piece needs to be in the boundary.
+        if all(1 &lt;= x &lt;= 8 and 1 &lt;= y &lt;= 8 for x, y in nextBoard):
+          dfs(nextBoard, pieceMoves, nextActiveMask)
+
+    for pieceMoves in itertools.product(*(moves[piece] for piece in pieces)):
+      dfs(positions, pieceMoves, (1 &lt;&lt; n) - 1)
+
+    return len(hashedBoards)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

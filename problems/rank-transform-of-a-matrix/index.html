@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rank Transform of a Matrix - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Rank Transform of a Matrix written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/rank-transform-of-a-matrix/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/path-with-minimum-effort/" class="btn">← Previous</a>
+            <span>Problem 1632 of 3563</span>
+            <a href="/leetcode-solutions/problems/percentage-of-users-attended-a-contest/" class="btn">Next →</a>
+        </div>
+        <h1>1632. Rank Transform of a Matrix</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Rank Transform of a Matrix efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  void union_(int u, int v) {
+    if (!id.contains(u))
+      id[u] = u;
+    if (!id.contains(v))
+      id[v] = v;
+    const int i = find(u);
+    const int j = find(v);
+    if (i != j)
+      id[i] = j;
+  }
+
+  unordered_map&lt;int, vector&lt;int&gt;&gt; getGroupIdToValues() {
+    unordered_map&lt;int, vector&lt;int&gt;&gt; groupIdToValues;
+    for (const auto&amp; [u, _] : id)
+      groupIdToValues[find(u)].push_back(u);
+    return groupIdToValues;
+  }
+
+ private:
+  unordered_map&lt;int, int&gt; id;
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; matrixRankTransform(vector&lt;vector&lt;int&gt;&gt;&amp; matrix) {
+    const int m = matrix.size();
+    const int n = matrix[0].size();
+    vector&lt;vector&lt;int&gt;&gt; ans(m, vector&lt;int&gt;(n));
+    // {val: [(i, j)]}
+    map&lt;int, vector&lt;pair&lt;int, int&gt;&gt;&gt; valToGrids;
+    // rank[i] := the maximum rank of the row or column so far
+    vector&lt;int&gt; maxRankSoFar(m + n);
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        valToGrids[matrix[i][j]].emplace_back(i, j);
+
+    for (const auto&amp; [val, grids] : valToGrids) {
+      UnionFind uf;
+      for (const auto&amp; [i, j] : grids)
+        // Union i-th row with j-th col.
+        uf.union_(i, j + m);
+      for (const auto&amp; [groupId, values] : uf.getGroupIdToValues()) {
+        // Get the maximum rank of all the included rows and columns.
+        int maxRank = 0;
+        for (const int i : values)
+          maxRank = max(maxRank, maxRankSoFar[i]);
+        // Update all the rows and columns to maxRank + 1.
+        for (const int i : values)
+          maxRankSoFar[i] = maxRank + 1;
+      }
+      for (const auto&amp; [i, j] : grids)
+        ans[i][j] = maxRankSoFar[i];
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public void union(int u, int v) {
+    id.putIfAbsent(u, u);
+    id.putIfAbsent(v, v);
+    final int i = find(u);
+    final int j = find(v);
+    if (i != j)
+      id.put(i, j);
+  }
+
+  public Map&lt;Integer, List&lt;Integer&gt;&gt; getGroupIdToValues() {
+    Map&lt;Integer, List&lt;Integer&gt;&gt; groupIdToValues = new HashMap&lt;&gt;();
+    for (Map.Entry&lt;Integer, Integer&gt; entry : id.entrySet()) {
+      final int u = entry.getKey();
+      final int i = find(u);
+      groupIdToValues.putIfAbsent(i, new ArrayList&lt;&gt;());
+      groupIdToValues.get(i).add(u);
+    }
+    return groupIdToValues;
+  }
+
+  private Map&lt;Integer, Integer&gt; id = new HashMap&lt;&gt;();
+
+  private int find(int u) {
+    return id.getOrDefault(u, u) == u ? u : find(id.get(u));
+  }
+}
+
+class Solution {
+  public int[][] matrixRankTransform(int[][] matrix) {
+    final int m = matrix.length;
+    final int n = matrix[0].length;
+    int[][] ans = new int[m][n];
+    // {val: [(i, j)]}
+    TreeMap&lt;Integer, List&lt;Pair&lt;Integer, Integer&gt;&gt;&gt; valToGrids = new TreeMap&lt;&gt;();
+    // rank[i] := the maximum rank of the row or column so far
+    int[] maxRankSoFar = new int[m + n];
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        final int val = matrix[i][j];
+        valToGrids.putIfAbsent(val, new ArrayList&lt;&gt;());
+        valToGrids.get(val).add(new Pair&lt;&gt;(i, j));
+      }
+
+    for (Map.Entry&lt;Integer, List&lt;Pair&lt;Integer, Integer&gt;&gt;&gt; entry : valToGrids.entrySet()) {
+      final int val = entry.getKey();
+      List&lt;Pair&lt;Integer, Integer&gt;&gt; grids = entry.getValue();
+      UnionFind uf = new UnionFind();
+      for (Pair&lt;Integer, Integer&gt; grid : grids) {
+        final int i = grid.getKey();
+        final int j = grid.getValue();
+        // Union i-th row with j-th col.
+        uf.union(i, j + m);
+      }
+      for (List&lt;Integer&gt; values : uf.getGroupIdToValues().values()) {
+        // Get the maximum rank of all the included rows and columns.
+        int maxRank = 0;
+        for (final int i : values)
+          maxRank = Math.max(maxRank, maxRankSoFar[i]);
+        // Update all the rows and columns to maxRank + 1.
+        for (final int i : values)
+          maxRankSoFar[i] = maxRank + 1;
+      }
+      for (Pair&lt;Integer, Integer&gt; grid : grids) {
+        final int i = grid.getKey();
+        final int j = grid.getValue();
+        ans[i][j] = maxRankSoFar[i];
+      }
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self):
+    self.id = {}
+
+  def union(self, u: int, v: int) -&gt; None:
+    self.id.setdefault(u, u)
+    self.id.setdefault(v, v)
+    i = self._find(u)
+    j = self._find(v)
+    if i != j:
+      self.id[i] = j
+
+  def getGroupIdToValues(self) -&gt; dict[int, list[int]]:
+    groupIdToValues = collections.defaultdict(list)
+    for u in self.id.keys():
+      groupIdToValues[self._find(u)].append(u)
+    return groupIdToValues
+
+  def _find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self._find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def matrixRankTransform(self, matrix: list[list[int]]) -&gt; list[list[int]]:
+    m = len(matrix)
+    n = len(matrix[0])
+    ans = [[0] * n for _ in range(m)]
+    # {val: [(i, j)]}
+    valToGrids = collections.defaultdict(list)
+    # rank[i] := the maximum rank of the row or column so far
+    maxRankSoFar = [0] * (m + n)
+
+    for i, row in enumerate(matrix):
+      for j, val in enumerate(row):
+        valToGrids[val].append((i, j))
+
+    for _, grids in sorted(valToGrids.items()):
+      uf = UnionFind()
+      for i, j in grids:
+        # Union i-th row with j-th col.
+        uf.union(i, j + m)
+      for values in uf.getGroupIdToValues().values():
+        # Get the maximum rank of all the included rows and columns.
+        maxRank = max(maxRankSoFar[i] for i in values)
+        for i in values:
+          # Update all the rows and columns to maxRank + 1.
+          maxRankSoFar[i] = maxRank + 1
+      for i, j in grids:
+        ans[i][j] = maxRankSoFar[i]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Multiple of Three - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Largest Multiple of Three written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/largest-multiple-of-three/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/closest-divisors/" class="btn">← Previous</a>
+            <span>Problem 1363 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-trusted-contacts-of-a-customer/" class="btn">Next →</a>
+        </div>
+        <h1>1363. Largest Multiple of Three</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Largest Multiple of Three efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string largestMultipleOfThree(vector&lt;int&gt;&amp; digits) {
+    string ans;
+    vector&lt;int&gt; mod1{1, 4, 7, 2, 5, 8};
+    vector&lt;int&gt; mod2{2, 5, 8, 1, 4, 7};
+    vector&lt;int&gt; count(10);
+    int sum = accumulate(digits.begin(), digits.end(), 0);
+
+    for (const int digit : digits)
+      ++count[digit];
+
+    while (sum % 3 != 0)
+      for (int i : sum % 3 == 1 ? mod1 : mod2)
+        if (count[i]) {
+          --count[i];
+          sum -= i;
+          break;
+        }
+
+    for (int digit = 9; digit &gt;= 0; --digit)
+      ans += string(count[digit], &#x27;0&#x27; + digit);
+
+    return ans.size() &amp;&amp; ans[0] == &#x27;0&#x27; ? &quot;0&quot; : ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String largestMultipleOfThree(int[] digits) {
+    StringBuilder ans = new StringBuilder();
+    int[] mod1 = new int[] {1, 4, 7, 2, 5, 8};
+    int[] mod2 = new int[] {2, 5, 8, 1, 4, 7};
+    int[] count = new int[10];
+    int sum = 0;
+
+    for (int digit : digits) {
+      ++count[digit];
+      sum += digit;
+    }
+
+    while (sum % 3 != 0)
+      for (int i : sum % 3 == 1 ? mod1 : mod2)
+        if (count[i] &gt; 0) {
+          --count[i];
+          sum -= i;
+          break;
+        }
+
+    for (int digit = 9; digit &gt;= 0; --digit)
+      ans.append(Character.toString(&#x27;0&#x27; + digit).repeat(count[digit]));
+
+    return ans.length() &gt; 0 &amp;&amp; ans.charAt(0) == &#x27;0&#x27; ? &quot;0&quot; : ans.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestMultipleOfThree(self, digits: list[int]) -&gt; str:
+    ans = &#x27;&#x27;
+    mod1 = [1, 4, 7, 2, 5, 8]
+    mod2 = [2, 5, 8, 1, 4, 7]
+    count = collections.Counter(digits)
+    summ = sum(digits)
+
+    while summ % 3 != 0:
+      for digit in (mod1 if summ % 3 == 1 else mod2):
+        if count[digit]:
+          count[digit] -= 1
+          summ -= digit
+          break
+
+    for digit in reversed(range(10)):
+      ans += str(digit) * count[digit]
+
+    return &#x27;0&#x27; if len(ans) and ans[0] == &#x27;0&#x27; else ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

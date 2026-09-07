@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count the Number of Houses at a Certain Distance I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count the Number of Houses at a Certain Distance I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-the-number-of-houses-at-a-certain-distance-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-pushes-to-type-word-i/" class="btn">← Previous</a>
+            <span>Problem 3015 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-number-of-pushes-to-type-word-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3015. Count the Number of Houses at a Certain Distance I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count the Number of Houses at a Certain Distance I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; countOfPairs(int n, int x, int y) {
+    if (x &gt; y)
+      swap(x, y);
+
+    const int ringLen = y - x + 1;
+    const int leftLineLen = x - 1;
+    const int rightLineLen = n - y;
+
+    vector&lt;int&gt; ans(n);
+    ans = addVectors(ans, bothInRing(n, ringLen));
+    ans = addVectors(ans, bothInTheSameLine(n, leftLineLen));
+    ans = addVectors(ans, bothInTheSameLine(n, rightLineLen));
+    ans = addVectors(ans, lineToRing(n, leftLineLen, ringLen));
+    ans = addVectors(ans, lineToRing(n, rightLineLen, ringLen));
+    ans = addVectors(ans, lineToLine(n, x, y, leftLineLen, rightLineLen));
+    for (int&amp; freq : ans)
+      freq *= 2;
+    return ans;
+  }
+
+ private:
+  // Returns the contribution from the scenario where two houses are located in
+  // the ring.
+  vector&lt;int&gt; bothInRing(int n, int ringLen) {
+    vector&lt;int&gt; res(n);
+    for (int k = 1; k &lt;= (ringLen - 1) / 2; ++k)
+      res[k - 1] += ringLen;
+    if (ringLen % 2 == 0)
+      res[ringLen / 2 - 1] += ringLen / 2;
+    return res;
+  }
+
+  // Returns the contribution from the scenario where two houses are either
+  // located in the left line [1, x) or the right line (y, n].
+  vector&lt;int&gt; bothInTheSameLine(int n, int lineLen) {
+    vector&lt;int&gt; res(n);
+    for (int k = 1; k &lt;= lineLen; ++k)
+      res[k - 1] += lineLen - k;
+    return res;
+  }
+
+  // Returns the contribution from the scenario where one house is either
+  // located in the left line [1, x) or the right line (y, n] and the other
+  // house is located in the cycle.
+  vector&lt;int&gt; lineToRing(int n, int lineLen, int ringLen) {
+    vector&lt;int&gt; res(n);
+    for (int k = 1; k &lt;= lineLen + ringLen; ++k) {
+      // min(
+      //   at most k - 1 since we need to give 1 to the line,
+      //   at most ringLen / 2 since for length &gt; ringLen / 2, it can always be
+      //     calculated as ringLen - ringLen / 2
+      // )
+      const int maxInRingLen = min(k - 1, ringLen / 2);
+      // max(at least 0, at lest k - lineLen)
+      const int minInRingLen = max(0, k - lineLen);
+      if (minInRingLen &lt;= maxInRingLen) {
+        // Each ring length contributes 2 to the count due to the split of
+        // paths when entering the ring: One path traverses the upper half of
+        // the ring, and the other traverses the lower half.
+        // This is illustrated as follows:
+        //   Path 1: ... -- x -- (upper half of the ring)
+        //   Path 2: ... -- x -- (lower half of the ring)
+        res[k - 1] += (maxInRingLen - minInRingLen + 1) * 2;
+        if (minInRingLen == 0)
+          // Subtract 1 since there&#x27;s no split.
+          res[k - 1] -= 1;
+        if (maxInRingLen * 2 == ringLen)
+          // Subtract 1 since the following case only contribute one:
+          //   ... -- x -- (upper half of the ring) -- middle point
+          //   ... -- x -- (upper half of the ring) -- middle point
+          res[k - 1] -= 1;
+      }
+    }
+    return res;
+  }
+
+  // Returns the contribution from the scenario where one house is in the left
+  // line [1, x) and the other house is in the right line (y, n].
+  vector&lt;int&gt; lineToLine(int n, int x, int y, int leftLineLen,
+                         int rightLineLen) {
+    vector&lt;int&gt; res(n);
+    for (int k = 1; k &lt;= leftLineLen + rightLineLen + 2; ++k) {
+      // min(
+      //   at most leftLineLen,
+      //   at most k - 1 - (x &lt; y) since we need to give 1 to the right line
+      //     and if x &lt; y we need to give another 1 to &quot;x - y&quot;.
+      // )
+      const int maxInLeft = min(leftLineLen, k - 1 - (x &lt; y));
+      // max(at least 1, at least k - rightLineLen - (x &lt; y))
+      const int minInLeft = max(1, k - rightLineLen - (x &lt; y));
+      if (minInLeft &lt;= maxInLeft)
+        res[k - 1] += maxInLeft - minInLeft + 1;
+    }
+    return res;
+  }
+
+  vector&lt;int&gt; addVectors(const vector&lt;int&gt;&amp; a, const vector&lt;int&gt;&amp; b) {
+    vector&lt;int&gt; res(a.size());
+    transform(a.begin(), a.end(), b.begin(), res.begin(), plus&lt;int&gt;());
+    return res;
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] countOfPairs(int n, int x, int y) {
+    if (x &gt; y) {
+      final int temp = x;
+      x = y;
+      y = temp;
+    }
+
+    final int ringLen = y - x + 1;
+    final int leftLineLen = x - 1;
+    final int rightLineLen = n - y;
+
+    int[] ans = new int[n];
+    ans = addVectors(ans, bothInRing(n, ringLen));
+    ans = addVectors(ans, bothInTheSameLine(n, leftLineLen));
+    ans = addVectors(ans, bothInTheSameLine(n, rightLineLen));
+    ans = addVectors(ans, lineToRing(n, leftLineLen, ringLen));
+    ans = addVectors(ans, lineToRing(n, rightLineLen, ringLen));
+    ans = addVectors(ans, lineToLine(n, x, y, leftLineLen, rightLineLen));
+    for (int i = 0; i &lt; ans.length; ++i)
+      ans[i] *= 2;
+    return ans;
+  }
+
+  // Returns the contribution from the scenario where two houses are located in
+  // the ring.
+  private int[] bothInRing(int n, int ringLen) {
+    int[] res = new int[n];
+    for (int k = 1; k &lt;= (ringLen - 1) / 2; ++k)
+      res[k - 1] += ringLen;
+    if (ringLen % 2 == 0)
+      res[ringLen / 2 - 1] += ringLen / 2;
+    return res;
+  }
+
+  // Returns the contribution from the scenario where two houses are either
+  // located in the left line [1, x) or the right line (y, n].
+  private int[] bothInTheSameLine(int n, int lineLen) {
+    int[] res = new int[n];
+    for (int k = 1; k &lt;= lineLen; ++k)
+      res[k - 1] += lineLen - k;
+    return res;
+  }
+
+  // Returns the contribution from the scenario where one house is either
+  // located in the left line [1, x) or the right line (y, n] and the other
+  // house is located in the cycle.
+  private int[] lineToRing(int n, int lineLen, int ringLen) {
+    int[] res = new int[n];
+    for (int k = 1; k &lt;= lineLen + ringLen; ++k) {
+      // min(
+      //   at most k - 1 since we need to give 1 to the line,
+      //   at most ringLen / 2 since for length &gt; ringLen / 2, it can always be
+      //     calculated as ringLen - ringLen / 2
+      // )
+      final int maxInRingLen = Math.min(k - 1, ringLen / 2);
+      // max(at least 0, at lest k - lineLen)
+      final int minInRingLen = Math.max(0, k - lineLen);
+      if (minInRingLen &lt;= maxInRingLen) {
+        // Each ring length contributes 2 to the count due to the split of
+        // paths when entering the ring: One path traverses the upper half of
+        // the ring, and the other traverses the lower half.
+        // This is illustrated as follows:
+        //   Path 1: ... -- x -- (upper half of the ring)
+        //   Path 2: ... -- x -- (lower half of the ring)
+        res[k - 1] += (maxInRingLen - minInRingLen + 1) * 2;
+        if (minInRingLen == 0)
+          // Subtract 1 since there&#x27;s no split.
+          res[k - 1] -= 1;
+        if (maxInRingLen * 2 == ringLen)
+          // Subtract 1 since the following case only contribute one:
+          //   ... -- x -- (upper half of the ring) -- middle point
+          //   ... -- x -- (upper half of the ring) -- middle point
+          res[k - 1] -= 1;
+      }
+    }
+    return res;
+  }
+
+  // Returns the contribution from the scenario where one house is in the left
+  // line [1, x) and the other house is in the right line (y, n].
+  private int[] lineToLine(int n, int x, int y, int leftLineLen, int rightLineLen) {
+    int[] res = new int[n];
+    for (int k = 1; k &lt;= leftLineLen + rightLineLen + 2; ++k) {
+      // min(
+      //   at most leftLineLen,
+      //   at most k - 1 - (x &lt; y) since we need to give 1 to the right line
+      //     and if x &lt; y we need to give another 1 to &quot;x - y&quot;.
+      // )
+      final int maxInLeft = Math.min(leftLineLen, k - 1 - (x &lt; y ? 1 : 0));
+      // max(at least 1, at least k - rightLineLen - (x &lt; y))
+      final int minInLeft = Math.max(1, k - rightLineLen - (x &lt; y ? 1 : 0));
+      if (minInLeft &lt;= maxInLeft)
+        res[k - 1] += maxInLeft - minInLeft + 1;
+    }
+    return res;
+  }
+
+  private int[] addVectors(int[] a, int[] b) {
+    for (int i = 0; i &lt; a.length; ++i)
+      a[i] += b[i];
+    return a;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countOfPairs(self, n: int, x: int, y: int) -&gt; list[int]:
+    if x &gt; y:
+      x, y = y, x
+
+    def bothInRing(ringLen: int) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Returns the contribution from the scenario where two houses are located
+      in the ring.
+      &quot;&quot;&quot;
+      res = [0] * n
+      for k in range(1, (ringLen - 1) // 2 + 1):
+        res[k - 1] += ringLen
+      if ringLen % 2 == 0:
+        res[ringLen // 2 - 1] += ringLen // 2
+      return res
+
+    def bothInTheSameLine(lineLen: int) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Returns the contribution from the scenario where two houses are either
+      located in the left line [1, x) or the right line (y, n].
+      &quot;&quot;&quot;
+      res = [0] * n
+      for k in range(1, lineLen + 1):
+        res[k - 1] += lineLen - k
+      return res
+
+    def lineToRing(lineLen: int, ringLen: int) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Returns the contribution from the scenario where one house is either
+      located in the left line [1, x) or the right line (y, n] and the
+      other house is located in the cycle.
+      &quot;&quot;&quot;
+      res = [0] * n
+      for k in range(1, lineLen + ringLen):
+        # min(
+        #   at most k - 1 since we need to give 1 to the line,
+        #   at most ringLen / 2 since for length &gt; ringLen / 2, it can always be
+        #     calculated as ringLen - ringLen / 2
+        # )
+        maxInRingLen = min(k - 1, ringLen // 2)
+        # max(at least 0, at lest k - lineLen)
+        minInRingLen = max(0, k - lineLen)
+        if minInRingLen &lt;= maxInRingLen:
+          # Each ring length contributes 2 to the count due to the split of
+          # paths when entering the ring: One path traverses the upper half of
+          # the ring, and the other traverses the lower half.
+          # This is illustrated as follows:
+          #   Path 1: ... -- x -- (upper half of the ring)
+          #   Path 2: ... -- x -- (lower half of the ring)
+          res[k - 1] += (maxInRingLen - minInRingLen + 1) * 2
+          if minInRingLen == 0:
+            # Subtract 1 since there&#x27;s no split.
+            res[k - 1] -= 1
+          if maxInRingLen * 2 == ringLen:
+            # Subtract 1 since the following case only contribute one:
+            #   ... -- x -- (upper half of the ring) -- middle point
+            #   ... -- x -- (upper half of the ring) -- middle point
+            res[k - 1] -= 1
+      return res
+
+    def lineToLine(leftLineLen: int, rightLineLen: int) -&gt; list[int]:
+      &quot;&quot;&quot;
+      Returns the contribution from the scenario where one house is in the left
+      line [1, x) and the other house is in the right line (y, n].
+      &quot;&quot;&quot;
+      res = [0] * n
+      for k in range(leftLineLen + rightLineLen + 2):
+        # min(
+        #   at most leftLineLen,
+        #   at most k - 1 - (x &lt; y) since we need to give 1 to the right line
+        #     and if x &lt; y we need to give another 1 to &quot;x - y&quot;.
+        # )
+        maxInLeft = min(leftLineLen, k - 1 - (x &lt; y))
+        # max(at least 1, at least k - rightLineLen - (x &lt; y))
+        minInLeft = max(1, k - rightLineLen - (x &lt; y))
+        if minInLeft &lt;= maxInLeft:
+          res[k - 1] += maxInLeft - minInLeft + 1
+      return res
+
+    ringLen = y - x + 1
+    leftLineLen = x - 1
+    rightLineLen = (n - y)
+
+    ans = [0] * n
+    ans = list(map(operator.add, ans, bothInRing(ringLen)))
+    ans = list(map(operator.add, ans, bothInTheSameLine(leftLineLen)))
+    ans = list(map(operator.add, ans, bothInTheSameLine(rightLineLen)))
+    ans = list(map(operator.add, ans, lineToRing(leftLineLen, ringLen)))
+    ans = list(map(operator.add, ans, lineToRing(rightLineLen, ringLen)))
+    ans = list(map(operator.add, ans, lineToLine(leftLineLen, rightLineLen)))
+    return [freq * 2 for freq in ans]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

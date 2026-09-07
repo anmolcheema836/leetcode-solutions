@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distance to a Cycle in Undirected Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Distance to a Cycle in Undirected Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/distance-to-a-cycle-in-undirected-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-weighted-subgraph-with-the-required-paths/" class="btn">← Previous</a>
+            <span>Problem 2204 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-number-of-users-that-are-eligible-for-discount/" class="btn">Next →</a>
+        </div>
+        <h1>2204. Distance to a Cycle in Undirected Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Distance to a Cycle in Undirected Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; distanceToCycle(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;int&gt; ans(n);
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    // rank[i] := the minimum node that node i can reach with forward edges
+    // Initialize with NO_RANK = -2 to indicate not visited.
+    vector&lt;int&gt; cycle;
+    getRank(graph, 0, 0, vector&lt;int&gt;(n, NO_RANK), cycle);
+
+    queue&lt;int&gt; q;
+    vector&lt;bool&gt; seen(n);
+    for (const int u : cycle) {
+      q.push(u);
+      seen[u] = true;
+    }
+
+    for (int step = 1; !q.empty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const int u = q.front();
+        q.pop();
+        for (const int v : graph[u]) {
+          if (seen[v])
+            continue;
+          q.push(v);
+          seen[v] = true;
+          ans[v] = step;
+        }
+      }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int NO_RANK = -2;
+
+  // The minRank that u can reach with forward edges
+  int getRank(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, int currRank,
+              vector&lt;int&gt;&amp;&amp; rank, vector&lt;int&gt;&amp; cycle) {
+    if (rank[u] != NO_RANK)  // The rank is already determined
+      return rank[u];
+
+    rank[u] = currRank;
+    int minRank = currRank;
+
+    for (const int v : graph[u]) {
+      // Visited || parent (that&#x27;s why NO_RANK = -2 instead of -1)
+      if (rank[v] == rank.size() || rank[v] == currRank - 1)
+        continue;
+      const int nextRank =
+          getRank(graph, v, currRank + 1, std::move(rank), cycle);
+      // NextRank should &gt; currRank if there&#x27;s no cycle
+      if (nextRank &lt;= currRank)
+        cycle.push_back(v);
+      minRank = min(minRank, nextRank);
+    }
+
+    rank[u] = rank.size();  // Mark as visited.
+    return minRank;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] distanceToCycle(int n, int[][] edges) {
+    int[] ans = new int[n];
+    List&lt;Integer&gt;[] graph = new List[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    // rank[i] := the minimum node that node i can reach with forward edges
+    // Initialize with NO_RANK = -2 to indicate not visited.
+    int[] rank = new int[n];
+    Arrays.fill(rank, NO_RANK);
+    List&lt;Integer&gt; cycle = new ArrayList&lt;&gt;();
+    getRank(graph, 0, 0, rank, cycle);
+
+    Queue&lt;Integer&gt; q = cycle.stream().collect(Collectors.toCollection(ArrayDeque::new));
+    boolean[] seen = new boolean[n];
+    for (final int u : cycle)
+      seen[u] = true;
+
+    for (int step = 1; !q.isEmpty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int u = q.poll();
+        for (final int v : graph[u]) {
+          if (seen[v])
+            continue;
+          q.offer(v);
+          seen[v] = true;
+          ans[v] = step;
+        }
+      }
+
+    return ans;
+  }
+
+  private static final int NO_RANK = -2;
+
+  // The minRank that u can reach with forward edges
+  private int getRank(List&lt;Integer&gt;[] graph, int u, int currRank, int[] rank, List&lt;Integer&gt; cycle) {
+    if (rank[u] != NO_RANK) // The rank is already determined
+      return rank[u];
+
+    rank[u] = currRank;
+    int minRank = currRank;
+
+    for (final int v : graph[u]) {
+      // Visited || parent (that&#x27;s why NO_RANK = -2 instead of -1)
+      if (rank[u] == rank.length || rank[v] == currRank - 1)
+        continue;
+      final int nextRank = getRank(graph, v, currRank + 1, rank, cycle);
+      // NextRank should &gt; currRank if there&#x27;s no cycle
+      if (nextRank &lt;= currRank)
+        cycle.add(v);
+      minRank = Math.min(minRank, nextRank);
+    }
+
+    rank[u] = rank.length; // Mark as visited.
+    return minRank;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def distanceToCycle(self, n: int, edges: list[list[int]]) -&gt; list[int]:
+    ans = [0] * n
+    graph = [[] for _ in range(n)]
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    NO_RANK = -2
+
+    # The minRank that u can reach with forward edges
+    def getRank(u: int, currRank: int, rank: list[int]) -&gt; int:
+      if rank[u] != NO_RANK:  # The rank is already determined
+        return rank[u]
+
+      rank[u] = currRank
+      minRank = currRank
+
+      for v in graph[u]:
+        # Visited or parent (that&#x27;s why NO_RANK = -2 instead of -1)
+        if rank[v] == len(rank) or rank[v] == currRank - 1:
+          continue
+        nextRank = getRank(v, currRank + 1, rank)
+        # NextRank should &gt; currRank if there&#x27;s no cycle
+        if nextRank &lt;= currRank:
+          cycle.append(v)
+        minRank = min(minRank, nextRank)
+
+      rank[u] = len(rank)  # Mark as visited.
+      return minRank
+
+    # rank[i] := the minimum node that node i can reach with forward edges
+    # Initialize with NO_RANK = -2 to indicate not visited.
+    cycle = []
+    getRank(0, 0, [NO_RANK] * n)
+
+    q = collections.deque(cycle)
+    seen = set(cycle)
+
+    step = 1
+    while q:
+      for _ in range(len(q)):
+        u = q.popleft()
+        for v in graph[u]:
+          if v in seen:
+            continue
+          q.append(v)
+          seen.add(v)
+          ans[v] = step
+      step += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimize the Difference Between Target and Chosen Elements - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimize the Difference Between Target and Chosen Elements written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimize-the-difference-between-target-and-chosen-elements/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-unique-binary-string/" class="btn">← Previous</a>
+            <span>Problem 1981 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-array-given-subset-sums/" class="btn">Next →</a>
+        </div>
+        <h1>1981. Minimize the Difference Between Target and Chosen Elements</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimize the Difference Between Target and Chosen Elements efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimizeTheDifference(vector&lt;vector&lt;int&gt;&gt;&amp; mat, int target) {
+    const int minSum = getMinSum(mat);
+    if (minSum &gt;= target)  // No need to consider any larger combination.
+      return minSum - target;
+
+    const int maxSum = getMaxSum(mat);
+    vector&lt;vector&lt;int&gt;&gt; mem(mat.size(), vector&lt;int&gt;(maxSum + 1, -1));
+    return minimizeTheDifference(mat, 0, 0, target, mem);
+  }
+
+ private:
+  int minimizeTheDifference(const vector&lt;vector&lt;int&gt;&gt;&amp; mat, int i, int sum,
+                            int target, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i == mat.size())
+      return abs(sum - target);
+    if (mem[i][sum] != -1)
+      return mem[i][sum];
+    int res = INT_MAX;
+    for (const int num : mat[i])
+      res = min(res, minimizeTheDifference(mat, i + 1, sum + num, target, mem));
+    return mem[i][sum] = res;
+  }
+
+  int getMinSum(const vector&lt;vector&lt;int&gt;&gt;&amp; mat) {
+    return accumulate(
+        mat.begin(), mat.end(), 0,
+        [](int acc, const vector&lt;int&gt;&amp; row) { return acc + ranges::min(row); });
+  }
+
+  int getMaxSum(const vector&lt;vector&lt;int&gt;&gt;&amp; mat) {
+    return accumulate(
+        mat.begin(), mat.end(), 0,
+        [](int acc, const vector&lt;int&gt;&amp; row) { return acc + ranges::max(row); });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimizeTheDifference(int[][] mat, int target) {
+    final int minSum = Arrays.stream(mat).mapToInt(A -&gt; Arrays.stream(A).min().getAsInt()).sum();
+    if (minSum &gt;= target) // No need to consider any larger combination.
+      return minSum - target;
+
+    final int maxSum = Arrays.stream(mat).mapToInt(A -&gt; Arrays.stream(A).max().getAsInt()).sum();
+    Integer[][] mem = new Integer[mat.length][maxSum + 1];
+    return minimizeTheDifference(mat, 0, 0, target, mem);
+  }
+
+  private int minimizeTheDifference(int[][] mat, int i, int sum, int target, Integer[][] mem) {
+    if (i == mat.length)
+      return Math.abs(sum - target);
+    if (mem[i][sum] != null)
+      return mem[i][sum];
+    int res = Integer.MAX_VALUE;
+    for (final int num : mat[i])
+      res = Math.min(res, minimizeTheDifference(mat, i + 1, sum + num, target, mem));
+    return mem[i][sum] = res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimizeTheDifference(self, mat: list[list[int]], target: int) -&gt; int:
+    minSum = sum(min(row) for row in mat)
+    if minSum &gt;= target:  # No need to consider any larger combination.
+      return minSum - target
+
+    @functools.lru_cache(None)
+    def dp(i: int, summ: int) -&gt; int:
+      if i == len(mat):
+        return abs(summ - target)
+      return min(dp(i + 1, summ + num) for num in mat[i])
+
+    return dp(0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

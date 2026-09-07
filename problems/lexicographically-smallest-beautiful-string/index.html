@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicographically Smallest Beautiful String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Lexicographically Smallest Beautiful String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/lexicographically-smallest-beautiful-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-cost-of-a-path-with-special-roads/" class="btn">← Previous</a>
+            <span>Problem 2663 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-knight-s-tour/" class="btn">Next →</a>
+        </div>
+        <h1>2663. Lexicographically Smallest Beautiful String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Lexicographically Smallest Beautiful String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string smallestBeautifulString(string s, int k) {
+    for (int i = s.length() - 1; i &gt;= 0; --i) {
+      do {
+        ++s[i];
+      } while (containsPalindrome(s, i));
+      if (s[i] &lt; &#x27;a&#x27; + k)
+        // If s[i] is among the first k letters, then change the letters after
+        // s[i] to the smallest ones that don&#x27;t form any palindrome substring.
+        return changeSuffix(s, i + 1);
+    }
+
+    return &quot;&quot;;
+  }
+
+ private:
+  // Returns true if s[0..i] contains any palindrome.
+  bool containsPalindrome(const string&amp; s, int i) {
+    return (i &gt; 0 &amp;&amp; s[i] == s[i - 1]) || (i &gt; 1 &amp;&amp; s[i] == s[i - 2]);
+  }
+
+  // Returns a string, where replacing s[i..n) with the smallest possible
+  // letters don&#x27;t form any palindrome substring.
+  string changeSuffix(string&amp; s, int i) {
+    for (int j = i; j &lt; s.length(); ++j)
+      for (s[j] = &#x27;a&#x27;; containsPalindrome(s, j); ++s[j])
+        ;
+    return s;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String smallestBeautifulString(String s, int k) {
+    StringBuilder sb = new StringBuilder(s);
+
+    for (int i = s.length() - 1; i &gt;= 0; --i) {
+      do {
+        sb.setCharAt(i, (char) (sb.charAt(i) + 1));
+      } while (containsPalindrome(sb, i));
+      if (sb.charAt(i) &lt; &#x27;a&#x27; + k)
+        // If sb[i] is among the first k letters, then change the letters after
+        // sb[i] to the smallest ones that don&#x27;t form any palindrome substring.
+        return changeSuffix(sb, i + 1);
+    }
+
+    return &quot;&quot;;
+  }
+
+  // Returns true if sb[0..i] contains any palindrome.
+  private boolean containsPalindrome(StringBuilder sb, int i) {
+    return (i &gt; 0 &amp;&amp; sb.charAt(i) == sb.charAt(i - 1)) ||
+        (i &gt; 1 &amp;&amp; sb.charAt(i) == sb.charAt(i - 2));
+  }
+
+  // Returns a string, where replacing sb[i..n) with the smallest possible
+  // letters don&#x27;t form any palindrome substring.
+  private String changeSuffix(StringBuilder sb, int i) {
+    for (int j = i; j &lt; sb.length(); ++j)
+      for (sb.setCharAt(j, &#x27;a&#x27;); containsPalindrome(sb, j);
+           sb.setCharAt(j, (char) (sb.charAt(j) + 1)))
+        ;
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def smallestBeautifulString(self, s: str, k: int) -&gt; str:
+    chars = list(s)
+
+    for i in reversed(range(len(chars))):
+      chars[i] = chr(ord(chars[i]) + 1)
+      while self._containsPalindrome(chars, i):
+        chars[i] = chr(ord(chars[i]) + 1)
+      if chars[i] &lt; chr(ord(&#x27;a&#x27;) + k):
+        # If s[i] is among the first k letters, then change the letters after
+        # s[i] to the smallest ones that don&#x27;t form any palindrome substring.
+        return self._changeSuffix(chars, i + 1)
+
+    return &#x27;&#x27;
+
+  def _containsPalindrome(self, chars: list[str], i: int) -&gt; bool:
+    &quot;&quot;&quot;Returns True if chars[0..i] contains palindrome.&quot;&quot;&quot;
+    return ((i &gt; 0 and chars[i] == chars[i - 1]) or
+            (i &gt; 1 and chars[i] == chars[i - 2]))
+
+  def _changeSuffix(self, chars: list[str], i: int) -&gt; str:
+    &quot;&quot;&quot;
+    Returns a string, where replacing sb[i..n) with the smallest possible
+    letters don&#x27;t form any palindrome substring.
+    &quot;&quot;&quot;
+    for j in range(i, len(chars)):
+      chars[j] = &#x27;a&#x27;
+      while self._containsPalindrome(chars, j):
+        chars[j] = chr(ord(chars[j]) + 1)
+    return &#x27;&#x27;.join(chars)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

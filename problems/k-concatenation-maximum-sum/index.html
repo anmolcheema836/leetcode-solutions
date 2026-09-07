@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Concatenation Maximum Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for K-Concatenation Maximum Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/k-concatenation-maximum-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/reverse-substrings-between-each-pair-of-parentheses/" class="btn">← Previous</a>
+            <span>Problem 1191 of 3563</span>
+            <a href="/leetcode-solutions/problems/critical-connections-in-a-network/" class="btn">Next →</a>
+        </div>
+        <h1>1191. K-Concatenation Maximum Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve K-Concatenation Maximum Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int kConcatenationMaxSum(vector&lt;int&gt;&amp; arr, int k) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int sz = arr.size() * (k == 1 ? 1 : 2);
+    const int sum = accumulate(arr.begin(), arr.end(), 0);
+    // The concatenated array will be [arr1, arr2, ..., arrk].
+    // If sum(arr) &gt; 0 and k &gt; 2, then arr2, ..., arr(k - 1) should be included.
+    // Equivalently, maxSubarraySum is from arr1 and arrk.
+    return (sum &gt; 0 &amp;&amp; k &gt; 2
+                ? kadane(arr, sz) + static_cast&lt;long&gt;(sum) * (k - 2)
+                : kadane(arr, sz)) %
+           kMod;
+  }
+
+ private:
+  int kadane(const vector&lt;int&gt;&amp; arr, int sz) {
+    int ans = 0;
+    int sum = 0;
+    for (int i = 0; i &lt; sz; ++i) {
+      const int a = arr[i % arr.size()];
+      sum = max(a, sum + a);
+      ans = max(ans, sum);
+    }
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int kConcatenationMaxSum(int[] arr, int k) {
+    final int MOD = 1_000_000_007;
+    final int sz = arr.length * (k == 1 ? 1 : 2);
+    final int sum = Arrays.stream(arr).sum();
+    // The concatenated array will be [arr1, arr2, ..., arrk].
+    // If sum(arr) &gt; 0 and k &gt; 2, then arr2, ..., arr(k - 1) should be included.
+    // Equivalently, maxSubarraySum is from arr1 and arrk.
+    if (sum &gt; 0 &amp;&amp; k &gt; 2)
+      return (int) ((kadane(arr, sz) + sum * (long) (k - 2)) % MOD);
+    return kadane(arr, sz) % MOD;
+  }
+
+  private int kadane(int[] arr, int sz) {
+    int ans = 0;
+    int sum = 0;
+    for (int i = 0; i &lt; sz; ++i) {
+      final int a = arr[i % arr.length];
+      sum = Math.max(a, sum + a);
+      ans = Math.max(ans, sum);
+    }
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def kConcatenationMaxSum(self, arr: list[int], k: int) -&gt; int:
+    MOD = 1_000_000_007
+    sz = len(arr) * (1 if k == 1 else 2)
+    summ = sum(arr)
+    # The concatenated array will be [arr1, arr2, ..., arrk].
+    # If sum(arr) &gt; 0 and k &gt; 2, then arr2, ..., arr(k - 1) should be included.
+    # Equivalently, maxSubarraySum is from arr1 and arrk.
+    if summ &gt; 0 and k &gt; 2:
+      return (self._kadane(arr, sz) + summ * (k - 2)) % MOD
+    return self._kadane(arr, sz) % MOD
+
+  def _kadane(self, arr: list[int], sz: int) -&gt; int:
+    ans = 0
+    summ = 0
+    for i in range(sz):
+      a = arr[i % len(arr)]
+      summ = max(a, summ + a)
+      ans = max(ans, summ)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Palindromic Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Palindromic Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-palindromic-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/median-of-two-sorted-arrays/" class="btn">← Previous</a>
+            <span>Problem 5 of 3563</span>
+            <a href="/leetcode-solutions/problems/zigzag-conversion/" class="btn">Next →</a>
+        </div>
+        <h1>5. Longest Palindromic Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Palindromic Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string longestPalindrome(string s) {
+    const string t = join(&#x27;@&#x27; + s + &#x27;$&#x27;, /*delimiter=*/&#x27;#&#x27;);
+    const vector&lt;int&gt; p = manacher(t);
+    int maxPalindromeLength = 0;
+    int bestCenter = -1;
+
+    for (int i = 0; i &lt; p.size(); ++i)
+      if (p[i] &gt; maxPalindromeLength) {
+        maxPalindromeLength = p[i];
+        bestCenter = i;
+      }
+
+    const int l = (bestCenter - maxPalindromeLength) / 2;
+    const int r = (bestCenter + maxPalindromeLength) / 2;
+    return s.substr(l, r - l);
+  }
+
+ private:
+  // Returns an array `p` s.t. `p[i]` is the length of the longest palindrome
+  // centered at `t[i]`, where `t` is a string with delimiters and sentinels.
+  vector&lt;int&gt; manacher(const string&amp; t) {
+    vector&lt;int&gt; p(t.length());
+    int center = 0;
+    for (int i = 1; i &lt; t.length() - 1; ++i) {
+      const int rightBoundary = center + p[center];
+      const int mirrorIndex = center - (i - center);
+      if (rightBoundary &gt; i)
+        p[i] = min(rightBoundary - i, p[mirrorIndex]);
+      // Try to expand the palindrome centered at i.
+      while (t[i + 1 + p[i]] == t[i - 1 - p[i]])
+        ++p[i];
+      // If a palindrome centered at i expands past `rightBoundary`, adjust
+      // the center based on the expanded palindrome.
+      if (i + p[i] &gt; rightBoundary)
+        center = i;
+    }
+    return p;
+  }
+
+  string join(const string&amp; s, char delimiter) {
+    string joined;
+    for (int i = 0; i &lt; s.length() - 1; ++i) {
+      joined += s[i];
+      joined += delimiter;
+    }
+    joined += s.back();
+    return joined;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String longestPalindrome(String s) {
+    final String t = join(&#x27;@&#x27; + s + &#x27;$&#x27;, /*delimiter=*/&#x27;#&#x27;);
+    final int[] p = manacher(t);
+    int maxPalindromeLength = 0;
+    int bestCenter = -1;
+
+    for (int i = 0; i &lt; p.length; ++i)
+      if (p[i] &gt; maxPalindromeLength) {
+        maxPalindromeLength = p[i];
+        bestCenter = i;
+      }
+
+    final int l = (bestCenter - maxPalindromeLength) / 2;
+    final int r = (bestCenter + maxPalindromeLength) / 2;
+    return s.substring(l, r);
+  }
+
+  // Returns an array `p` s.t. `p[i]` is the length of the longest palindrome
+  // centered at `t[i]`, where `t` is a string with delimiters and sentinels.
+  private int[] manacher(final String t) {
+    int[] p = new int[t.length()];
+    int center = 0;
+    for (int i = 1; i &lt; t.length() - 1; ++i) {
+      int rightBoundary = center + p[center];
+      int mirrorIndex = center - (i - center);
+      if (rightBoundary &gt; i)
+        p[i] = Math.min(rightBoundary - i, p[mirrorIndex]);
+      // Try to expand the palindrome centered at i.
+      while (i + 1 + p[i] &lt; t.length() &amp;&amp; i - 1 - p[i] &gt;= 0 &amp;&amp;
+             t.charAt(i + 1 + p[i]) == t.charAt(i - 1 - p[i]))
+        ++p[i];
+      // If a palindrome centered at i expands past `rightBoundary`, adjust
+      // the center based on the expanded palindrome.
+      if (i + p[i] &gt; rightBoundary) {
+        center = i;
+      }
+    }
+    return p;
+  }
+
+  private String join(final String s, char delimiter) {
+    StringBuilder joined = new StringBuilder();
+    for (int i = 0; i &lt; s.length() - 1; ++i) {
+      joined.append(s.charAt(i));
+      joined.append(delimiter);
+    }
+    joined.append(s.charAt(s.length() - 1));
+    return joined.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestPalindrome(self, s: str) -&gt; str:
+    t = &#x27;#&#x27;.join(&#x27;@&#x27; + s + &#x27;$&#x27;)
+    p = self._manacher(t)
+    maxPalindromeLength, bestCenter = max((extend, i)
+                                          for i, extend in enumerate(p))
+    l = (bestCenter - maxPalindromeLength) // 2
+    r = (bestCenter + maxPalindromeLength) // 2
+    return s[l:r]
+
+  def _manacher(self, t: str) -&gt; list[int]:
+    &quot;&quot;&quot;
+    Returns an array `p` s.t. `p[i]` is the length of the longest palindrome
+    centered at `t[i]`, where `t` is a string with delimiters and sentinels.
+    &quot;&quot;&quot;
+    p = [0] * len(t)
+    center = 0
+    for i in range(1, len(t) - 1):
+      rightBoundary = center + p[center]
+      mirrorIndex = center - (i - center)
+      if rightBoundary &gt; i:
+        p[i] = min(rightBoundary - i, p[mirrorIndex])
+      # Try to expand the palindrome centered at i.
+      while t[i + 1 + p[i]] == t[i - 1 - p[i]]:
+        p[i] += 1
+      # If a palindrome centered at i expands past `rightBoundary`, adjust
+      # the center based on the expanded palindrome.
+      if i + p[i] &gt; rightBoundary:
+        center = i
+    return p</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

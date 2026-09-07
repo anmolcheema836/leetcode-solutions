@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Movie Rental System - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Movie Rental System written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-movie-rental-system/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-alternating-subsequence-sum/" class="btn">← Previous</a>
+            <span>Problem 1912 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-product-difference-between-two-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>1912. Design Movie Rental System</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Movie Rental System efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class MovieRentingSystem {
+ public:
+  MovieRentingSystem(int n, vector&lt;vector&lt;int&gt;&gt;&amp; entries) {
+    for (const vector&lt;int&gt;&amp; e : entries) {
+      const int shop = e[0];
+      const int movie = e[1];
+      const int price = e[2];
+      unrented[movie].insert({price, shop});
+      shopAndMovieToPrice[{shop, movie}] = price;
+    }
+  }
+
+  vector&lt;int&gt; search(int movie) {
+    vector&lt;int&gt; ans;
+    int i = 0;
+
+    for (const auto&amp; [price, shop] : unrented[movie]) {
+      ans.push_back(shop);
+      if (++i &gt;= 5)
+        break;
+    }
+
+    return ans;
+  }
+
+  void rent(int shop, int movie) {
+    const int price = shopAndMovieToPrice[{shop, movie}];
+    unrented[movie].erase({price, shop});
+    rented.insert({price, {shop, movie}});
+  }
+
+  void drop(int shop, int movie) {
+    const int price = shopAndMovieToPrice[{shop, movie}];
+    unrented[movie].insert({price, shop});
+    rented.erase({price, {shop, movie}});
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; report() {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    int i = 0;
+
+    for (const auto&amp; [_, shopAndMovie] : rented) {
+      ans.push_back({shopAndMovie.first, shopAndMovie.second});
+      if (++i &gt;= 5)
+        break;
+    }
+
+    return ans;
+  }
+
+ private:
+  struct PairHash {
+    size_t operator()(const pair&lt;int, int&gt;&amp; p) const {
+      return p.first ^ p.second;
+    }
+  };
+
+  // {movie: (price, shop)}
+  unordered_map&lt;int, set&lt;pair&lt;int, int&gt;&gt;&gt; unrented;
+
+  // {(shop, movie): price}
+  unordered_map&lt;pair&lt;int, int&gt;, int, PairHash&gt; shopAndMovieToPrice;
+
+  // (price, (shop, movie))
+  set&lt;pair&lt;int, pair&lt;int, int&gt;&gt;&gt; rented;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class MovieRentingSystem {
+  public MovieRentingSystem(int n, int[][] entries) {
+    for (int[] e : entries) {
+      final int shop = e[0];
+      final int movie = e[1];
+      final int price = e[2];
+      unrented.putIfAbsent(movie, new TreeSet&lt;&gt;(comparator));
+      unrented.get(movie).add(new Entry(price, shop, movie));
+      shopAndMovieToPrice.put(new Pair&lt;&gt;(shop, movie), price);
+    }
+  }
+
+  public List&lt;Integer&gt; search(int movie) {
+    return unrented.getOrDefault(movie, Collections.emptySet())
+        .stream()
+        .limit(5)
+        .map(e -&gt; e.shop)
+        .collect(Collectors.toList());
+  }
+
+  public void rent(int shop, int movie) {
+    final int price = shopAndMovieToPrice.get(new Pair&lt;&gt;(shop, movie));
+    unrented.get(movie).remove(new Entry(price, shop, movie));
+    rented.add(new Entry(price, shop, movie));
+  }
+
+  public void drop(int shop, int movie) {
+    final int price = shopAndMovieToPrice.get(new Pair&lt;&gt;(shop, movie));
+    unrented.get(movie).add(new Entry(price, shop, movie));
+    rented.remove(new Entry(price, shop, movie));
+  }
+
+  public List&lt;List&lt;Integer&gt;&gt; report() {
+    return rented.stream().limit(5).map(e -&gt; List.of(e.shop, e.movie)).collect(Collectors.toList());
+  }
+
+  private record Entry(int price, int shop, int movie) {}
+
+  private Comparator&lt;Entry&gt; comparator = Comparator.comparingInt(Entry::price)
+                                             .thenComparingInt(Entry::shop)
+                                             .thenComparingInt(Entry::movie);
+
+  // {movie: (price, shop)}
+  private Map&lt;Integer, Set&lt;Entry&gt;&gt; unrented = new HashMap&lt;&gt;();
+
+  // {(shop, movie): price}
+  private Map&lt;Pair&lt;Integer, Integer&gt;, Integer&gt; shopAndMovieToPrice = new HashMap&lt;&gt;();
+
+  // (price, shop, movie)
+  private Set&lt;Entry&gt; rented = new TreeSet&lt;&gt;(comparator);
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class MovieRentingSystem:
+  def __init__(self, n: int, entries: list[list[int]]):
+    self.unrented = collections.defaultdict(
+        SortedList)  # {movie: (price, shop)}
+    self.shopAndMovieToPrice = {}  # {(shop, movie): price}
+    self.rented = SortedList()  # (price, shop, movie)
+    for shop, movie, price in entries:
+      self.unrented[movie].add((price, shop))
+      self.shopAndMovieToPrice[(shop, movie)] = price
+
+  def search(self, movie: int) -&gt; list[int]:
+    return [shop for _, shop in self.unrented[movie][:5]]
+
+  def rent(self, shop: int, movie: int) -&gt; None:
+    price = self.shopAndMovieToPrice[(shop, movie)]
+    self.unrented[movie].remove((price, shop))
+    self.rented.add((price, shop, movie))
+
+  def drop(self, shop: int, movie: int) -&gt; None:
+    price = self.shopAndMovieToPrice[(shop, movie)]
+    self.unrented[movie].add((price, shop))
+    self.rented.remove((price, shop, movie))
+
+  def report(self) -&gt; list[list[int]]:
+    return [[shop, movie] for _, shop, movie in self.rented[:5]]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

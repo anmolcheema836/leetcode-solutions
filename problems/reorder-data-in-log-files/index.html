@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reorder Data in Log Files - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Reorder Data in Log Files written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/reorder-data-in-log-files/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/stamping-the-sequence/" class="btn">← Previous</a>
+            <span>Problem 937 of 3563</span>
+            <a href="/leetcode-solutions/problems/range-sum-of-bst/" class="btn">Next →</a>
+        </div>
+        <h1>937. Reorder Data in Log Files</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Reorder Data in Log Files efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; reorderLogFiles(vector&lt;string&gt;&amp; logs) {
+    vector&lt;string&gt; ans;
+    vector&lt;string&gt; digitLogs;
+    vector&lt;pair&lt;string, string&gt;&gt; letterLogs;
+
+    for (const string&amp; log : logs) {
+      const int i = log.find_first_of(&#x27; &#x27;);
+      if (isdigit(log[i + 1]))
+        digitLogs.push_back(log);
+      else
+        letterLogs.emplace_back(log.substr(0, i), log.substr(i + 1));
+    }
+
+    ranges::sort(letterLogs, ranges::less{},
+                 [](const pair&lt;string, string&gt;&amp; letterLog) {
+      const auto&amp; [identifier, letters] = letterLog;
+      return pair&lt;string, string&gt;{letters, identifier};
+    });
+
+    for (const auto&amp; [identifier, letters] : letterLogs)
+      ans.push_back(identifier + &#x27; &#x27; + letters);
+
+    for (const string&amp; digitLog : digitLogs)
+      ans.push_back(digitLog);
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String[] reorderLogFiles(String[] logs) {
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;String&gt; digitLogs = new ArrayList&lt;&gt;();
+    List&lt;String[]&gt; letterLogs = new ArrayList&lt;&gt;();
+
+    for (final String log : logs) {
+      final int i = log.indexOf(&#x27; &#x27;);
+      if (Character.isDigit(log.charAt(i + 1)))
+        digitLogs.add(log);
+      else
+        letterLogs.add(new String[] {log.substring(0, i), log.substring(i + 1)});
+    }
+
+    Collections.sort(letterLogs, Comparator.comparing((String[] letterLog) -&gt; letterLog[1])
+                                     .thenComparing((String[] letterLog) -&gt; letterLog[0]));
+
+    for (String[] letterLog : letterLogs)
+      ans.add(letterLog[0] + &quot; &quot; + letterLog[1]);
+
+    for (final String digitLog : digitLogs)
+      ans.add(digitLog);
+
+    return ans.toArray(new String[0]);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def reorderLogFiles(self, logs: list[str]) -&gt; list[str]:
+    digitLogs = []
+    letterLogs = []
+
+    for log in logs:
+      i = log.index(&#x27; &#x27;)
+      if log[i + 1].isdigit():
+        digitLogs.append(log)
+      else:
+        letterLogs.append((log[:i], log[i + 1:]))
+
+    letterLogs.sort(key=lambda x: (x[1], x[0]))
+    return [identifier + &#x27; &#x27; + letters for identifier, letters in letterLogs] + digitLogs</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

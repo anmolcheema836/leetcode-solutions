@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interval List Intersections - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Interval List Intersections written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/interval-list-intersections/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sum-of-even-numbers-after-queries/" class="btn">← Previous</a>
+            <span>Problem 986 of 3563</span>
+            <a href="/leetcode-solutions/problems/vertical-order-traversal-of-a-binary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>986. Interval List Intersections</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Interval List Intersections efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; intervalIntersection(vector&lt;vector&lt;int&gt;&gt;&amp; firstList,
+                                           vector&lt;vector&lt;int&gt;&gt;&amp; secondList) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    short i = 0;
+    short j = 0;
+
+    while (i &lt; firstList.size() &amp;&amp; j &lt; secondList.size()) {
+      // lo := the start of the intersection
+      // hi := the end of the intersection
+      const int lo = max(firstList[i][0], secondList[j][0]);
+      const int hi = min(firstList[i][1], secondList[j][1]);
+      if (lo &lt;= hi)
+        ans.push_back({lo, hi});
+      firstList[i][1] &lt; secondList[j][1] ? ++i : ++j;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
+    List&lt;int[]&gt; ans = new ArrayList&lt;&gt;();
+    short i = 0;
+    short j = 0;
+
+    while (i &lt; firstList.length &amp;&amp; j &lt; secondList.length) {
+      // lo := the start of the intersection
+      // hi := the end of the intersection
+      final int lo = Math.max(firstList[i][0], secondList[j][0]);
+      final int hi = Math.min(firstList[i][1], secondList[j][1]);
+      if (lo &lt;= hi)
+        ans.add(new int[] {lo, hi});
+      if (firstList[i][1] &lt; secondList[j][1])
+        ++i;
+      else
+        ++j;
+    }
+
+    return ans.toArray(new int[ans.size()][]);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def intervalIntersection(self, firstList: list[list[int]],
+                           secondList: list[list[int]]) -&gt; list[list[int]]:
+    ans = []
+    i = 0
+    j = 0
+
+    while i &lt; len(firstList) and j &lt; len(secondList):
+      # lo := the start of the intersection
+      # hi := the end of the intersection
+      lo = max(firstlist[i][0], secondlist[j][0])
+      hi = min(firstlist[i][1], secondlist[j][1])
+      if lo &lt;= hi:
+        ans.append([lo, hi])
+      if firstlist[i][1] &lt; secondlist[j][1]:
+        i += 1
+      else:
+        j += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

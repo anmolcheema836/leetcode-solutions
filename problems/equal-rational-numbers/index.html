@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equal Rational Numbers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Equal Rational Numbers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/equal-rational-numbers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/flip-binary-tree-to-match-preorder-traversal/" class="btn">← Previous</a>
+            <span>Problem 972 of 3563</span>
+            <a href="/leetcode-solutions/problems/k-closest-points-to-origin/" class="btn">Next →</a>
+        </div>
+        <h1>972. Equal Rational Numbers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Equal Rational Numbers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isRationalEqual(string s, string t) {
+    return abs(valueOf(s) - valueOf(t)) &lt; 1e-9;
+  }
+
+ private:
+  const vector&lt;double&gt; ratios{1.0, 1.0 / 9, 1.0 / 99, 1.0 / 999, 1.0 / 9999};
+
+  double valueOf(const string&amp; s) {
+    if (s.find(&#x27;(&#x27;) == string::npos)
+      return stod(s);
+
+    // Get the indices..
+    const int leftParenIndex = s.find_first_of(&#x27;(&#x27;);
+    const int rightParenIndex = s.find_first_of(&#x27;)&#x27;);
+    const int dotIndex = s.find_first_of(&#x27;.&#x27;);
+
+    // integerAndNonRepeating := &lt;IntegerPart&gt;&lt;.&gt;&lt;NonRepeatingPart&gt;
+    const double integerAndNonRepeating = stod(s.substr(0, leftParenIndex));
+    const int nonRepeatingLength = leftParenIndex - dotIndex - 1;
+
+    // repeating := &lt;RepeatingPart&gt;
+    const int repeating = stoi(s.substr(leftParenIndex + 1, rightParenIndex));
+    const int repeatingLength = rightParenIndex - leftParenIndex - 1;
+    return integerAndNonRepeating +
+           repeating * pow(0.1, nonRepeatingLength) * ratios[repeatingLength];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isRationalEqual(String s, String t) {
+    return Math.abs(valueOf(s) - valueOf(t)) &lt; 1e-9;
+  }
+
+  private static double[] ratios = new double[] {1.0, 1.0 / 9, 1.0 / 99, 1.0 / 999, 1.0 / 9999};
+
+  private double valueOf(final String s) {
+    if (!s.contains(&quot;(&quot;))
+      return Double.valueOf(s);
+
+    // Get the indices..
+    final int leftParenIndex = s.indexOf(&#x27;(&#x27;);
+    final int rightParenIndex = s.indexOf(&#x27;)&#x27;);
+    final int dotIndex = s.indexOf(&#x27;.&#x27;);
+
+    // integerAndNonRepeating := &lt;IntegerPart&gt;&lt;.&gt;&lt;NonRepeatingPart&gt;
+    final double nonRepeating = Double.valueOf(s.substring(0, leftParenIndex));
+    final int nonRepeatingLength = leftParenIndex - dotIndex - 1;
+
+    // repeating := &lt;RepeatingPart&gt;
+    final int repeating = Integer.parseInt(s.substring(leftParenIndex + 1, rightParenIndex));
+    final int repeatingLength = rightParenIndex - leftParenIndex - 1;
+    return nonRepeating + repeating * Math.pow(0.1, nonRepeatingLength) * ratios[repeatingLength];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isRationalEqual(self, s: str, t: str) -&gt; bool:
+    ratios = [1, 1 / 9, 1 / 99, 1 / 999, 1 / 9999]
+
+    def valueOf(s: str) -&gt; float:
+      if s.find(&#x27;(&#x27;) == -1:
+        return float(s)
+
+      # Get the indices.
+      leftParenIndex = s.find(&#x27;(&#x27;)
+      rightParenIndex = s.find(&#x27;)&#x27;)
+      dotIndex = s.find(&#x27;.&#x27;)
+
+      # integerAndNonRepeating := &lt;IntegerPart&gt;&lt;.&gt;&lt;NonRepeatingPart&gt;
+      integerAndNonRepeating = float(s[:leftParenIndex])
+      nonRepeatingLength = leftParenIndex - dotIndex - 1
+
+      # repeating := &lt;RepeatingPart&gt;
+      repeating = int(s[leftParenIndex + 1:rightParenIndex])
+      repeatingLength = rightParenIndex - leftParenIndex - 1
+      return integerAndNonRepeating + repeating * 0.1**nonRepeatingLength * ratios[repeatingLength]
+
+    return abs(valueOf(s) - valueOf(t)) &lt; 1e-9</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

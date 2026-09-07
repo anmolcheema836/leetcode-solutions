@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Number of Distinct Characters Equal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Make Number of Distinct Characters Equal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/make-number-of-distinct-characters-equal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximal-score-after-applying-k-operations/" class="btn">← Previous</a>
+            <span>Problem 2531 of 3563</span>
+            <a href="/leetcode-solutions/problems/time-to-cross-a-bridge/" class="btn">Next →</a>
+        </div>
+        <h1>2531. Make Number of Distinct Characters Equal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Make Number of Distinct Characters Equal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isItPossible(string word1, string word2) {
+    const vector&lt;int&gt; count1 = getCount(word1);
+    const vector&lt;int&gt; count2 = getCount(word2);
+    const int distinct1 = getDistinct(count1);
+    const int distinct2 = getDistinct(count2);
+
+    for (int i = 0; i &lt; 26; ++i)
+      for (int j = 0; j &lt; 26; ++j) {
+        if (count1[i] == 0 || count2[j] == 0)
+          continue;
+        if (i == j) {
+          // Swapping the same letters won&#x27;t change the number of distinct
+          // letters in each string, so just check if `distinct1 == distinct2`.
+          if (distinct1 == distinct2)
+            return true;
+          continue;
+        }
+        // The calculation is meaningful only when i != j.
+        // Swap (&#x27;a&#x27; + i) in word1 with (&#x27;a&#x27; + j) in word2.
+        const int distinctAfterSwap1 =
+            distinct1 - (count1[i] == 1) + (count1[j] == 0);
+        const int distinctAfterSwap2 =
+            distinct2 - (count2[j] == 1) + (count2[i] == 0);
+        if (distinctAfterSwap1 == distinctAfterSwap2)
+          return true;
+      }
+
+    return false;
+  }
+
+ private:
+  vector&lt;int&gt; getCount(const string&amp; s) {
+    vector&lt;int&gt; count(26);
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+    return count;
+  }
+
+  int getDistinct(const vector&lt;int&gt;&amp; count) {
+    return ranges::count_if(count, [](const int c) { return c &gt; 0; });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isItPossible(String word1, String word2) {
+    final int[] count1 = getCount(word1);
+    final int[] count2 = getCount(word2);
+    final int distinct1 = getDistinct(count1);
+    final int distinct2 = getDistinct(count2);
+
+    for (int i = 0; i &lt; 26; ++i)
+      for (int j = 0; j &lt; 26; ++j) {
+        if (count1[i] == 0 || count2[j] == 0)
+          continue;
+        if (i == j) {
+          // Swapping the same letters won&#x27;t change the number of distinct
+          // letters in each string, so just check if `distinct1 == distinct2`.
+          if (distinct1 == distinct2)
+            return true;
+          continue;
+        }
+        // The calculation is meaningful only when i != j.
+        // Swap (&#x27;a&#x27; + i) in word1 with (&#x27;a&#x27; + j) in word2.
+        final int distinctAfterSwap1 =
+            distinct1 - (count1[i] == 1 ? 1 : 0) + (count1[j] == 0 ? 1 : 0);
+        final int distinctAfterSwap2 =
+            distinct2 - (count2[j] == 1 ? 1 : 0) + (count2[i] == 0 ? 1 : 0);
+        if (distinctAfterSwap1 == distinctAfterSwap2)
+          return true;
+      }
+
+    return false;
+  }
+
+  private int[] getCount(final String s) {
+    int[] count = new int[26];
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+    return count;
+  }
+
+  private int getDistinct(int[] count) {
+    return (int) Arrays.stream(count).filter(c -&gt; c &gt; 0).count();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isItPossible(self, word1: str, word2: str) -&gt; bool:
+    count1 = collections.Counter(word1)
+    count2 = collections.Counter(word2)
+    distinct1 = len(count1)
+    distinct2 = len(count2)
+
+    for a in count1:
+      for b in count2:
+        if a == b:
+          # Swapping the same letters won&#x27;t change the number of distinct
+          # letters in each string, so just check if `distinct1 == distinct2`.
+          if distinct1 == distinct2:
+            return True
+          continue
+        # The calculation is meaningful only when a != b
+        # Swap a in word1 with b in word2.
+        distinctAfterSwap1 = distinct1 - (count1[a] == 1) + (count1[b] == 0)
+        distinctAfterSwap2 = distinct2 - (count2[b] == 1) + (count2[a] == 0)
+        if distinctAfterSwap1 == distinctAfterSwap2:
+          return True
+
+    return False</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

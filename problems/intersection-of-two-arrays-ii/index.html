@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersection of Two Arrays II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Intersection of Two Arrays II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/intersection-of-two-arrays-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/intersection-of-two-arrays/" class="btn">← Previous</a>
+            <span>Problem 350 of 3563</span>
+            <a href="/leetcode-solutions/problems/android-unlock-patterns/" class="btn">Next →</a>
+        </div>
+        <h1>350. Intersection of Two Arrays II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Intersection of Two Arrays II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; intersect(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    if (nums1.size() &gt; nums2.size())
+      return intersect(nums2, nums1);
+
+    vector&lt;int&gt; ans;
+    int lowerBound = 0;  // the lower bound for the binary search
+
+    ranges::sort(nums1);
+    ranges::sort(nums2);
+
+    for (const int num : nums1) {
+      const int i = binarySearch(nums2, lowerBound, num);
+      if (i &lt; nums2.size() &amp;&amp; nums2[i] == num) {
+        ans.push_back(num);
+        lowerBound = i + 1;
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  int binarySearch(vector&lt;int&gt;&amp; nums2, int lo, int target) {
+    int l = lo;
+    int r = nums2.size();
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (nums2[m] &gt;= target)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] intersect(int[] nums1, int[] nums2) {
+    if (nums1.length &gt; nums2.length)
+      return intersect(nums2, nums1);
+
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final int num : nums1)
+      count.put(num, count.getOrDefault(num, 0) + 1);
+
+    for (final int num : nums2)
+      if (count.containsKey(num) &amp;&amp; count.get(num) &gt; 0) {
+        ans.add(num);
+        count.put(num, count.get(num) - 1);
+      }
+
+    return ans.stream().mapToInt(Integer::intValue).toArray();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def intersect(self, nums1: list[int], nums2: list[int]) -&gt; list[int]:
+    if len(nums1) &gt; len(nums2):
+      return self.intersect(nums2, nums1)
+
+    ans = []
+    count = collections.Counter(nums1)
+
+    for num in nums2:
+      if count[num] &gt; 0:
+        ans.append(num)
+        count[num] -= 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

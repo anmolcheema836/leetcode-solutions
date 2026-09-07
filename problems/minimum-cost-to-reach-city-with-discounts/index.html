@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost to Reach City With Discounts - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost to Reach City With Discounts written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-to-reach-city-with-discounts/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-all-people-with-secret/" class="btn">← Previous</a>
+            <span>Problem 2093 of 3563</span>
+            <a href="/leetcode-solutions/problems/finding-3-digit-even-numbers/" class="btn">Next →</a>
+        </div>
+        <h1>2093. Minimum Cost to Reach City With Discounts</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost to Reach City With Discounts efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  int u;
+  int d;
+  int leftDiscounts;
+};
+
+class Solution {
+ public:
+  int minimumCost(int n, vector&lt;vector&lt;int&gt;&gt;&amp; highways, int discounts) {
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n);
+    auto compare = [](const T&amp; a, const T&amp; b) { return a.d &gt; b.d; };
+    priority_queue&lt;T, vector&lt;T&gt;, decltype(compare)&gt; minHeap(compare);
+    unordered_map&lt;int, int&gt; minDiscounts;
+
+    for (const vector&lt;int&gt;&amp; h : highways) {
+      const int city1 = h[0];
+      const int city2 = h[1];
+      const int toll = h[2];
+      graph[city1].emplace_back(city2, toll);
+      graph[city2].emplace_back(city1, toll);
+    }
+
+    minHeap.emplace(0, 0, discounts);
+
+    while (!minHeap.empty()) {
+      const auto [u, d, leftDiscounts] = minHeap.top();
+      minHeap.pop();
+      if (u == n - 1)
+        return d;
+      if (const auto it = minDiscounts.find(u);
+          it != minDiscounts.cend() &amp;&amp; it-&gt;second &gt;= leftDiscounts)
+        continue;
+      minDiscounts[u] = leftDiscounts;
+      for (const auto&amp; [v, w] : graph[u]) {
+        minHeap.emplace(v, d + w, leftDiscounts);
+        if (leftDiscounts &gt; 0)
+          minHeap.emplace(v, d + w / 2, leftDiscounts - 1);
+      }
+    }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumCost(int n, int[][] highways, int discounts) {
+    record T(int u, int d, int leftDiscounts) {}
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[n];
+    Queue&lt;T&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(T::d));
+    Map&lt;Integer, Integer&gt; minDiscounts = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; graph.length; i++)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] h : highways) {
+      final int city1 = h[0];
+      final int city2 = h[1];
+      final int toll = h[2];
+      graph[city1].add(new Pair&lt;&gt;(city2, toll));
+      graph[city2].add(new Pair&lt;&gt;(city1, toll));
+    }
+
+    minHeap.offer(new T(0, 0, discounts));
+
+    while (!minHeap.isEmpty()) {
+      final int u = minHeap.peek().u;
+      final int d = minHeap.peek().d;
+      final int leftDiscounts = minHeap.poll().leftDiscounts;
+      if (u == n - 1)
+        return d;
+      if (minDiscounts.getOrDefault(u, -1) &gt;= leftDiscounts)
+        continue;
+      minDiscounts.put(u, leftDiscounts);
+      for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+        final int v = pair.getKey();
+        final int w = pair.getValue();
+        minHeap.offer(new T(v, d + w, leftDiscounts));
+        if (leftDiscounts &gt; 0)
+          minHeap.offer(new T(v, d + w / 2, leftDiscounts - 1));
+      }
+    }
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumCost(
+      self,
+      n: int,
+      highways: list[list[int]],
+      discounts: int,
+  ) -&gt; int:
+    graph = [[] for _ in range(n)]
+    minHeap = [(0, 0, discounts)]  # (d, u, leftDiscounts)
+    minDiscounts = {}
+
+    for city1, city2, toll in highways:
+      graph[city1].append((city2, toll))
+      graph[city2].append((city1, toll))
+
+    while minHeap:
+      d, u, leftDiscounts = heapq.heappop(minHeap)
+      if u == n - 1:
+        return d
+      if u in minDiscounts and minDiscounts[u] &gt;= leftDiscounts:
+        continue
+      minDiscounts[u] = leftDiscounts
+      for v, w in graph[u]:
+        heapq.heappush(minHeap, (d + w, v, leftDiscounts))
+        if leftDiscounts &gt; 0:
+          heapq.heappush(minHeap, (d + w // 2, v, leftDiscounts - 1))
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

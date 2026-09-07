@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Number of Lines to Cover Points - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Number of Lines to Cover Points written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-number-of-lines-to-cover-points/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-good-people-based-on-statements/" class="btn">← Previous</a>
+            <span>Problem 2152 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-number-of-passengers-in-each-bus-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2152. Minimum Number of Lines to Cover Points</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Number of Lines to Cover Points efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumLines(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    const int allCovered = (1 &lt;&lt; points.size()) - 1;
+    return dfs(points, 0, allCovered, vector&lt;int&gt;(allCovered, -1));
+  }
+
+ private:
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; points, int covered, int allCovered,
+          vector&lt;int&gt;&amp;&amp; mem) {
+    if (covered == allCovered)
+      return 0;
+    if (mem[covered] != -1)
+      return mem[covered];
+
+    const int n = points.size();
+    int ans = n / 2 + (n &amp; 1);
+
+    for (int i = 0; i &lt; n; ++i) {
+      if (covered &gt;&gt; i &amp; 1)
+        continue;
+      for (int j = 0; j &lt; n; ++j) {
+        if (i == j)
+          continue;
+        // Connect the points[i] with the points[j].
+        int newCovered = covered | 1 &lt;&lt; i | 1 &lt;&lt; j;
+        // Mark the points covered by this line.
+        const pair&lt;int, int&gt; slope = getSlope(points[i], points[j]);
+        for (int k = 0; k &lt; n; ++k)
+          if (getSlope(points[i], points[k]) == slope)
+            newCovered |= 1 &lt;&lt; k;
+        ans = min(ans, 1 + dfs(points, newCovered, allCovered, std::move(mem)));
+      }
+    }
+
+    return mem[covered] = ans;
+  }
+
+  pair&lt;int, int&gt; getSlope(const vector&lt;int&gt;&amp; p, const vector&lt;int&gt;&amp; q) {
+    const int dx = p[0] - q[0];
+    const int dy = p[1] - q[1];
+    if (dx == 0)
+      return {0, p[0]};
+    if (dy == 0)
+      return {p[1], 0};
+    const int d = __gcd(dx, dy);
+    const int x = dx / d;
+    const int y = dy / d;
+    if (x &gt; 0)
+      return {x, y};
+    return {-x, -y};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumLines(int[][] points) {
+    final int allCovered = (1 &lt;&lt; points.length) - 1;
+    int[] mem = new int[allCovered];
+    Arrays.fill(mem, -1);
+    return dfs(points, 0, allCovered, mem);
+  }
+
+  private int dfs(int[][] points, int covered, int allCovered, int[] mem) {
+    if (covered == allCovered)
+      return 0;
+    if (mem[covered] != -1)
+      return mem[covered];
+
+    final int n = points.length;
+    int ans = n / 2 + ((n &amp; 1) == 1 ? 1 : 0);
+
+    for (int i = 0; i &lt; n; ++i) {
+      if ((covered &gt;&gt; i &amp; 1) == 1)
+        continue;
+      for (int j = 0; j &lt; n; ++j) {
+        if (i == j)
+          continue;
+        // Connect the points[i] with the points[j].
+        int newCovered = covered | 1 &lt;&lt; i | 1 &lt;&lt; j;
+        // Mark the points covered by this line.
+        Pair&lt;Integer, Integer&gt; slope = getSlope(points[i], points[j]);
+        for (int k = 0; k &lt; n; ++k)
+          if (getSlope(points[i], points[k]).equals(slope))
+            newCovered |= 1 &lt;&lt; k;
+        ans = Math.min(ans, 1 + dfs(points, newCovered, allCovered, mem));
+      }
+    }
+
+    return mem[covered] = ans;
+  }
+
+  private Pair&lt;Integer, Integer&gt; getSlope(int[] p, int[] q) {
+    final int dx = p[0] - q[0];
+    final int dy = p[1] - q[1];
+    if (dx == 0)
+      return new Pair&lt;&gt;(0, p[0]);
+    if (dy == 0)
+      return new Pair&lt;&gt;(p[1], 0);
+    final int d = gcd(dx, dy);
+    final int x = dx / d;
+    final int y = dy / d;
+    return x &gt; 0 ? new Pair&lt;&gt;(x, y) : new Pair&lt;&gt;(-x, -y);
+  }
+
+  private int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumLines(self, points: list[list[int]]) -&gt; int:
+    n = len(points)
+    allCovered = (1 &lt;&lt; n) - 1
+    maxLines = n // 2 + (n &amp; 1)
+
+    def getSlope(p: list[int], q: list[int]) -&gt; tuple[int, int]:
+      dx = p[0] - q[0]
+      dy = p[1] - q[1]
+      if dx == 0:
+        return (0, p[0])
+      if dy == 0:
+        return (p[1], 0)
+      d = gcd(dx, dy)
+      x = dx // d
+      y = dy // d
+      return (x, y) if x &gt; 0 else (-x, -y)
+
+    @functools.lru_cache(None)
+    def dfs(covered: int) -&gt; int:
+      if covered == allCovered:
+        return 0
+
+      ans = maxLines
+
+      for i in range(n):
+        if covered &gt;&gt; i &amp; 1:
+          continue
+        for j in range(n):
+          if i == j:
+            continue
+          # Connect the points[i] with the points[j].
+          newCovered = covered | 1 &lt;&lt; i | 1 &lt;&lt; j
+          slope = getSlope(points[i], points[j])
+          # Mark the points covered by this line.
+          for k in range(n):
+            if getSlope(points[i], points[k]) == slope:
+              newCovered |= 1 &lt;&lt; k
+          ans = min(ans, 1 + dfs(newCovered))
+
+      return ans
+
+    return dfs(0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

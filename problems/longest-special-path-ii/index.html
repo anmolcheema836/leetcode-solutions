@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Special Path II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Special Path II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-special-path-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-common-prefix-of-k-strings-after-removal/" class="btn">← Previous</a>
+            <span>Problem 3486 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-unique-subarray-sum-after-deletion/" class="btn">Next →</a>
+        </div>
+        <h1>3486. Longest Special Path II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Special Path II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; longestSpecialPath(vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                                 vector&lt;int&gt;&amp; nums) {
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(nums.size());
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int w = edge[2];
+      graph[u].emplace_back(v, w);
+      graph[v].emplace_back(u, w);
+    }
+
+    int maxLength = 0;
+    int minNodes = 1;
+    dfs(graph, 0, -1, /*leftBoundary=*/{0, 0}, /*prefix=*/{0},
+        /*lastSeenDepth=*/{}, nums, maxLength, minNodes);
+    return {maxLength, minNodes};
+  }
+
+ private:
+  void dfs(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int u, int prev,
+           vector&lt;int&gt; leftBoundary, vector&lt;int&gt;&amp;&amp; prefix,
+           unordered_map&lt;int, int&gt;&amp;&amp; lastSeenDepth, const vector&lt;int&gt;&amp; nums,
+           int&amp; maxLength, int&amp; minNodes) {
+    const int prevDepth = lastSeenDepth[nums[u]];
+    lastSeenDepth[nums[u]] = prefix.size();
+
+    if (prevDepth != 0) {
+      leftBoundary.push_back(prevDepth);
+      ranges::sort(leftBoundary);
+      leftBoundary = {leftBoundary[leftBoundary.size() - 2],
+                      leftBoundary.back()};
+    }
+
+    const int length = prefix.back() - prefix[leftBoundary[0]];
+    const int nodes = prefix.size() - leftBoundary[0];
+    if (length &gt; maxLength || (length == maxLength &amp;&amp; nodes &lt; minNodes)) {
+      maxLength = length;
+      minNodes = nodes;
+    }
+
+    for (const auto&amp; [v, w] : graph[u]) {
+      if (v == prev)
+        continue;
+      prefix.push_back(prefix.back() + w);
+      dfs(graph, v, u, leftBoundary, std::move(prefix),
+          std::move(lastSeenDepth), nums, maxLength, minNodes);
+      prefix.pop_back();
+    }
+
+    lastSeenDepth[nums[u]] = prevDepth;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] longestSpecialPath(int[][] edges, int[] nums) {
+    List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph = new List[nums.length];
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      final int w = edge[2];
+      graph[u].add(new Pair&lt;&gt;(v, w));
+      graph[v].add(new Pair&lt;&gt;(u, w));
+    }
+
+    int[] ans = new int[2];
+    ans[0] = 0; // maxLength
+    ans[1] = 1; // minNodes
+    dfs(graph, 0, -1, /*leftBoundary=*/List.of(0, 0),
+        /*prefix=*/new ArrayList&lt;&gt;(List.of(0)),
+        /*lastSeenDepth=*/new HashMap&lt;&gt;(), nums, ans);
+    return ans;
+  }
+
+  private void dfs(List&lt;Pair&lt;Integer, Integer&gt;&gt;[] graph, int u, int prev,
+                   List&lt;Integer&gt; leftBoundary, List&lt;Integer&gt; prefix,
+                   Map&lt;Integer, Integer&gt; lastSeenDepth, int[] nums, int[] ans) {
+    final int prevDepth = lastSeenDepth.getOrDefault(nums[u], 0);
+    lastSeenDepth.put(nums[u], prefix.size());
+
+    if (prevDepth != 0) {
+      leftBoundary.add(prevDepth);
+      Collections.sort(leftBoundary);
+      leftBoundary = List.of(leftBoundary.get(leftBoundary.size() - 2),
+                             leftBoundary.get(leftBoundary.size() - 1));
+    }
+
+    final int length = prefix.get(prefix.size() - 1) - prefix.get(leftBoundary.get(0));
+    final int nodes = prefix.size() - leftBoundary.get(0);
+    if (length &gt; ans[0] || (length == ans[0] &amp;&amp; nodes &lt; ans[1])) {
+      ans[0] = length;
+      ans[1] = nodes;
+    }
+
+    for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final int w = pair.getValue();
+      if (v == prev)
+        continue;
+      prefix.add(prefix.get(prefix.size() - 1) + w);
+      dfs(graph, v, u, new ArrayList&lt;&gt;(leftBoundary), prefix, lastSeenDepth, nums, ans);
+      prefix.remove(prefix.size() - 1);
+    }
+
+    lastSeenDepth.put(nums[u], prevDepth);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 3425. Longest Special Path
+  def longestSpecialPath(
+      self,
+      edges: list[list[int]],
+      nums: list[int]
+  ) -&gt; list[int]:
+    maxLength = 0
+    minNodes = 1
+    graph = [[] for _ in range(len(nums))]
+
+    for u, v, w in edges:
+      graph[u].append((v, w))
+      graph[v].append((u, w))
+
+    prefix = [0]
+    lastSeenDepth = {}
+
+    def dfs(
+        u: int,
+        prev: int,
+        leftBoundary: list[int],
+    ) -&gt; None:
+      nonlocal maxLength, minNodes
+      prevDepth = lastSeenDepth.get(nums[u], 0)
+      lastSeenDepth[nums[u]] = len(prefix)
+
+      if prevDepth != 0:
+        leftBoundary = sorted(leftBoundary + [prevDepth])[-2:]
+
+      length = prefix[-1] - prefix[leftBoundary[0]]
+      nodes = len(prefix) - leftBoundary[0]
+      if length &gt; maxLength or (length == maxLength and nodes &lt; minNodes):
+        maxLength = length
+        minNodes = nodes
+
+      for v, w in graph[u]:
+        if v == prev:
+          continue
+        prefix.append(prefix[-1] + w)
+        dfs(v, u, leftBoundary)
+        prefix.pop()
+
+      lastSeenDepth[nums[u]] = prevDepth
+
+    dfs(0, -1, leftBoundary=[0, 0])
+    return [maxLength, minNodes]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

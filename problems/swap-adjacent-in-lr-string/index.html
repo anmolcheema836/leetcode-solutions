@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swap Adjacent in LR String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Swap Adjacent in LR String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/swap-adjacent-in-lr-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/split-bst/" class="btn">← Previous</a>
+            <span>Problem 777 of 3563</span>
+            <a href="/leetcode-solutions/problems/swim-in-rising-water/" class="btn">Next →</a>
+        </div>
+        <h1>777. Swap Adjacent in LR String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Swap Adjacent in LR String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool canTransform(string start, string end) {
+    if (removeX(start) != removeX(end))
+      return false;
+
+    int i = 0;  // start&#x27;s index
+    int j = 0;  // end&#x27;s index
+
+    while (i &lt; start.length() &amp;&amp; j &lt; end.length()) {
+      while (i &lt; start.length() &amp;&amp; start[i] == &#x27;X&#x27;)
+        ++i;
+      while (j &lt; end.length() &amp;&amp; end[j] == &#x27;X&#x27;)
+        ++j;
+      if (i == start.length() &amp;&amp; j == end.length())
+        return true;
+      if (i == start.length() || j == end.length())
+        return false;
+      // L can only move to left.
+      if (start[i] == &#x27;L&#x27; &amp;&amp; i &lt; j)
+        return false;
+      // R can only move to right.
+      if (start[i] == &#x27;R&#x27; &amp;&amp; i &gt; j)
+        return false;
+      ++i;
+      ++j;
+    }
+
+    return true;
+  }
+
+ private:
+  string removeX(const string&amp; s) {
+    string t = s;
+    std::erase(t, &#x27;X&#x27;);
+    return t;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean canTransform(String start, String end) {
+    if (!start.replace(&quot;X&quot;, &quot;&quot;).equals(end.replace(&quot;X&quot;, &quot;&quot;)))
+      return false;
+
+    int i = 0; // start&#x27;s index
+    int j = 0; // end&#x27;s index
+
+    while (i &lt; start.length() &amp;&amp; j &lt; end.length()) {
+      while (i &lt; start.length() &amp;&amp; start.charAt(i) == &#x27;X&#x27;)
+        ++i;
+      while (j &lt; end.length() &amp;&amp; end.charAt(j) == &#x27;X&#x27;)
+        ++j;
+      if (i == start.length() &amp;&amp; j == end.length())
+        return true;
+      if (i == start.length() || j == end.length())
+        return false;
+      // L can only move to left.
+      if (start.charAt(i) == &#x27;L&#x27; &amp;&amp; i &lt; j)
+        return false;
+      // R can only move to right.
+      if (start.charAt(i) == &#x27;R&#x27; &amp;&amp; i &gt; j)
+        return false;
+      ++i;
+      ++j;
+    }
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def canTransform(self, start: str, end: str) -&gt; bool:
+    if start.replace(&#x27;X&#x27;, &#x27;&#x27;) != end.replace(&#x27;X&#x27;, &#x27;&#x27;):
+      return False
+
+    i = 0  # start&#x27;s index
+    j = 0  # end&#x27;s index
+
+    while i &lt; len(start) and j &lt; len(end):
+      while i &lt; len(start) and start[i] == &#x27;X&#x27;:
+        i += 1
+      while j &lt; len(end) and end[j] == &#x27;X&#x27;:
+        j += 1
+      if i == len(start) and j == len(end):
+        return True
+      if i == len(start) or j == len(end):
+        return False
+      # L can only move to left.
+      if start[i] == &#x27;L&#x27; and i &lt; j:
+        return False
+      # R can only move to right.
+      if start[i] == &#x27;R&#x27; and i &gt; j:
+        return False
+      i += 1
+      j += 1
+
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

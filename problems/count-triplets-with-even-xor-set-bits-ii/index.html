@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Triplets with Even XOR Set Bits II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Triplets with Even XOR Set Bits II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-triplets-with-even-xor-set-bits-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/year-on-year-growth-rate/" class="btn">← Previous</a>
+            <span>Problem 3215 of 3563</span>
+            <a href="/leetcode-solutions/problems/lexicographically-smallest-string-after-a-swap/" class="btn">Next →</a>
+        </div>
+        <h1>3215. Count Triplets with Even XOR Set Bits II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Triplets with Even XOR Set Bits II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Same as 3199. Count Triplets with Even XOR Set Bits I
+  long long tripletCount(vector&lt;int&gt;&amp; a, vector&lt;int&gt;&amp; b, vector&lt;int&gt;&amp; c) {
+    const auto [evenA, oddA] = getEvenOddBitCount(a);
+    const auto [evenB, oddB] = getEvenOddBitCount(b);
+    const auto [evenC, oddC] = getEvenOddBitCount(c);
+    return static_cast&lt;long&gt;(evenA) * oddB * oddC +
+           static_cast&lt;long&gt;(oddA) * evenB * oddC +
+           static_cast&lt;long&gt;(oddA) * oddB * evenC +
+           static_cast&lt;long&gt;(evenA) * evenB * evenC;
+  }
+
+ private:
+  // Returns the count of numbers in the `nums` arrays that have even number of
+  // ones and odd number of ones in their binary representation.
+  pair&lt;int, int&gt; getEvenOddBitCount(const vector&lt;int&gt;&amp; nums) {
+    int even = 0;
+    int odd = 0;
+    for (const unsigned num : nums)
+      if (popcount(num) % 2 == 0)
+        ++even;
+      else
+        ++odd;
+    return {even, odd};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Same as 3199. Count Triplets with Even XOR Set Bits I
+  public long tripletCount(int[] a, int[] b, int[] c) {
+    final int[] evenOddA = getEvenOddBitCount(a);
+    final int[] evenOddB = getEvenOddBitCount(b);
+    final int[] evenOddC = getEvenOddBitCount(c);
+    final int evenA = evenOddA[0];
+    final int evenB = evenOddB[0];
+    final int evenC = evenOddC[0];
+    final int oddA = evenOddA[1];
+    final int oddB = evenOddB[1];
+    final int oddC = evenOddC[1];
+    return (long) evenA * oddB * oddC + (long) oddA * evenB * oddC + (long) oddA * oddB * evenC +
+        (long) evenA * evenB * evenC;
+  }
+
+  // Returns the count of numbers in the `nums` arrays that have even number of
+  // ones and odd number of ones in their binary representation.
+  private int[] getEvenOddBitCount(int[] nums) {
+    int even = 0;
+    int odd = 0;
+    for (final int num : nums)
+      if (Integer.bitCount(num) % 2 == 0)
+        ++even;
+      else
+        ++odd;
+    return new int[] {even, odd};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Same as 3199. Count Triplets with Even XOR Set Bits I
+  def tripletCount(self, a: list[int], b: list[int], c: list[int]) -&gt; int:
+    evenA, oddA = self._getEvenOddBitCount(a)
+    evenB, oddB = self._getEvenOddBitCount(b)
+    evenC, oddC = self._getEvenOddBitCount(c)
+    return evenA * oddB * oddC + oddA * evenB * oddC + oddA * oddB * evenC + evenA * evenB * evenC
+
+  def _getEvenOddBitCount(self, nums: list[int]) -&gt; tuple[int, int]:
+    &quot;&quot;&quot;
+    Returns the count of numbers in the `nums` arrays that have even number of
+    ones and odd number of ones in their binary representation.
+    &quot;&quot;&quot;
+    even = sum(num.bit_count() % 2 == 0 for num in nums)
+    return (even, len(nums) - even)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

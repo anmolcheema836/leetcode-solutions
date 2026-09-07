@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path with Maximum Probability - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Path with Maximum Probability written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/path-with-maximum-probability/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-substrings-with-only-1s/" class="btn">← Previous</a>
+            <span>Problem 1514 of 3563</span>
+            <a href="/leetcode-solutions/problems/best-position-for-a-service-centre/" class="btn">Next →</a>
+        </div>
+        <h1>1514. Path with Maximum Probability</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Path with Maximum Probability efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  double maxProbability(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                        vector&lt;double&gt;&amp; succProb, int start, int end) {
+    // {a: [(b, probability_ab)]}
+    vector&lt;vector&lt;pair&lt;int, double&gt;&gt;&gt; graph(n);
+    // (the probability to reach u, u)
+    priority_queue&lt;pair&lt;double, int&gt;&gt; maxHeap;
+    maxHeap.emplace(1.0, start);
+    vector&lt;bool&gt; seen(n);
+
+    for (int i = 0; i &lt; edges.size(); ++i) {
+      const int u = edges[i][0];
+      const int v = edges[i][1];
+      const double prob = succProb[i];
+      graph[u].emplace_back(v, prob);
+      graph[v].emplace_back(u, prob);
+    }
+
+    while (!maxHeap.empty()) {
+      const auto [prob, u] = maxHeap.top();
+      maxHeap.pop();
+      if (u == end)
+        return prob;
+      if (seen[u])
+        continue;
+      seen[u] = true;
+      for (const auto&amp; [nextNode, edgeProb] : graph[u]) {
+        if (seen[nextNode])
+          continue;
+        maxHeap.emplace(prob * edgeProb, nextNode);
+      }
+    }
+
+    return 0;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
+    // {a: [(b, probability_ab)]}
+    List&lt;Pair&lt;Integer, Double&gt;&gt;[] graph = new List[n];
+    // (the probability to reach u, u)
+    Queue&lt;Pair&lt;Double, Integer&gt;&gt; maxHeap =
+        new PriorityQueue&lt;&gt;((a, b) -&gt; Double.compare(b.getKey(), a.getKey())) {
+          { offer(new Pair&lt;&gt;(1.0, start)); }
+        };
+    boolean[] seen = new boolean[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int i = 0; i &lt; edges.length; ++i) {
+      final int u = edges[i][0];
+      final int v = edges[i][1];
+      final double prob = succProb[i];
+      graph[u].add(new Pair&lt;&gt;(v, prob));
+      graph[v].add(new Pair&lt;&gt;(u, prob));
+    }
+
+    while (!maxHeap.isEmpty()) {
+      final double prob = maxHeap.peek().getKey();
+      final int u = maxHeap.poll().getValue();
+      if (u == end)
+        return prob;
+      if (seen[u])
+        continue;
+      seen[u] = true;
+      for (Pair&lt;Integer, Double&gt; node : graph[u]) {
+        final int nextNode = node.getKey();
+        final double edgeProb = node.getValue();
+        if (seen[nextNode])
+          continue;
+        maxHeap.add(new Pair&lt;&gt;(prob * edgeProb, nextNode));
+      }
+    }
+
+    return 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxProbability(
+      self,
+      n: int,
+      edges: list[list[int]],
+      succProb: list[float],
+      start: int,
+      end: int,
+  ) -&gt; float:
+    graph = [[] for _ in range(n)]  # {a: [(b, probability_ab)]}
+    maxHeap = [(-1.0, start)]   # (the probability to reach u, u)
+    seen = [False] * n
+
+    for i, ((u, v), prob) in enumerate(zip(edges, succProb)):
+      graph[u].append((v, prob))
+      graph[v].append((u, prob))
+
+    while maxHeap:
+      prob, u = heapq.heappop(maxHeap)
+      prob *= -1
+      if u == end:
+        return prob
+      if seen[u]:
+        continue
+      seen[u] = True
+      for nextNode, edgeProb in graph[u]:
+        if seen[nextNode]:
+          continue
+        heapq.heappush(maxHeap, (-prob * edgeProb, nextNode))
+
+    return 0</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

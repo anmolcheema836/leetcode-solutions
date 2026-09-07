@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check for Contradictions in Equations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check for Contradictions in Equations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-for-contradictions-in-equations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/naming-a-company/" class="btn">← Previous</a>
+            <span>Problem 2307 of 3563</span>
+            <a href="/leetcode-solutions/problems/arrange-table-by-gender/" class="btn">Next →</a>
+        </div>
+        <h1>2307. Check for Contradictions in Equations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check for Contradictions in Equations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool checkContradictions(vector&lt;vector&lt;string&gt;&gt;&amp; equations,
+                           vector&lt;double&gt;&amp; values) {
+    // Convert `string` to `int` for a better perfermance.
+    unordered_map&lt;string, int&gt; strToInt;
+
+    for (const vector&lt;string&gt;&amp; equation : equations) {
+      const string&amp; u = equation[0];
+      const string&amp; v = equation[1];
+      if (!strToInt.contains(u))
+        strToInt[u] = strToInt.size();
+      if (!strToInt.contains(v))
+        strToInt[v] = strToInt.size();
+    }
+
+    vector&lt;vector&lt;pair&lt;int, double&gt;&gt;&gt; graph(strToInt.size());
+    vector&lt;double&gt; seen(graph.size());
+
+    for (int i = 0; i &lt; equations.size(); ++i) {
+      const int u = strToInt.at(equations[i][0]);
+      const int v = strToInt.at(equations[i][1]);
+      graph[u].emplace_back(v, values[i]);
+      graph[v].emplace_back(u, 1 / values[i]);
+    }
+
+    for (int i = 0; i &lt; graph.size(); ++i)
+      if (!seen[i] &amp;&amp; dfs(graph, i, seen, 1.0))
+        return true;
+
+    return false;
+  }
+
+ private:
+  bool dfs(const vector&lt;vector&lt;pair&lt;int, double&gt;&gt;&gt;&amp; graph, int u,
+           vector&lt;double&gt;&amp; seen, double val) {
+    if (seen[u])
+      return abs(val / seen[u] - 1) &gt; 1e-5;
+
+    seen[u] = val;
+    for (const auto&amp; [v, w] : graph[u])
+      if (dfs(graph, v, seen, val / w))
+        return true;
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean checkContradictions(List&lt;List&lt;String&gt;&gt; equations, double[] values) {
+    // Convert `string` to `int` for a better perfermance.
+    Map&lt;String, Integer&gt; strToInt = new HashMap&lt;&gt;();
+
+    for (List&lt;String&gt; equation : equations) {
+      strToInt.putIfAbsent(equation.get(0), strToInt.size());
+      strToInt.putIfAbsent(equation.get(1), strToInt.size());
+    }
+
+    List&lt;Pair&lt;Integer, Double&gt;&gt;[] graph = new List[strToInt.size()];
+    double[] seen = new double[graph.length];
+
+    for (int i = 0; i &lt; graph.length; ++i)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; equations.size(); ++i) {
+      final int u = strToInt.get(equations.get(i).get(0));
+      final int v = strToInt.get(equations.get(i).get(1));
+      graph[u].add(new Pair&lt;&gt;(v, values[i]));
+      graph[v].add(new Pair&lt;&gt;(u, 1 / values[i]));
+    }
+
+    for (int i = 0; i &lt; graph.length; ++i)
+      if (seen[i] != 0.0 &amp;&amp; dfs(graph, i, seen, 1.0))
+        return true;
+
+    return false;
+  }
+
+  private boolean dfs(List&lt;Pair&lt;Integer, Double&gt;&gt;[] graph, int u, double[] seen, double val) {
+    if (seen[u] != 0.0)
+      return Math.abs(val / seen[u] - 1) &gt; 1e-5;
+
+    seen[u] = val;
+    for (Pair&lt;Integer, Integer&gt; pair : graph[u]) {
+      final int v = pair.getKey();
+      final double w = pair.getValue();
+      if (dfs(graph, v, seen, val / w))
+        return true;
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def checkContradictions(
+      self,
+      equations: list[list[str]],
+      values: list[float],
+  ) -&gt; bool:
+    # Convert `string` to `int` for a better perfermance.
+    strToInt = {}
+
+    for u, v in equations:
+      strToInt.setdefault(u, len(strToInt))
+      strToInt.setdefault(v, len(strToInt))
+
+    graph = [[] for _ in range(len(strToInt))]
+    seen = [0.0] * len(graph)
+
+    for i, ((A, B), value) in enumerate(zip(equations, values)):
+      u = strToInt[A]
+      v = strToInt[B]
+      graph[u].append((v, value))
+      graph[v].append((u, 1 / value))
+
+    def dfs(u: int, val: float) -&gt; bool:
+      if seen[u]:
+        return abs(val / seen[u] - 1) &gt; 1e-5
+
+      seen[u] = val
+      return any(dfs(v, val / w) for v, w in graph[u])
+
+    for i in range(len(graph)):
+      if not seen[i] and dfs(i, 1.0):
+        return True
+
+    return False</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

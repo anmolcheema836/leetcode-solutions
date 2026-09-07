@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg Drop With 2 Eggs and N Floors - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Egg Drop With 2 Eggs and N Floors written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/egg-drop-with-2-eggs-and-n-floors/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-skips-to-arrive-at-meeting-on-time/" class="btn">← Previous</a>
+            <span>Problem 1884 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-pairs-in-two-arrays/" class="btn">Next →</a>
+        </div>
+        <h1>1884. Egg Drop With 2 Eggs and N Floors</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Egg Drop With 2 Eggs and N Floors efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int twoEggDrop(int n) {
+    return superEggDrop(2, n);
+  }
+
+ private:
+  // Same as 887. Super Egg Drop
+  int superEggDrop(int k, int n) {
+    vector&lt;vector&lt;int&gt;&gt; mem(k + 1, vector&lt;int&gt;(n + 1, -1));
+    return drop(k, n, mem);
+  }
+
+  // Returns the minimum number of moves to know f with k eggs and n floors.
+  int drop(int k, int n, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (k == 0)  // no eggs -&gt; done
+      return 0;
+    if (k == 1)  // one egg -&gt; drop from 1-th floor to n-th floor
+      return n;
+    if (n == 0)  // no floor -&gt; done
+      return 0;
+    if (n == 1)  // one floor -&gt; drop from that floor
+      return 1;
+    if (mem[k][n] != -1)
+      return mem[k][n];
+
+    //   broken[i] := drop(k - 1, i - 1) is increasing with i
+    // unbroken[i] := drop(k,     n - i) is decreasing with i
+    // mem[k][n] := 1 + min(max(broken[i], unbroken[i])), 1 &lt;= i &lt;= n
+    // Find the first index i s.t broken[i] &gt;= unbroken[i], which minimizes
+    // max(broken[i], unbroken[i]).
+
+    int l = 1;
+    int r = n + 1;
+
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      const int broken = drop(k - 1, m - 1, mem);
+      const int unbroken = drop(k, n - m, mem);
+      if (broken &gt;= unbroken)
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return mem[k][n] = 1 + drop(k - 1, l - 1, mem);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int twoEggDrop(int n) {
+    return superEggDrop(2, n);
+  }
+
+  // Same as 887. Super Egg Drop
+  private int superEggDrop(int k, int n) {
+    int[][] mem = new int[k + 1][n + 1];
+    Arrays.stream(mem).forEach(A -&gt; Arrays.fill(A, -1));
+    return drop(k, n, mem);
+  }
+
+  // Returns the minimum number of moves to know f with k eggs and n floors.
+  private int drop(int k, int n, int[][] mem) {
+    if (k == 0) // no eggs -&gt; done
+      return 0;
+    if (k == 1) // one egg -&gt; drop from 1-th floor to n-th floor
+      return n;
+    if (n == 0) // no floor -&gt; done
+      return 0;
+    if (n == 1) // one floor -&gt; drop from that floor
+      return 1;
+    if (mem[k][n] != -1)
+      return mem[k][n];
+
+    int l = 1;
+    int r = n + 1;
+
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      final int broken = drop(k - 1, m - 1, mem);
+      final int unbroken = drop(k, n - m, mem);
+      if (broken &gt;= unbroken)
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return mem[k][n] = 1 + drop(k - 1, l - 1, mem);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

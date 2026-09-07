@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satisfiability of Equality Equations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Satisfiability of Equality Equations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/satisfiability-of-equality-equations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/add-to-array-form-of-integer/" class="btn">← Previous</a>
+            <span>Problem 990 of 3563</span>
+            <a href="/leetcode-solutions/problems/broken-calculator/" class="btn">Next →</a>
+        </div>
+        <h1>990. Satisfiability of Equality Equations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Satisfiability of Equality Equations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void union_(int u, int v) {
+    id[find(u)] = find(v);
+  }
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+
+ private:
+  vector&lt;int&gt; id;
+};
+
+class Solution {
+ public:
+  bool equationsPossible(vector&lt;string&gt;&amp; equations) {
+    UnionFind uf(26);
+
+    for (const string&amp; e : equations)
+      if (e[1] == &#x27;=&#x27;) {
+        const int x = e[0] - &#x27;a&#x27;;
+        const int y = e[3] - &#x27;a&#x27;;
+        uf.union_(x, y);
+      }
+
+    for (const string&amp; e : equations)
+      if (e[1] == &#x27;!&#x27;) {
+        const int x = e[0] - &#x27;a&#x27;;
+        const int y = e[3] - &#x27;a&#x27;;
+        if (uf.find(x) == uf.find(y))
+          return false;
+      }
+
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    id = new int[n];
+    rank = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+  }
+
+  public void unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  public int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+
+  private int[] id;
+  private int[] rank;
+}
+
+class Solution {
+  public boolean equationsPossible(String[] equations) {
+    UnionFind uf = new UnionFind(26);
+
+    for (final String e : equations)
+      if (e.charAt(1) == &#x27;=&#x27;) {
+        final int x = e.charAt(0) - &#x27;a&#x27;;
+        final int y = e.charAt(3) - &#x27;a&#x27;;
+        uf.unionByRank(x, y);
+      }
+
+    for (final String e : equations)
+      if (e.charAt(1) == &#x27;!&#x27;) {
+        final int x = e.charAt(0) - &#x27;a&#x27;;
+        final int y = e.charAt(3) - &#x27;a&#x27;;
+        if (uf.find(x) == uf.find(y))
+          return false;
+      }
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.id = list(range(n))
+
+  def union(self, u: int, v: int) -&gt; None:
+    self.id[self.find(u)] = self.find(v)
+
+  def find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self.find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def equationsPossible(self, equations: list[str]) -&gt; bool:
+    uf = UnionFind(26)
+
+    for x, op, _, y in equations:
+      if op == &#x27;=&#x27;:
+        uf.union(ord(x) - ord(&#x27;a&#x27;),
+                 ord(y) - ord(&#x27;a&#x27;))
+
+    return all(
+        uf.find(ord(x) - ord(&#x27;a&#x27;)) !=
+        uf.find(ord(y) - ord(&#x27;a&#x27;))
+        for x, op, _, y in equations
+        if op == &#x27;!&#x27;)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

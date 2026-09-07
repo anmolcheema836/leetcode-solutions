@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Time to Buy and Sell Stock IV - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Best Time to Buy and Sell Stock IV written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/best-time-to-buy-and-sell-stock-iv/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/repeated-dna-sequences/" class="btn">← Previous</a>
+            <span>Problem 188 of 3563</span>
+            <a href="/leetcode-solutions/problems/rotate-array/" class="btn">Next →</a>
+        </div>
+        <h1>188. Best Time to Buy and Sell Stock IV</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Best Time to Buy and Sell Stock IV efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxProfit(int k, vector&lt;int&gt;&amp; prices) {
+    if (k &gt;= prices.size() / 2) {
+      int sell = 0;
+      int hold = INT_MIN;
+
+      for (const int price : prices) {
+        sell = max(sell, hold + price);
+        hold = max(hold, sell - price);
+      }
+
+      return sell;
+    }
+
+    vector&lt;int&gt; sell(k + 1);
+    vector&lt;int&gt; hold(k + 1, INT_MIN);
+
+    for (const int price : prices)
+      for (int i = k; i &gt; 0; --i) {
+        sell[i] = max(sell[i], hold[i] + price);
+        hold[i] = max(hold[i], sell[i - 1] - price);
+      }
+
+    return sell[k];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxProfit(int k, int[] prices) {
+    if (k &gt;= prices.length / 2) {
+      int sell = 0;
+      int hold = Integer.MIN_VALUE;
+
+      for (final int price : prices) {
+        sell = Math.max(sell, hold + price);
+        hold = Math.max(hold, sell - price);
+      }
+
+      return sell;
+    }
+
+    int[] sell = new int[k + 1];
+    int[] hold = new int[k + 1];
+    Arrays.fill(hold, Integer.MIN_VALUE);
+
+    for (final int price : prices)
+      for (int i = k; i &gt; 0; --i) {
+        sell[i] = Math.max(sell[i], hold[i] + price);
+        hold[i] = Math.max(hold[i], sell[i - 1] - price);
+      }
+
+    return sell[k];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxProfit(self, k: int, prices: list[int]) -&gt; int:
+    if k &gt;= len(prices) // 2:
+      sell = 0
+      hold = -math.inf
+
+      for price in prices:
+        sell = max(sell, hold + price)
+        hold = max(hold, sell - price)
+
+      return sell
+
+    sell = [0] * (k + 1)
+    hold = [-math.inf] * (k + 1)
+
+    for price in prices:
+      for i in range(k, 0, -1):
+        sell[i] = max(sell[i], hold[i] + price)
+        hold[i] = max(hold[i], sell[i - 1] - price)
+
+    return sell[k]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

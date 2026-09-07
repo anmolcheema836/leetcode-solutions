@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count of Smaller Numbers After Self - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count of Smaller Numbers After Self written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-of-smaller-numbers-after-self/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/binary-tree-vertical-order-traversal/" class="btn">← Previous</a>
+            <span>Problem 315 of 3563</span>
+            <a href="/leetcode-solutions/problems/remove-duplicate-letters/" class="btn">Next →</a>
+        </div>
+        <h1>315. Count of Smaller Numbers After Self</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count of Smaller Numbers After Self efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Item {
+  int num;
+  int index;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; countSmaller(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    vector&lt;int&gt; ans(n);
+    vector&lt;Item&gt; items(n);
+
+    for (int i = 0; i &lt; n; ++i)
+      items[i] = Item(nums[i], i);
+
+    mergeSort(items, 0, n - 1, ans);
+    return ans;
+  }
+
+ private:
+  void mergeSort(vector&lt;Item&gt;&amp; items, int l, int r, vector&lt;int&gt;&amp; ans) {
+    if (l &gt;= r)
+      return;
+
+    const int m = (l + r) / 2;
+    mergeSort(items, l, m, ans);
+    mergeSort(items, m + 1, r, ans);
+    merge(items, l, m, r, ans);
+  }
+
+  void merge(vector&lt;Item&gt;&amp; items, int l, int m, int r, vector&lt;int&gt;&amp; ans) {
+    vector&lt;Item&gt; sorted(r - l + 1);
+    int k = 0;           // sorted&#x27;s index
+    int i = l;           // left&#x27;s index
+    int j = m + 1;       // right&#x27;s index
+    int rightCount = 0;  // the number of numbers &lt; items[i].num
+
+    while (i &lt;= m &amp;&amp; j &lt;= r)
+      if (items[i].num &gt; items[j].num) {
+        ++rightCount;
+        sorted[k++] = items[j++];
+      } else {
+        ans[items[i].index] += rightCount;
+        sorted[k++] = items[i++];
+      }
+
+    // Put the possible remaining left part into the sorted array.
+    while (i &lt;= m) {
+      ans[items[i].index] += rightCount;
+      sorted[k++] = items[i++];
+    }
+
+    // Put the possible remaining right part into the sorted array.
+    while (j &lt;= r)
+      sorted[k++] = items[j++];
+
+    copy(sorted.begin(), sorted.end(), items.begin() + l);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; countSmaller(int[] nums) {
+    final int n = nums.length;
+    int[] ans = new int[n];
+    Item[] items = new Item[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      items[i] = new Item(nums[i], i);
+
+    mergeSort(items, 0, n - 1, ans);
+    return Arrays.stream(ans).boxed().collect(Collectors.toList());
+  }
+
+  private record Item(int num, int index) {}
+
+  private void mergeSort(Item[] items, int l, int r, int[] ans) {
+    if (l &gt;= r)
+      return;
+
+    final int m = (l + r) / 2;
+    mergeSort(items, l, m, ans);
+    mergeSort(items, m + 1, r, ans);
+    merge(items, l, m, r, ans);
+  }
+
+  private void merge(Item[] items, int l, int m, int r, int[] ans) {
+    Item[] sorted = new Item[r - l + 1];
+    int k = 0;          // sorted&#x27;s index
+    int i = l;          // left&#x27;s index
+    int j = m + 1;      // right&#x27;s index
+    int rightCount = 0; // the number of `nums` &lt; items[i].num
+
+    while (i &lt;= m &amp;&amp; j &lt;= r)
+      if (items[i].num &gt; items[j].num) {
+        ++rightCount;
+        sorted[k++] = items[j++];
+      } else {
+        ans[items[i].index] += rightCount;
+        sorted[k++] = items[i++];
+      }
+
+    // Put the possible remaining left part into the sorted array.
+    while (i &lt;= m) {
+      ans[items[i].index] += rightCount;
+      sorted[k++] = items[i++];
+    }
+
+    // Put the possible remaining right part into the sorted array.
+    while (j &lt;= r)
+      sorted[k++] = items[j++];
+
+    System.arraycopy(sorted, 0, items, l, sorted.length);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Item:
+  num: int = 0
+  index: int = 0
+
+
+class Solution:
+  def countSmaller(self, nums: list[int]) -&gt; list[int]:
+    n = len(nums)
+    ans = [0] * n
+    items = [Item(num, i) for i, num in enumerate(nums)]
+
+    self._mergeSort(items, 0, n - 1, ans)
+    return ans
+
+  def _mergeSort(
+      self,
+      items: list[Item],
+      l: int,
+      r: int,
+      ans: list[int],
+  ) -&gt; None:
+    if l &gt;= r:
+      return
+
+    m = (l + r) // 2
+    self._mergeSort(items, l, m, ans)
+    self._mergeSort(items, m + 1, r, ans)
+    self._merge(items, l, m, r, ans)
+
+  def _merge(
+      self,
+      items: list[Item],
+      l: int,
+      m: int,
+      r: int,
+      ans: list[int],
+  ) -&gt; None:
+    sorted = [Item()] * (r - l + 1)
+    k = 0  # sorted&#x27;s index
+    i = l  # left&#x27;s index
+    j = m + 1  # right&#x27;s index
+    rightCount = 0  # the number of numbers &lt; items[i].num
+
+    while i &lt;= m and j &lt;= r:
+      if items[i].num &gt; items[j].num:
+        rightCount += 1
+        sorted[k] = items[j]
+        k += 1
+        j += 1
+      else:
+        ans[items[i].index] += rightCount
+        sorted[k] = items[i]
+        k += 1
+        i += 1
+
+    # Put the possible remaining left part into the sorted array.
+    while i &lt;= m:
+      ans[items[i].index] += rightCount
+      sorted[k] = items[i]
+      k += 1
+      i += 1
+
+    # Put the possible remaining right part into the sorted array.
+    while j &lt;= r:
+      sorted[k] = items[j]
+      k += 1
+      j += 1
+
+    items[l:l + len(sorted)] = sorted</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

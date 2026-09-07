@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Front Middle Back Queue - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Front Middle Back Queue written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-front-middle-back-queue/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/merge-in-between-linked-lists/" class="btn">← Previous</a>
+            <span>Problem 1670 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-number-of-removals-to-make-mountain-array/" class="btn">Next →</a>
+        </div>
+        <h1>1670. Design Front Middle Back Queue</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Front Middle Back Queue efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class FrontMiddleBackQueue {
+ public:
+  void pushFront(int val) {
+    frontQueue.push_front(val);
+    moveFrontToBackIfNeeded();
+  }
+
+  void pushMiddle(int val) {
+    if (| frontQueue | == | backQueue |)
+      backQueue.push_front(val);
+    else
+      frontQueue.push_back(val);
+  }
+
+  void pushBack(int val) {
+    backQueue.push_back(val);
+    moveBackToFrontIfNeeded();
+  }
+
+  int popFront() {
+    if (!frontQueue.empty()) {
+      const int x = frontQueue.front();
+      frontQueue.pop_front();
+      moveBackToFrontIfNeeded();
+      return x;
+    }
+    if (!backQueue.empty()) {
+      const int x = backQueue.front();
+      backQueue.pop_front();
+      moveFrontToBackIfNeeded();
+      return x;
+    }
+    return -1;
+  }
+
+  int popMiddle() {
+    if (frontQueue.empty() &amp;&amp; backQueue.empty())
+      return -1;
+    if (frontQueue.size() + 1 == backQueue.size()) {
+      const int x = backQueue.front();
+      backQueue.pop_front();
+      return x;
+    } else {  // |frontQueue| == |backQueue|
+      const int x = frontQueue.back();
+      frontQueue.pop_back();
+      return x;
+    }
+  }
+
+  int popBack() {
+    if (backQueue.empty())
+      return -1;
+    const int x = backQueue.back();
+    backQueue.pop_back();
+    moveFrontToBackIfNeeded();
+    return x;
+  }
+
+ private:
+  // |frontQueue| = |backQueue| or
+  // |frontQueue| = |backQueue| - 1
+  deque&lt;int&gt; frontQueue;
+  deque&lt;int&gt; backQueue;
+
+  void moveFrontToBackIfNeeded() {
+    if (frontQueue.size() - 1 == backQueue.size()) {
+      const int x = frontQueue.back();
+      frontQueue.pop_back();
+      backQueue.push_front(x);
+    }
+  }
+
+  void moveBackToFrontIfNeeded() {
+    if (frontQueue.size() + 2 == backQueue.size()) {
+      const int x = backQueue.front();
+      backQueue.pop_front();
+      frontQueue.push_back(x);
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class FrontMiddleBackQueue {
+  public void pushFront(int val) {
+    frontQueue.offerFirst(val);
+    moveFrontToBackIfNeeded();
+  }
+
+  public void pushMiddle(int val) {
+    if (| frontQueue | == | backQueue |)
+      backQueue.offerFirst(val);
+    else
+      frontQueue.offerLast(val);
+  }
+
+  public void pushBack(int val) {
+    backQueue.offerLast(val);
+    moveBackToFrontIfNeeded();
+  }
+
+  public int popFront() {
+    if (!frontQueue.isEmpty()) {
+      final int x = frontQueue.removeFirst();
+      moveBackToFrontIfNeeded();
+      return x;
+    }
+    if (!backQueue.isEmpty())
+      return backQueue.pollFirst();
+    return -1;
+  }
+
+  public int popMiddle() {
+    if (frontQueue.isEmpty() &amp;&amp; backQueue.isEmpty())
+      return -1;
+    if (frontQueue.size() + 1 == backQueue.size())
+      return backQueue.pollFirst();
+    // |frontQueue| == |backQueue|
+    return frontQueue.pollLast();
+  }
+
+  public int popBack() {
+    if (backQueue.isEmpty())
+      return -1;
+    final int x = backQueue.removeLast();
+    moveFrontToBackIfNeeded();
+    return x;
+  }
+
+  private void moveFrontToBackIfNeeded() {
+    if (frontQueue.size() - 1 == backQueue.size())
+      backQueue.offerFirst(frontQueue.pollLast());
+  }
+
+  private void moveBackToFrontIfNeeded() {
+    if (frontQueue.size() + 2 == backQueue.size())
+      frontQueue.offerLast(backQueue.pollFirst());
+  }
+
+  private Deque&lt;Integer&gt; frontQueue = new ArrayDeque&lt;&gt;();
+  private Deque&lt;Integer&gt; backQueue = new ArrayDeque&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class FrontMiddleBackQueue:
+  def __init__(self):
+    self.frontQueue = collections.deque()
+    self.backQueue = collections.deque()
+
+  def pushFront(self, val: int) -&gt; None:
+    self.frontQueue.appendleft(val)
+    self._moveFrontToBackIfNeeded()
+
+  def pushMiddle(self, val: int) -&gt; None:
+    if len(self.frontQueue) == len(self.backQueue):
+      self.backQueue.appendleft(val)
+    else:
+      self.frontQueue.append(val)
+
+  def pushBack(self, val: int) -&gt; None:
+    self.backQueue.append(val)
+    self._moveBackToFrontIfNeeded()
+
+  def popFront(self) -&gt; int:
+    if self.frontQueue:
+      x = self.frontQueue.popleft()
+      self._moveBackToFrontIfNeeded()
+      return x
+    if self.backQueue:
+      return self.backQueue.popleft()
+    return -1
+
+  def popMiddle(self) -&gt; int:
+    if not self.frontQueue and not self.backQueue:
+      return -1
+    if len(self.frontQueue) + 1 == len(self.backQueue):
+      return self.backQueue.popleft()
+    return self.frontQueue.pop()
+
+  def popBack(self) -&gt; int:
+    if self.backQueue:
+      x = self.backQueue.pop()
+      self._moveFrontToBackIfNeeded()
+      return x
+    return -1
+
+  def _moveFrontToBackIfNeeded(self) -&gt; None:
+    if len(self.frontQueue) - 1 == len(self.backQueue):
+      self.backQueue.appendleft(self.frontQueue.pop())
+
+  def _moveBackToFrontIfNeeded(self) -&gt; None:
+    if len(self.frontQueue) + 2 == len(self.backQueue):
+      self.frontQueue.append(self.backQueue.popleft())</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

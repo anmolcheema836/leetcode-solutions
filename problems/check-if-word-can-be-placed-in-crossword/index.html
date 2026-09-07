@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check if Word Can Be Placed In Crossword - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check if Word Can Be Placed In Crossword written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-word-can-be-placed-in-crossword/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/grid-game/" class="btn">← Previous</a>
+            <span>Problem 2018 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-score-of-students-solving-math-expression/" class="btn">Next →</a>
+        </div>
+        <h1>2018. Check if Word Can Be Placed In Crossword</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check if Word Can Be Placed In Crossword efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool placeWordInCrossword(vector&lt;vector&lt;char&gt;&gt;&amp; board, string word) {
+    for (const vector&lt;vector&lt;char&gt;&gt;&amp; state : {board, getRotated(board)})
+      for (const vector&lt;char&gt;&amp; chars : state)
+        for (const string&amp; token : getTokens(join(chars)))
+          for (const string&amp; letters :
+               {word, string{word.rbegin(), word.rend()}})
+            if (letters.length() == token.length())
+              if (canFit(letters, token))
+                return true;
+    return false;
+  }
+
+ private:
+  vector&lt;vector&lt;char&gt;&gt; getRotated(const vector&lt;vector&lt;char&gt;&gt;&amp; board) {
+    const int m = board.size();
+    const int n = board[0].size();
+    vector&lt;vector&lt;char&gt;&gt; rotated(n, vector&lt;char&gt;(m));
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        rotated[j][i] = board[i][j];
+    return rotated;
+  }
+
+  vector&lt;string&gt; getTokens(const string&amp; row) {
+    vector&lt;string&gt; tokens;
+    int start = 0;
+    int end;
+    string token;
+    do {
+      end = row.find(&#x27;#&#x27;, start);
+      token = row.substr(start, end - start);
+      if (!token.empty())
+        tokens.push_back(token);
+      start = end + 1;
+    } while (end != string::npos);
+    return tokens;
+  }
+
+  string join(const vector&lt;char&gt;&amp; chars) {
+    string joined;
+    for (const char c : chars)
+      joined += c;
+    return joined;
+  }
+
+  bool canFit(const string&amp; letters, const string&amp; token) {
+    for (int i = 0; i &lt; letters.length(); ++i)
+      if (token[i] != &#x27; &#x27; &amp;&amp; token[i] != letters[i])
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean placeWordInCrossword(char[][] board, String word) {
+    for (char[][] state : new char[][][] {board, getRotated(board)})
+      for (char[] chars : state)
+        for (final String token : String.valueOf(chars).split(&quot;#&quot;))
+          for (final String letters :
+               new String[] {word, new StringBuilder(word).reverse().toString()})
+            if (letters.length() == token.length())
+              if (canFit(letters, token))
+                return true;
+    return false;
+  }
+
+  private char[][] getRotated(char[][] board) {
+    final int m = board.length;
+    final int n = board[0].length;
+    char[][] rotated = new char[n][m];
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        rotated[j][i] = board[i][j];
+    return rotated;
+  }
+
+  private boolean canFit(final String letters, final String token) {
+    for (int i = 0; i &lt; letters.length(); ++i)
+      if (token.charAt(i) != &#x27; &#x27; &amp;&amp; token.charAt(i) != letters.charAt(i))
+        return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def placeWordInCrossword(self, board: list[list[str]], word: str) -&gt; bool:
+    for x in board, zip(*board):
+      for row in x:
+        for token in &#x27;&#x27;.join(row).split(&#x27;#&#x27;):
+          for letters in word, word[::-1]:
+            if len(token) == len(letters):
+              if all(c in (&#x27; &#x27;, letter) for c, letter in zip(token, letters)):
+                return True
+    return False</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

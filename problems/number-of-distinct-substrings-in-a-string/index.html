@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Distinct Substrings in a String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Distinct Substrings in a String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-distinct-substrings-in-a-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/checking-existence-of-edge-length-limited-paths/" class="btn">← Previous</a>
+            <span>Problem 1698 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-calls-between-two-persons/" class="btn">Next →</a>
+        </div>
+        <h1>1698. Number of Distinct Substrings in a String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Distinct Substrings in a String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countDistinct(string s) {
+    const int n = s.length();
+    int ans = 0;
+    vector&lt;long&gt; pow(n + 1);     // pow[i] := kBase^i
+    vector&lt;long&gt; hashes(n + 1);  // hashes[i] := the hash of s[0..i)
+
+    pow[0] = 1;
+    for (int i = 1; i &lt;= n; ++i) {
+      pow[i] = pow[i - 1] * kBase % kHash;
+      hashes[i] = (hashes[i - 1] * kBase + val(s[i - 1])) % kHash;
+    }
+
+    for (int length = 1; length &lt;= n; ++length) {
+      unordered_set&lt;int&gt; seen;
+      for (int i = 0; i + length &lt;= n; ++i)
+        seen.insert(getHash(i, i + length, hashes, pow));
+      ans += seen.size();
+    }
+
+    return ans;
+  }
+
+ private:
+  static constexpr int kBase = 26;
+  static constexpr int kHash = 1&#x27;000&#x27;000&#x27;007;
+
+  static constexpr int val(char c) {
+    return c - &#x27;a&#x27;;
+  }
+
+  // Returns the hash of s[l..r).
+  long getHash(int l, int r, const vector&lt;long&gt;&amp; hashes,
+               const vector&lt;long&gt;&amp; pow) {
+    const long hash = (hashes[r] - hashes[l] * pow[r - l]) % kHash;
+    return hash &lt; 0 ? hash + kHash : hash;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countDistinct(String s) {
+    final int n = s.length();
+    int ans = 0;
+    long[] pow = new long[n + 1];    // pow[i] := BASE^i
+    long[] hashes = new long[n + 1]; // hashes[i] := the hash of s[0..i)
+
+    pow[0] = 1;
+    for (int i = 1; i &lt;= n; ++i) {
+      pow[i] = pow[i - 1] * BASE % HASH;
+      hashes[i] = (hashes[i - 1] * BASE + val(s.charAt(i - 1))) % HASH;
+    }
+
+    for (int length = 1; length &lt;= n; ++length) {
+      Set&lt;Long&gt; seen = new HashSet&lt;&gt;();
+      for (int i = 0; i + length &lt;= n; ++i)
+        seen.add(getHash(i, i + length, hashes, pow));
+      ans += seen.size();
+    }
+
+    return ans;
+  }
+
+  private static final int BASE = 26;
+  private static final int HASH = 1_000_000_007;
+
+  private static int val(char c) {
+    return c - &#x27;a&#x27;;
+  }
+
+  // Returns the hash of s[l..r).
+  private long getHash(int l, int r, long[] hashes, long[] pow) {
+    final long hash = (hashes[r] - hashes[l] * pow[r - l]) % HASH;
+    return hash &lt; 0 ? hash + HASH : hash;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countDistinct(self, s: str) -&gt; int:
+    BASE = 26
+    HASH = 1_000_000_007
+
+    n = len(s)
+    ans = 0
+    pow = [1] + [0] * n     # pow[i] := BASE^i
+    hashes = [0] * (n + 1)  # hashes[i] := the hash of s[0..i)
+
+    def val(c: str) -&gt; int:
+      return ord(c) - ord(&#x27;a&#x27;)
+
+    for i in range(1, n + 1):
+      pow[i] = pow[i - 1] * BASE % HASH
+      hashes[i] = (hashes[i - 1] * BASE + val(s[i - 1])) % HASH
+
+    def getHash(l: int, r: int) -&gt; int:
+      &quot;&quot;&quot;Returns the hash of s[l..r).&quot;&quot;&quot;
+      hash = (hashes[r] - hashes[l] * pow[r - l]) % HASH
+      return hash + HASH if hash &lt; 0 else hash
+
+    for length in range(1, n + 1):
+      seen = set()
+      for i in range(n - length + 1):
+        seen.add(getHash(i, i + length))
+      ans += len(seen)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Strong Pair XOR II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Strong Pair XOR II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-strong-pair-xor-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-operations-to-maximize-last-elements-in-arrays/" class="btn">← Previous</a>
+            <span>Problem 2935 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-equal-numbers-blocks/" class="btn">Next →</a>
+        </div>
+        <h1>2935. Maximum Strong Pair XOR II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Strong Pair XOR II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  TrieNode() : children(2) {}
+  int mn = INT_MAX;
+  int mx = INT_MIN;
+};
+
+class BitTrie {
+ public:
+  BitTrie(int maxBit) : maxBit(maxBit) {}
+
+  void insert(int num) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      const int bit = num &gt;&gt; i &amp; 1;
+      if (node-&gt;children[bit] == nullptr)
+        node-&gt;children[bit] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[bit];
+      node-&gt;mn = min(node-&gt;mn, num);
+      node-&gt;mx = max(node-&gt;mx, num);
+    }
+  }
+
+  // Returns max(x ^ y), where |x - y| &lt;= min(x, y).
+  //
+  // If x &lt;= y, |x - y| &lt;= min(x, y) can be written as y - x &lt;= x.
+  // So, y &lt;= 2 * x.
+  int getMaxXor(int x) {
+    int maxXor = 0;
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      const int bit = x &gt;&gt; i &amp; 1;
+      const int toggleBit = bit ^ 1;
+      // If `node.children[toggleBit].max &gt; x`, it means there&#x27;s a number in the
+      // node that satisfies the condition to ensure that x &lt;= y among x and y.
+      // If `node.children[toggleBit].min &lt;= 2 * x`, it means there&#x27;s a number
+      // in the node that satisfies the condition for a valid y.
+      if (node-&gt;children[toggleBit] != nullptr &amp;&amp;
+          node-&gt;children[toggleBit]-&gt;mx &gt; x &amp;&amp;
+          node-&gt;children[toggleBit]-&gt;mn &lt;= 2 * x) {
+        maxXor = maxXor | 1 &lt;&lt; i;
+        node = node-&gt;children[toggleBit];
+      } else if (node-&gt;children[bit] != nullptr) {
+        node = node-&gt;children[bit];
+      } else {  // There&#x27;s nothing in the Bit Trie.
+        return 0;
+      }
+    }
+    return maxXor;
+  }
+
+ private:
+  const int maxBit;
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+};
+
+class Solution {
+ public:
+  // Same as 2932. Maximum Strong Pair XOR I
+  int maximumStrongPairXor(vector&lt;int&gt;&amp; nums) {
+    const int maxNum = ranges::max(nums);
+    const int maxBit = static_cast&lt;int&gt;(log2(maxNum));
+    int ans = 0;
+    BitTrie bitTrie(maxBit);
+
+    for (const int num : nums)
+      bitTrie.insert(num);
+
+    for (const int num : nums)
+      ans = max(ans, bitTrie.getMaxXor(num));
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[2];
+  public int mn = Integer.MAX_VALUE;
+  public int mx = Integer.MIN_VALUE;
+}
+
+class BitTrie {
+  public BitTrie(int maxBit) {
+    this.maxBit = maxBit;
+  }
+
+  public void insert(int num) {
+    TrieNode node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      final int bit = (int) (num &gt;&gt; i &amp; 1);
+      if (node.children[bit] == null)
+        node.children[bit] = new TrieNode();
+      node = node.children[bit];
+      node.mn = Math.min(node.mn, num);
+      node.mx = Math.max(node.mx, num);
+    }
+  }
+
+  // Returns max(x ^ y), where |x - y| &lt;= min(x, y).
+  //
+  // If x &lt;= y, |x - y| &lt;= min(x, y) can be written as y - x &lt;= x.
+  // So, y &lt;= 2 * x.
+  public int getMaxXor(int x) {
+    int maxXor = 0;
+    TrieNode node = root;
+    for (int i = maxBit; i &gt;= 0; --i) {
+      final int bit = (int) (x &gt;&gt; i &amp; 1);
+      final int toggleBit = bit ^ 1;
+      // If `node.children[toggleBit].mx &gt; x`, it means there&#x27;s a number in the
+      // node that satisfies the condition to ensure that x &lt;= y among x and y.
+      // If `node.children[toggleBit].mn &lt;= 2 * x`, it means there&#x27;s a number
+      // in the node that satisfies the condition for a valid y.
+      if (node.children[toggleBit] != null &amp;&amp; node.children[toggleBit].mx &gt; x &amp;&amp;
+          node.children[toggleBit].mn &lt;= 2 * x) {
+        maxXor = maxXor | 1 &lt;&lt; i;
+        node = node.children[toggleBit];
+      } else if (node.children[bit] != null) {
+        node = node.children[bit];
+      } else { // There&#x27;s nothing in the Bit Trie.
+        return 0;
+      }
+    }
+    return maxXor;
+  }
+
+  private int maxBit;
+  private TrieNode root = new TrieNode();
+}
+
+class Solution {
+  // Same as 2932. Maximum Strong Pair XOR I
+  public int maximumStrongPairXor(int[] nums) {
+    final int maxNum = Arrays.stream(nums).max().getAsInt();
+    final int maxBit = (int) (Math.log(maxNum) / Math.log(2));
+    int ans = 0;
+    BitTrie bitTrie = new BitTrie(maxBit);
+
+    for (final int num : nums)
+      bitTrie.insert(num);
+
+    for (final int num : nums)
+      ans = Math.max(ans, bitTrie.getMaxXor(num));
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: list[TrieNode | None] = [None] * 2
+    self.mn = math.inf
+    self.mx = -math.inf
+
+
+class BitTrie:
+  def __init__(self, maxBit: int):
+    self.maxBit = maxBit
+    self.root = TrieNode()
+
+  def insert(self, num: int) -&gt; None:
+    node = self.root
+    for i in range(self.maxBit, -1, -1):
+      bit = num &gt;&gt; i &amp; 1
+      if not node.children[bit]:
+        node.children[bit] = TrieNode()
+      node = node.children[bit]
+      node.mn = min(node.mn, num)
+      node.mx = max(node.mx, num)
+
+  def getMaxXor(self, x: int) -&gt; int:
+    &quot;&quot;&quot;Returns max(x ^ y) where |x - y| &lt;= min(x, y).
+
+    If x &lt;= y, |x - y| &lt;= min(x, y) can be written as y - x &lt;= x.
+    So, y &lt;= 2 * x.
+    &quot;&quot;&quot;
+    maxXor = 0
+    node = self.root
+    for i in range(self.maxBit, -1, -1):
+      bit = x &gt;&gt; i &amp; 1
+      toggleBit = bit ^ 1
+      # If `node.children[toggleBit].mx &gt; x`, it means there&#x27;s a number in the
+      # node that satisfies the condition to ensure that x &lt;= y among x and y.
+      # If `node.children[toggleBit].mn &lt;= 2 * x`, it means there&#x27;s a number in
+      # the node that satisfies the condition for a valid y.
+      if (node.children[toggleBit] and
+          node.children[toggleBit].mx &gt; x and
+              node.children[toggleBit].mn &lt;= 2 * x):
+        maxXor = maxXor | 1 &lt;&lt; i
+        node = node.children[toggleBit]
+      elif node.children[bit]:
+        node = node.children[bit]
+      else:  # There&#x27;s nothing in the Bit Trie.
+        return 0
+    return maxXor
+
+
+class Solution:
+  # Same as 2932. Maximum Strong Pair XOR I
+  def maximumStrongPairXor(self, nums: list[int]) -&gt; int:
+    maxNum = max(nums)
+    maxBit = int(math.log2(maxNum))
+    bitTrie = BitTrie(maxBit)
+
+    for num in nums:
+      bitTrie.insert(num)
+
+    return max(bitTrie.getMaxXor(num) for num in nums)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

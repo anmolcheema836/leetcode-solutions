@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint House III - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Paint House III written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/paint-house-iii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-browser-history/" class="btn">← Previous</a>
+            <span>Problem 1473 of 3563</span>
+            <a href="/leetcode-solutions/problems/delete-n-nodes-after-m-nodes-of-a-linked-list/" class="btn">Next →</a>
+        </div>
+        <h1>1473. Paint House III</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Paint House III efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minCost(vector&lt;int&gt;&amp; houses, vector&lt;vector&lt;int&gt;&gt;&amp; cost, int m, int n,
+              int target) {
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; mem(target + 1,
+                                    vector&lt;vector&lt;int&gt;&gt;(m, vector&lt;int&gt;(n + 1)));
+    // Initialize `prevColor` to 0 (the virtual neighbor).
+    const int c = minCost(houses, cost, m, n, target, 0, 0, mem);
+    return c == kMax ? -1 : c;
+  }
+
+ private:
+  static constexpr int kMax = 1&#x27;000&#x27;001;
+
+  // Returns the minimum cost to paint houses[i..m) into k neighborhoods, where
+  // there are houses[i - 1] colors = prevColor.
+  int minCost(const vector&lt;int&gt;&amp; houses, const vector&lt;vector&lt;int&gt;&gt;&amp; cost,
+              const int&amp; m, const int&amp; n, int k, int i, int prevColor,
+              vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt;&amp; mem) {
+    if (i == m || k &lt; 0)
+      return k == 0 ? 0 : kMax;
+    if (mem[k][i][prevColor] &gt; 0)
+      return mem[k][i][prevColor];
+    if (houses[i] &gt; 0)  // The house was painted last year.
+      return minCost(houses, cost, m, n, k - (prevColor != houses[i]), i + 1,
+                     houses[i], mem);
+
+    int res = kMax;
+
+    // Try to paint the houses[i] with each color in 1..n.
+    for (int color = 1; color &lt;= n; ++color)
+      res = min(res, cost[i][color - 1] + minCost(houses, cost, m, n,
+                                                  k - (prevColor != color),
+                                                  i + 1, color, mem));
+
+    return mem[k][i][prevColor] = res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minCost(int[] houses, int[][] cost, int m, int n, int target) {
+    int[][][] mem = new int[target + 1][m][n + 1];
+    // Initialize `prevColor` to 0 (the virtual neighbor).
+    final int c = minCost(houses, cost, m, n, target, 0, 0, mem);
+    return c == MAX ? -1 : c;
+  }
+
+  private static final int MAX = 1_000_001;
+
+  // Returns the minimum cost to paint houses[i..m) into k neighborhoods, where
+  // there are houses[i - 1] colors = prevColor.
+  public int minCost(int[] houses, int[][] cost, int m, int n, int k, int i, int prevColor,
+                     int[][][] mem) {
+    if (i == m || k &lt; 0)
+      return k == 0 ? 0 : MAX;
+    if (mem[k][i][prevColor] &gt; 0)
+      return mem[k][i][prevColor];
+    if (houses[i] &gt; 0) // The house was painted last year.
+      return minCost(houses, cost, m, n, k - (prevColor == houses[i] ? 0 : 1), i + 1, houses[i],
+                     mem);
+
+    int ans = MAX;
+
+    // Try to paint the houses[i] with each color in 1..n.
+    for (int color = 1; color &lt;= n; ++color)
+      ans = Math.min(ans, cost[i][color - 1] + minCost(houses, cost, m, n,
+                                                       k - (prevColor == color ? 0 : 1), i + 1,
+                                                       color, mem));
+
+    return mem[k][i][prevColor] = ans;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

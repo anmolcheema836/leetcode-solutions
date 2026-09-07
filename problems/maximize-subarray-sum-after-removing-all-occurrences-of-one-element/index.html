@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Subarray Sum After Removing All Occurrences of One Element - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize Subarray Sum After Removing All Occurrences of One Element written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-subarray-sum-after-removing-all-occurrences-of-one-element/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-subsequence-with-decreasing-adjacent-difference/" class="btn">← Previous</a>
+            <span>Problem 3410 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-subarray-with-equal-products/" class="btn">Next →</a>
+        </div>
+        <h1>3410. Maximize Subarray Sum After Removing All Occurrences of One Element</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize Subarray Sum After Removing All Occurrences of One Element efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxSubarraySum(vector&lt;int&gt;&amp; nums) {
+    long ans = ranges::max(nums);
+    long prefix = 0;
+    long minPrefix = 0;
+    // the minimum prefix sum that can have a negative number removed
+    long modifiedMinPrefix = 0;
+    unordered_map&lt;int, int&gt; count;
+    // minPrefixPlusRemoval[num] := the minimum prefix sum plus removed `num`
+    unordered_map&lt;int, long&gt; minPrefixPlusRemoval;
+
+    for (const int num : nums) {
+      prefix += num;
+      ans = max(ans, prefix - modifiedMinPrefix);
+      if (num &lt; 0) {
+        ++count[num];
+        minPrefixPlusRemoval[num] =
+            min(minPrefixPlusRemoval[num], minPrefix) + num;
+        modifiedMinPrefix =
+            min({modifiedMinPrefix, count[num] * static_cast&lt;long&gt;(num),
+                 minPrefixPlusRemoval[num]});
+      }
+      minPrefix = min(minPrefix, prefix);
+      modifiedMinPrefix = min(modifiedMinPrefix, minPrefix);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxSubarraySum(int[] nums) {
+    long ans = Arrays.stream(nums).max().getAsInt();
+    long prefix = 0;
+    long minPrefix = 0;
+    // the minimum prefix sum that can have a negative number removed
+    long modifiedMinPrefix = 0;
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+    // minPrefixPlusRemoval[num] := the minimum prefix sum plus removed `num`
+    Map&lt;Integer, Long&gt; minPrefixPlusRemoval = new HashMap&lt;&gt;();
+
+    for (int num : nums) {
+      prefix += num;
+      ans = Math.max(ans, prefix - modifiedMinPrefix);
+      if (num &lt; 0) {
+        count.merge(num, 1, Integer::sum);
+        minPrefixPlusRemoval.put(
+            num, Math.min(minPrefixPlusRemoval.getOrDefault(num, 0L), minPrefix) + num);
+        modifiedMinPrefix = Math.min(modifiedMinPrefix,
+                                     Math.min(count.get(num) * num, minPrefixPlusRemoval.get(num)));
+      }
+      minPrefix = Math.min(minPrefix, prefix);
+      modifiedMinPrefix = Math.min(modifiedMinPrefix, minPrefix);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxSubarraySum(self, nums: list[int]) -&gt; int:
+    ans = max(nums)
+    prefix = 0
+    minPrefix = 0
+    # the minimum prefix sum that can have a negative number removed
+    modifiedMinPrefix = 0
+    count = collections.Counter()
+    # minPrefixPlusRemoval[num] := the minimum prefix sum plus removed `num`
+    minPrefixPlusRemoval = {}
+
+    for num in nums:
+      prefix += num
+      ans = max(ans, prefix - modifiedMinPrefix)
+      if num &lt; 0:
+        count[num] += 1
+        minPrefixPlusRemoval[num] = (
+            min(minPrefixPlusRemoval.get(num, 0), minPrefix) + num)
+        modifiedMinPrefix = min(modifiedMinPrefix,
+                                count[num] * num,
+                                minPrefixPlusRemoval[num])
+      minPrefix = min(minPrefix, prefix)
+      modifiedMinPrefix = min(modifiedMinPrefix, minPrefix)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

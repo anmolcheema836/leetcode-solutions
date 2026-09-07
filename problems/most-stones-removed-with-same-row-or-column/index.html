@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Most Stones Removed with Same Row or Column - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Most Stones Removed with Same Row or Column written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/most-stones-removed-with-same-row-or-column/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/validate-stack-sequences/" class="btn">← Previous</a>
+            <span>Problem 947 of 3563</span>
+            <a href="/leetcode-solutions/problems/bag-of-tokens/" class="btn">Next →</a>
+        </div>
+        <h1>947. Most Stones Removed with Same Row or Column</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Most Stones Removed with Same Row or Column efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int removeStones(vector&lt;vector&lt;int&gt;&gt;&amp; stones) {
+    int numOfIslands = 0;
+    vector&lt;vector&lt;int&gt;&gt; graph(stones.size());
+    unordered_set&lt;int&gt; seen;
+
+    for (int i = 0; i &lt; stones.size(); ++i)
+      for (int j = i + 1; j &lt; stones.size(); ++j)
+        if (stones[i][0] == stones[j][0] || stones[i][1] == stones[j][1]) {
+          graph[i].push_back(j);
+          graph[j].push_back(i);
+        }
+
+    for (int i = 0; i &lt; stones.size(); ++i)
+      if (seen.insert(i).second) {
+        dfs(graph, i, seen);
+        ++numOfIslands;
+      }
+
+    return stones.size() - numOfIslands;
+  }
+
+ private:
+  void dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, unordered_set&lt;int&gt;&amp; seen) {
+    for (const int v : graph[u])
+      if (seen.insert(v).second)
+        dfs(graph, v, seen);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int removeStones(int[][] stones) {
+    int numOfIslands = 0;
+    List&lt;Integer&gt;[] graph = new List[stones.length];
+    Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+
+    for (int i = 0; i &lt; graph.length; ++i)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; stones.length; ++i)
+      for (int j = i + 1; j &lt; stones.length; ++j)
+        if (stones[i][0] == stones[j][0] || stones[i][1] == stones[j][1]) {
+          graph[i].add(j);
+          graph[j].add(i);
+        }
+
+    for (int i = 0; i &lt; stones.length; ++i)
+      if (seen.add(i)) {
+        dfs(graph, i, seen);
+        ++numOfIslands;
+      }
+
+    return stones.length - numOfIslands;
+  }
+
+  private void dfs(List&lt;Integer&gt;[] graph, int u, Set&lt;Integer&gt; seen) {
+    for (final int v : graph[u])
+      if (seen.add(v))
+        dfs(graph, v, seen);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

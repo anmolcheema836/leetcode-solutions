@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Similarity - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Sentence Similarity written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/sentence-similarity/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/flood-fill/" class="btn">← Previous</a>
+            <span>Problem 734 of 3563</span>
+            <a href="/leetcode-solutions/problems/asteroid-collision/" class="btn">Next →</a>
+        </div>
+        <h1>734. Sentence Similarity</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Sentence Similarity efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool areSentencesSimilar(vector&lt;string&gt;&amp; sentence1, vector&lt;string&gt;&amp; sentence2,
+                           vector&lt;vector&lt;string&gt;&gt;&amp; similarPairs) {
+    if (sentence1.size() != sentence2.size())
+      return false;
+
+    // map[key] := all the similar words of key
+    unordered_map&lt;string, unordered_set&lt;string&gt;&gt; map;
+
+    for (const vector&lt;string&gt;&amp; pair : similarPairs) {
+      map[pair[1]].insert(pair[0]);
+      map[pair[0]].insert(pair[1]);
+    }
+
+    for (int i = 0; i &lt; sentence1.size(); ++i) {
+      if (sentence1[i] == sentence2[i])
+        continue;
+      if (!map.contains(sentence1[i]))
+        return false;
+      if (!map[sentence1[i]].contains(sentence2[i]))
+        return false;
+    }
+
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean areSentencesSimilar(String[] sentence1, String[] sentence2,
+                                     List&lt;List&lt;String&gt;&gt; similarPairs) {
+    if (sentence1.length != sentence2.length)
+      return false;
+
+    // map[key] := all the similar words of key
+    Map&lt;String, Set&lt;String&gt;&gt; map = new HashMap&lt;&gt;();
+
+    for (List&lt;String&gt; pair : similarPairs) {
+      map.putIfAbsent(pair.get(0), new HashSet&lt;&gt;());
+      map.putIfAbsent(pair.get(1), new HashSet&lt;&gt;());
+      map.get(pair.get(1)).add(pair.get(0));
+      map.get(pair.get(0)).add(pair.get(1));
+    }
+
+    for (int i = 0; i &lt; sentence1.length; ++i) {
+      if (sentence1[i].equals(sentence2[i]))
+        continue;
+      if (!map.containsKey(sentence1[i]))
+        return false;
+      if (!map.get(sentence1[i]).contains(sentence2[i]))
+        return false;
+    }
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def areSentencesSimilar(
+      self,
+      sentence1: list[str],
+      sentence2: list[str],
+      similarPairs: list[list[str]],
+  ) -&gt; bool:
+    if len(sentence1) != len(sentence2):
+      return False
+
+    # map[key] := all the similar words of key
+    map = collections.defaultdict(set)
+
+    for a, b in similarPairs:
+      map[a].add(b)
+      map[b].add(a)
+
+    for word1, word2 in zip(sentence1, sentence2):
+      if word1 == word2:
+        continue
+      if word1 not in map:
+        return False
+      if word2 not in map[word1]:
+        return False
+
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

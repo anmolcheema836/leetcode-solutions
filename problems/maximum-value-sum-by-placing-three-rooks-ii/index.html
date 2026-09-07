@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Value Sum by Placing Three Rooks II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Value Sum by Placing Three Rooks II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-value-sum-by-placing-three-rooks-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-value-sum-by-placing-three-rooks-i/" class="btn">← Previous</a>
+            <span>Problem 3257 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-substrings-that-satisfy-k-constraint-i/" class="btn">Next →</a>
+        </div>
+        <h1>3257. Maximum Value Sum by Placing Three Rooks II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Value Sum by Placing Three Rooks II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Same as 3256. Maximum Value Sum by Placing Three Rooks I
+  long long maximumValueSum(vector&lt;vector&lt;int&gt;&gt;&amp; board) {
+    const int m = board.size();
+    const int n = board[0].size();
+    long ans = LONG_MIN;
+    using T = tuple&lt;long, int, int&gt;;
+    vector&lt;vector&lt;T&gt;&gt; rows(m);  // [(val, i, j)]
+    vector&lt;vector&lt;T&gt;&gt; cols(n);  // [(val, i, j)]
+    set&lt;T&gt; rowSet;              // {(val, i, j)}
+    set&lt;T&gt; colSet;              // {(val, i, j)}
+    set&lt;T&gt; topNine;             // {(val, i, j)}
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        rows[i].emplace_back(board[i][j], i, j);
+        cols[j].emplace_back(board[i][j], i, j);
+      }
+
+    auto getTop3 = [](vector&lt;T&gt;&amp; row) -&gt; vector&lt;T&gt; {
+      partial_sort(row.begin(),
+                   row.begin() + min(3, static_cast&lt;int&gt;(row.size())),
+                   row.end(), greater&lt;&gt;());
+      row.resize(min(3, (int)row.size()));
+      return row;
+    };
+
+    for (vector&lt;T&gt;&amp; row : rows) {
+      row = getTop3(row);
+      rowSet.insert(row.begin(), row.end());
+    }
+
+    for (vector&lt;T&gt;&amp; col : cols) {
+      col = getTop3(col);
+      colSet.insert(col.begin(), col.end());
+    }
+
+    set_intersection(rowSet.begin(), rowSet.end(), colSet.begin(), colSet.end(),
+                     inserter(topNine, topNine.begin()));
+
+    // At least 9 positions are required on the board to place 3 rooks such that
+    // none can attack another.
+    if (topNine.size() &gt; 9) {
+      auto it = topNine.begin();
+      advance(it, topNine.size() - 9);
+      topNine.erase(topNine.begin(), it);
+    }
+
+    for (auto it1 = topNine.begin(); it1 != topNine.end(); ++it1)
+      for (auto it2 = next(it1); it2 != topNine.end(); ++it2)
+        for (auto it3 = next(it2); it3 != topNine.end(); ++it3) {
+          const auto [val1, i1, j1] = *it1;
+          const auto [val2, i2, j2] = *it2;
+          const auto [val3, i3, j3] = *it3;
+          if (i1 == i2 || i1 == i3 || i2 == i3 ||  //
+              j1 == j2 || j1 == j3 || j2 == j3)
+            continue;
+          ans = max(ans, val1 + val2 + val3);
+        }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Same as 3256. Maximum Value Sum by Placing Three Rooks I
+  public long maximumValueSum(int[][] board) {
+    final int m = board.length;
+    final int n = board[0].length;
+    long ans = Long.MIN_VALUE;
+    List&lt;int[]&gt;[] rows = new ArrayList[m];
+    List&lt;int[]&gt;[] cols = new ArrayList[n];
+    Set&lt;int[]&gt; rowSet = new HashSet&lt;&gt;();
+    Set&lt;int[]&gt; colSet = new HashSet&lt;&gt;();
+    Set&lt;int[]&gt; boardSet = new HashSet&lt;&gt;();
+
+    for (int i = 0; i &lt; m; ++i)
+      rows[i] = new ArrayList&lt;&gt;();
+
+    for (int j = 0; j &lt; n; ++j)
+      cols[j] = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j) {
+        int[] cell = new int[] {board[i][j], i, j};
+        rows[i].add(cell);
+        cols[j].add(cell);
+      }
+
+    Comparator&lt;int[]&gt; comparator = Comparator.comparingInt(a -&gt; - a[0]);
+
+    for (List&lt;int[]&gt; row : rows) {
+      row.sort(comparator);
+      rowSet.addAll(row.subList(0, Math.min(3, row.size())));
+    }
+
+    for (List&lt;int[]&gt; col : cols) {
+      col.sort(comparator);
+      colSet.addAll(col.subList(0, Math.min(3, col.size())));
+    }
+
+    boardSet.addAll(rowSet);
+    boardSet.retainAll(colSet);
+
+    // At least 9 positions are required on the board to place 3 rooks such that
+    // none can attack another.
+    List&lt;int[]&gt; topNine = new ArrayList&lt;&gt;(boardSet);
+    topNine.sort(comparator);
+    topNine = topNine.subList(0, Math.min(9, topNine.size()));
+
+    for (int i = 0; i &lt; topNine.size(); ++i)
+      for (int j = i + 1; j &lt; topNine.size(); ++j)
+        for (int k = j + 1; k &lt; topNine.size(); ++k) {
+          int[] t1 = topNine.get(i);
+          int[] t2 = topNine.get(j);
+          int[] t3 = topNine.get(k);
+          if (t1[1] == t2[1] || t1[1] == t3[1] || t2[1] == t3[1] || //
+              t1[2] == t2[2] || t1[2] == t3[2] || t2[2] == t3[2])
+            continue;
+          ans = Math.max(ans, (long) t1[0] + t2[0] + t3[0]);
+        }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Same as 3256. Maximum Value Sum by Placing Three Rooks I
+  def maximumValueSum(self, board: list[list[int]]) -&gt; int:
+    rows = [heapq.nlargest(3, [(val, i, j)
+            for j, val in enumerate(row)])
+            for i, row in enumerate(board)]
+    cols = [heapq.nlargest(3, [(val, i, j)
+            for i, val in enumerate(col)])
+            for j, col in enumerate(zip(*board))]
+    topNine = heapq.nlargest(9,
+                             set(itertools.chain(*rows)) &amp;
+                             set(itertools.chain(*cols)))
+    return max(
+        (val1 + val2 + val3 for
+         (val1, i1, j1),
+         (val2, i2, j2),
+         (val3, i3, j3) in (itertools.combinations(topNine, 3))
+         if len({i1, i2, i3}) == 3 and len({j1, j2, j3}) == 3))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

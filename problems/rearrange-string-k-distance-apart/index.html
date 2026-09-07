@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rearrange String k Distance Apart - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Rearrange String k Distance Apart written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/rearrange-string-k-distance-apart/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-numbers-with-unique-digits/" class="btn">← Previous</a>
+            <span>Problem 358 of 3563</span>
+            <a href="/leetcode-solutions/problems/logger-rate-limiter/" class="btn">Next →</a>
+        </div>
+        <h1>358. Rearrange String k Distance Apart</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Rearrange String k Distance Apart efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string rearrangeString(string s, int k) {
+    const int n = s.length();
+    string ans;
+    vector&lt;int&gt; count(26);
+    // valid[i] := the leftmost index (&#x27;a&#x27; + i) can appear
+    vector&lt;int&gt; valid(26);
+
+    for (const char c : s)
+      ++count[c - &#x27;a&#x27;];
+
+    for (int i = 0; i &lt; n; ++i) {
+      const char c = getBestLetter(count, valid, i);
+      if (c == &#x27;*&#x27;)
+        return &quot;&quot;;
+      ans += c;
+      --count[c - &#x27;a&#x27;];
+      valid[c - &#x27;a&#x27;] = i + k;
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns the valid letter that has the most count.
+  char getBestLetter(const vector&lt;int&gt;&amp; count, const vector&lt;int&gt;&amp; valid,
+                     int index) {
+    int maxCount = -1;
+    char bestLetter = &#x27;*&#x27;;
+
+    for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c)
+      if (count[c - &#x27;a&#x27;] &gt; 0 &amp;&amp; count[c - &#x27;a&#x27;] &gt; maxCount &amp;&amp;
+          index &gt;= valid[c - &#x27;a&#x27;]) {
+        bestLetter = c;
+        maxCount = count[c - &#x27;a&#x27;];
+      }
+
+    return bestLetter;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String rearrangeString(String s, int k) {
+    final int n = s.length();
+    StringBuilder sb = new StringBuilder();
+    int[] count = new int[26];
+    // valid[i] := the leftmost index character i can appear
+    int[] valid = new int[26];
+
+    for (final char c : s.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    for (int i = 0; i &lt; n; ++i) {
+      final char c = getBestLetter(count, valid, i);
+      if (c == &#x27;*&#x27;)
+        return &quot;&quot;;
+      sb.append(c);
+      --count[c - &#x27;a&#x27;];
+      valid[c - &#x27;a&#x27;] = i + k;
+    }
+
+    return sb.toString();
+  }
+
+  // Returns the valid letter that has the most count.
+  private char getBestLetter(int[] count, int[] valid, int index) {
+    int maxCount = -1;
+    char bestLetter = &#x27;*&#x27;;
+
+    for (char c = &#x27;a&#x27;; c &lt;= &#x27;z&#x27;; ++c)
+      if (count[c - &#x27;a&#x27;] &gt; 0 &amp;&amp; count[c - &#x27;a&#x27;] &gt; maxCount &amp;&amp; index &gt;= valid[c - &#x27;a&#x27;]) {
+        bestLetter = c;
+        maxCount = count[c - &#x27;a&#x27;];
+      }
+
+    return bestLetter;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def rearrangeString(self, s: str, k: int) -&gt; str:
+    n = len(s)
+    ans = []
+    count = collections.Counter(s)
+    # valid[i] := the leftmost index i can appear
+    valid = collections.Counter()
+
+    def getBestLetter(index: int) -&gt; str:
+      &quot;&quot;&quot;Returns the valid letter that has the most count.&quot;&quot;&quot;
+      maxCount = -1
+      bestLetter = &#x27;*&#x27;
+
+      for c in string.ascii_lowercase:
+        if count[c] &gt; 0 and count[c] &gt; maxCount and index &gt;= valid[c]:
+          bestLetter = c
+          maxCount = count[c]
+
+      return bestLetter
+
+    for i in range(n):
+      c = getBestLetter(i)
+      if c == &#x27;*&#x27;:
+        return &#x27;&#x27;
+      ans.append(c)
+      count[c] -= 1
+      valid[c] = i + k
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

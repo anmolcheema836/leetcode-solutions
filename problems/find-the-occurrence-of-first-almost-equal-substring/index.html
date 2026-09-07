@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Occurrence of First Almost Equal Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Occurrence of First Almost Equal Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-occurrence-of-first-almost-equal-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-lexicographically-smallest-valid-sequence/" class="btn">← Previous</a>
+            <span>Problem 3303 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-k-th-character-in-string-game-i/" class="btn">Next →</a>
+        </div>
+        <h1>3303. Find the Occurrence of First Almost Equal Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Occurrence of First Almost Equal Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minStartingIndex(string s, string pattern) {
+    const vector&lt;int&gt; z1 = zFunction(pattern + s);
+    const vector&lt;int&gt; z2 = zFunction(reversed(pattern) + reversed(s));
+
+    // Match s[i..i + len(pattern) - 1] with `pattern` from both the prefix and
+    // the suffix.
+    for (int i = 0; i &lt;= s.length() - pattern.length(); ++i)
+      if (z1[pattern.length() + i] + z2[s.length() - i] &gt;= pattern.length() - 1)
+        return i;
+
+    return -1;
+  }
+
+ private:
+  // Returns the z array, where z[i] is the length of the longest prefix of
+  // s[i..n) which is also a prefix of s.
+  //
+  // https://cp-algorithms.com/string/z-function.html#implementation
+  vector&lt;int&gt; zFunction(const string&amp; s) {
+    const int n = s.length();
+    vector&lt;int&gt; z(n);
+    int l = 0;
+    int r = 0;
+    for (int i = 1; i &lt; n; ++i) {
+      if (i &lt; r)
+        z[i] = min(r - i, z[i - l]);
+      while (i + z[i] &lt; n &amp;&amp; s[z[i]] == s[i + z[i]])
+        ++z[i];
+      if (i + z[i] &gt; r) {
+        l = i;
+        r = i + z[i];
+      }
+    }
+    return z;
+  }
+
+  string reversed(const string&amp; s) {
+    return {s.rbegin(), s.rend()};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minStartingIndex(String s, String pattern) {
+    int[] z1 = zFunction(new StringBuilder(pattern).append(s).toString());
+    int[] z2 = zFunction(new StringBuilder(pattern)
+                             .reverse() //
+                             .append(new StringBuilder(s).reverse())
+                             .toString());
+
+    // Match s[i..i + len(pattern) - 1] with `pattern` from both the prefix and
+    // the suffix.
+    for (int i = 0; i &lt;= s.length() - pattern.length(); ++i)
+      if (z1[pattern.length() + i] + z2[s.length() - i] &gt;= pattern.length() - 1)
+        return i;
+
+    return -1;
+  }
+
+  // Returns the z array, where z[i] is the length of the longest prefix of
+  // s[i..n) which is also a prefix of s.
+  //
+  // https://cp-algorithms.com/string/z-function.html#implementation
+  private int[] zFunction(final String s) {
+    final int n = s.length();
+    int[] z = new int[n];
+    int l = 0;
+    int r = 0;
+    for (int i = 1; i &lt; n; ++i) {
+      if (i &lt; r)
+        z[i] = Math.min(r - i, z[i - l]);
+      while (i + z[i] &lt; n &amp;&amp; s.charAt(z[i]) == s.charAt(i + z[i]))
+        ++z[i];
+      if (i + z[i] &gt; r) {
+        l = i;
+        r = i + z[i];
+      }
+    }
+    return z;
+  }
+
+  private String reversed(final String s) {
+    return new StringBuilder(s).reverse().toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minStartingIndex(self, s: str, pattern: str) -&gt; int:
+    z1 = self._zFunction(pattern + s)
+    z2 = self._zFunction(pattern[::-1] + s[::-1])
+
+    # Match s[i..i + len(pattern) - 1] with `pattern` from both the prefix and
+    # the suffix.
+    for i in range(len(s) - len(pattern) + 1):
+      if z1[len(pattern) + i] + z2[len(s) - i] &gt;= len(pattern) - 1:
+        return i
+
+    return -1
+
+  def _zFunction(self, s: str) -&gt; list[int]:
+    &quot;&quot;&quot;
+    Returns the z array, where z[i] is the length of the longest prefix of
+    s[i..n) which is also a prefix of s.
+
+    https://cp-algorithms.com/string/z-function.html#implementation
+    &quot;&quot;&quot;
+    n = len(s)
+    z = [0] * n
+    l = 0
+    r = 0
+    for i in range(1, n):
+      if i &lt; r:
+        z[i] = min(r - i, z[i - l])
+      while i + z[i] &lt; n and s[z[i]] == s[i + z[i]]:
+        z[i] += 1
+      if i + z[i] &gt; r:
+        l = i
+        r = i + z[i]
+    return z</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

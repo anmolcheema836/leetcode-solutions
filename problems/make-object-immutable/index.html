@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Object Immutable - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Make Object Immutable written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/make-object-immutable/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/immutability-helper/" class="btn">← Previous</a>
+            <span>Problem 2692 of 3563</span>
+            <a href="/leetcode-solutions/problems/call-function-with-custom-context/" class="btn">Next →</a>
+        </div>
+        <h1>2692. Make Object Immutable</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Make Object Immutable efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">TypeScript</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-clike">type RecursiveHandler = {
+  set: &lt;T extends object&gt;(target: T, prop: string, value: any) =&gt; boolean;
+  get: &lt;T extends object&gt;(target: T, prop: string) =&gt; any;
+  apply: &lt;T extends Function&gt;(target: T, thisArg: any, argArray?: any) =&gt; any;
+};
+
+function makeImmutable&lt;T extends object | Function&gt;(obj: T): T {
+  // a set of mutating array methods
+  const methods = new Set([
+    &#x27;pop&#x27;,
+    &#x27;push&#x27;,
+    &#x27;shift&#x27;,
+    &#x27;unshift&#x27;,
+    &#x27;splice&#x27;,
+    &#x27;sort&#x27;,
+    &#x27;reverse&#x27;,
+  ]);
+
+  const handler: RecursiveHandler = {
+    // &#x27;set&#x27; trap prevents modifications of the object properties.
+    set(target, prop, _) {
+      throw Array.isArray(target)
+        ? `Error Modifying Index: ${String(prop)}`
+        : `Error Modifying: ${String(prop)}`;
+    },
+    // &#x27;get&#x27; trap returns object properties or creates new proxies for nested
+    // objects or functions
+    get(target, prop) {
+      // If the property is &#x27;prototype&#x27;, null, or not an object/function, return
+      // it directly. We exclude &#x27;prototype&#x27; to avoid potential issues with
+      // inheritance Objects and functions are wrapped in a new proxy to
+      // preserve immutability at all depths.
+      const key = prop as keyof typeof target;
+      return prop === &#x27;prototype&#x27; ||
+        target[key] === null ||
+        (typeof target[key] !== &#x27;object&#x27; &amp;&amp; typeof target[key] !== &#x27;function&#x27;)
+        ? target[key]
+        : new Proxy(target[key], this);
+    },
+    // &#x27;apply&#x27; trap prevents call of mutating methods and apply function calls.
+    apply(target, thisArg, argumentsList) {
+      if (methods.has((target as any).name))
+        throw `Error Calling Method: ${(target as any).name}`;
+      return target.apply(thisArg, argumentsList);
+    },
+  };
+
+  return new Proxy(obj, handler) as T;
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

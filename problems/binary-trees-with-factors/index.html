@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Trees With Factors - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Binary Trees With Factors written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/binary-trees-with-factors/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/card-flipping-game/" class="btn">← Previous</a>
+            <span>Problem 823 of 3563</span>
+            <a href="/leetcode-solutions/problems/goat-latin/" class="btn">Next →</a>
+        </div>
+        <h1>823. Binary Trees With Factors</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Binary Trees With Factors efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numFactoredBinaryTrees(vector&lt;int&gt;&amp; arr) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int n = arr.size();
+    // dp[i] := the number of binary trees with arr[i] as the root
+    vector&lt;long&gt; dp(n, 1);
+    unordered_map&lt;int, int&gt; numToIndex;
+
+    ranges::sort(arr);
+
+    for (int i = 0; i &lt; n; ++i)
+      numToIndex[arr[i]] = i;
+
+    for (int i = 0; i &lt; n; ++i)  // arr[i] is the root
+      for (int j = 0; j &lt; i; ++j)
+        if (arr[i] % arr[j] == 0) {  // arr[j] is the left subtree
+          const int right = arr[i] / arr[j];
+          if (const auto it = numToIndex.find(right); it != numToIndex.cend()) {
+            dp[i] += dp[j] * dp[it-&gt;second];
+            dp[i] %= kMod;
+          }
+        }
+
+    return accumulate(dp.begin(), dp.end(), 0L) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numFactoredBinaryTrees(int[] arr) {
+    final int MOD = 1_000_000_007;
+    final int n = arr.length;
+    // dp[i] := the number of binary trees with arr[i] as the root
+    long[] dp = new long[n];
+    Map&lt;Integer, Integer&gt; numToIndex = new HashMap&lt;&gt;();
+
+    Arrays.sort(arr);
+    Arrays.fill(dp, 1);
+
+    for (int i = 0; i &lt; n; ++i)
+      numToIndex.put(arr[i], i);
+
+    for (int i = 0; i &lt; n; ++i) // arr[i] is the root
+      for (int j = 0; j &lt; i; ++j)
+        if (arr[i] % arr[j] == 0) { // arr[j] is the left subtree
+          final int right = arr[i] / arr[j];
+          if (numToIndex.containsKey(right)) {
+            dp[i] += dp[j] * dp[numToIndex.get(right)];
+            dp[i] %= MOD;
+          }
+        }
+
+    return (int) (Arrays.stream(dp).sum() % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def numFactoredBinaryTrees(self, arr: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+    n = len(arr)
+    # dp[i] := the number of binary trees with arr[i] as the root
+    dp = [1] * n
+    arr.sort()
+    numToIndex = {a: i for i, a in enumerate(arr)}
+
+    for i, root in enumerate(arr):  # arr[i] is the root
+      for j in range(i):
+        if root % arr[j] == 0:  # arr[j] is the left subtree
+          right = root // arr[j]
+          if right in numToIndex:
+            dp[i] += dp[j] * dp[numToIndex[right]]
+            dp[i] %= MOD
+
+    return sum(dp) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

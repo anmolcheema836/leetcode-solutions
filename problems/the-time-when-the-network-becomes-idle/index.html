@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Time When the Network Becomes Idle - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Time When the Network Becomes Idle written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-time-when-the-network-becomes-idle/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/" class="btn">← Previous</a>
+            <span>Problem 2039 of 3563</span>
+            <a href="/leetcode-solutions/problems/kth-smallest-product-of-two-sorted-arrays/" class="btn">Next →</a>
+        </div>
+        <h1>2039. The Time When the Network Becomes Idle</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Time When the Network Becomes Idle efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int networkBecomesIdle(vector&lt;vector&lt;int&gt;&gt;&amp; edges, vector&lt;int&gt;&amp; patience) {
+    const int n = patience.size();
+    int ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    queue&lt;int&gt; q{{0}};
+    vector&lt;int&gt; dist(n, INT_MAX);  // dist[i] := the distance between i and 0
+    dist[0] = 0;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    while (!q.empty())
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const int u = q.front();
+        q.pop();
+        for (const int v : graph[u])
+          if (dist[v] == INT_MAX) {
+            dist[v] = dist[u] + 1;
+            q.push(v);
+          }
+      }
+
+    for (int i = 1; i &lt; n; ++i) {
+      const int numResending = (dist[i] * 2 - 1) / patience[i];
+      const int lastResendingTime = patience[i] * numResending;
+      const int lastArrivingTime = lastResendingTime + dist[i] * 2;
+      ans = max(ans, lastArrivingTime);
+    }
+
+    return ans + 1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int networkBecomesIdle(int[][] edges, int[] patience) {
+    final int n = patience.length;
+    int ans = 0;
+    List&lt;Integer&gt;[] graph = new List[n];
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;(List.of(0));
+    int[] dist = new int[n]; // dist[i] := the distance between i and 0
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[0] = 0;
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    while (!q.isEmpty())
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int u = q.poll();
+        for (final int v : graph[u])
+          if (dist[v] == Integer.MAX_VALUE) {
+            dist[v] = dist[u] + 1;
+            q.offer(v);
+          }
+      }
+
+    for (int i = 1; i &lt; n; ++i) {
+      final int numResending = (dist[i] * 2 - 1) / patience[i];
+      final int lastResendingTime = patience[i] * numResending;
+      final int lastArrivingTime = lastResendingTime + dist[i] * 2;
+      ans = Math.max(ans, lastArrivingTime);
+    }
+
+    return ans + 1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def networkBecomesIdle(
+      self,
+      edges: list[list[int]],
+      patience: list[int],
+  ) -&gt; int:
+    n = len(patience)
+    ans = 0
+    graph = [[] for _ in range(n)]
+    q = collections.deque([0])
+    dist = [math.inf] * n  # dist[i] := the distance between i and 0
+    dist[0] = 0
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    while q:
+      for _ in range(len(q)):
+        u = q.popleft()
+        for v in graph[u]:
+          if dist[v] == math.inf:
+            dist[v] = dist[u] + 1
+            q.append(v)
+
+    for i in range(1, n):
+      numResending = (dist[i] * 2 - 1) // patience[i]
+      lastResendingTime = patience[i] * numResending
+      lastArrivingTime = lastResendingTime + dist[i] * 2
+      ans = max(ans, lastArrivingTime)
+
+    return ans + 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

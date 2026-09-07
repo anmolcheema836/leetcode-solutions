@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace Question Marks in String to Minimize Its Value - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Replace Question Marks in String to Minimize Its Value written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/replace-question-marks-in-string-to-minimize-its-value/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/mark-elements-on-array-by-performing-queries/" class="btn">← Previous</a>
+            <span>Problem 3081 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-sum-of-the-power-of-all-subsequences/" class="btn">Next →</a>
+        </div>
+        <h1>3081. Replace Question Marks in String to Minimize Its Value</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Replace Question Marks in String to Minimize Its Value efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string minimizeStringValue(string s) {
+    string ans;
+    vector&lt;int&gt; count(26);
+    vector&lt;char&gt; letters;
+
+    for (const char c : s)
+      if (c != &#x27;?&#x27;)
+        ++count[c - &#x27;a&#x27;];
+
+    for (const char c : s) {
+      if (c != &#x27;?&#x27;)
+        continue;
+      const char minFreqLetter = getMinFreqLetter(count);
+      letters.push_back(minFreqLetter);
+      ++count[minFreqLetter - &#x27;a&#x27;];
+    }
+
+    ranges::sort(letters);
+    int i = 0;  // letters&#x27; index
+
+    for (const char c : s)
+      ans += c == &#x27;?&#x27; ? letters[i++] : c;
+
+    return ans;
+  }
+
+ private:
+  char getMinFreqLetter(const vector&lt;int&gt;&amp; count) {
+    char minFreqLetter = &#x27;a&#x27;;
+    for (char c = &#x27;b&#x27;; c &lt;= &#x27;z&#x27;; ++c)
+      if (count[c - &#x27;a&#x27;] &lt; count[minFreqLetter - &#x27;a&#x27;])
+        minFreqLetter = c;
+    return minFreqLetter;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String minimizeStringValue(String s) {
+    StringBuilder sb = new StringBuilder();
+    int[] count = new int[26];
+    List&lt;Character&gt; letters = new ArrayList&lt;&gt;();
+
+    for (final char c : s.toCharArray())
+      if (c != &#x27;?&#x27;)
+        ++count[c - &#x27;a&#x27;];
+
+    for (final char c : s.toCharArray()) {
+      if (c != &#x27;?&#x27;)
+        continue;
+      final char minFreqLetter = getMinFreqLetter(count);
+      letters.add(minFreqLetter);
+      ++count[minFreqLetter - &#x27;a&#x27;];
+    }
+
+    Collections.sort(letters);
+    int i = 0; // letters&#x27; index
+
+    for (final char c : s.toCharArray())
+      sb.append(c == &#x27;?&#x27; ? letters.get(i++) : c);
+
+    return sb.toString();
+  }
+
+  private char getMinFreqLetter(int[] count) {
+    char minFreqLetter = &#x27;a&#x27;;
+    for (char c = &#x27;b&#x27;; c &lt;= &#x27;z&#x27;; ++c)
+      if (count[c - &#x27;a&#x27;] &lt; count[minFreqLetter - &#x27;a&#x27;])
+        minFreqLetter = c;
+    return minFreqLetter;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimizeStringValue(self, s: str) -&gt; str:
+    ans = []
+    count = collections.Counter(s)
+    letters = []
+
+    del count[&#x27;?&#x27;]
+
+    def getMinFreqLetter(count: dict[str, int]) -&gt; str:
+      minFreqLetter = &#x27;a&#x27;
+      for c in string.ascii_lowercase:
+        if count[c] &lt; count[minFreqLetter]:
+          minFreqLetter = c
+      return minFreqLetter
+
+    for c in s:
+      if c == &#x27;?&#x27;:
+        minFreqLetter = getMinFreqLetter(count)
+        letters.append(minFreqLetter)
+        count[minFreqLetter] += 1
+
+    letters.sort()
+    i = 0  # letters&#x27; index
+
+    for c in s:
+      if c == &#x27;?&#x27;:
+        ans.append(letters[i])
+        i += 1
+      else:
+        ans.append(c)
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

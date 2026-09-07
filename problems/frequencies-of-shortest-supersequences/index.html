@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequencies of Shortest Supersequences - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Frequencies of Shortest Supersequences written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/frequencies-of-shortest-supersequences/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-frequency-after-subarray-operation/" class="btn">← Previous</a>
+            <span>Problem 3435 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-valid-emails/" class="btn">Next →</a>
+        </div>
+        <h1>3435. Frequencies of Shortest Supersequences</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Frequencies of Shortest Supersequences efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">enum class State { kInit, kVisiting, kVisited };
+
+class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; supersequences(vector&lt;string&gt;&amp; words) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    const vector&lt;pair&lt;int, int&gt;&gt; edges = getEdges(words);
+    const vector&lt;int&gt; nodes = getNodes(edges);
+    const vector&lt;int&gt; letterToIndex = getLetterToIndex(nodes);
+    vector&lt;vector&lt;int&gt;&gt; graph(nodes.size());
+
+    for (const auto&amp; [u, v] : edges)
+      graph[letterToIndex[u]].push_back(letterToIndex[v]);
+
+    for (const auto&amp; doubledSubset : getMinimumSubsets(graph)) {
+      vector&lt;int&gt; freq(26);
+      for (const int letter : nodes)
+        freq[letter] = 1;
+      for (const int index : doubledSubset)
+        freq[nodes[index]] = 2;
+      ans.push_back(freq);
+    }
+
+    return ans;
+  }
+
+ private:
+  // Returns a list of the minimum subsets of nodes that do not create a cycle
+  // when skipped.
+  vector&lt;vector&lt;int&gt;&gt; getMinimumSubsets(const vector&lt;vector&lt;int&gt;&gt;&amp; graph) {
+    const int n = graph.size();
+    vector&lt;vector&lt;int&gt;&gt; res;
+    for (int subsetSize = 0; subsetSize &lt;= n; ++subsetSize) {
+      vector&lt;bool&gt; combination(n);
+      fill(combination.end() - subsetSize, combination.end(), true);
+      do {
+        vector&lt;int&gt; doubledSubset;
+        for (int i = 0; i &lt; n; ++i)
+          if (combination[i])
+            doubledSubset.push_back(i);
+        if (!hasCycleSkipping(graph,
+                              {doubledSubset.begin(), doubledSubset.end()}))
+          res.push_back(doubledSubset);
+      } while (next_permutation(combination.begin(), combination.end()));
+      if (!res.empty())
+        return res;
+    }
+    return res;
+  }
+
+  // Returns true if there is a cycle in the `graph` when skipping any edges
+  // whose both endpoints are in `doubledSubset`.
+  bool hasCycleSkipping(const vector&lt;vector&lt;int&gt;&gt;&amp; graph,
+                        const unordered_set&lt;int&gt;&amp; doubledSubset) {
+    vector&lt;State&gt; states(graph.size());
+    for (int i = 0; i &lt; graph.size(); ++i)
+      if (hasCycle(graph, i, states, doubledSubset))
+        return true;
+    return false;
+  }
+
+  bool hasCycle(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, vector&lt;State&gt;&amp; states,
+                const unordered_set&lt;int&gt;&amp; doubledSubset) {
+    if (states[u] == State::kVisiting)
+      return true;
+    if (states[u] == State::kVisited)
+      return false;
+    states[u] = State::kVisiting;
+    if (!doubledSubset.contains(u))
+      for (const int v : graph[u])
+        if (!doubledSubset.contains(v) &amp;&amp;
+            hasCycle(graph, v, states, doubledSubset))
+          return true;
+    states[u] = State::kVisited;
+    return false;
+  }
+
+  vector&lt;pair&lt;int, int&gt;&gt; getEdges(const vector&lt;string&gt;&amp; words) {
+    vector&lt;pair&lt;int, int&gt;&gt; edges;
+    for (const string&amp; word : words)
+      edges.push_back({word[0] - &#x27;a&#x27;, word[1] - &#x27;a&#x27;});
+    return edges;
+  }
+
+  vector&lt;int&gt; getNodes(const vector&lt;pair&lt;int, int&gt;&gt;&amp; edges) {
+    set&lt;int&gt; nodes;
+    for (const auto&amp; [u, v] : edges) {
+      nodes.insert(u);
+      nodes.insert(v);
+    }
+    return {nodes.begin(), nodes.end()};
+  }
+
+  vector&lt;int&gt; getLetterToIndex(const vector&lt;int&gt;&amp; nodes) {
+    vector&lt;int&gt; letterToIndex(26);
+    for (int i = 0; i &lt; nodes.size(); ++i)
+      letterToIndex[nodes[i]] = i;
+    return letterToIndex;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">enum State { INIT, VISITING, VISITED }
+
+class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; supersequences(String[] words) {
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;int[]&gt; edges = getEdges(words);
+    List&lt;Integer&gt; nodes = getNodes(edges);
+    int[] letterToIndex = getLetterToIndex(nodes);
+    List&lt;Integer&gt;[] graph = new List[nodes.size()];
+
+    for (int i = 0; i &lt; nodes.size(); i++)
+      graph[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[letterToIndex[u]].add(letterToIndex[v]);
+    }
+
+    for (List&lt;Integer&gt; doubledSubset : getMinimumSubsets(graph)) {
+      int[] freq = new int[26];
+      for (final int letter : nodes)
+        freq[letter] = 1;
+      for (final int index : doubledSubset)
+        freq[nodes.get(index)] = 2;
+      ans.add(Arrays.stream(freq).boxed().collect(Collectors.toList()));
+    }
+
+    return ans;
+  }
+
+  // Returns a list of the minimum subsets of nodes that do not create a cycle
+  // when skipped.
+  private List&lt;List&lt;Integer&gt;&gt; getMinimumSubsets(List&lt;Integer&gt;[] graph) {
+    final int n = graph.length;
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+
+    for (int subsetSize = 0; subsetSize &lt;= n; ++subsetSize) {
+      boolean[] combination = new boolean[n];
+      Arrays.fill(combination, n - subsetSize, n, true);
+      do {
+        List&lt;Integer&gt; doubledSubset = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; n; i++)
+          if (combination[i])
+            doubledSubset.add(i);
+        if (!hasCycleSkipping(graph, new HashSet&lt;&gt;(doubledSubset)))
+          res.add(doubledSubset);
+      } while (nextPermutation(combination));
+      if (!res.isEmpty())
+        return res;
+    }
+    return res;
+  }
+
+  // Returns true if there is a cycle in the `graph` when skipping any edges
+  // whose both endpoints are in `doubledSubset`.
+  private boolean hasCycleSkipping(List&lt;Integer&gt;[] graph, Set&lt;Integer&gt; doubledSubset) {
+    State[] states = new State[graph.length];
+    for (int i = 0; i &lt; graph.length; ++i)
+      if (hasCycle(graph, i, states, doubledSubset))
+        return true;
+    return false;
+  }
+
+  private boolean hasCycle(List&lt;Integer&gt;[] graph, int u, State[] states,
+                           Set&lt;Integer&gt; doubledSubset) {
+    if (states[u] == State.VISITING)
+      return true;
+    if (states[u] == State.VISITED)
+      return false;
+    states[u] = State.VISITING;
+    if (!doubledSubset.contains(u))
+      for (final int v : graph[u])
+        if (!doubledSubset.contains(v) &amp;&amp; hasCycle(graph, v, states, doubledSubset))
+          return true;
+    states[u] = State.VISITED;
+    return false;
+  }
+
+  private List&lt;int[]&gt; getEdges(String[] words) {
+    List&lt;int[]&gt; edges = new ArrayList&lt;&gt;();
+    for (final String word : words)
+      edges.add(new int[] {word.charAt(0) - &#x27;a&#x27;, word.charAt(1) - &#x27;a&#x27;});
+    return edges;
+  }
+
+  private List&lt;Integer&gt; getNodes(List&lt;int[]&gt; edges) {
+    TreeSet&lt;Integer&gt; nodes = new TreeSet&lt;&gt;();
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      nodes.add(u);
+      nodes.add(v);
+    }
+    return new ArrayList&lt;&gt;(nodes);
+  }
+
+  private int[] getLetterToIndex(List&lt;Integer&gt; nodes) {
+    int[] letterToIndex = new int[26];
+    for (int i = 0; i &lt; nodes.size(); ++i)
+      letterToIndex[nodes.get(i)] = i;
+    return letterToIndex;
+  }
+
+  private boolean nextPermutation(boolean[] arr) {
+    final int n = arr.length;
+
+    // From back to front, find the first false followed by true
+    int i;
+    for (i = n - 2; i &gt;= 0; --i)
+      if (!arr[i] &amp;&amp; arr[i + 1])
+        break;
+
+    // If no such pair found, we&#x27;ve reached the last permutation
+    if (i &lt; 0)
+      return false;
+
+    // From back to front, find the first true to swap with arr[i].
+    for (int j = n - 1; j &gt; i; --j)
+      if (arr[j] &amp;&amp; !arr[i]) {
+        swap(arr, i, j);
+        break;
+      }
+
+    // Reverse arr[i + 1..n - 1].
+    reverse(arr, i + 1, n - 1);
+    return true;
+  }
+
+  private void reverse(boolean[] arr, int l, int r) {
+    while (l &lt; r)
+      swap(arr, l++, r--);
+  }
+
+  private void swap(boolean[] arr, int i, int j) {
+    boolean temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from enum import Enum
+
+
+class State(Enum):
+  INIT = 0
+  VISITING = 1
+  VISITED = 2
+
+
+class Solution:
+  def supersequences(self, words: list[str]) -&gt; list[list[int]]:
+    ans = []
+    edges = [(string.ascii_lowercase.index(words[0]),
+              string.ascii_lowercase.index(words[1]))
+             for words in words]
+    nodes = sorted({u for u, _ in edges} | {v for _, v in edges})
+    letterToIndex = {letter: i for i, letter in enumerate(nodes)}
+    graph = [[] for _ in range(len(nodes))]
+
+    for u, v in edges:
+      graph[letterToIndex[u]].append(letterToIndex[v])
+
+    for doubledSubset in self._getMinimumSubsets(graph):
+      freq = [0] * 26
+      for letter in nodes:
+        freq[letter] = 1
+      for index in doubledSubset:
+        freq[nodes[index]] = 2
+      ans.append(freq)
+
+    return ans
+
+  def _getMinimumSubsets(self, graph: list[list[int]]) -&gt; list[tuple[int]]:
+    &quot;&quot;&quot;
+    Returns a list of the minimum subsets of nodes that do not create a cycle
+    when skipped.
+    &quot;&quot;&quot;
+    n = len(graph)
+    for subsetSize in range(n + 1):
+      doubleSubsets = []
+      for doubledSubset in itertools.combinations(range(n), subsetSize):
+        if not self._hasCycleSkipping(graph, set(doubledSubset)):
+          doubleSubsets.append(doubledSubset)
+      if doubleSubsets:
+        return doubleSubsets
+    return []
+
+  def _hasCycleSkipping(
+      self,
+      graph: list[list[int]],
+      doubledSubset: set[int]
+  ) -&gt; bool:
+    &quot;&quot;&quot;
+    Returns True if there is a cycle in the `graph` when skipping any edges
+    whose both endpoints are in `doubledSubset`.
+    &quot;&quot;&quot;
+    states = [State.INIT] * len(graph)
+
+    def hasCycle(u: int) -&gt; bool:
+      if states[u] == State.VISITING:
+        return True
+      if states[u] == State.VISITED:
+        return False
+      states[u] = State.VISITING
+      if u not in doubledSubset:
+        for v in graph[u]:
+          if v in doubledSubset:
+            continue
+          if hasCycle(v):
+            return True
+      states[u] = State.VISITED
+      return False
+
+    return any(hasCycle(i) for i in range(len(graph)))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

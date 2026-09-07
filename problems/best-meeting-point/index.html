@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Meeting Point - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Best Meeting Point written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/best-meeting-point/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-median-from-data-stream/" class="btn">← Previous</a>
+            <span>Problem 296 of 3563</span>
+            <a href="/leetcode-solutions/problems/serialize-and-deserialize-binary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>296. Best Meeting Point</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Best Meeting Point efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minTotalDistance(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    vector&lt;int&gt; I;  // i indices s.t. grid[i][j] == 1
+    vector&lt;int&gt; J;  // j indices s.t. grid[i][j] == 1
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j])
+          I.push_back(i);
+
+    for (int j = 0; j &lt; n; ++j)
+      for (int i = 0; i &lt; m; ++i)
+        if (grid[i][j])
+          J.push_back(j);
+
+    // sum(i - median(I)) + sum(j - median(J))
+    return minTotalDistance(I) + minTotalDistance(J);
+  }
+
+ private:
+  int minTotalDistance(const vector&lt;int&gt;&amp; grid) {
+    int sum = 0;
+    int i = 0;
+    int j = grid.size() - 1;
+    while (i &lt; j)
+      sum += grid[j--] - grid[i++];
+    return sum;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minTotalDistance(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    List&lt;Integer&gt; I = new ArrayList&lt;&gt;(); // i indices s.t. grid[i][j] == 1
+    List&lt;Integer&gt; J = new ArrayList&lt;&gt;(); // j indices s.t. grid[i][j] == 1
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (grid[i][j] == 1)
+          I.add(i);
+
+    for (int j = 0; j &lt; n; ++j)
+      for (int i = 0; i &lt; m; ++i)
+        if (grid[i][j] == 1)
+          J.add(j);
+
+    // sum(i - median(I)) + sum(j - median(J))
+    return minTotalDistance(I) + minTotalDistance(J);
+  }
+
+  private int minTotalDistance(List&lt;Integer&gt; grid) {
+    int sum = 0;
+    int i = 0;
+    int j = grid.size() - 1;
+    while (i &lt; j)
+      sum += grid.get(j--) - grid.get(i++);
+    return sum;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minTotalDistance(self, grid: list[list[int]]) -&gt; int:
+    m = len(grid)
+    n = len(grid[0])
+    # i indices s.t. grid[i][j] == 1
+    I = [i for i in range(m) for j in range(n) if grid[i][j]]
+    # j indices s.t. grid[i][j] == 1
+    J = [j for j in range(n) for i in range(m) if grid[i][j]]
+
+    def minTotalDistance(grid: list[int]) -&gt; int:
+      summ = 0
+      i = 0
+      j = len(grid) - 1
+      while i &lt; j:
+        summ += grid[j] - grid[i]
+        i += 1
+        j -= 1
+      return summ
+
+    # sum(i - median(I)) + sum(j - median(J))
+    return minTotalDistance(I) + minTotalDistance(J)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

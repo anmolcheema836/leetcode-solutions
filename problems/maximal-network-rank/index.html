@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximal Network Rank - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximal Network Rank written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximal-network-rank/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-nesting-depth-of-the-parentheses/" class="btn">← Previous</a>
+            <span>Problem 1615 of 3563</span>
+            <a href="/leetcode-solutions/problems/split-two-strings-to-make-palindrome/" class="btn">Next →</a>
+        </div>
+        <h1>1615. Maximal Network Rank</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximal Network Rank efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximalNetworkRank(int n, vector&lt;vector&lt;int&gt;&gt;&amp; roads) {
+    vector&lt;int&gt; degrees(n);
+
+    for (const vector&lt;int&gt;&amp; road : roads) {
+      const int u = road[0];
+      const int v = road[1];
+      ++degrees[u];
+      ++degrees[v];
+    }
+
+    // Find the first maximum and the second maximum degrees.
+    int maxDegree1 = 0;
+    int maxDegree2 = 0;
+    for (const int degree : degrees) {
+      if (degree &gt; maxDegree1) {
+        maxDegree2 = maxDegree1;
+        maxDegree1 = degree;
+      } else if (degree &gt; maxDegree2) {
+        maxDegree2 = degree;
+      }
+    }
+
+    // There can be multiple nodes with `maxDegree1` or `maxDegree2`.
+    // Find the counts of such nodes.
+    int countMaxDegree1 = 0;
+    int countMaxDegree2 = 0;
+    for (const int degree : degrees)
+      if (degree == maxDegree1)
+        ++countMaxDegree1;
+      else if (degree == maxDegree2)
+        ++countMaxDegree2;
+
+    if (countMaxDegree1 == 1) {
+      // 1. If there is only one node with degree = `maxDegree1`, then we&#x27;ll
+      // need to use the node with degree = `maxDegree2`. The answer in general
+      // will be (maxDegree1 + maxDegree2), but if the two nodes that we&#x27;re
+      // considering are connected, then we&#x27;ll have to subtract 1.
+      const int edgeCount =
+          getEdgeCount(roads, degrees, maxDegree1, maxDegree2) +
+          getEdgeCount(roads, degrees, maxDegree2, maxDegree1);
+      return maxDegree1 + maxDegree2 - (countMaxDegree2 == edgeCount ? 1 : 0);
+    } else {
+      // 2. If there are more than one node with degree = `maxDegree1`, then we
+      // can consider `maxDegree1` twice, and we don&#x27;t need to use `maxDegree2`.
+      // The answer in general will be 2 * maxDegree1, but if the two nodes that
+      // we&#x27;re considering are connected, then we&#x27;ll have to subtract 1.
+      const int edgeCount =
+          getEdgeCount(roads, degrees, maxDegree1, maxDegree1);
+      const int maxPossibleEdgeCount =
+          countMaxDegree1 * (countMaxDegree1 - 1) / 2;
+      return 2 * maxDegree1 - (maxPossibleEdgeCount == edgeCount ? 1 : 0);
+    }
+  }
+
+ private:
+  // Returns the number of edges (u, v) where degress[u] == degreeU and
+  // degrees[v] == degreeV.
+  int getEdgeCount(const vector&lt;vector&lt;int&gt;&gt;&amp; roads, const vector&lt;int&gt;&amp; degrees,
+                   int degreeU, int degreeV) {
+    int edgeCount = 0;
+    for (const vector&lt;int&gt;&amp; road : roads) {
+      const int u = road[0];
+      const int v = road[1];
+      if (degrees[u] == degreeU &amp;&amp; degrees[v] == degreeV)
+        ++edgeCount;
+    }
+    return edgeCount;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximalNetworkRank(int n, int[][] roads) {
+    int[] degrees = new int[n];
+
+    for (int[] road : roads) {
+      final int u = road[0];
+      final int v = road[1];
+      ++degrees[u];
+      ++degrees[v];
+    }
+
+    // Find the first maximum and the second maximum degrees.
+    int maxDegree1 = 0;
+    int maxDegree2 = 0;
+    for (final int degree : degrees)
+      if (degree &gt; maxDegree1) {
+        maxDegree2 = maxDegree1;
+        maxDegree1 = degree;
+      } else if (degree &gt; maxDegree2) {
+        maxDegree2 = degree;
+      }
+
+    // There can be multiple nodes with `maxDegree1` or `maxDegree2`.
+    // Find the counts of such nodes.
+    int countMaxDegree1 = 0;
+    int countMaxDegree2 = 0;
+    for (final int degree : degrees)
+      if (degree == maxDegree1)
+        ++countMaxDegree1;
+      else if (degree == maxDegree2)
+        ++countMaxDegree2;
+
+    if (countMaxDegree1 == 1) {
+      // 1. If there is only one node with degree = `maxDegree1`, then we&#x27;ll
+      // need to use the node with degree = `maxDegree2`. The answer in general
+      // will be (maxDegree1 + maxDegree2), but if the two nodes that we&#x27;re
+      // considering are connected, then we&#x27;ll have to subtract 1.
+      final int edgeCount = getEdgeCount(roads, degrees, maxDegree1, maxDegree2) +
+                            getEdgeCount(roads, degrees, maxDegree2, maxDegree1);
+      return maxDegree1 + maxDegree2 - (countMaxDegree2 == edgeCount ? 1 : 0);
+    } else {
+      // 2. If there are more than one node with degree = `maxDegree1`, then we
+      // can consider `maxDegree1` twice, and we don&#x27;t need to use `maxDegree2`.
+      // The answer in general will be 2 * maxDegree1, but if the two nodes that
+      // we&#x27;re considering are connected, then we&#x27;ll have to subtract 1.
+      final int edgeCount = getEdgeCount(roads, degrees, maxDegree1, maxDegree1);
+      final int maxPossibleEdgeCount = countMaxDegree1 * (countMaxDegree1 - 1) / 2;
+      return 2 * maxDegree1 - (maxPossibleEdgeCount == edgeCount ? 1 : 0);
+    }
+  }
+
+  // Returns the number of edges (u, v) where degress[u] == degreeU and
+  // degrees[v] == degreeV.
+  private int getEdgeCount(int[][] roads, int[] degrees, int degreeU, int degreeV) {
+    int edgeCount = 0;
+    for (int[] road : roads) {
+      final int u = road[0];
+      final int v = road[1];
+      if (degrees[u] == degreeU &amp;&amp; degrees[v] == degreeV)
+        ++edgeCount;
+    }
+    return edgeCount;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximalNetworkRank(self, n: int, roads: list[list[int]]) -&gt; int:
+    degrees = [0] * n
+
+    for u, v in roads:
+      degrees[u] += 1
+      degrees[v] += 1
+
+    # Find the first maximum and the second maximum degrees.
+    maxDegree1 = 0
+    maxDegree2 = 0
+    for degree in degrees:
+      if degree &gt; maxDegree1:
+        maxDegree2 = maxDegree1
+        maxDegree1 = degree
+      elif degree &gt; maxDegree2:
+        maxDegree2 = degree
+
+    # There can be multiple nodes with `maxDegree1` or `maxDegree2`.
+    # Find the counts of such nodes.
+    countMaxDegree1 = 0
+    countMaxDegree2 = 0
+    for degree in degrees:
+      if degree == maxDegree1:
+        countMaxDegree1 += 1
+      elif degree == maxDegree2:
+        countMaxDegree2 += 1
+
+    if countMaxDegree1 == 1:
+      # 1. If there is only one node with degree = `maxDegree1`, then we&#x27;ll
+      # need to use the node with degree = `maxDegree2`. The answer in general
+      # will be (maxDegree1 + maxDegree2), but if the two nodes that we&#x27;re
+      # considering are connected, then we&#x27;ll have to subtract 1.
+      edgeCount = (self._getEdgeCount(roads, degrees, maxDegree1, maxDegree2) +
+                   self._getEdgeCount(roads, degrees, maxDegree2, maxDegree1))
+      return maxDegree1 + maxDegree2 - (countMaxDegree2 == edgeCount)
+    else:
+      # 2. If there are more than one node with degree = `maxDegree1`, then we
+      # can consider `maxDegree1` twice, and we don&#x27;t need to use `maxDegree2`.
+      # The answer in general will be 2 * maxDegree1, but if the two nodes that
+      # we&#x27;re considering are connected, then we&#x27;ll have to subtract 1.
+      edgeCount = self._getEdgeCount(roads, degrees, maxDegree1, maxDegree1)
+      maxPossibleEdgeCount = countMaxDegree1 * (countMaxDegree1 - 1) // 2
+      return 2 * maxDegree1 - (maxPossibleEdgeCount == edgeCount)
+
+  def _getEdgeCount(
+      self,
+      roads: list[list[int]],
+      degrees: list[int],
+      degreeU: int, degreeV: int,
+  ) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the number of edges (u, v) where degress[u] == degreeU and
+    degrees[v] == degreeV.
+    &quot;&quot;&quot;
+    edgeCount = 0
+    for u, v in roads:
+      if degrees[u] == degreeU and degrees[v] == degreeV:
+        edgeCount += 1
+    return edgeCount</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

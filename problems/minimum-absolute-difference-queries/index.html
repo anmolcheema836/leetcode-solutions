@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Absolute Difference Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Absolute Difference Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-absolute-difference-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-sub-islands/" class="btn">← Previous</a>
+            <span>Problem 1906 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-salary-categories/" class="btn">Next →</a>
+        </div>
+        <h1>1906. Minimum Absolute Difference Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Absolute Difference Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; minDifference(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;vector&lt;int&gt;&gt; numToIndices(101);
+
+    for (int i = 0; i &lt; nums.size(); ++i)
+      numToIndices[nums[i]].push_back(i);
+
+    if (numToIndices[nums[0]].size() == nums.size())
+      return vector&lt;int&gt;(queries.size(), -1);
+
+    vector&lt;int&gt; ans;
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int l = query[0];
+      const int r = query[1];
+      int prevNum = -1;
+      int minDiff = 101;
+      for (int num = 1; num &lt;= 100; ++num) {
+        const auto&amp; indices = numToIndices[num];
+        const auto it = ranges::lower_bound(indices, l);
+        if (it == indices.cend() || *it &gt; r)
+          continue;
+        if (prevNum != -1)
+          minDiff = min(minDiff, num - prevNum);
+        prevNum = num;
+      }
+      ans.push_back(minDiff == 101 ? -1 : minDiff);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] minDifference(int[] nums, int[][] queries) {
+    int[] ans = new int[queries.length];
+    List&lt;Integer&gt;[] numToIndices = new List[101];
+
+    for (int i = 1; i &lt;= 100; ++i)
+      numToIndices[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; nums.length; ++i)
+      numToIndices[nums[i]].add(i);
+
+    if (numToIndices[nums[0]].size() == nums.length) {
+      Arrays.fill(ans, -1);
+      return ans;
+    }
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int l = queries[i][0];
+      final int r = queries[i][1];
+      int prevNum = -1;
+      int minDiff = 101;
+      for (int num = 1; num &lt;= 100; ++num) {
+        List&lt;Integer&gt; indices = numToIndices[num];
+        final int j = firstGreaterEqual(indices, l);
+        if (j == indices.size() || indices.get(j) &gt; r)
+          continue;
+        if (prevNum != -1)
+          minDiff = Math.min(minDiff, num - prevNum);
+        prevNum = num;
+      }
+      ans[i] = minDiff == 101 ? -1 : minDiff;
+    }
+
+    return ans;
+  }
+
+  private int firstGreaterEqual(List&lt;Integer&gt; A, int target) {
+    final int i = Collections.binarySearch(A, target);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minDifference(
+      self,
+      nums: list[int],
+      queries: list[list[int]],
+  ) -&gt; list[int]:
+    numToIndices = [[] for _ in range(101)]
+
+    for i, num in enumerate(nums):
+      numToIndices[num].append(i)
+
+    if len(numToIndices[nums[0]]) == len(nums):
+      return [-1] * len(queries)
+
+    ans = []
+
+    for l, r in queries:
+      prevNum = -1
+      minDiff = 101
+      for num in range(1, 101):
+        indices = numToIndices[num]
+        i = bisect_left(indices, l)
+        if i == len(indices) or indices[i] &gt; r:
+          continue
+        if prevNum != -1:
+          minDiff = min(minDiff, num - prevNum)
+        prevNum = num
+      ans.append(-1 if minDiff == 101 else minDiff)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

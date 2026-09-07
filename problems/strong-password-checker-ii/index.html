@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strong Password Checker II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Strong Password Checker II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/strong-password-checker-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/tasks-count-in-the-weekend/" class="btn">← Previous</a>
+            <span>Problem 2299 of 3563</span>
+            <a href="/leetcode-solutions/problems/successful-pairs-of-spells-and-potions/" class="btn">Next →</a>
+        </div>
+        <h1>2299. Strong Password Checker II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Strong Password Checker II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool strongPasswordCheckerII(string password) {
+    if (password.length() &lt; 8)
+      return false;
+
+    const bool hasLowerCase =
+        ranges::any_of(password, [](const char c) { return islower(c); });
+    if (!hasLowerCase)
+      return false;
+
+    const bool hasUpperCase =
+        ranges::any_of(password, [](const char c) { return isupper(c); });
+    if (!hasUpperCase)
+      return false;
+
+    const bool hasDigit =
+        ranges::any_of(password, [](const char c) { return isdigit(c); });
+    if (!hasDigit)
+      return false;
+
+    const bool hasSpecial = ranges::any_of(password, [](const char c) {
+      return string(&quot;!@#$%^&amp;*()-+&quot;).find(c) != string::npos;
+    });
+    if (!hasSpecial)
+      return false;
+
+    for (int i = 1; i &lt; password.length(); ++i)
+      if (password[i] == password[i - 1])
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean strongPasswordCheckerII(String password) {
+    if (password.length() &lt; 8)
+      return false;
+
+    final boolean hasLowerCase = password.chars().anyMatch(c -&gt; Character.isLowerCase(c));
+    if (!hasLowerCase)
+      return false;
+
+    final boolean hasUpperCase = password.chars().anyMatch(c -&gt; Character.isUpperCase(c));
+    if (!hasUpperCase)
+      return false;
+
+    final boolean hasDigit = password.chars().anyMatch(c -&gt; Character.isDigit(c));
+    if (!hasDigit)
+      return false;
+
+    final boolean hasSpecial = password.chars().anyMatch(c -&gt; &quot;!@#$%^&amp;*()-+&quot;.indexOf(c) != -1);
+    if (!hasSpecial)
+      return false;
+
+    for (int i = 1; i &lt; password.length(); ++i)
+      if (password.charAt(i) == password.charAt(i - 1))
+        return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def strongPasswordCheckerII(self, password: str) -&gt; bool:
+    if len(password) &lt; 8:
+      return False
+    if not any(c.islower() for c in password):
+      return False
+    if not any(c.isupper() for c in password):
+      return False
+    if not any(c.isdigit() for c in password):
+      return False
+    if not any(&quot;!@#$%^&amp;*()-+&quot;.find(c) != -1 for c in password):
+      return False
+    return all(a != b for a, b in zip(password, password[1:]))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyramid Transition Matrix - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Pyramid Transition Matrix written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/pyramid-transition-matrix/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/pour-water/" class="btn">← Previous</a>
+            <span>Problem 756 of 3563</span>
+            <a href="/leetcode-solutions/problems/set-intersection-size-at-least-two/" class="btn">Next →</a>
+        </div>
+        <h1>756. Pyramid Transition Matrix</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Pyramid Transition Matrix efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool pyramidTransition(string bottom, vector&lt;string&gt;&amp; allowed) {
+    unordered_map&lt;string, vector&lt;char&gt;&gt; prefixToBlocks;
+
+    for (const string&amp; a : allowed)
+      prefixToBlocks[a.substr(0, 2)].push_back(a[2]);
+
+    return dfs(bottom, &quot;&quot;, 0, prefixToBlocks);
+  }
+
+ private:
+  bool dfs(const string&amp; row, const string&amp; nextRow, int i,
+           const unordered_map&lt;string, vector&lt;char&gt;&gt;&amp; prefixToBlocks) {
+    if (row.length() == 1)
+      return true;
+    if (nextRow.length() + 1 == row.length())
+      return dfs(nextRow, &quot;&quot;, 0, prefixToBlocks);
+
+    const string&amp; prefix = row.substr(i, 2);
+
+    if (const auto it = prefixToBlocks.find(prefix);
+        it != prefixToBlocks.cend())
+      for (const char c : it-&gt;second)
+        if (dfs(row, nextRow + c, i + 1, prefixToBlocks))
+          return true;
+
+    return false;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean pyramidTransition(String bottom, List&lt;String&gt; allowed) {
+    Map&lt;String, List&lt;Character&gt;&gt; prefixToBlocks = new HashMap&lt;&gt;();
+
+    for (final String a : allowed) {
+      final String lowerBlocks = a.substring(0, 2);
+      prefixToBlocks.putIfAbsent(lowerBlocks, new LinkedList&lt;&gt;());
+      prefixToBlocks.get(lowerBlocks).add(a.charAt(2));
+    }
+
+    return dfs(bottom, &quot;&quot;, 0, prefixToBlocks);
+  }
+
+  private boolean dfs(final String row, final String nextRow, int i,
+                      Map&lt;String, List&lt;Character&gt;&gt; prefixToBlocks) {
+    if (row.length() == 1)
+      return true;
+    if (nextRow.length() + 1 == row.length())
+      return dfs(nextRow, &quot;&quot;, 0, prefixToBlocks);
+
+    final String prefix = row.substring(i, i + 2);
+
+    if (prefixToBlocks.containsKey(prefix))
+      for (final char c : prefixToBlocks.get(prefix))
+        if (dfs(row, nextRow + c, i + 1, prefixToBlocks))
+          return true;
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def pyramidTransition(self, bottom: str, allowed: list[str]) -&gt; bool:
+    prefixToBlocks = collections.defaultdict(list)
+
+    for a in allowed:
+      prefixToBlocks[a[:2]].append(a[2])
+
+    def dfs(row: str, nextRow: str, i: int) -&gt; bool:
+      if len(row) == 1:
+        return True
+      if len(nextRow) + 1 == len(row):
+        return dfs(nextRow, &#x27;&#x27;, 0)
+
+      for c in prefixToBlocks[row[i:i + 2]]:
+        if dfs(row, nextRow + c, i + 1):
+          return True
+
+      return False
+
+    return dfs(bottom, &#x27;&#x27;, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

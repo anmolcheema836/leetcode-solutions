@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check If It Is a Straight Line - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Check If It Is a Straight Line written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/check-if-it-is-a-straight-line/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/divide-chocolate/" class="btn">← Previous</a>
+            <span>Problem 1232 of 3563</span>
+            <a href="/leetcode-solutions/problems/remove-sub-folders-from-the-filesystem/" class="btn">Next →</a>
+        </div>
+        <h1>1232. Check If It Is a Straight Line</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Check If It Is a Straight Line efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool checkStraightLine(vector&lt;vector&lt;int&gt;&gt;&amp; coordinates) {
+    int x0 = coordinates[0][0];
+    int y0 = coordinates[0][1];
+    int x1 = coordinates[1][0];
+    int y1 = coordinates[1][1];
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+
+    for (int i = 2; i &lt; coordinates.size(); ++i) {
+      int x = coordinates[i][0];
+      int y = coordinates[i][1];
+      if ((x - x0) * dy != (y - y0) * dx)
+        return false;
+    }
+
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean checkStraightLine(int[][] coordinates) {
+    int x0 = coordinates[0][0];
+    int y0 = coordinates[0][1];
+    int x1 = coordinates[1][0];
+    int y1 = coordinates[1][1];
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+
+    for (int i = 2; i &lt; coordinates.length; ++i) {
+      int x = coordinates[i][0];
+      int y = coordinates[i][1];
+      if ((x - x0) * dy != (y - y0) * dx)
+        return false;
+    }
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def checkStraightLine(self, coordinates: list[list[int]]) -&gt; bool:
+    x0, y0, x1, y1 = *coordinates[0], *coordinates[1]
+    dx = x1 - x0
+    dy = y1 - y0
+
+    return all((x - x0) * dy == (y - y0) * dx for x, y in coordinates)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

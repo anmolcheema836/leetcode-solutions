@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Absolute File Path - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Absolute File Path written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-absolute-file-path/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/first-unique-character-in-a-string/" class="btn">← Previous</a>
+            <span>Problem 388 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-the-difference/" class="btn">Next →</a>
+        </div>
+        <h1>388. Longest Absolute File Path</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Absolute File Path efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  int depth;
+  size_t length;
+};
+
+class Solution {
+ public:
+  int lengthLongestPath(string input) {
+    size_t ans = 0;
+    stack&lt;T&gt; stack{{{-1, 0}}};  // placeholder
+    istringstream iss(input);
+
+    for (string token; getline(iss, token, &#x27;\n&#x27;);) {
+      const int depth = ranges::count(token, &#x27;\t&#x27;);
+      std::erase(token, &#x27;\t&#x27;);
+      while (depth &lt;= stack.top().depth)
+        stack.pop();
+      if (isFile(token))
+        ans = max(ans, stack.top().length + token.length());
+      else  // directory + &#x27;/&#x27;
+        stack.emplace(depth, stack.top().length + token.length() + 1);
+    }
+
+    return ans;
+  }
+
+ private:
+  bool isFile(const string&amp; token) {
+    return token.find(&#x27;.&#x27;) != string::npos;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class T {
+  public int depth;
+  public int length;
+  public T(int depth, int length) {
+    this.depth = depth;
+    this.length = length;
+  }
+}
+
+class Solution {
+  public int lengthLongestPath(String input) {
+    int ans = 0;
+    Deque&lt;T&gt; stack = new ArrayDeque&lt;&gt;();
+    stack.push(new T(-1, 0));
+
+    for (String token : input.split(&quot;\n&quot;)) {
+      final int depth = getDepth(token);
+      token = token.replace(&quot;\t&quot;, &quot;&quot;);
+      while (depth &lt;= stack.peek().depth)
+        stack.pop();
+      if (token.contains(&quot;.&quot;)) // `token` is file.
+        ans = Math.max(ans, stack.peek().length + token.length());
+      else // directory + &#x27;/&#x27;
+        stack.push(new T(depth, stack.peek().length + token.length() + 1));
+    }
+
+    return ans;
+  }
+
+  private int getDepth(final String token) {
+    return (int) token.chars().filter(c -&gt; c == &#x27;\t&#x27;).count();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def lengthLongestPath(self, input: str) -&gt; int:
+    ans = 0
+    stack = [(-1, 0)]  # placeholder
+
+    for token in input.split(&#x27;\n&#x27;):
+      depth = token.count(&#x27;\t&#x27;)
+      token = token.replace(&#x27;\t&#x27;, &#x27;&#x27;)
+      while depth &lt;= stack[-1][0]:
+        stack.pop()
+      if &#x27;.&#x27; in token:  # `token` is file.
+        ans = max(ans, stack[-1][1] + len(token))
+      else:  # directory + &#x27;/&#x27;
+        stack.append((depth, stack[-1][1] + len(token) + 1))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

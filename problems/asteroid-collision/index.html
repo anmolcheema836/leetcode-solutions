@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Collision - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Asteroid Collision written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/asteroid-collision/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sentence-similarity/" class="btn">← Previous</a>
+            <span>Problem 735 of 3563</span>
+            <a href="/leetcode-solutions/problems/parse-lisp-expression/" class="btn">Next →</a>
+        </div>
+        <h1>735. Asteroid Collision</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Asteroid Collision efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; asteroidCollision(vector&lt;int&gt;&amp; asteroids) {
+    vector&lt;int&gt; stack;
+
+    for (const int a : asteroids)
+      if (a &gt; 0) {
+        stack.push_back(a);
+      } else {  // a &lt; 0
+        // Destroy the previous positive one(s).
+        while (!stack.empty() &amp;&amp; stack.back() &gt; 0 &amp;&amp; stack.back() &lt; -a)
+          stack.pop_back();
+        if (stack.empty() || stack.back() &lt; 0)
+          stack.push_back(a);
+        else if (stack.back() == -a)
+          stack.pop_back();  // Both asteroids explode.
+        else                 // stack[-1] &gt; the current asteroid.
+          ;                  // Destroy the current asteroid, so do nothing.
+      }
+
+    return stack;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] asteroidCollision(int[] asteroids) {
+    Stack&lt;Integer&gt; stack = new Stack&lt;&gt;();
+
+    for (final int a : asteroids)
+      if (a &gt; 0) {
+        stack.push(a);
+      } else { // a &lt; 0
+        // Destroy the previous positive one(s).
+        while (!stack.isEmpty() &amp;&amp; stack.peek() &gt; 0 &amp;&amp; stack.peek() &lt; -a)
+          stack.pop();
+        if (stack.isEmpty() || stack.peek() &lt; 0)
+          stack.push(a);
+        else if (stack.peek() == -a)
+          stack.pop(); // Both asteroids explode.
+        else           // stack[-1] &gt; the current asteroid.
+          ;            // Destroy the current asteroid, so do nothing.
+      }
+
+    return stack.stream().mapToInt(Integer::intValue).toArray();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def asteroidCollision(self, asteroids: list[int]) -&gt; list[int]:
+    stack = []
+
+    for a in asteroids:
+      if a &gt; 0:
+        stack.append(a)
+      else:  # a &lt; 0
+        # Destroy the previous positive one(s).
+        while stack and stack[-1] &gt; 0 and stack[-1] &lt; -a:
+          stack.pop()
+        if not stack or stack[-1] &lt; 0:
+          stack.append(a)
+        elif stack[-1] == -a:
+          stack.pop()  # Both asteroids explode.
+        else:  # stack[-1] &gt; the current asteroid.
+          pass  # Destroy the current asteroid, so do nothing.
+
+    return stack</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

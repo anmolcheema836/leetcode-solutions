@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Length of the Longest Valid Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Length of the Longest Valid Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/length-of-the-longest-valid-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-index-of-a-valid-split/" class="btn">← Previous</a>
+            <span>Problem 2781 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-unique-categories/" class="btn">Next →</a>
+        </div>
+        <h1>2781. Length of the Longest Valid Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Length of the Longest Valid Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+ public:
+  unordered_map&lt;char, shared_ptr&lt;TrieNode&gt;&gt; children;
+  bool isWord = false;
+};
+
+class Trie {
+ public:
+  void insert(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      if (node-&gt;children[c] == nullptr)
+        node-&gt;children[c] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[c];
+    }
+    node-&gt;isWord = true;
+  }
+
+  bool search(const string&amp; word, int l, int r) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int j = l; j &lt;= r; ++j) {
+      const char c = word[j];
+      if (node-&gt;children[c] == nullptr)
+        return false;
+      node = node-&gt;children[c];
+    }
+    return node-&gt;isWord;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+};
+
+class Solution {
+ public:
+  int longestValidSubstring(string word, vector&lt;string&gt;&amp; forbidden) {
+    int ans = 0;
+    Trie trie;
+
+    for (const string&amp; s : forbidden)
+      trie.insert(s);
+
+    // r is the rightmost index to make word[l..r] a valid substring.
+    int r = word.length() - 1;
+    for (int l = word.length() - 1; l &gt;= 0; --l) {
+      for (int end = l; end &lt; min(l + 10, r + 1); ++end)
+        if (trie.search(word, l, end)) {
+          r = end - 1;
+          break;
+        }
+      ans = max(ans, r - l + 1);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[26];
+  public boolean isWord = false;
+}
+
+class Trie {
+  public void insert(final String word) {
+    TrieNode node = root;
+    for (final char c : word.toCharArray()) {
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        node.children[i] = new TrieNode();
+      node = node.children[i];
+    }
+    node.isWord = true;
+  }
+
+  public boolean search(final String word, int l, int r) {
+    TrieNode node = root;
+    for (int j = l; j &lt;= r; ++j) {
+      final int i = word.charAt(j) - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        return false;
+      node = node.children[i];
+    }
+    return node.isWord;
+  }
+
+  private TrieNode root = new TrieNode();
+}
+
+class Solution {
+  public int longestValidSubstring(String word, List&lt;String&gt; forbidden) {
+    int ans = 0;
+    Trie trie = new Trie();
+
+    for (final String s : forbidden)
+      trie.insert(s);
+
+    // r is the rightmost index to make word[l..r] a valid substring.
+    int r = word.length() - 1;
+    for (int l = word.length() - 1; l &gt;= 0; --l) {
+      for (int end = l; end &lt; Math.min(l + 10, r + 1); ++end)
+        if (trie.search(word, l, end)) {
+          r = end - 1;
+          break;
+        }
+      ans = Math.max(ans, r - l + 1);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+    self.isWord = False
+
+
+class Trie:
+  def __init__(self):
+    self.root = TrieNode()
+
+  def insert(self, word: str) -&gt; None:
+    node: TrieNode = self.root
+    for c in word:
+      node = node.children.setdefault(c, TrieNode())
+    node.isWord = True
+
+  def search(self, word: str, l: int, r: int) -&gt; bool:
+    node: TrieNode = self.root
+    for i in range(l, r):
+      if word[i] not in node.children:
+        return False
+      node = node.children[word[i]]
+    return node.isWord
+
+
+class Solution:
+  def longestValidSubstring(self, word: str, forbidden: list[str]) -&gt; int:
+    ans = 0
+    trie = Trie()
+
+    for s in forbidden:
+      trie.insert(s)
+
+    # r is the rightmost index to make word[l..r] a valid substring.
+    r = len(word) - 1
+    for l in range(len(word) - 1, -1, -1):
+      for end in range(l, min(l + 10, r + 1)):
+        if trie.search(word, l, end + 1):
+          r = end - 1
+          break
+      ans = max(ans, r - l + 1)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

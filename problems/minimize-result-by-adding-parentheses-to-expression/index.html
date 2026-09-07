@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimize Result by Adding Parentheses to Expression - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimize Result by Adding Parentheses to Expression written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimize-result-by-adding-parentheses-to-expression/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-number-after-digit-swaps-by-parity/" class="btn">← Previous</a>
+            <span>Problem 2232 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-product-after-k-increments/" class="btn">Next →</a>
+        </div>
+        <h1>2232. Minimize Result by Adding Parentheses to Expression</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimize Result by Adding Parentheses to Expression efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string minimizeResult(string expression) {
+    const int plusIndex = expression.find(&#x27;+&#x27;);
+    const string left = expression.substr(0, plusIndex);
+    const string right = expression.substr(plusIndex + 1);
+    string ans;
+    int mn = INT_MAX;
+
+    // the expression -&gt; a * (b + c) * d
+    for (int i = 0; i &lt; left.length(); ++i)
+      for (int j = 0; j &lt; right.length(); ++j) {
+        const int a = i == 0 ? 1 : stoi(left.substr(0, i));
+        const int b = stoi(left.substr(i));
+        const int c = stoi(right.substr(0, j + 1));
+        const int d = j == right.length() - 1 ? 1 : stoi(right.substr(j + 1));
+        const int val = a * (b + c) * d;
+        if (val &lt; mn) {
+          mn = val;
+          ans = (i == 0 ? &quot;&quot; : to_string(a)) + &#x27;(&#x27; + to_string(b) + &#x27;+&#x27; +
+                to_string(c) + &#x27;)&#x27; +
+                (j == right.length() - 1 ? &quot;&quot; : to_string(d));
+        }
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String minimizeResult(String expression) {
+    final int plusIndex = expression.indexOf(&#x27;+&#x27;);
+    final String left = expression.substring(0, plusIndex);
+    final String right = expression.substring(plusIndex + 1);
+    String ans = &quot;&quot;;
+    int mn = Integer.MAX_VALUE;
+
+    // the expression -&gt; a * (b + c) * d
+    for (int i = 0; i &lt; left.length(); ++i)
+      for (int j = 0; j &lt; right.length(); ++j) {
+        final int a = i == 0 ? 1 : Integer.parseInt(left.substring(0, i));
+        final int b = Integer.parseInt(left.substring(i));
+        final int c = Integer.parseInt(right.substring(0, j + 1));
+        final int d = j == right.length() - 1 ? 1 : Integer.parseInt(right.substring(j + 1));
+        final int val = a * (b + c) * d;
+        if (val &lt; mn) {
+          mn = val;
+          ans = (i == 0 ? &quot;&quot; : String.valueOf(a)) + &#x27;(&#x27; + String.valueOf(b) + &#x27;+&#x27; +
+                String.valueOf(c) + &#x27;)&#x27; + (j == right.length() - 1 ? &quot;&quot; : String.valueOf(d));
+        }
+      }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimizeResult(self, expression: str) -&gt; str:
+    plusIndex = expression.index(&#x27;+&#x27;)
+    left = expression[:plusIndex]
+    right = expression[plusIndex + 1:]
+    ans = &#x27;&#x27;
+    mn = math.inf
+
+    # the expression -&gt; a * (b + c) * d
+    for i in range(len(left)):
+      for j in range(len(right)):
+        a = 1 if i == 0 else int(left[:i])
+        b = int(left[i:])
+        c = int(right[0:j + 1])
+        d = 1 if j == len(right) - 1 else int(right[j + 1:])
+        val = a * (b + c) * d
+        if val &lt; mn:
+          mn = val
+          ans = ((&#x27;&#x27; if i == 0 else str(a)) +
+                 &#x27;(&#x27; + str(b) + &#x27;+&#x27; + str(c) + &#x27;)&#x27; +
+                 (&#x27;&#x27; if j == len(right) - 1 else str(d)))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

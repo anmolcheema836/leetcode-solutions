@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Spreadsheet - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Spreadsheet written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-spreadsheet/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/unique-3-digit-even-numbers/" class="btn">← Previous</a>
+            <span>Problem 3484 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-common-prefix-of-k-strings-after-removal/" class="btn">Next →</a>
+        </div>
+        <h1>3484. Design Spreadsheet</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Spreadsheet efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Spreadsheet {
+ public:
+  Spreadsheet(int rows) {}
+
+  void setCell(string cell, int value) {
+    spreadsheet[cell] = value;
+  }
+
+  void resetCell(string cell) {
+    spreadsheet[cell] = 0;
+  }
+
+  int getValue(string formula) {
+    const int i = formula.find(&#x27;+&#x27;);
+    return getToken(formula.substr(1, i - 1)) + getToken(formula.substr(i + 1));
+  }
+
+ private:
+  unordered_map&lt;string, int&gt; spreadsheet;
+
+  int getToken(const string&amp; token) {
+    return isdigit(token[0])
+               ? stoi(token)
+               : (spreadsheet.contains(token) ? spreadsheet[token] : 0);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Spreadsheet {
+  public Spreadsheet(int rows) {}
+
+  public void setCell(String cell, int value) {
+    spreadsheet.put(cell, value);
+  }
+
+  public void resetCell(String cell) {
+    spreadsheet.put(cell, 0);
+  }
+
+  public int getValue(String formula) {
+    final int i = formula.indexOf(&#x27;+&#x27;);
+    return getToken(formula.substring(1, i)) + getToken(formula.substring(i + 1));
+  }
+
+  private Map&lt;String, Integer&gt; spreadsheet = new HashMap&lt;&gt;();
+
+  private int getToken(final String token) {
+    return Character.isDigit(token.charAt(0)) ? Integer.parseInt(token)
+                                              : spreadsheet.getOrDefault(token, 0);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Spreadsheet:
+  def __init__(self, rows: int) -&gt; None:
+    self.spreadsheet = {}
+
+  def setCell(self, cell: str, value: int) -&gt; None:
+    self.spreadsheet[cell] = value
+
+  def resetCell(self, cell: str) -&gt; None:
+    self.spreadsheet[cell] = 0
+
+  def getValue(self, formula: str) -&gt; int:
+    i = formula.find(&#x27;+&#x27;)
+    return self._getToken(formula[1:i]) + self._getToken(formula[i+1:])
+
+  def _getToken(self, token: str) -&gt; int:
+    return int(token) if token[0].isdigit() else self.spreadsheet.get(token, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

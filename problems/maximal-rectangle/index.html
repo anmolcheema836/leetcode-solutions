@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximal Rectangle - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximal Rectangle written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximal-rectangle/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/largest-rectangle-in-histogram/" class="btn">← Previous</a>
+            <span>Problem 85 of 3563</span>
+            <a href="/leetcode-solutions/problems/partition-list/" class="btn">Next →</a>
+        </div>
+        <h1>85. Maximal Rectangle</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximal Rectangle efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maximalRectangle(vector&lt;vector&lt;char&gt;&gt;&amp; matrix) {
+    if (matrix.empty())
+      return 0;
+
+    int ans = 0;
+    vector&lt;int&gt; hist(matrix[0].size());
+
+    for (const vector&lt;char&gt;&amp; row : matrix) {
+      for (int i = 0; i &lt; row.size(); ++i)
+        hist[i] = row[i] == &#x27;0&#x27; ? 0 : hist[i] + 1;
+      ans = max(ans, largestRectangleArea(hist));
+    }
+
+    return ans;
+  }
+
+ private:
+  int largestRectangleArea(const vector&lt;int&gt;&amp; heights) {
+    int ans = 0;
+    stack&lt;int&gt; stack;
+
+    for (int i = 0; i &lt;= heights.size(); ++i) {
+      while (!stack.empty() &amp;&amp;
+             (i == heights.size() || heights[stack.top()] &gt; heights[i])) {
+        const int h = heights[stack.top()];
+        stack.pop();
+        const int w = stack.empty() ? i : i - stack.top() - 1;
+        ans = max(ans, h * w);
+      }
+      stack.push(i);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maximalRectangle(char[][] matrix) {
+    if (matrix.length == 0)
+      return 0;
+
+    int ans = 0;
+    int[] hist = new int[matrix[0].length];
+
+    for (char[] row : matrix) {
+      for (int i = 0; i &lt; row.length; ++i)
+        hist[i] = row[i] == &#x27;0&#x27; ? 0 : hist[i] + 1;
+      ans = Math.max(ans, largestRectangleArea(hist));
+    }
+
+    return ans;
+  }
+
+  private int largestRectangleArea(int[] heights) {
+    int ans = 0;
+    Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();
+
+    for (int i = 0; i &lt;= heights.length; ++i) {
+      while (!stack.isEmpty() &amp;&amp; (i == heights.length || heights[stack.peek()] &gt; heights[i])) {
+        final int h = heights[stack.pop()];
+        final int w = stack.isEmpty() ? i : i - stack.peek() - 1;
+        ans = Math.max(ans, h * w);
+      }
+      stack.push(i);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maximalRectangle(self, matrix: list[list[str]]) -&gt; int:
+    if not matrix:
+      return 0
+
+    ans = 0
+    hist = [0] * len(matrix[0])
+
+    def largestRectangleArea(heights: list[int]) -&gt; int:
+      ans = 0
+      stack = []
+
+      for i in range(len(heights) + 1):
+        while stack and (i == len(heights) or heights[stack[-1]] &gt; heights[i]):
+          h = heights[stack.pop()]
+          w = i - stack[-1] - 1 if stack else i
+          ans = max(ans, h * w)
+        stack.append(i)
+
+      return ans
+
+    for row in matrix:
+      for i, num in enumerate(row):
+        hist[i] = 0 if num == &#x27;0&#x27; else hist[i] + 1
+      ans = max(ans, largestRectangleArea(hist))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

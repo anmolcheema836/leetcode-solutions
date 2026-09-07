@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construct Binary Tree from Inorder and Postorder Traversal - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Construct Binary Tree from Inorder and Postorder Traversal written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/construct-binary-tree-from-preorder-and-inorder-traversal/" class="btn">← Previous</a>
+            <span>Problem 106 of 3563</span>
+            <a href="/leetcode-solutions/problems/binary-tree-level-order-traversal-ii/" class="btn">Next →</a>
+        </div>
+        <h1>106. Construct Binary Tree from Inorder and Postorder Traversal</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Construct Binary Tree from Inorder and Postorder Traversal efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  TreeNode* buildTree(vector&lt;int&gt;&amp; inorder, vector&lt;int&gt;&amp; postorder) {
+    unordered_map&lt;int, int&gt; inToIndex;
+
+    for (int i = 0; i &lt; inorder.size(); ++i)
+      inToIndex[inorder[i]] = i;
+
+    return build(inorder, 0, inorder.size() - 1, postorder, 0,
+                 postorder.size() - 1, inToIndex);
+  }
+
+ private:
+  TreeNode* build(const vector&lt;int&gt;&amp; inorder, int inStart, int inEnd,
+                  const vector&lt;int&gt;&amp; postorder, int postStart, int postEnd,
+                  const unordered_map&lt;int, int&gt;&amp; inToIndex) {
+    if (inStart &gt; inEnd)
+      return nullptr;
+
+    const int rootVal = postorder[postEnd];
+    const int rootInIndex = inToIndex.at(rootVal);
+    const int leftSize = rootInIndex - inStart;
+
+    TreeNode* root = new TreeNode(rootVal);
+    root-&gt;left = build(inorder, inStart, rootInIndex - 1, postorder, postStart,
+                       postStart + leftSize - 1, inToIndex);
+    root-&gt;right = build(inorder, rootInIndex + 1, inEnd, postorder,
+                        postStart + leftSize, postEnd - 1, inToIndex);
+    return root;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public TreeNode buildTree(int[] inorder, int[] postorder) {
+    Map&lt;Integer, Integer&gt; inToIndex = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; inorder.length; ++i)
+      inToIndex.put(inorder[i], i);
+
+    return build(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1, inToIndex);
+  }
+
+  TreeNode build(int[] inorder, int inStart, int inEnd, int[] postorder, int postStart, int postEnd,
+                 Map&lt;Integer, Integer&gt; inToIndex) {
+    if (inStart &gt; inEnd)
+      return null;
+
+    final int rootVal = postorder[postEnd];
+    final int rootInIndex = inToIndex.get(rootVal);
+    final int leftSize = rootInIndex - inStart;
+
+    TreeNode root = new TreeNode(rootVal);
+    root.left = build(inorder, inStart, rootInIndex - 1, postorder, postStart,
+                      postStart + leftSize - 1, inToIndex);
+    root.right = build(inorder, rootInIndex + 1, inEnd, postorder, postStart + leftSize,
+                       postEnd - 1, inToIndex);
+    return root;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def buildTree(
+      self,
+      inorder: list[int],
+      postorder: list[int],
+  ) -&gt; TreeNode | None:
+    inToIndex = {num: i for i, num in enumerate(inorder)}
+
+    def build(
+        inStart: int,
+        inEnd: int,
+        postStart: int,
+        postEnd: int,
+    ) -&gt; TreeNode | None:
+      if inStart &gt; inEnd:
+        return None
+
+      rootVal = postorder[postEnd]
+      rootInIndex = inToIndex[rootVal]
+      leftSize = rootInIndex - inStart
+
+      root = TreeNode(rootVal)
+      root.left = build(inStart, rootInIndex - 1,  postStart,
+                        postStart + leftSize - 1)
+      root.right = build(rootInIndex + 1, inEnd,  postStart + leftSize,
+                         postEnd - 1)
+      return root
+
+    return build(0, len(inorder) - 1, 0, len(postorder) - 1)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

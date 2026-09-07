@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum and Minimum Sums of at Most Size K Subarrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum and Minimum Sums of at Most Size K Subarrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-and-minimum-sums-of-at-most-size-k-subarrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/paint-house-iv/" class="btn">← Previous</a>
+            <span>Problem 3430 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-unlocked-indices-to-sort-nums/" class="btn">Next →</a>
+        </div>
+        <h1>3430. Maximum and Minimum Sums of at Most Size K Subarrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum and Minimum Sums of at Most Size K Subarrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 2104. Sum of Subarray Ranges
+  long long minMaxSubarraySum(const vector&lt;int&gt;&amp; nums, int k) {
+    const auto [prevGt, nextGt] = getPrevNext(nums, less&lt;&gt;());
+    const auto [prevLt, nextLt] = getPrevNext(nums, greater&lt;&gt;());
+    return subarraySum(nums, prevGt, nextGt, k) +
+           subarraySum(nums, prevLt, nextLt, k);
+  }
+
+ private:
+  // Returns the sum of all subarrays with a size &lt;= k, The `prev` and `next`
+  // arrays are used to store the indices of the nearest numbers that are
+  // smaller or larger than the current number, respectively.
+  long subarraySum(const vector&lt;int&gt;&amp; nums, const vector&lt;int&gt;&amp; prev,
+                   const vector&lt;int&gt;&amp; next, int k) {
+    long res = 0;
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      const int l = min(i - prev[i], k);
+      const int r = min(next[i] - i, k);
+      const int extra = max(0, l + r - 1 - k);
+      res += nums[i] * static_cast&lt;long&gt;(l * r - extra * (extra + 1) / 2);
+    }
+    return res;
+  }
+
+  // Returns `prev` and `next`, that store the indices of the nearest numbers
+  // that are smaller or larger than the current number depending on `op`.
+  pair&lt;vector&lt;int&gt;, vector&lt;int&gt;&gt; getPrevNext(
+      const vector&lt;int&gt;&amp; nums, const function&lt;bool(int, int)&gt;&amp; op) {
+    const int n = nums.size();
+    vector&lt;int&gt; prev(n, -1);
+    vector&lt;int&gt; next(n, n);
+    stack&lt;int&gt; stack;
+    for (int i = 0; i &lt; n; ++i) {
+      while (!stack.empty() &amp;&amp; op(nums[stack.top()], nums[i])) {
+        const int index = stack.top();
+        stack.pop();
+        next[index] = i;
+      }
+      if (!stack.empty())
+        prev[i] = stack.top();
+      stack.push(i);
+    }
+    return {prev, next};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 2104. Sum of Subarray Ranges
+  public long minMaxSubarraySum(int[] nums, int k) {
+    Pair&lt;int[], int[]&gt; gt = getPrevNext(nums, (a, b) -&gt; a &lt; b);
+    Pair&lt;int[], int[]&gt; lt = getPrevNext(nums, (a, b) -&gt; a &gt; b);
+    int[] prevGt = gt.getKey();
+    int[] nextGt = gt.getValue();
+    int[] prevLt = lt.getKey();
+    int[] nextLt = lt.getValue();
+    return subarraySum(nums, k, prevGt, nextGt) + subarraySum(nums, k, prevLt, nextLt);
+  }
+
+  // Returns the sum of all subarrays with a size &lt;= k, The `prev` and `next`
+  // arrays are used to store the indices of the nearest numbers that are
+  // smaller or larger than the current number, respectively.
+  private long subarraySum(int[] nums, int k, int[] prev, int[] next) {
+    long res = 0;
+    for (int i = 0; i &lt; nums.length; ++i) {
+      final int l = Math.min(i - prev[i], k);
+      final int r = Math.min(next[i] - i, k);
+      final int extra = Math.max(0, l + r - 1 - k);
+      res += (long) nums[i] * (l * r - extra * (extra + 1) / 2);
+    }
+    return res;
+  }
+
+  // Returns `prev` and `next`, that store the indices of the nearest numbers
+  // that are smaller or larger than the current number depending on `op`.
+  private Pair&lt;int[], int[]&gt; getPrevNext(int[] nums, BiFunction&lt;Integer, Integer, Boolean&gt; op) {
+    final int n = nums.length;
+    int[] prev = new int[n];
+    int[] next = new int[n];
+    Arrays.fill(prev, -1);
+    Arrays.fill(next, n);
+    Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; n; ++i) {
+      while (!stack.isEmpty() &amp;&amp; op.apply(nums[stack.peek()], nums[i]))
+        next[stack.pop()] = i;
+      if (!stack.isEmpty())
+        prev[i] = stack.peek();
+      stack.push(i);
+    }
+    return new Pair&lt;&gt;(prev, next);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 2104. Sum of Subarray Ranges
+  def minMaxSubarraySum(self, nums: list[int], k: int) -&gt; int:
+    prevGt, nextGt = self._getPrevNext(nums, operator.lt)
+    prevLt, nextLt = self._getPrevNext(nums, operator.gt)
+    return (self._subarraySum(nums, prevGt, nextGt, k) +
+            self._subarraySum(nums, prevLt, nextLt, k))
+
+  def _subarraySum(
+      self,
+      nums: list[int],
+      prev: list[int],
+      next: list[int],
+      k: int
+  ) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the sum of all subarrays with a size &lt;= k, The `prev` and `next`
+    arrays are used to store the indices of the nearest numbers that are
+    smaller or larger than the current number, respectively.
+    &quot;&quot;&quot;
+    res = 0
+    for i, num in enumerate(nums):
+      l = min(i - prev[i], k)
+      r = min(next[i] - i, k)
+      extra = max(0, l + r - 1 - k)
+      res += num * (l * r - extra * (extra + 1) // 2)
+    return res
+
+  def _getPrevNext(
+      self,
+      nums: list[int],
+      op: callable
+  ) -&gt; tuple[list[int], list[int]]:
+    &quot;&quot;&quot;
+    Returns `prev` and `next`, that store the indices of the nearest numbers
+    that are smaller or larger than the current number depending on `op`.
+    &quot;&quot;&quot;
+    n = len(nums)
+    prev = [-1] * n
+    next = [n] * n
+    stack = []
+    for i, num in enumerate(nums):
+      while stack and op(nums[stack[-1]], num):
+        index = stack.pop()
+        next[index] = i
+      if stack:
+        prev[i] = stack[-1]
+      stack.append(i)
+    return prev, next</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

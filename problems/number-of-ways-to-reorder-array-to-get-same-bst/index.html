@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Ways to Reorder Array to Get Same BST - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Ways to Reorder Array to Get Same BST written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-ways-to-reorder-array-to-get-same-bst/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-days-to-disconnect-island/" class="btn">← Previous</a>
+            <span>Problem 1569 of 3563</span>
+            <a href="/leetcode-solutions/problems/dot-product-of-two-sparse-vectors/" class="btn">Next →</a>
+        </div>
+        <h1>1569. Number of Ways to Reorder Array to Get Same BST</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Ways to Reorder Array to Get Same BST efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int numOfWays(vector&lt;int&gt;&amp; nums) {
+    comb = generate(nums.size() + 1);
+    return ways(nums) - 1;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+  // comb[n][k] := C(n, k)
+  vector&lt;vector&lt;int&gt;&gt; comb;
+
+  int ways(const vector&lt;int&gt;&amp; nums) {
+    if (nums.size() &lt;= 2)
+      return 1;
+
+    vector&lt;int&gt; left;
+    vector&lt;int&gt; right;
+
+    for (int i = 1; i &lt; nums.size(); ++i)
+      if (nums[i] &lt; nums[0])
+        left.push_back(nums[i]);
+      else
+        right.push_back(nums[i]);
+
+    long ans = comb[nums.size() - 1][left.size()];
+    ans = (ans * ways(left)) % kMod;
+    ans = (ans * ways(right)) % kMod;
+    return ans;
+  }
+
+  // Same as 118. Pascal&#x27;s Triangle
+  vector&lt;vector&lt;int&gt;&gt; generate(int numRows) {
+    vector&lt;vector&lt;int&gt;&gt; comb;
+
+    for (int i = 0; i &lt; numRows; ++i)
+      comb.push_back(vector&lt;int&gt;(i + 1, 1));
+
+    for (int i = 2; i &lt; numRows; ++i)
+      for (int j = 1; j &lt; comb[i].size() - 1; ++j)
+        comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % kMod;
+
+    return comb;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int numOfWays(int[] nums) {
+    comb = generate(nums.length + 1);
+    return ways(Arrays.stream(nums).boxed().collect(Collectors.toList())) - 1;
+  }
+
+  private static final int MOD = 1_000_000_007;
+  // comb[n][k] := C(n, k)
+  private List&lt;List&lt;Integer&gt;&gt; comb;
+
+  private int ways(List&lt;Integer&gt; nums) {
+    if (nums.size() &lt;= 2)
+      return 1;
+
+    List&lt;Integer&gt; left = new ArrayList&lt;&gt;();
+    List&lt;Integer&gt; right = new ArrayList&lt;&gt;();
+
+    for (int i = 1; i &lt; nums.size(); ++i)
+      if (nums.get(i) &lt; nums.get(0))
+        left.add(nums.get(i));
+      else
+        right.add(nums.get(i));
+
+    long ans = comb.get(nums.size() - 1).get(left.size());
+    ans = (ans * ways(left)) % MOD;
+    ans = (ans * ways(right)) % MOD;
+    return (int) ans;
+  }
+
+  // Same as 118. Pascal&#x27;s Triangle
+  public List&lt;List&lt;Integer&gt;&gt; generate(int numRows) {
+    List&lt;List&lt;Integer&gt;&gt; comb = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; numRows; ++i) {
+      Integer[] temp = new Integer[i + 1];
+      Arrays.fill(temp, 1);
+      comb.add(Arrays.asList(temp));
+    }
+
+    for (int i = 2; i &lt; numRows; ++i)
+      for (int j = 1; j &lt; comb.get(i).size() - 1; ++j)
+        comb.get(i).set(j, (comb.get(i - 1).get(j - 1) + comb.get(i - 1).get(j)) % MOD);
+
+    return comb;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

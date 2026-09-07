@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Runes to Add to Cast Spell - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Runes to Add to Cast Spell written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-runes-to-add-to-cast-spell/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-area-rectangle-with-point-constraints-ii/" class="btn">← Previous</a>
+            <span>Problem 3383 of 3563</span>
+            <a href="/leetcode-solutions/problems/team-dominance-by-pass-success/" class="btn">Next →</a>
+        </div>
+        <h1>3383. Minimum Runes to Add to Cast Spell</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Runes to Add to Cast Spell efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minRunesToAdd(int n, vector&lt;int&gt;&amp; crystals, vector&lt;int&gt;&amp; flowFrom,
+                    vector&lt;int&gt;&amp; flowTo) {
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    vector&lt;vector&lt;int&gt;&gt; reversedGraph(n);
+
+    for (int i = 0; i &lt; flowFrom.size(); ++i) {
+      const int u = flowFrom[i];
+      const int v = flowTo[i];
+      graph[u].push_back(v);
+      reversedGraph[v].push_back(u);
+    }
+
+    // Identify Strongly Connected Components (SCC) using Kosaraju&#x27;s Algorithm
+    vector&lt;bool&gt; seen(n);
+    vector&lt;int&gt; orderStack;
+    vector&lt;int&gt; componentIds(n, -1);
+    int componentCount = 0;
+
+    for (int i = 0; i &lt; n; ++i)
+      if (!seen[i])
+        kosaraju(graph, i, seen, orderStack);
+
+    for (int i = n - 1; i &gt;= 0; --i) {
+      const int u = orderStack[i];
+      if (componentIds[u] == -1)
+        identifySCC(reversedGraph, u, componentIds, componentCount++);
+    }
+
+    // Track crystal-containing components and inter-component edges.
+    vector&lt;bool&gt; hasCrystal(componentCount);
+    vector&lt;bool&gt; hasInterComponentEdge(componentCount);
+
+    for (const int u : crystals)
+      hasCrystal[componentIds[u]] = true;
+
+    for (int i = 0; i &lt; flowFrom.size(); ++i) {
+      const int id1 = componentIds[flowFrom[i]];
+      const int id2 = componentIds[flowTo[i]];
+      if (id1 != id2)  // Edge is inter-component.
+        hasInterComponentEdge[id2] = true;
+    }
+
+    // Count components requiring additional runes.
+    int ans = 0;
+
+    for (int i = 0; i &lt; componentCount; ++i)
+      if (!hasCrystal[i] &amp;&amp; !hasInterComponentEdge[i])
+        ++ans;
+
+    return ans;
+  }
+
+ private:
+  // Creates a topological order stack using Kosaraju&#x27;s Algorithm.
+  void kosaraju(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, vector&lt;bool&gt;&amp; seen,
+                vector&lt;int&gt;&amp; orderStack) {
+    seen[u] = true;
+    for (const int v : graph[u])
+      if (!seen[v])
+        kosaraju(graph, v, seen, orderStack);
+    orderStack.push_back(u);
+  }
+
+  // Assigns component IDs during SCC identification in the second DFS.
+  void identifySCC(const vector&lt;vector&lt;int&gt;&gt;&amp; reversedGraph, int u,
+                   vector&lt;int&gt;&amp; componentIds, int componentId) {
+    if (componentIds[u] != -1)
+      return;
+    componentIds[u] = componentId;
+    for (const int v : reversedGraph[u])
+      if (componentIds[v] &lt; 0)
+        identifySCC(reversedGraph, v, componentIds, componentId);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minRunesToAdd(int n, int[] crystals, int[] flowFrom, int[] flowTo) {
+    List&lt;Integer&gt;[] graph = new ArrayList[n];
+    List&lt;Integer&gt;[] reversedGraph = new ArrayList[n];
+
+    for (int i = 0; i &lt; n; ++i) {
+      graph[i] = new ArrayList&lt;&gt;();
+      reversedGraph[i] = new ArrayList&lt;&gt;();
+    }
+
+    for (int i = 0; i &lt; flowFrom.length; ++i) {
+      final int u = flowFrom[i];
+      final int v = flowTo[i];
+      graph[u].add(v);
+      reversedGraph[v].add(u);
+    }
+
+    // Identify Strongly Connected Components (SCC) using Kosaraju&#x27;s Algorithm.
+    boolean[] seen = new boolean[n];
+    List&lt;Integer&gt; orderStack = new ArrayList&lt;&gt;();
+    int[] componentIds = new int[n];
+    int componentCount = 0;
+
+    for (int i = 0; i &lt; n; ++i)
+      if (!seen[i])
+        kosaraju(graph, i, seen, orderStack);
+
+    Arrays.fill(componentIds, -1);
+
+    for (int i = orderStack.size() - 1; i &gt;= 0; --i) {
+      final int u = orderStack.get(i);
+      if (componentIds[u] == -1)
+        identifySCC(reversedGraph, u, componentIds, componentCount++);
+    }
+
+    // Track crystal-containing components and inter-component edges.
+    boolean[] hasCrystal = new boolean[componentCount];
+    boolean[] hasInterComponentEdge = new boolean[componentCount];
+
+    for (final int u : crystals)
+      hasCrystal[componentIds[u]] = true;
+
+    for (int i = 0; i &lt; flowFrom.length; ++i) {
+      final int id1 = componentIds[flowFrom[i]];
+      final int id2 = componentIds[flowTo[i]];
+      if (id1 != id2)
+        hasInterComponentEdge[id2] = true;
+    }
+
+    // Count components requiring additional runes
+    int ans = 0;
+
+    for (int i = 0; i &lt; componentCount; ++i)
+      if (!hasCrystal[i] &amp;&amp; !hasInterComponentEdge[i])
+        ++ans;
+
+    return ans;
+  }
+
+  // Creates a topological order stack using Kosaraju&#x27;s Algorithm.
+  private void kosaraju(List&lt;Integer&gt;[] graph, int u, boolean[] seen, List&lt;Integer&gt; orderStack) {
+    seen[u] = true;
+    for (final int v : graph[u])
+      if (!seen[v])
+        kosaraju(graph, v, seen, orderStack);
+    orderStack.add(u);
+  }
+
+  // Assigns component IDs during SCC identification in the second DFS.
+  private void identifySCC(List&lt;Integer&gt;[] reversedGraph, int u, int[] componentIds,
+                           int componentId) {
+    if (componentIds[u] != -1)
+      return;
+    componentIds[u] = componentId;
+    for (final int v : reversedGraph[u])
+      if (componentIds[v] == -1)
+        identifySCC(reversedGraph, v, componentIds, componentId);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minRunesToAdd(
+      self,
+      n: int,
+      crystals: list[int],
+      flowFrom: list[int],
+      flowTo: list[int]
+  ) -&gt; int:
+    graph = [[] for _ in range(n)]
+    reversedGraph = [[] for _ in range(n)]
+
+    for u, v in zip(flowFrom, flowTo):
+      graph[u].append(v)
+      reversedGraph[v].append(u)
+
+    # Identify Strongly Connected Components (SCC) using Kosaraju&#x27;s Algorithm.
+    seen = set()
+    orderStack = []
+    componentIds = [-1] * n
+    componentCount = 0
+
+    for i in range(n):
+      if i not in seen:
+        self._kosaraju(graph, i, seen, orderStack)
+
+    while orderStack:
+      u = orderStack.pop()
+      if componentIds[u] == -1:
+        self._identifySCC(reversedGraph, u, componentIds, componentCount)
+        componentCount += 1
+
+    # Track crystal-containing components and inter-component edges.
+    hasCrystal = [False] * componentCount
+    hasInterComponentEdge = [False] * componentCount
+
+    for u in crystals:
+      hasCrystal[componentIds[u]] = True
+
+    for u, v in zip(flowFrom, flowTo):
+      id1 = componentIds[u]
+      id2 = componentIds[v]
+      if id1 != id2:  # Edge is inter-component.
+        hasInterComponentEdge[id2] = True
+
+    return sum(not hasCrystal[i] and not hasInterComponentEdge[i]
+               for i in range(componentCount))
+
+  def _kosaraju(
+      self,
+      graph: list[list[int]],
+      u: int,
+      seen: set[int],
+      orderStack: list
+  ) -&gt; None:
+    &quot;&quot;&quot;Creates a topological order stack using Kosaraju&#x27;s Algorithm.&quot;&quot;&quot;
+    seen.add(u)
+    for v in graph[u]:
+      if v not in seen:
+        self._kosaraju(graph, v, seen, orderStack)
+    orderStack.append(u)
+
+  def _identifySCC(
+      self,
+      reversedGraph: list[list[int]],
+      u: int,
+      componentIds: list[int],
+      componentId: int
+  ) -&gt; None:
+    &quot;&quot;&quot;Assigns component IDs during SCC identification in the second DFS.&quot;&quot;&quot;
+    if componentIds[u] != -1:
+      return
+    componentIds[u] = componentId
+    for v in reversedGraph[u]:
+      if componentIds[v] == -1:
+        self._identifySCC(reversedGraph, v, componentIds, componentId)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

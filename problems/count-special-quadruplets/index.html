@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Special Quadruplets - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Special Quadruplets written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-special-quadruplets/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/the-number-of-good-subsets/" class="btn">← Previous</a>
+            <span>Problem 1995 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-number-of-weak-characters-in-the-game/" class="btn">Next →</a>
+        </div>
+        <h1>1995. Count Special Quadruplets</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Special Quadruplets efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countQuadruplets(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    int ans = 0;
+    unordered_map&lt;int, int&gt; count;
+
+    //    nums[a] + nums[b] + nums[c] == nums[d]
+    // =&gt; nums[a] + nums[b] == nums[d] - nums[c]
+    for (int b = n - 1; b &gt; 0; --b) {  // `b` also represents `c`.
+      for (int a = b - 1; a &gt;= 0; --a)
+        if (const auto it = count.find(nums[a] + nums[b]); it != count.cend())
+          ans += it-&gt;second;
+      for (int d = n - 1; d &gt; b; --d)
+        ++count[nums[d] - nums[b]];  // b := c
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countQuadruplets(int[] nums) {
+    final int n = nums.length;
+    int ans = 0;
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    //    nums[a] + nums[b] + nums[c] == nums[d]
+    // =&gt; nums[a] + nums[b] == nums[d] - nums[c]
+    for (int b = n - 1; b &gt; 0; --b) { // `b` also represents `c`.
+      for (int a = b - 1; a &gt;= 0; --a)
+        ans += count.getOrDefault(nums[a] + nums[b], 0);
+      for (int d = n - 1; d &gt; b; --d)
+        count.merge(nums[d] - nums[b], 1, Integer::sum); // b := c
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countQuadruplets(self, nums: list[int]) -&gt; int:
+    n = len(nums)
+    ans = 0
+    count = collections.Counter()
+
+    #    nums[a] + nums[b] + nums[c] == nums[d]
+    # =&gt; nums[a] + nums[b] == nums[d] - nums[c]
+    for b in range(n - 1, 0, -1):  # `b` also represents `c`.
+      for a in range(b - 1, -1, -1):
+        ans += count[nums[a] + nums[b]]
+      for d in range(n - 1, b, -1):
+        count[nums[d] - nums[b]] += 1  # b := c
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

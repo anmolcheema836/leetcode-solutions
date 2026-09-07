@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finding MK Average - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Finding MK Average written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/finding-mk-average/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-sideway-jumps/" class="btn">← Previous</a>
+            <span>Problem 1825 of 3563</span>
+            <a href="/leetcode-solutions/problems/faulty-sensor/" class="btn">Next →</a>
+        </div>
+        <h1>1825. Finding MK Average</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Finding MK Average efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct MyMap {
+  map&lt;int, int&gt; map;
+  int size = 0;
+  long sum = 0;
+};
+
+class MKAverage {
+ public:
+  MKAverage(int m, int k) : m(m), k(k), kMidSize(m - 2 * k) {}
+
+  void addElement(int num) {
+    q.push(num);
+    add(num);
+
+    if (q.size() &gt; m) {
+      const int removed = q.front();
+      q.pop();
+      remove(removed);
+    }
+  }
+
+  int calculateMKAverage() {
+    return q.size() == m ? mid.sum / kMidSize : -1;
+  }
+
+ private:
+  const int m;
+  const int k;
+  const int kMidSize;
+  queue&lt;int&gt; q;
+  MyMap top;
+  MyMap mid;
+  MyMap bot;
+
+  void add(int num) {
+    add(bot, num);
+    if (bot.size &gt; k)
+      add(mid, remove(bot, bot.map.rbegin()-&gt;first));
+    if (mid.size &gt; kMidSize)
+      add(top, remove(mid, mid.map.rbegin()-&gt;first));
+  }
+
+  void remove(int num) {
+    if (bot.map.contains(num))
+      remove(bot, num);
+    else if (mid.map.contains(num))
+      remove(mid, num);
+    else
+      remove(top, num);
+
+    if (bot.size &lt; k)
+      add(bot, remove(mid, mid.map.begin()-&gt;first));
+    if (mid.size &lt; kMidSize)
+      add(mid, remove(top, top.map.begin()-&gt;first));
+  }
+
+  void add(MyMap&amp; m, int num) {
+    ++m.map[num];
+    ++m.size;
+    m.sum += num;
+  }
+
+  int remove(MyMap&amp; m, int num) {
+    if (--m.map[num] == 0)
+      m.map.erase(num);
+    --m.size;
+    m.sum -= num;
+    return num;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class MyMap {
+  public TreeMap&lt;Integer, Integer&gt; map = new TreeMap&lt;&gt;();
+  public int size = 0;
+  public long sum = 0;
+}
+
+class MKAverage {
+  public MKAverage(int m, int k) {
+    this.m = m;
+    this.k = k;
+    this.MID_SIZE = m - 2 * k;
+  }
+
+  public void addElement(int num) {
+    q.offer(num);
+    add(num);
+
+    if (q.size() &gt; m)
+      remove(q.poll());
+  }
+
+  public int calculateMKAverage() {
+    return q.size() == m ? (int) (mid.sum / MID_SIZE) : -1;
+  }
+
+  private final int m;
+  private final int k;
+  private final int MID_SIZE;
+  private Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();
+  private MyMap bot = new MyMap();
+  private MyMap mid = new MyMap();
+  private MyMap top = new MyMap();
+
+  private void add(int num) {
+    add(bot, num);
+    if (bot.size &gt; k)
+      add(mid, remove(bot, bot.map.lastKey()));
+    if (mid.size &gt; MID_SIZE)
+      add(top, remove(mid, mid.map.lastKey()));
+  }
+
+  private void remove(int num) {
+    if (bot.map.containsKey(num))
+      remove(bot, num);
+    else if (mid.map.containsKey(num))
+      remove(mid, num);
+    else
+      remove(top, num);
+
+    if (bot.size &lt; k)
+      add(bot, remove(mid, mid.map.firstKey()));
+    if (mid.size &lt; MID_SIZE)
+      add(mid, remove(top, top.map.firstKey()));
+  }
+
+  private void add(MyMap m, int num) {
+    m.map.merge(num, 1, Integer::sum);
+    ++m.size;
+    m.sum += num;
+  }
+
+  private int remove(MyMap m, int num) {
+    m.map.merge(num, -1, Integer::sum);
+    if (m.map.get(num) == 0)
+      m.map.remove(num);
+    --m.size;
+    m.sum -= num;
+    return num;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

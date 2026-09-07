@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Sum of Edge Values in a Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Sum of Edge Values in a Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-sum-of-edge-values-in-a-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/equal-sum-grid-partition-i/" class="btn">← Previous</a>
+            <span>Problem 3547 of 3563</span>
+            <a href="/leetcode-solutions/problems/equal-sum-grid-partition-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3547. Maximum Sum of Edge Values in a Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Sum of Edge Values in a Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxScore(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    long ans = 0;
+    vector&lt;vector&lt;int&gt;&gt; graph(n);
+    vector&lt;int&gt; cycleSizes;  // components where all nodes have degree 2
+    vector&lt;int&gt; pathSizes;   // components that are not cycleSizes
+    vector&lt;bool&gt; seen(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+
+    for (int i = 0; i &lt; n; ++i) {
+      if (seen[i])
+        continue;
+      const vector&lt;int&gt; component = getComponent(graph, i, seen);
+      const bool allDegree2 = ranges::all_of(
+          component, [&amp;graph](int u) { return graph[u].size() == 2; });
+      if (allDegree2)
+        cycleSizes.push_back(component.size());
+      else if (component.size() &gt; 1)
+        pathSizes.push_back(component.size());
+    }
+
+    for (const int cycleSize : cycleSizes) {
+      ans += calculateScore(n - cycleSize + 1, n, /*isCycle=*/true);
+      n -= cycleSize;
+    }
+
+    ranges::sort(pathSizes, greater&lt;&gt;());
+
+    for (const int pathSize : pathSizes) {
+      ans += calculateScore(n - pathSize + 1, n, /*isCycle=*/false);
+      n -= pathSize;
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;int&gt; getComponent(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int start,
+                           vector&lt;bool&gt;&amp; seen) {
+    vector&lt;int&gt; component = {start};
+    seen[start] = true;
+    for (int i = 0; i &lt; component.size(); ++i) {
+      const int u = component[i];
+      for (const int v : graph[u]) {
+        if (seen[v])
+          continue;
+        component.push_back(v);
+        seen[v] = true;
+      }
+    }
+    return component;
+  }
+
+  long calculateScore(int left, int right, bool isCycle) {
+    deque&lt;long&gt; window = {right, right};
+    long score = 0;
+    for (int value = right - 1; value &gt;= left; --value) {
+      const long windowValue = window.front();
+      window.pop_front();
+      score += windowValue * value;
+      window.push_back(value);
+    }
+    return score + window[0] * window[1] * isCycle;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxScore(int n, int[][] edges) {
+    long ans = 0;
+    List&lt;Integer&gt;[] graph = new List[n];
+    List&lt;Integer&gt; cycleSizes = new ArrayList&lt;&gt;(); // components where all nodes have degree 2
+    List&lt;Integer&gt; pathSizes = new ArrayList&lt;&gt;();  // components that are not cycleSizes
+    boolean[] seen = new boolean[n];
+    Arrays.setAll(graph, i -&gt; new ArrayList&lt;&gt;());
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+
+    for (int i = 0; i &lt; n; ++i) {
+      if (seen[i])
+        continue;
+      List&lt;Integer&gt; component = getComponent(graph, i, seen);
+      final boolean allDegree2 = component.stream().allMatch(u -&gt; graph[u].size() == 2);
+      if (allDegree2)
+        cycleSizes.add(component.size());
+      else if (component.size() &gt; 1)
+        pathSizes.add(component.size());
+    }
+
+    for (final int cycleSize : cycleSizes) {
+      ans += calculateScore(n - cycleSize + 1, n, true);
+      n -= cycleSize;
+    }
+
+    Collections.sort(pathSizes, Collections.reverseOrder());
+
+    for (final int pathSize : pathSizes) {
+      ans += calculateScore(n - pathSize + 1, n, false);
+      n -= pathSize;
+    }
+
+    return ans;
+  }
+
+  private List&lt;Integer&gt; getComponent(List&lt;Integer&gt;[] graph, int start, boolean[] seen) {
+    List&lt;Integer&gt; component = new ArrayList&lt;&gt;(List.of(start));
+    seen[start] = true;
+    for (int i = 0; i &lt; component.size(); ++i) {
+      final int u = component.get(i);
+      for (final int v : graph[u]) {
+        if (seen[v])
+          continue;
+        component.add(v);
+        seen[v] = true;
+      }
+    }
+    return component;
+  }
+
+  private long calculateScore(int left, int right, boolean isCycle) {
+    Deque&lt;Long&gt; window = new ArrayDeque&lt;&gt;();
+    window.offerLast((long) right);
+    window.offerLast((long) right);
+    long score = 0;
+    for (int value = right - 1; value &gt;= left; --value) {
+      final long windowValue = window.pollFirst();
+      score += windowValue * value;
+      window.offerLast((long) value);
+    }
+    return score + window.peekFirst() * window.peekLast() * (isCycle ? 1 : 0);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxScore(self, n: int, edges: list[list[int]]) -&gt; int:
+    ans = 0
+    graph = [[] for _ in range(n)]
+    cycleSizes = []  # components where all nodes have degree 2
+    pathSizes = []  # components that are not cycleSizes
+    seen = set()
+
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+
+    for i in range(n):
+      if i in seen:
+        continue
+      component = self._getComponent(graph, i, seen)
+      if all(len(graph[u]) == 2 for u in component):
+        cycleSizes.append(len(component))
+      elif len(component) &gt; 1:
+        pathSizes.append(len(component))
+
+    for cycleSize in cycleSizes:
+      ans += self._calculateScore(n - cycleSize + 1, n, True)
+      n -= cycleSize
+
+    for pathSize in sorted(pathSizes, reverse=True):
+      ans += self._calculateScore(n - pathSize + 1, n, False)
+      n -= pathSize
+
+    return ans
+
+  def _getComponent(
+      self,
+      graph: list[list[int]],
+      start: int,
+      seen: set[int],
+  ) -&gt; list[int]:
+    component = [start]
+    seen.add(start)
+    for u in component:
+      for v in graph[u]:
+        if v in seen:
+          continue
+        component.append(v)
+        seen.add(v)
+    return component
+
+  def _calculateScore(self, left: int, right: int, isCycle: bool) -&gt; int:
+    window = collections.deque([right, right])
+    score = 0
+    for value in range(right - 1, left - 1, -1):
+      windowValue = window.popleft()
+      score += windowValue * value
+      window.append(value)
+    return score + window[0] * window[1] * isCycle</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

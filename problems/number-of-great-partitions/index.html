@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Great Partitions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Great Partitions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-great-partitions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-tastiness-of-candy-basket/" class="btn">← Previous</a>
+            <span>Problem 2518 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-the-number-of-k-big-indices/" class="btn">Next →</a>
+        </div>
+        <h1>2518. Number of Great Partitions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Great Partitions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countPartitions(vector&lt;int&gt;&amp; nums, int k) {
+    const long sum = accumulate(nums.begin(), nums.end(), 0L);
+    long ans = modPow(2, nums.size());
+    vector&lt;long&gt; dp(k + 1);
+    dp[0] = 1;
+
+    for (const int num : nums)
+      for (int i = k; i &gt;= num; --i) {
+        dp[i] += dp[i - num];
+        dp[i] %= kMod;
+      }
+
+    // Substract the cases that&#x27;re not satisfied.
+    for (int i = 0; i &lt; k; ++i)
+      if (sum - i &lt; k)  // Both group1 and group2 &lt; k.
+        ans -= dp[i];
+      else
+        ans -= dp[i] * 2;
+
+    return (ans % kMod + kMod) % kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countPartitions(int[] nums, int k) {
+    final int MOD = 1_000_000_007;
+    final long sum = Arrays.stream(nums).asLongStream().sum();
+    long ans = modPow(2, nums.length, MOD); // 2^n % MOD
+    long[] dp = new long[k + 1];
+    dp[0] = 1;
+
+    for (final int num : nums)
+      for (int i = k; i &gt;= num; --i) {
+        dp[i] += dp[i - num];
+        dp[i] %= MOD;
+      }
+
+    // Substract the cases that&#x27;re not satisfied.
+    for (int i = 0; i &lt; k; ++i)
+      if (sum - i &lt; k) // Both group1 and group2 &lt; k.
+        ans -= dp[i];
+      else
+        ans -= dp[i] * 2;
+
+    return (int) ((ans % MOD + MOD) % MOD);
+  }
+
+  private int modPow(int x, int n, int MOD) {
+    int res = 1;
+    for (int i = 0; i &lt; n; ++i)
+      res = res * x % MOD;
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countPartitions(self, nums: list[int], k: int) -&gt; int:
+    MOD = 1_000_000_007
+    summ = sum(nums)
+    ans = pow(2, len(nums), MOD)  # 2^n % MOD
+    dp = [1] + [0] * k
+
+    for num in nums:
+      for i in range(k, num - 1, -1):
+        dp[i] += dp[i - num]
+        dp[i] %= MOD
+
+    # Substract the cases that&#x27;re not satisfied.
+    for i in range(k):
+      if summ - i &lt; k:  # Both group1 and group2 &lt; k.
+        ans -= dp[i]
+      else:
+        ans -= dp[i] * 2
+
+    return ans % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disconnect Path in a Binary Matrix by at Most One Flip - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Disconnect Path in a Binary Matrix by at Most One Flip written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/disconnect-path-in-a-binary-matrix-by-at-most-one-flip/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximize-win-from-two-segments/" class="btn">← Previous</a>
+            <span>Problem 2556 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-number-of-integers-to-choose-from-a-range-ii/" class="btn">Next →</a>
+        </div>
+        <h1>2556. Disconnect Path in a Binary Matrix by at Most One Flip</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Disconnect Path in a Binary Matrix by at Most One Flip efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool isPossibleToCutPath(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    if (!hasPath(grid, 0, 0))
+      return true;
+    // Reassign (0, 0) as 1.
+    grid[0][0] = 1;
+    return !hasPath(grid, 0, 0);
+  }
+
+ private:
+  // Returns true is there&#x27;s a path from (0, 0) to (m - 1, n - 1).
+  // Also marks the visited path as 0 except (m - 1, n - 1).
+  bool hasPath(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int i, int j) {
+    if (i == grid.size() || j == grid[0].size())
+      return false;
+    if (i == grid.size() - 1 &amp;&amp; j == grid[0].size() - 1)
+      return true;
+    if (grid[i][j] == 0)
+      return false;
+
+    grid[i][j] = 0;
+    // Go down first. Since we use OR logic, we&#x27;ll only mark one path.
+    return hasPath(grid, i + 1, j) || hasPath(grid, i, j + 1);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean isPossibleToCutPath(int[][] grid) {
+    if (!hasPath(grid, 0, 0))
+      return true;
+    // Reassign (0, 0) as 1.
+    grid[0][0] = 1;
+    return !hasPath(grid, 0, 0);
+  }
+
+  // Returns true is there&#x27;s a path from (0, 0) to (m - 1, n - 1).
+  // Also marks the visited path as 0 except (m - 1, n - 1).
+  private boolean hasPath(int[][] grid, int i, int j) {
+    if (i == grid.length || j == grid[0].length)
+      return false;
+    if (i == grid.length - 1 &amp;&amp; j == grid[0].length - 1)
+      return true;
+    if (grid[i][j] == 0)
+      return false;
+
+    grid[i][j] = 0;
+    // Go down first. Since we use OR logic, we&#x27;ll only mark one path.
+    return hasPath(grid, i + 1, j) || hasPath(grid, i, j + 1);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def isPossibleToCutPath(self, grid: list[list[int]]) -&gt; bool:
+    # Returns True is there&#x27;s a path from (0, 0) to (m - 1, n - 1).
+    # Also marks the visited path as 0 except (m - 1, n - 1).
+    def hasPath(i: int, j: int) -&gt; bool:
+      if i == len(grid) or j == len(grid[0]):
+        return False
+      if i == len(grid) - 1 and j == len(grid[0]) - 1:
+        return True
+      if grid[i][j] == 0:
+        return False
+
+      grid[i][j] = 0
+      # Go down first. Since we use OR logic, we&#x27;ll only mark one path.
+      return hasPath(i + 1, j) or hasPath(i, j + 1)
+
+    if not hasPath(0, 0):
+      return True
+    # Reassign (0, 0) as 1.
+    grid[0][0] = 1
+    return not hasPath(0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

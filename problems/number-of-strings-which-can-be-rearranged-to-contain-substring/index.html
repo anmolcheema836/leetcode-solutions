@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Strings Which Can Be Rearranged to Contain Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Strings Which Can Be Rearranged to Contain Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-strings-which-can-be-rearranged-to-contain-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/distribute-candies-among-children-ii/" class="btn">← Previous</a>
+            <span>Problem 2930 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-spending-after-buying-items/" class="btn">Next →</a>
+        </div>
+        <h1>2930. Number of Strings Which Can Be Rearranged to Contain Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Strings Which Can Be Rearranged to Contain Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int stringCount(int n) {
+    // There&#x27;re three invalid conditions:
+    //   a. count(&#x27;l&#x27;) == 0
+    //   b. count(&#x27;e&#x27;) &lt; 2
+    //   c. count(&#x27;t&#x27;) == 0
+    //
+    // By Principle of Inclusion-Exclusion (PIE):
+    //   ans = allCount - a - b - c + ab + ac + bc - abc
+    const long allCount = modPow(26, n);
+    const long a = modPow(25, n);
+    const long b = modPow(25, n);
+    const long c = modPow(25, n) + n * modPow(25, n - 1);
+    const long ab = modPow(24, n) + n * modPow(24, n - 1);
+    const long ac = modPow(24, n);
+    const long bc = modPow(24, n) + n * modPow(24, n - 1);
+    const long abc = modPow(23, n) + n * modPow(23, n - 1);
+    return ((allCount - a - b - c + ab + ac + bc - abc) % kMod + kMod) % kMod;
+  }
+
+ private:
+  static constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+
+  long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x % kMod, (n - 1)) % kMod;
+    return modPow(x * x % kMod, (n / 2)) % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int stringCount(int n) {
+    // There&#x27;re three invalid conditions:
+    //   a. count(&#x27;l&#x27;) == 0
+    //   b. count(&#x27;e&#x27;) &lt; 2
+    //   c. count(&#x27;t&#x27;) == 0
+    //
+    // By Principle of Inclusion-Exclusion (PIE):
+    //   ans = allCount - a - b - c + ab + ac + bc - abc
+    final long allCount = modPow(26, n);
+    final long a = modPow(25, n);
+    final long b = modPow(25, n);
+    final long c = modPow(25, n) + n * modPow(25, n - 1);
+    final long ab = modPow(24, n) + n * modPow(24, n - 1);
+    final long ac = modPow(24, n);
+    final long bc = modPow(24, n) + n * modPow(24, n - 1);
+    final long abc = modPow(23, n) + n * modPow(23, n - 1);
+    return (int) (((allCount - a - b - c + ab + ac + bc - abc) % MOD + MOD) % MOD);
+  }
+
+  private static final int MOD = 1_000_000_007;
+
+  private long modPow(long x, long n) {
+    if (n == 0)
+      return 1;
+    if (n % 2 == 1)
+      return x * modPow(x, n - 1) % MOD;
+    return modPow(x * x % MOD, n / 2);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def stringCount(self, n: int) -&gt; int:
+    # There&#x27;re three invalid conditions:
+    #   a. count(&#x27;l&#x27;) == 0
+    #   b. count(&#x27;e&#x27;) &lt; 2
+    #   c. count(&#x27;t&#x27;) == 0
+    #
+    # By Principle of Inclusion-Exclusion (PIE):
+    #   ans = allCount - a - b - c + ab + ac + bc - abc
+    MOD = 1_000_000_007
+    allCount = pow(26, n, MOD)
+    a = pow(25, n, MOD)
+    b = pow(25, n, MOD)
+    c = pow(25, n, MOD) + n * pow(25, n - 1, MOD)
+    ab = pow(24, n, MOD) + n * pow(24, n - 1, MOD)
+    ac = pow(24, n, MOD)
+    bc = pow(24, n, MOD) + n * pow(24, n - 1, MOD)
+    abc = pow(23, n, MOD) + n * pow(23, n - 1, MOD)
+    return (allCount - a - b - c + ab + ac + bc - abc) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

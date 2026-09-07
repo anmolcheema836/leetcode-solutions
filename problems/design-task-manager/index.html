@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Task Manager - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Task Manager written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-task-manager/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/substring-matching-pattern/" class="btn">← Previous</a>
+            <span>Problem 3408 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-subsequence-with-decreasing-adjacent-difference/" class="btn">Next →</a>
+        </div>
+        <h1>3408. Design Task Manager</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Task Manager efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Task {
+  int userId;
+  int taskId;
+  int priority;
+
+  Task() = default;
+  Task(int u, int t, int p) : userId(u), taskId(t), priority(p) {}
+
+  bool operator&lt;(const Task&amp; other) const {
+    return priority == other.priority ? taskId &gt; other.taskId
+                                      : priority &gt; other.priority;
+  }
+};
+
+class TaskManager {
+ public:
+  unordered_map&lt;int, Task&gt; taskMap;  // {taskId: Task}
+  set&lt;Task&gt; taskSet;  // Stores tasks sorted by priority and taskId.
+
+  TaskManager(vector&lt;vector&lt;int&gt;&gt;&amp; tasks) {
+    for (const auto&amp; task : tasks)
+      add(task[0], task[1], task[2]);
+  }
+
+  void add(int userId, int taskId, int priority) {
+    const Task task(userId, taskId, priority);
+    taskMap[taskId] = task;
+    taskSet.insert(task);
+  }
+
+  void edit(int taskId, int newPriority) {
+    const Task task = taskMap[taskId];
+    taskSet.erase(task);
+    const Task editedTask = Task(task.userId, task.taskId, newPriority);
+    taskSet.insert(editedTask);
+    taskMap[taskId] = editedTask;
+  }
+
+  void rmv(int taskId) {
+    const Task task = taskMap[taskId];
+    taskSet.erase(task);
+    taskMap.erase(taskId);
+  }
+
+  int execTop() {
+    if (taskSet.empty())
+      return -1;
+    const Task task = *taskSet.begin();
+    taskSet.erase(task);
+    taskMap.erase(task.taskId);
+    return task.userId;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Task implements Comparable&lt;Task&gt; {
+  public int userId;
+  public int taskId;
+  public int priority;
+
+  public Task() {}
+
+  public Task(int userId, int taskId, int priority) {
+    this.userId = userId;
+    this.taskId = taskId;
+    this.priority = priority;
+  }
+
+  @Override
+  public int compareTo(Task other) {
+    return this.priority == other.priority ? Integer.compare(other.taskId, this.taskId)
+                                           : Integer.compare(other.priority, this.priority);
+  }
+}
+
+class TaskManager {
+
+  public TaskManager(List&lt;List&lt;Integer&gt;&gt; tasks) {
+    taskMap = new HashMap&lt;&gt;();
+    taskSet = new TreeSet&lt;&gt;();
+    for (List&lt;Integer&gt; task : tasks)
+      add(task.get(0), task.get(1), task.get(2));
+  }
+
+  public void add(int userId, int taskId, int priority) {
+    Task task = new Task(userId, taskId, priority);
+    taskMap.put(taskId, task);
+    taskSet.add(task);
+  }
+
+  public void edit(int taskId, int newPriority) {
+    Task task = taskMap.get(taskId);
+    taskSet.remove(task);
+    Task editedTask = new Task(task.userId, taskId, newPriority);
+    taskSet.add(editedTask);
+    taskMap.put(taskId, editedTask);
+  }
+
+  public void rmv(int taskId) {
+    Task task = taskMap.get(taskId);
+    taskSet.remove(task);
+    taskMap.remove(taskId);
+  }
+
+  public int execTop() {
+    if (taskSet.isEmpty())
+      return -1;
+    Task task = taskSet.iterator().next();
+    taskSet.remove(task);
+    taskMap.remove(task.taskId);
+    return task.userId;
+  }
+
+  private Map&lt;Integer, Task&gt; taskMap = new HashMap&lt;&gt;(); // {taskId: Task}
+  private Set&lt;Task&gt; taskSet; // Stores tasks sorted by priority and taskId.
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+from sortedcontainers import SortedDict, SortedSet
+
+
+@dataclass(frozen=True)
+class Task:
+  userId: int
+  taskId: int
+  priority: int
+
+  def __lt__(self, other):
+    if self.priority == other.priority:
+      return self.taskId &gt; other.taskId
+    return self.priority &gt; other.priority
+
+
+class TaskManager:
+  def __init__(self, tasks: list[list[int]]):
+    self.taskMap = SortedDict()  # {taskId: Task}, keeps tasks sorted by taskId
+    self.taskSet = SortedSet()  # Stores tasks sorted by priority and taskId
+    for task in tasks:
+      self.add(task[0], task[1], task[2])
+
+  def add(self, userId: int, taskId: int, priority: int) -&gt; None:
+    task = Task(userId, taskId, priority)
+    self.taskMap[taskId] = task
+    self.taskSet.add(task)
+
+  def edit(self, taskId: int, newPriority: int) -&gt; None:
+    task = self.taskMap[taskId]
+    self.taskSet.remove(task)
+    editedTask = Task(task.userId, taskId, newPriority)
+    self.taskSet.add(editedTask)
+    self.taskMap[taskId] = editedTask
+
+  def rmv(self, taskId: int) -&gt; None:
+    task = self.taskMap[taskId]
+    self.taskSet.remove(task)
+    del self.taskMap[taskId]
+
+  def execTop(self):
+    if not self.taskSet:
+      return -1
+    task = self.taskSet.pop(0)
+    del self.taskMap[task.taskId]
+    return task.userId</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

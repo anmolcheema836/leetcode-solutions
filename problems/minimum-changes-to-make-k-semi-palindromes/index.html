@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Changes to Make K Semi-palindromes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Changes to Make K Semi-palindromes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-changes-to-make-k-semi-palindromes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-groups-to-create-a-valid-assignment/" class="btn">← Previous</a>
+            <span>Problem 2911 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-ways-to-reach-destination-in-the-grid/" class="btn">Next →</a>
+        </div>
+        <h1>2911. Minimum Changes to Make K Semi-palindromes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Changes to Make K Semi-palindromes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumChanges(string s, int k) {
+    const int n = s.length();
+    // factors[i] := factors of i
+    const vector&lt;vector&lt;int&gt;&gt; factors = getFactors(n);
+    // cost[i][j] := changes to make s[i..j] a semi-palindrome
+    const vector&lt;vector&lt;int&gt;&gt; cost = getCost(s, n, factors);
+    // dp[i][j] := the minimum changes to split s[i:] into j valid parts
+    vector&lt;vector&lt;int&gt;&gt; dp(n + 1, vector&lt;int&gt;(k + 1, n));
+
+    dp[n][0] = 0;
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      for (int j = 1; j &lt;= k; ++j)
+        for (int l = i + 1; l &lt; n; ++l)
+          dp[i][j] = min(dp[i][j], dp[l + 1][j - 1] + cost[i][l]);
+
+    return dp[0][k];
+  }
+
+ private:
+  vector&lt;vector&lt;int&gt;&gt; getFactors(int n) {
+    vector&lt;vector&lt;int&gt;&gt; factors(n + 1);
+    for (int i = 1; i &lt;= n; ++i)
+      factors[i].push_back(1);
+    for (int d = 2; d &lt; n; ++d)
+      for (int i = d * 2; i &lt;= n; i += d)
+        factors[i].push_back(d);
+    return factors;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; getCost(const string&amp; s, int n,
+                              const vector&lt;vector&lt;int&gt;&gt;&amp; factors) {
+    vector&lt;vector&lt;int&gt;&gt; cost(n, vector&lt;int&gt;(n));
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        const int length = j - i + 1;
+        int minCost = length;
+        for (const int d : factors[length])
+          minCost = min(minCost, getCost(s, i, j, d));
+        cost[i][j] = minCost;
+      }
+    return cost;
+  }
+
+  // Returns the cost to make s[i..j] a semi-palindrome of `d`.
+  int getCost(const string&amp; s, int i, int j, int d) {
+    int cost = 0;
+    for (int offset = 0; offset &lt; d; ++offset) {
+      int l = i + offset;
+      int r = j - d + 1 + offset;
+      while (l &lt; r) {
+        if (s[l] != s[r])
+          ++cost;
+        l += d;
+        r -= d;
+      }
+    }
+    return cost;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumChanges(String s, int k) {
+    final int n = s.length();
+    // factors[i] := factors of i
+    List&lt;Integer&gt;[] factors = getFactors(n);
+    // cost[i][j] := changes to make s[i..j] a semi-palindrome
+    int[][] cost = getCost(s, n, factors);
+    // dp[i][j] := the minimum changes to split s[i:] into j valid parts
+    int[][] dp = new int[n + 1][k + 1];
+
+    Arrays.stream(dp).forEach(A -&gt; Arrays.fill(A, n));
+    dp[n][0] = 0;
+
+    for (int i = n - 1; i &gt;= 0; --i)
+      for (int j = 1; j &lt;= k; ++j)
+        for (int l = i + 1; l &lt; n; ++l)
+          dp[i][j] = Math.min(dp[i][j], dp[l + 1][j - 1] + cost[i][l]);
+
+    return dp[0][k];
+  }
+
+  private List&lt;Integer&gt;[] getFactors(int n) {
+    List&lt;Integer&gt;[] factors = new List[n + 1];
+    for (int i = 1; i &lt;= n; ++i)
+      factors[i] = new ArrayList&lt;&gt;(List.of(1));
+    for (int d = 2; d &lt; n; ++d)
+      for (int i = d * 2; i &lt;= n; i += d)
+        factors[i].add(d);
+    return factors;
+  }
+
+  private int[][] getCost(final String s, int n, List&lt;Integer&gt;[] factors) {
+    int[][] cost = new int[n][n];
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = i + 1; j &lt; n; ++j) {
+        final int length = j - i + 1;
+        int minCost = length;
+        for (final int d : factors[length])
+          minCost = Math.min(minCost, getCost(s, i, j, d));
+        cost[i][j] = minCost;
+      }
+    return cost;
+  }
+
+  // Returns the cost to make s[i..j] a semi-palindrome of `d`.
+  private int getCost(final String s, int i, int j, int d) {
+    int cost = 0;
+    for (int offset = 0; offset &lt; d; ++offset) {
+      int l = i + offset;
+      int r = j - d + 1 + offset;
+      while (l &lt; r) {
+        if (s.charAt(l) != s.charAt(r))
+          ++cost;
+        l += d;
+        r -= d;
+      }
+    }
+    return cost;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumChanges(self, s: str, k: int) -&gt; int:
+    n = len(s)
+    # factors[i] := factors of i
+    factors = self._getFactors(n)
+    # cost[i][j] := changes to make s[i..j] a semi-palindrome
+    cost = self._getCost(s, n, factors)
+    # dp[i][j] := the minimum changes to split s[i:] into j valid parts
+    dp = [[n] * (k + 1) for _ in range(n + 1)]
+
+    dp[n][0] = 0
+
+    for i in range(n - 1, -1, -1):
+      for j in range(1, k + 1):
+        for l in range(i + 1, n):
+          dp[i][j] = min(dp[i][j], dp[l + 1][j - 1] + cost[i][l])
+
+    return dp[0][k]
+
+  def _getFactors(self, n: int) -&gt; list[list[int]]:
+    factors = [[1] for _ in range(n + 1)]
+    for d in range(2, n):
+      for i in range(d * 2, n + 1, d):
+        factors[i].append(d)
+    return factors
+
+  def _getCost(self, s: str, n: int, factors: list[list[int]]) -&gt; list[list[int]]:
+    cost = [[0] * n for _ in range(n)]
+    for i, j in itertools.combinations(range(n), 2):
+      length = j - i + 1
+      minCost = length
+      for d in factors[length]:
+        minCost = min(minCost, self._getCostD(s, i, j, d))
+      cost[i][j] = minCost
+    return cost
+
+  def _getCostD(self, s: str, i: int, j: int, d: int) -&gt; int:
+    &quot;&quot;&quot;Returns the cost to make s[i..j] a semi-palindrome of `d`.&quot;&quot;&quot;
+    cost = 0
+    for offset in range(d):
+      l = i + offset
+      r = j - d + 1 + offset
+      while l &lt; r:
+        if s[l] != s[r]:
+          cost += 1
+        l += d
+        r -= d
+    return cost</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Path in a Weighted Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shortest Path in a Weighted Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shortest-path-in-a-weighted-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-unique-xor-triplets-ii/" class="btn">← Previous</a>
+            <span>Problem 3515 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-closest-person/" class="btn">Next →</a>
+        </div>
+        <h1>3515. Shortest Path in a Weighted Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shortest Path in a Weighted Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class LazySegmentTree {
+ public:
+  explicit LazySegmentTree(int n) : n(n), tree(4 * n), lazy(4 * n) {}
+
+  // Updates the range [l, r] by adding val.
+  void addRange(int l, int r, int val) {
+    addRange(0, 0, n - 1, l, r, val);
+  }
+
+  // Returns the value at index i.
+  int query(int i) {
+    return query(0, 0, n - 1, i);
+  }
+
+ private:
+  const int n;       // the size of the input array
+  vector&lt;int&gt; tree;  // the segment tree
+  vector&lt;int&gt; lazy;  // the lazy propagation array
+
+  void push(int treeIndex, int lo, int hi) {
+    if (lazy[treeIndex] == 0)
+      return;
+    tree[treeIndex] += lazy[treeIndex];
+    if (lo != hi) {
+      lazy[2 * treeIndex + 1] += lazy[treeIndex];
+      lazy[2 * treeIndex + 2] += lazy[treeIndex];
+    }
+    lazy[treeIndex] = 0;
+  }
+
+  void addRange(int treeIndex, int lo, int hi, int l, int r, int val) {
+    push(treeIndex, lo, hi);
+    if (r &lt; lo || l &gt; hi)  // [lo, hi] lies completely outside [l, r].
+      return;
+    if (l &lt;= lo &amp;&amp; hi &lt;= r) {  // [lo, hi] lies completely inside [l, r].
+      lazy[treeIndex] += val;
+      push(treeIndex, lo, hi);
+      return;
+    }
+    const int mid = (lo + hi) / 2;
+    addRange(2 * treeIndex + 1, lo, mid, l, r, val);
+    addRange(2 * treeIndex + 2, mid + 1, hi, l, r, val);
+  }
+
+  int query(int treeIndex, int lo, int hi, int i) {
+    push(treeIndex, lo, hi);
+    if (lo == hi)
+      return tree[treeIndex];
+    const int mid = (lo + hi) / 2;
+    if (i &lt;= mid)
+      return query(2 * treeIndex + 1, lo, mid, i);
+    return query(2 * treeIndex + 2, mid + 1, hi, i);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; treeQueries(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                          vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    LazySegmentTree tree(n);
+    vector&lt;int&gt; ans;
+    vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(n + 1);
+    map&lt;pair&lt;int, int&gt;, int&gt; edgeWeights;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      const int w = edge[2];
+      graph[u].emplace_back(v, w);
+      graph[v].emplace_back(u, w);
+      edgeWeights[{min(u, v), max(u, v)}] = w;
+    }
+
+    // DFS: Euler tour and parent/distance tracking
+    vector&lt;int&gt; inTime(n + 1);
+    vector&lt;int&gt; outTime(n + 1);
+    vector&lt;int&gt; dist(n + 1);
+    vector&lt;int&gt; parent(n + 1);
+    int time = 0;
+
+    dfs(graph, 1, /*prev=*/-1, time, inTime, outTime, dist, parent);
+
+    for (int i = 1; i &lt;= n; ++i)
+      tree.addRange(inTime[i], inTime[i], dist[i]);
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int type = query[0];
+      if (type == 1) {
+        const int u = query[1];
+        const int v = query[2];
+        const int newWeight = query[3];
+        const auto key = pair&lt;int, int&gt;{min(u, v), max(u, v)};
+        const int oldWeight = edgeWeights[key];
+        const int delta = newWeight - oldWeight;
+        edgeWeights[key] = newWeight;
+        // Find child node (the one that&#x27;s not the parent)
+        const int child = (parent[v] == u) ? v : u;
+        tree.addRange(inTime[child], outTime[child], delta);
+      } else {
+        const int x = query[1];
+        ans.push_back(tree.query(inTime[x]));
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  void dfs(const vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int u, int prev,
+           int&amp; time, vector&lt;int&gt;&amp; inTime, vector&lt;int&gt;&amp; outTime,
+           vector&lt;int&gt;&amp; dist, vector&lt;int&gt;&amp; parent) {
+    inTime[u] = time++;
+    for (const auto&amp; [v, w] : graph[u]) {
+      if (v == prev)
+        continue;
+      dist[v] = dist[u] + w;
+      parent[v] = u;
+      dfs(graph, v, u, time, inTime, outTime, dist, parent);
+    }
+    outTime[u] = time - 1;
+  }
+};</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

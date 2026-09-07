@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Average Height of Buildings in Each Segment - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Average Height of Buildings in Each Segment written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/average-height-of-buildings-in-each-segment/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-subsequence-repeated-k-times/" class="btn">← Previous</a>
+            <span>Problem 2015 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-difference-between-increasing-elements/" class="btn">Next →</a>
+        </div>
+        <h1>2015. Average Height of Buildings in Each Segment</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Average Height of Buildings in Each Segment efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; averageHeightOfBuildings(vector&lt;vector&lt;int&gt;&gt;&amp; buildings) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    vector&lt;pair&lt;int, int&gt;&gt; events;
+
+    for (const vector&lt;int&gt;&amp; b : buildings) {
+      const int start = b[0];
+      const int end = b[1];
+      const int height = b[2];
+      events.emplace_back(start, height);
+      events.emplace_back(end, -height);
+    }
+
+    ranges::sort(events);
+
+    int prev = 0;
+    int count = 0;
+    int sumHeight = 0;
+
+    for (const auto&amp; [curr, height] : events) {
+      if (sumHeight &gt; 0 &amp;&amp; curr &gt; prev) {
+        const int avgHeight = sumHeight / count;
+        if (!ans.empty() &amp;&amp; ans.back()[1] == prev &amp;&amp; avgHeight == ans.back()[2])
+          ans.back()[1] = curr;
+        else
+          ans.push_back({prev, curr, avgHeight});
+      }
+      sumHeight += height;
+      count += height &gt; 0 ? 1 : -1;
+      prev = curr;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] averageHeightOfBuildings(int[][] buildings) {
+    List&lt;int[]&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;Pair&lt;Integer, Integer&gt;&gt; events = new ArrayList&lt;&gt;();
+
+    for (int[] b : buildings) {
+      final int start = b[0];
+      final int end = b[1];
+      final int height = b[2];
+      events.add(new Pair&lt;&gt;(start, height));
+      events.add(new Pair&lt;&gt;(end, -height));
+    }
+
+    Collections.sort(events, Comparator.comparingInt(Pair::getKey));
+
+    int prev = 0;
+    int count = 0;
+    int sumHeight = 0;
+
+    for (Pair&lt;Integer, Integer&gt; event : events) {
+      final int curr = event.getKey();
+      final int height = event.getValue();
+      if (sumHeight &gt; 0 &amp;&amp; curr &gt; prev) {
+        final int avgHeight = sumHeight / count;
+        if (!ans.isEmpty() &amp;&amp; ans.get(ans.size() - 1)[1] == prev &amp;&amp;
+            avgHeight == ans.get(ans.size() - 1)[2])
+          ans.get(ans.size() - 1)[1] = curr;
+        else
+          ans.add(new int[] {prev, curr, avgHeight});
+      }
+      sumHeight += height;
+      count += height &gt; 0 ? 1 : -1;
+      prev = curr;
+    }
+
+    return ans.stream().toArray(int[][] ::new);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def averageHeightOfBuildings(self, buildings: list[list[int]]) -&gt; list[list[int]]:
+    ans = []
+    events = []
+
+    for start, end, height in buildings:
+      events.append((start, height))
+      events.append((end, -height))
+
+    prev = 0
+    count = 0
+    sumHeight = 0
+
+    for curr, height in sorted(events):
+      if sumHeight &gt; 0 and curr &gt; prev:
+        avgHeight = sumHeight // count
+        if ans and ans[-1][1] == prev and avgHeight == ans[-1][2]:
+          ans[-1][1] = curr
+        else:
+          ans.append([prev, curr, avgHeight])
+      sumHeight += height
+      count += 1 if height &gt; 0 else -1
+      prev = curr
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Matching Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shortest Matching Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shortest-matching-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/separate-squares-ii/" class="btn">← Previous</a>
+            <span>Problem 3455 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-special-substring-of-length-k/" class="btn">Next →</a>
+        </div>
+        <h1>3455. Shortest Matching Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shortest Matching Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int shortestMatchingSubstring(string s, string p) {
+    const auto [a, b, c] = split(p);
+    const int ns = s.length();
+    const int na = a.length();
+    const int nb = b.length();
+    const int nc = c.length();
+    const vector&lt;int&gt; lpsA = getLPS(a + &#x27;#&#x27; + s);
+    const vector&lt;int&gt; lpsB = getLPS(b + &#x27;#&#x27; + s);
+    const vector&lt;int&gt; lpsC = getLPS(c + &#x27;#&#x27; + s);
+    int ans = INT_MAX;
+
+    for (int i = 0, j = 0, k = 0; i + nb + nc &lt; ns; ++i) {
+      while (i &lt; ns &amp;&amp; lpsA[na + 1 + i] != na)
+        ++i;
+      while (j &lt; ns &amp;&amp; (j &lt; i + nb || lpsB[nb + 1 + j] != nb))
+        ++j;
+      while (k &lt; ns &amp;&amp; (k &lt; j + nc || lpsC[nc + 1 + k] != nc))
+        ++k;
+      if (k == ns)
+        break;
+      ans = min(ans, k - i + na);
+    }
+
+    return ans == INT_MAX ? -1 : ans;
+  }
+
+ private:
+  // Returns the lps array, where lps[i] is the length of the longest prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  vector&lt;int&gt; getLPS(const string&amp; pattern) {
+    vector&lt;int&gt; lps(pattern.length());
+    for (int i = 1, j = 0; i &lt; pattern.length(); ++i) {
+      while (j &gt; 0 &amp;&amp; pattern[j] != pattern[i])
+        j = lps[j - 1];
+      if (pattern[i] == pattern[j])
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+
+  tuple&lt;string, string, string&gt; split(const string&amp; p) {
+    const int i = p.find(&#x27;*&#x27;);
+    const int j = p.find(&#x27;*&#x27;, i + 1);
+    return {p.substr(0, i), p.substr(i + 1, j - i - 1), p.substr(j + 1)};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int shortestMatchingSubstring(String s, String p) {
+    final String[] parts = split(p);
+    final String a = parts[0];
+    final String b = parts[1];
+    final String c = parts[2];
+    final int ns = s.length();
+    final int na = a.length();
+    final int nb = b.length();
+    final int nc = c.length();
+    int[] lpsA = getLPS(a + &quot;#&quot; + s);
+    int[] lpsB = getLPS(b + &quot;#&quot; + s);
+    int[] lpsC = getLPS(c + &quot;#&quot; + s);
+    int ans = Integer.MAX_VALUE;
+
+    for (int i = 0, j = 0, k = 0; i + nb + nc &lt; ns; ++i) {
+      while (i &lt; ns &amp;&amp; lpsA[na + 1 + i] != na)
+        ++i;
+      while (j &lt; ns &amp;&amp; (j &lt; i + nb || lpsB[nb + 1 + j] != nb))
+        ++j;
+      while (k &lt; ns &amp;&amp; (k &lt; j + nc || lpsC[nc + 1 + k] != nc))
+        ++k;
+      if (k == ns)
+        break;
+      ans = Math.min(ans, k - i + na);
+    }
+
+    return ans == Integer.MAX_VALUE ? -1 : ans;
+  }
+
+  // Returns the lps array, where lps[i] is the length of the longest prefix of
+  // pattern[0..i] which is also a suffix of this substring.
+  private int[] getLPS(String pattern) {
+    int[] lps = new int[pattern.length()];
+    for (int i = 1, j = 0; i &lt; pattern.length(); ++i) {
+      while (j &gt; 0 &amp;&amp; pattern.charAt(j) != pattern.charAt(i))
+        j = lps[j - 1];
+      if (pattern.charAt(i) == pattern.charAt(j))
+        lps[i] = ++j;
+    }
+    return lps;
+  }
+
+  private String[] split(final String p) {
+    final int i = p.indexOf(&#x27;*&#x27;);
+    final int j = p.indexOf(&#x27;*&#x27;, i + 1);
+    return new String[] {p.substring(0, i), p.substring(i + 1, j), p.substring(j + 1)};
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def shortestMatchingSubstring(self, s: str, p: str) -&gt; int:
+    n = len(s)
+    a, b, c = p.split(&#x27;*&#x27;)
+    lpsA = self._getLPS(a + &#x27;#&#x27; + s)[len(a) + 1:]
+    lpsB = self._getLPS(b + &#x27;#&#x27; + s)[len(b) + 1:]
+    lpsC = self._getLPS(c + &#x27;#&#x27; + s)[len(c) + 1:]
+    ans = math.inf
+
+    i = 0  # lpsA&#x27;s index
+    j = 0  # lpsB&#x27;s index
+    k = 0  # lpsC&#x27;s index
+    while i + len(b) + len(c) &lt; n:
+      while i &lt; n and lpsA[i] != len(a):
+        i += 1
+      while j &lt; n and (j &lt; i + len(b) or lpsB[j] != len(b)):
+        j += 1
+      while k &lt; n and (k &lt; j + len(c) or lpsC[k] != len(c)):
+        k += 1
+      if k == n:
+        break
+      ans = min(ans, k - i + len(a))
+      i += 1
+
+    return -1 if ans == math.inf else ans
+
+  def _getLPS(self, pattern: str) -&gt; list[int]:
+    &quot;&quot;&quot;
+    Returns the lps array, where lps[i] is the length of the longest prefix of
+    pattern[0..i] which is also a suffix of this substring.
+    &quot;&quot;&quot;
+    lps = [0] * len(pattern)
+    j = 0
+    for i in range(1, len(pattern)):
+      while j &gt; 0 and pattern[j] != pattern[i]:
+        j = lps[j - 1]
+      if pattern[i] == pattern[j]:
+        lps[i] = j + 1
+        j += 1
+    return lps</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

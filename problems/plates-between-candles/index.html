@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plates Between Candles - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Plates Between Candles written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/plates-between-candles/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/two-best-non-overlapping-events/" class="btn">← Previous</a>
+            <span>Problem 2055 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-valid-move-combinations-on-chessboard/" class="btn">Next →</a>
+        </div>
+        <h1>2055. Plates Between Candles</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Plates Between Candles efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; platesBetweenCandles(string s, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const int n = s.length();
+    vector&lt;int&gt; ans;
+    vector&lt;int&gt; closestLeftCandle(n);
+    vector&lt;int&gt; closestRightCandle(n);
+    vector&lt;int&gt; candleCount(
+        n);  // candleCount[i] := the number of candles in s[0..i]
+    int candle = -1;
+    int count = 0;
+
+    for (int i = 0; i &lt; n; ++i) {
+      if (s[i] == &#x27;|&#x27;) {
+        candle = i;
+        ++count;
+      }
+      closestLeftCandle[i] = candle;
+      candleCount[i] = count;
+    }
+
+    candle = -1;
+    for (int i = n - 1; i &gt;= 0; --i) {
+      if (s[i] == &#x27;|&#x27;)
+        candle = i;
+      closestRightCandle[i] = candle;
+    }
+
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int left = query[0];
+      const int right = query[1];
+      const int l = closestRightCandle[left];
+      const int r = closestLeftCandle[right];
+      if (l == -1 || r == -1 || l &gt; r) {
+        ans.push_back(0);
+      } else {
+        const int lengthBetweenCandles = r - l + 1;
+        const int numCandles = candleCount[r] - candleCount[l] + 1;
+        ans.push_back(lengthBetweenCandles - numCandles);
+      }
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] platesBetweenCandles(String s, int[][] queries) {
+    final int n = s.length();
+    int[] ans = new int[queries.length];
+    int[] closestLeftCandle = new int[n];
+    int[] closestRightCandle = new int[n];
+    int[] candleCount = new int[n]; // candleCount[i] := the number of candles in s[0..i]
+    int candle = -1;
+    int count = 0;
+
+    for (int i = 0; i &lt; n; ++i) {
+      if (s.charAt(i) == &#x27;|&#x27;) {
+        candle = i;
+        ++count;
+      }
+      closestLeftCandle[i] = candle;
+      candleCount[i] = count;
+    }
+
+    candle = -1;
+    for (int i = n - 1; i &gt;= 0; --i) {
+      if (s.charAt(i) == &#x27;|&#x27;)
+        candle = i;
+      closestRightCandle[i] = candle;
+    }
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int left = queries[i][0];
+      final int right = queries[i][1];
+      final int l = closestRightCandle[left];
+      final int r = closestLeftCandle[right];
+      if (i == -1 || r == -1 || l &gt; r)
+        continue;
+      final int lengthBetweenCandles = r - l + 1;
+      final int numCandles = candleCount[r] - candleCount[l] + 1;
+      ans[i] = lengthBetweenCandles - numCandles;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def platesBetweenCandles(self, s: str, queries: list[list[int]]) -&gt; list[int]:
+    n = len(s)
+    ans = []
+    closestLeftCandle = [0] * n
+    closestRightCandle = [0] * n
+    candleCount = [0] * n  # candleCount[i] := the number of candles in s[0..i]
+    candle = -1
+    count = 0
+
+    for i, c in enumerate(s):
+      if c == &#x27;|&#x27;:
+        candle = i
+        count += 1
+      closestLeftCandle[i] = candle
+      candleCount[i] = count
+
+    candle = -1
+    for i, c in reversed(list(enumerate(s))):
+      if c == &#x27;|&#x27;:
+        candle = i
+      closestRightCandle[i] = candle
+
+    for left, right in queries:
+      l = closestRightCandle[left]
+      r = closestLeftCandle[right]
+      if l == -1 or r == -1 or l &gt; r:
+        ans.append(0)
+      else:
+        lengthBetweenCandles = r - l + 1
+        numCandles = candleCount[r] - candleCount[l] + 1
+        ans.append(lengthBetweenCandles - numCandles)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recover Binary Search Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Recover Binary Search Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/recover-binary-search-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/validate-binary-search-tree/" class="btn">← Previous</a>
+            <span>Problem 99 of 3563</span>
+            <a href="/leetcode-solutions/problems/same-tree/" class="btn">Next →</a>
+        </div>
+        <h1>99. Recover Binary Search Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Recover Binary Search Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  void recoverTree(TreeNode* root) {
+    TreeNode* pred = nullptr;
+    TreeNode* x = nullptr;  // the first wrong node
+    TreeNode* y = nullptr;  // the second wrong node
+
+    while (root != nullptr) {
+      if (root-&gt;left != nullptr) {
+        TreeNode* morrisPred = findPredecessor(root);
+        if (morrisPred-&gt;right) {
+          // The node has already been connected before.
+          visit(root, pred, x, y);
+          morrisPred-&gt;right = nullptr;  // Break the connection.
+          root = root-&gt;right;
+        } else {
+          morrisPred-&gt;right = root;  // Connect it.
+          root = root-&gt;left;
+        }
+      } else {
+        visit(root, pred, x, y);
+        root = root-&gt;right;
+      }
+    }
+
+    swap(x, y);
+  }
+
+ private:
+  TreeNode* findPredecessor(TreeNode* root) {
+    TreeNode* pred = root-&gt;left;
+    while (pred-&gt;right &amp;&amp; pred-&gt;right != root)
+      pred = pred-&gt;right;
+    return pred;
+  }
+
+  void visit(TreeNode*&amp; root, TreeNode*&amp; pred, TreeNode*&amp; x, TreeNode*&amp; y) {
+    if (pred &amp;&amp; root-&gt;val &lt; pred-&gt;val) {
+      y = root;
+      if (x == nullptr)
+        x = pred;
+    }
+    pred = root;
+  }
+
+  void swap(TreeNode* x, TreeNode* y) {
+    const int temp = x-&gt;val;
+    x-&gt;val = y-&gt;val;
+    y-&gt;val = temp;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public void recoverTree(TreeNode root) {
+    TreeNode pred = null;
+    TreeNode x = null; // the first wrong node
+    TreeNode y = null; // the second wrong node
+
+    while (root != null) {
+      if (root.left == null) {
+        // Start the main logic.
+        if (pred != null &amp;&amp; root.val &lt; pred.val) {
+          y = root;
+          if (x == null)
+            x = pred;
+        }
+        pred = root;
+        // End of the main logic.
+        root = root.right;
+      } else {
+        TreeNode morrisPred = findPredecessor(root);
+        if (morrisPred.right == null) {
+          morrisPred.right = root; // Connect it.
+          root = root.left;
+        } else {
+          // The node has already been connected before.
+          // Start the main logic.
+          if (pred != null &amp;&amp; root.val &lt; pred.val) {
+            y = root;
+            if (x == null)
+              x = pred;
+          }
+          pred = root;
+          // End of the main logic.
+          morrisPred.right = null; // Break the connection.
+          root = root.right;
+        }
+      }
+    }
+
+    swap(x, y);
+  }
+
+  private TreeNode findPredecessor(TreeNode root) {
+    TreeNode pred = root.left;
+    while (pred.right != null &amp;&amp; pred.right != root)
+      pred = pred.right;
+    return pred;
+  }
+
+  private void swap(TreeNode x, TreeNode y) {
+    final int temp = x.val;
+    x.val = y.val;
+    y.val = temp;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def recoverTree(self, root: TreeNode | None) -&gt; None:
+    pred = None
+    x = None  # the first wrong node
+    y = None  # the second wrong node
+
+    def findPredecessor(root: TreeNode | None) -&gt; TreeNode | None:
+      pred = root.left
+      while pred.right and pred.right != root:
+        pred = pred.right
+      return pred
+
+    while root:
+      if root.left:
+        morrisPred = findPredecessor(root)
+        if morrisPred.right:
+          # The node has already been connected before.
+          # Start the main logic.
+          if pred and root.val &lt; pred.val:
+            y = root
+            if not x:
+              x = pred
+          pred = root
+          # End of the main logic
+          morrisPred.right = None  # Break the connection.
+          root = root.right
+        else:
+          morrisPred.right = root  # Connect it.
+          root = root.left
+      else:
+        # Start the main logic.
+        if pred and root.val &lt; pred.val:
+          y = root
+          if not x:
+            x = pred
+        pred = root
+        # End of the main logic.
+        root = root.right
+
+    def swap(x: TreeNode | None, y: TreeNode | None) -&gt; None:
+      temp = x.val
+      x.val = y.val
+      y.val = temp
+
+    swap(x, y)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

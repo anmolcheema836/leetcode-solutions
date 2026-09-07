@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Orders in the Backlog - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Number of Orders in the Backlog written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/number-of-orders-in-the-backlog/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-ascending-subarray-sum/" class="btn">← Previous</a>
+            <span>Problem 1801 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-value-at-a-given-index-in-a-bounded-array/" class="btn">Next →</a>
+        </div>
+        <h1>1801. Number of Orders in the Backlog</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Number of Orders in the Backlog efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int getNumberOfBacklogOrders(vector&lt;vector&lt;int&gt;&gt;&amp; orders) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    int ans = 0;
+    priority_queue&lt;vector&lt;int&gt;&gt; buysMaxHeap;
+    priority_queue&lt;vector&lt;int&gt;, vector&lt;vector&lt;int&gt;&gt;, greater&lt;&gt;&gt; sellsMinHeap;
+
+    for (const vector&lt;int&gt;&amp; order : orders) {
+      if (order[2] == 0)
+        buysMaxHeap.push(order);
+      else
+        sellsMinHeap.push(order);
+      while (!buysMaxHeap.empty() &amp;&amp; !sellsMinHeap.empty() &amp;&amp;
+             buysMaxHeap.top()[0] &gt;= sellsMinHeap.top()[0]) {
+        const int minAmount = min(buysMaxHeap.top()[1], sellsMinHeap.top()[1]);
+        vector&lt;int&gt; buysMaxHeapTop = buysMaxHeap.top();
+        buysMaxHeap.pop();
+        buysMaxHeapTop[1] -= minAmount;
+        if (buysMaxHeapTop[1] &gt; 0)
+          buysMaxHeap.push(buysMaxHeapTop);
+
+        vector&lt;int&gt; sellsMinHeapTop = sellsMinHeap.top();
+        sellsMinHeap.pop();
+        sellsMinHeapTop[1] -= minAmount;
+        if (sellsMinHeapTop[1] &gt; 0)
+          sellsMinHeap.push(sellsMinHeapTop);
+      }
+    }
+
+    while (!buysMaxHeap.empty()) {
+      ans += buysMaxHeap.top()[1], buysMaxHeap.pop();
+      ans %= kMod;
+    }
+
+    while (!sellsMinHeap.empty()) {
+      ans += sellsMinHeap.top()[1], sellsMinHeap.pop();
+      ans %= kMod;
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int getNumberOfBacklogOrders(int[][] orders) {
+    final int MOD = 1_000_000_007;
+    int ans = 0;
+    Queue&lt;int[]&gt; buysMaxHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; - a[0]));
+    Queue&lt;int[]&gt; sellsMinHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; a[0]));
+
+    for (int[] order : orders) {
+      if (order[2] == 0)
+        buysMaxHeap.offer(order);
+      else
+        sellsMinHeap.offer(order);
+      while (!buysMaxHeap.isEmpty() &amp;&amp; !sellsMinHeap.isEmpty() &amp;&amp;
+             buysMaxHeap.peek()[0] &gt;= sellsMinHeap.peek()[0]) {
+        final int minAmount = Math.min(buysMaxHeap.peek()[1], sellsMinHeap.peek()[1]);
+        buysMaxHeap.peek()[1] -= minAmount;
+        sellsMinHeap.peek()[1] -= minAmount;
+        if (buysMaxHeap.peek()[1] == 0)
+          buysMaxHeap.poll();
+        if (sellsMinHeap.peek()[1] == 0)
+          sellsMinHeap.poll();
+      }
+    }
+
+    while (!buysMaxHeap.isEmpty()) {
+      ans += buysMaxHeap.poll()[1];
+      ans %= MOD;
+    }
+
+    while (!sellsMinHeap.isEmpty()) {
+      ans += sellsMinHeap.poll()[1];
+      ans %= MOD;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

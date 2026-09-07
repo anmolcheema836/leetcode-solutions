@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallest Missing Genetic Value in Each Subtree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Smallest Missing Genetic Value in Each Subtree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/smallest-missing-genetic-value-in-each-subtree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-product-of-the-length-of-two-palindromic-subsequences/" class="btn">← Previous</a>
+            <span>Problem 2003 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-number-of-seniors-and-juniors-to-join-the-company/" class="btn">Next →</a>
+        </div>
+        <h1>2003. Smallest Missing Genetic Value in Each Subtree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Smallest Missing Genetic Value in Each Subtree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; smallestMissingValueSubtree(vector&lt;int&gt;&amp; parents,
+                                          vector&lt;int&gt;&amp; nums) {
+    const int n = parents.size();
+    vector&lt;int&gt; ans(n, 1);
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+    unordered_set&lt;int&gt; seen;
+    int minMiss = 1;
+
+    for (int i = 1; i &lt; n; ++i)
+      tree[parents[i]].push_back(i);
+
+    int nodeThatsOne = getNode(nums);
+    if (nodeThatsOne == -1)
+      return ans;
+
+    int u = nodeThatsOne;
+    int prev = -1;  // the u that just handled
+
+    // Upward from `nodeThatsOne` to the root `u`.
+    while (u != -1) {
+      for (const int v : tree[u])
+        if (v != prev)
+          dfs(v, tree, seen, nums);
+      seen.insert(nums[u]);
+      while (seen.contains(minMiss))
+        ++minMiss;
+      ans[u] = minMiss;
+      prev = u;
+      u = parents[u];
+    }
+
+    return ans;
+  }
+
+ private:
+  int getNode(const vector&lt;int&gt;&amp; nums) {
+    for (int i = 0; i &lt; nums.size(); ++i)
+      if (nums[i] == 1)
+        return i;
+    return -1;
+  }
+
+  void dfs(int u, const vector&lt;vector&lt;int&gt;&gt;&amp; tree, unordered_set&lt;int&gt;&amp; seen,
+           const vector&lt;int&gt;&amp; nums) {
+    seen.insert(nums[u]);
+    for (const int v : tree[u])
+      dfs(v, tree, seen, nums);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] smallestMissingValueSubtree(int[] parents, int[] nums) {
+    final int n = parents.length;
+    int[] ans = new int[n];
+    Arrays.fill(ans, 1);
+    List&lt;Integer&gt;[] tree = new List[n];
+    Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+    int minMiss = 1;
+
+    for (int i = 0; i &lt; n; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int i = 1; i &lt; n; ++i)
+      tree[parents[i]].add(i);
+
+    final int nodeThatsOne = getNode(nums);
+    if (nodeThatsOne == -1)
+      return ans;
+
+    int u = nodeThatsOne;
+    int prev = -1; // the u that just handled
+
+    // Upward from `nodeThatsOne` to the root `u`.
+    while (u != -1) {
+      for (final int v : tree[u])
+        if (v != prev)
+          dfs(v, tree, seen, nums);
+      seen.add(nums[u]);
+      while (seen.contains(minMiss))
+        ++minMiss;
+      ans[u] = minMiss;
+      prev = u;
+      u = parents[u];
+    }
+
+    return ans;
+  }
+
+  private void dfs(int u, List&lt;Integer&gt;[] tree, Set&lt;Integer&gt; seen, int[] nums) {
+    seen.add(nums[u]);
+    for (final int v : tree[u])
+      dfs(v, tree, seen, nums);
+  }
+
+  private int getNode(int[] nums) {
+    for (int i = 0; i &lt; nums.length; ++i)
+      if (nums[i] == 1)
+        return i;
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def smallestMissingValueSubtree(
+      self,
+      parents: list[int],
+      nums: list[int],
+  ) -&gt; list[int]:
+    n = len(parents)
+    ans = [1] * n
+    tree = [[] for _ in range(n)]
+    seen = set()
+    minMiss = 1
+
+    for i in range(1, n):
+      tree[parents[i]].append(i)
+
+    def getNode(nums: list[int]) -&gt; int:
+      for i, num in enumerate(nums):
+        if num == 1:
+          return i
+      return -1
+
+    nodeThatsOne = getNode(nums)
+    if nodeThatsOne == -1:
+      return ans
+
+    u = nodeThatsOne
+    prev = -1  # the u that just handled
+
+    def dfs(u: int) -&gt; None:
+      seen.add(nums[u])
+      for v in tree[u]:
+        dfs(v)
+
+    # Upward from `nodeThatsOne` to the root `u`.
+    while u != -1:
+      for v in tree[u]:
+        if v != prev:
+          dfs(v)
+      seen.add(nums[u])
+      while minMiss in seen:
+        minMiss += 1
+      ans[u] = minMiss
+      prev = u
+      u = parents[u]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

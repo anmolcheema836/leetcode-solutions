@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serialize and Deserialize BST - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Serialize and Deserialize BST written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/serialize-and-deserialize-bst/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-all-numbers-disappeared-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 449 of 3563</span>
+            <a href="/leetcode-solutions/problems/delete-node-in-a-bst/" class="btn">Next →</a>
+        </div>
+        <h1>449. Serialize and Deserialize BST</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Serialize and Deserialize BST efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Codec {
+ public:
+  // Encodes a tree to a single string.
+  string serialize(TreeNode* root) {
+    if (root == nullptr)
+      return &quot;&quot;;
+    string s;
+    serialize(root, s);
+    return s;
+  }
+
+  // Decodes your encoded data to tree.
+  TreeNode* deserialize(string data) {
+    if (data.empty())
+      return nullptr;
+
+    istringstream iss(data);
+    queue&lt;int&gt; q;
+
+    for (string s; iss &gt;&gt; s;)
+      q.push(stoi(s));
+
+    return deserialize(INT_MIN, INT_MAX, q);
+  }
+
+ private:
+  void serialize(TreeNode* root, string&amp; s) {
+    if (root == nullptr)
+      return;
+    s += to_string(root-&gt;val) + &quot; &quot;;
+    serialize(root-&gt;left, s);
+    serialize(root-&gt;right, s);
+  }
+
+  TreeNode* deserialize(int mn, int mx, queue&lt;int&gt;&amp; q) {
+    if (q.empty())
+      return nullptr;
+
+    const int val = q.front();
+    if (val &lt; mn || val &gt; mx)
+      return nullptr;
+
+    q.pop();
+    TreeNode* root = new TreeNode(val);
+    root-&gt;left = deserialize(mn, val, q);
+    root-&gt;right = deserialize(val, mx, q);
+    return root;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">public class Codec {
+  // Encodes a tree to a single string.
+  public String serialize(TreeNode root) {
+    if (root == null)
+      return &quot;&quot;;
+    StringBuilder sb = new StringBuilder();
+    serialize(root, sb);
+    return sb.toString();
+  }
+
+  // Decodes your encoded data to tree.
+  public TreeNode deserialize(String data) {
+    if (data.isEmpty())
+      return null;
+
+    final String[] vals = data.split(&quot; &quot;);
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();
+
+    for (final String val : vals)
+      q.offer(Integer.parseInt(val));
+
+    return deserialize(Integer.MIN_VALUE, Integer.MAX_VALUE, q);
+  }
+
+  private void serialize(TreeNode root, StringBuilder sb) {
+    if (root == null)
+      return;
+    sb.append(root.val).append(&quot; &quot;);
+    serialize(root.left, sb);
+    serialize(root.right, sb);
+  }
+
+  private TreeNode deserialize(int mn, int mx, Queue&lt;Integer&gt; q) {
+    if (q.isEmpty())
+      return null;
+
+    final int val = q.peek();
+    if (val &lt; mn || val &gt; mx)
+      return null;
+
+    q.poll();
+    TreeNode root = new TreeNode(val);
+    root.left = deserialize(mn, val, q);
+    root.right = deserialize(val, mx, q);
+    return root;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Codec:
+  def serialize(self, root: TreeNode | None) -&gt; str:
+    &quot;&quot;&quot;Encodes a tree to a single string.&quot;&quot;&quot;
+    if not root:
+      return &#x27;&#x27;
+    chars = []
+    self._serialize(root, chars)
+    return &#x27;&#x27;.join(chars)
+
+  def deserialize(self, data: str) -&gt; TreeNode | None:
+    &quot;&quot;&quot;Decodes your encoded data to tree.&quot;&quot;&quot;
+    if not data:
+      return None
+    q = collections.deque(int(val) for val in data.split())
+    return self._deserialize(-math.inf, math.inf, q)
+
+  def _serialize(self, root: TreeNode | None, chars: list[str]) -&gt; None:
+    if not root:
+      return
+    chars.append(str(root.val))
+    chars.append(&#x27; &#x27;)
+    self._serialize(root.left, chars)
+    self._serialize(root.right, chars)
+
+  def _deserialize(
+      self,
+      mn: int,
+      mx: int,
+      q: collections.deque[int]
+  ) -&gt; TreeNode | None:
+    if not q:
+      return None
+
+    val = q[0]
+    if val &lt; mn or val &gt; mx:
+      return None
+
+    q.popleft()
+    return TreeNode(val,
+                    self._deserialize(mn, val, q),
+                    self._deserialize(val, mx, q))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

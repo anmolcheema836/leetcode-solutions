@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russian Doll Envelopes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Russian Doll Envelopes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/russian-doll-envelopes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/design-snake-game/" class="btn">← Previous</a>
+            <span>Problem 354 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-twitter/" class="btn">Next →</a>
+        </div>
+        <h1>354. Russian Doll Envelopes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Russian Doll Envelopes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxEnvelopes(vector&lt;vector&lt;int&gt;&gt;&amp; envelopes) {
+    ranges::sort(envelopes, ranges::less{}, [](const vector&lt;int&gt;&amp; envelope) {
+      const int w = envelope[0];
+      const int h = envelope[1];
+      return pair&lt;int, int&gt;{w, -h};
+    });
+    return lengthOfLIS(envelopes);
+  }
+
+ private:
+  // Same to 300. Longest Increasing Subsequence
+  int lengthOfLIS(vector&lt;vector&lt;int&gt;&gt;&amp; envelopes) {
+    // tails[i] := the minimum tail of all the increasing subsequences having
+    // length i + 1
+    vector&lt;int&gt; tails;
+
+    for (const vector&lt;int&gt;&amp; envelope : envelopes) {
+      const int h = envelope[1];
+      if (tails.empty() || h &gt; tails.back())
+        tails.push_back(h);
+      else
+        tails[firstGreaterEqual(tails, h)] = h;
+    }
+
+    return tails.size();
+  }
+
+ private:
+  int firstGreaterEqual(const vector&lt;int&gt;&amp; arr, int target) {
+    return ranges::lower_bound(arr, target) - arr.begin();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxEnvelopes(int[][] envelopes) {
+    Arrays.sort(envelopes, Comparator.comparingInt((int[] envelope) -&gt; envelope[0])
+                               .thenComparingInt((int[] envelope) -&gt; - envelope[1]));
+    return lengthOfLIS(envelopes);
+  }
+
+  // Similar to 300. Longest Increasing Subsequence
+  private int lengthOfLIS(int[][] envelopes) {
+    // tails[i] := the minimum tail of all the increasing subsequences having
+    // length i + 1
+    List&lt;Integer&gt; tails = new ArrayList&lt;&gt;();
+
+    for (final int[] envelope : envelopes) {
+      final int h = envelope[1];
+      if (tails.isEmpty() || h &gt; tails.get(tails.size() - 1))
+        tails.add(h);
+      else
+        tails.set(firstGreaterEqual(tails, h), h);
+    }
+
+    return tails.size();
+  }
+
+  private int firstGreaterEqual(List&lt;Integer&gt; arr, int target) {
+    final int i = Collections.binarySearch(arr, target);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxEnvelopes(self, envelopes: list[list[int]]) -&gt; int:
+    envelopes.sort(key=lambda x: (x[0], -x[1]))
+    return self._lengthOfLIS(envelopes)
+
+  def _lengthOfLIS(self, envelopes: list[list[int]]) -&gt; int:
+    # tails[i] := the minimum tails of all the increasing subsequences having
+    # length i + 1
+    tails = []
+
+    for _, h in envelopes:
+      if not tails or h &gt; tails[-1]:
+        tails.append(h)
+      else:
+        tails[bisect.bisect_left(tails, h)] = h
+
+    return len(tails)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

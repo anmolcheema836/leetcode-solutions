@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconstruct Itinerary - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Reconstruct Itinerary written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/reconstruct-itinerary/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/verify-preorder-serialization-of-a-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 332 of 3563</span>
+            <a href="/leetcode-solutions/problems/largest-bst-subtree/" class="btn">Next →</a>
+        </div>
+        <h1>332. Reconstruct Itinerary</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Reconstruct Itinerary efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; findItinerary(vector&lt;vector&lt;string&gt;&gt;&amp; tickets) {
+    vector&lt;string&gt; ans;
+    unordered_map&lt;string, multiset&lt;string&gt;&gt; graph;
+
+    for (const vector&lt;string&gt;&amp; ticket : tickets)
+      graph[ticket[0]].insert(ticket[1]);
+
+    dfs(graph, &quot;JFK&quot;, ans);
+    ranges::reverse(ans);
+    return ans;
+  }
+
+ private:
+  void dfs(unordered_map&lt;string, multiset&lt;string&gt;&gt;&amp; graph, const string&amp; u,
+           vector&lt;string&gt;&amp; ans) {
+    while (graph.contains(u) &amp;&amp; !graph[u].empty()) {
+      const string v = *graph[u].begin();
+      graph[u].erase(graph[u].begin());
+      dfs(graph, v, ans);
+    }
+    ans.push_back(u);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; findItinerary(List&lt;List&lt;String&gt;&gt; tickets) {
+    LinkedList&lt;String&gt; ans = new LinkedList&lt;&gt;();
+    Map&lt;String, Queue&lt;String&gt;&gt; graph = new HashMap&lt;&gt;();
+
+    for (final List&lt;String&gt; ticket : tickets) {
+      graph.putIfAbsent(ticket.get(0), new PriorityQueue&lt;&gt;());
+      graph.get(ticket.get(0)).offer(ticket.get(1));
+    }
+
+    dfs(graph, &quot;JFK&quot;, ans);
+    return ans;
+  }
+
+  private void dfs(Map&lt;String, Queue&lt;String&gt;&gt; graph, final String u, LinkedList&lt;String&gt; ans) {
+    final Queue&lt;String&gt; arrivals = graph.get(u);
+    while (arrivals != null &amp;&amp; !arrivals.isEmpty())
+      dfs(graph, arrivals.poll(), ans);
+    ans.addFirst(u);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findItinerary(self, tickets: list[list[str]]) -&gt; list[str]:
+    ans = []
+    graph = collections.defaultdict(list)
+
+    for a, b in reversed(sorted(tickets)):
+      graph[a].append(b)
+
+    def dfs(u: str) -&gt; None:
+      while u in graph and graph[u]:
+        dfs(graph[u].pop())
+      ans.append(u)
+
+    dfs(&#x27;JFK&#x27;)
+    return ans[::-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

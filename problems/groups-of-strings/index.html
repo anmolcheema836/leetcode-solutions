@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groups of Strings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Groups of Strings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/groups-of-strings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-substring-with-given-hash-value/" class="btn">← Previous</a>
+            <span>Problem 2157 of 3563</span>
+            <a href="/leetcode-solutions/problems/amount-of-new-area-painted-each-day/" class="btn">Next →</a>
+        </div>
+        <h1>2157. Groups of Strings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Groups of Strings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : count(n), id(n), sz(n, 1) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionBySize(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (sz[i] &lt; sz[j]) {
+      sz[j] += sz[i];
+      id[i] = j;
+    } else {
+      sz[i] += sz[j];
+      id[j] = i;
+    }
+    --count;
+  }
+
+  int getCount() const {
+    return count;
+  }
+
+  int getMaxSize() const {
+    return ranges::max(sz);
+  }
+
+ private:
+  int count;
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; sz;
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; groupStrings(vector&lt;string&gt;&amp; words) {
+    UnionFind uf(words.size());
+    unordered_map&lt;int, int&gt; maskToIndex;
+    unordered_map&lt;int, int&gt; deletedMaskToIndex;
+
+    for (int i = 0; i &lt; words.size(); ++i) {
+      const int mask = getMask(words[i]);
+      for (int j = 0; j &lt; 26; ++j)
+        if (mask &gt;&gt; j &amp; 1) {
+          // Going to delete this bit.
+          const int m = mask ^ 1 &lt;&lt; j;
+          if (const auto it = maskToIndex.find(m); it != maskToIndex.cend())
+            uf.unionBySize(i, it-&gt;second);
+          if (const auto it = deletedMaskToIndex.find(m);
+              it != deletedMaskToIndex.cend())
+            uf.unionBySize(i, it-&gt;second);
+          else
+            deletedMaskToIndex[m] = i;
+        } else {
+          // Going to add this bit.
+          const int m = mask | 1 &lt;&lt; j;
+          if (const auto it = maskToIndex.find(m); it != maskToIndex.cend())
+            uf.unionBySize(i, it-&gt;second);
+        }
+      maskToIndex[mask] = i;
+    }
+
+    return {uf.getCount(), uf.getMaxSize()};
+  }
+
+ private:
+  int getMask(const string&amp; s) {
+    int mask = 0;
+    for (const char c : s)
+      mask |= 1 &lt;&lt; c - &#x27;a&#x27;;
+    return mask;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    count = n;
+    id = new int[n];
+    sz = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+    for (int i = 0; i &lt; n; ++i)
+      sz[i] = 1;
+  }
+
+  public void unionBySize(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (sz[i] &lt; sz[j]) {
+      sz[j] += sz[i];
+      id[i] = j;
+    } else {
+      sz[i] += sz[j];
+      id[j] = i;
+    }
+    --count;
+  }
+
+  public int getCount() {
+    return count;
+  }
+
+  public int getMaxSize() {
+    return Arrays.stream(sz).max().getAsInt();
+  }
+
+  private int count;
+  private int[] id;
+  private int[] sz;
+
+  private int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+}
+
+class Solution {
+  public int[] groupStrings(String[] words) {
+    UnionFind uf = new UnionFind(words.length);
+    Map&lt;Integer, Integer&gt; maskToIndex = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; deletedMaskToIndex = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; words.length; ++i) {
+      final int mask = getMask(words[i]);
+      for (int j = 0; j &lt; 26; ++j)
+        if ((mask &gt;&gt; j &amp; 1) == 1) {
+          // Going to delete this bit.
+          final int m = mask ^ 1 &lt;&lt; j;
+          if (maskToIndex.containsKey(m))
+            uf.unionBySize(i, maskToIndex.get(m));
+          if (deletedMaskToIndex.containsKey(m))
+            uf.unionBySize(i, deletedMaskToIndex.get(m));
+          else
+            deletedMaskToIndex.put(m, i);
+        } else {
+          // Going to add this bit.
+          final int m = mask | 1 &lt;&lt; j;
+          if (maskToIndex.containsKey(m))
+            uf.unionBySize(i, maskToIndex.get(m));
+        }
+      maskToIndex.put(mask, i);
+    }
+
+    return new int[] {uf.getCount(), uf.getMaxSize()};
+  }
+
+  private int getMask(final String s) {
+    int mask = 0;
+    for (final char c : s.toCharArray())
+      mask |= 1 &lt;&lt; c - &#x27;a&#x27;;
+    return mask;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.count = n
+    self.id = list(range(n))
+    self.sz = [1] * n
+
+  def unionBySize(self, u: int, v: int) -&gt; None:
+    i = self._find(u)
+    j = self._find(v)
+    if i == j:
+      return
+    if self.sz[i] &lt; self.sz[j]:
+      self.sz[j] += self.sz[i]
+      self.id[i] = j
+    else:
+      self.sz[i] += self.sz[j]
+      self.id[j] = i
+    self.count -= 1
+
+  def _find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self._find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def groupStrings(self, words: list[str]) -&gt; list[int]:
+    uf = UnionFind(len(words))
+
+    def getMask(s: str) -&gt; int:
+      mask = 0
+      for c in s:
+        mask |= 1 &lt;&lt; ord(c) - ord(&#x27;a&#x27;)
+      return mask
+
+    def getAddedMasks(mask: int):
+      for i in range(26):
+        if not (mask &gt;&gt; i &amp; 1):
+          yield mask | 1 &lt;&lt; i
+
+    def getDeletedMasks(mask: int):
+      for i in range(26):
+        if mask &gt;&gt; i &amp; 1:
+          yield mask ^ 1 &lt;&lt; i
+
+    maskToIndex = {getMask(word): i for i, word in enumerate(words)}
+    deletedMaskToIndex = {}
+
+    for i, word in enumerate(words):
+      mask = getMask(word)
+      for m in getAddedMasks(mask):
+        if m in maskToIndex:
+          uf.unionBySize(i, maskToIndex[m])
+      for m in getDeletedMasks(mask):
+        if m in maskToIndex:
+          uf.unionBySize(i, maskToIndex[m])
+        if m in deletedMaskToIndex:
+          uf.unionBySize(i, deletedMaskToIndex[m])
+        else:
+          deletedMaskToIndex[m] = i
+
+    return [uf.count, max(uf.sz)]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

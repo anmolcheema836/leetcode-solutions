@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Min Cost to Connect All Points - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Min Cost to Connect All Points written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/min-cost-to-connect-all-points/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-unhappy-friends/" class="btn">← Previous</a>
+            <span>Problem 1584 of 3563</span>
+            <a href="/leetcode-solutions/problems/check-if-string-is-transformable-with-substring-sort-operations/" class="btn">Next →</a>
+        </div>
+        <h1>1584. Min Cost to Connect All Points</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Min Cost to Connect All Points efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minCostConnectPoints(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    // dist[i] := the minimum distance to connect the points[i]
+    vector&lt;int&gt; dist(points.size(), INT_MAX);
+    int ans = 0;
+
+    for (int i = 0; i &lt; points.size() - 1; ++i) {
+      for (int j = i + 1; j &lt; points.size(); ++j) {
+        // Try to connect the points[i] with the points[j].
+        dist[j] = min(dist[j], abs(points[i][0] - points[j][0]) +
+                                   abs(points[i][1] - points[j][1]));
+        // Swap the points[j] (the point with the mnimum distance) with the
+        // points[i + 1].
+        if (dist[j] &lt; dist[i + 1]) {
+          swap(points[j], points[i + 1]);
+          swap(dist[j], dist[i + 1]);
+        }
+      }
+      ans += dist[i + 1];
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minCostConnectPoints(int[][] points) {
+    // dist[i] := the minimum distance to connect the points[i]
+    int[] dist = new int[points.length];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    int ans = 0;
+
+    for (int i = 0; i &lt; points.length - 1; ++i) {
+      for (int j = i + 1; j &lt; points.length; ++j) {
+        // Try to connect the points[i] with the points[j].
+        dist[j] = Math.min(dist[j], Math.abs(points[i][0] - points[j][0]) +
+                                        Math.abs(points[i][1] - points[j][1]));
+        // Swap the points[j] (the point with the minimum distance) with the
+        // points[i + 1].
+        if (dist[j] &lt; dist[i + 1]) {
+          final int[] tempPoint = points[j];
+          points[j] = points[i + 1];
+          points[i + 1] = tempPoint;
+          final int tempDist = dist[j];
+          dist[j] = dist[i + 1];
+          dist[i + 1] = tempDist;
+        }
+      }
+      ans += dist[i + 1];
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minCostConnectPoints(self, points: list[int]) -&gt; int:
+    # dist[i] := the minimum distance to connect the points[i]
+    dist = [math.inf] * len(points)
+    ans = 0
+
+    for i in range(len(points) - 1):
+      for j in range(i + 1, len(points)):
+        # Try to connect the points[i] with the points[j].
+        dist[j] = min(dist[j], abs(points[i][0] - points[j][0]) +
+                      abs(points[i][1] - points[j][1]))
+        # Swap the points[j] (the point with the mnimum distance) with the
+        # points[i + 1].
+        if dist[j] &lt; dist[i + 1]:
+          points[j], points[i + 1] = points[i + 1], points[j]
+          dist[j], dist[i + 1] = dist[i + 1], dist[j]
+      ans += dist[i + 1]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

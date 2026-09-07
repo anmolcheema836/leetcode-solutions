@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closest Nodes Queries in a Binary Search Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Closest Nodes Queries in a Binary Search Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/closest-nodes-queries-in-a-binary-search-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-unequal-triplets-in-array/" class="btn">← Previous</a>
+            <span>Problem 2476 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-fuel-cost-to-report-to-the-capital/" class="btn">Next →</a>
+        </div>
+        <h1>2476. Closest Nodes Queries in a Binary Search Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Closest Nodes Queries in a Binary Search Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; closestNodes(TreeNode* root, vector&lt;int&gt;&amp; queries) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    vector&lt;int&gt; sortedVals;
+
+    inorder(root, sortedVals);
+
+    for (const int query : queries) {
+      const auto it = ranges::lower_bound(sortedVals, query);
+      // query is presented in the tree, so just use {query, query}.
+      if (it != sortedVals.cend() &amp;&amp; *it == query)
+        ans.push_back({query, query});
+      // query isn&#x27;t presented in the tree, so find the cloest one if possible.
+      else
+        ans.push_back({it == sortedVals.cbegin() ? -1 : *prev(it),
+                       it == sortedVals.cend() ? -1 : *it});
+    }
+
+    return ans;
+  }
+
+ private:
+  // Walks the BST to collect the sorted numbers.
+  void inorder(TreeNode* root, vector&lt;int&gt;&amp; sortedVals) {
+    if (root == nullptr)
+      return;
+    inorder(root-&gt;left, sortedVals);
+    sortedVals.push_back(root-&gt;val);
+    inorder(root-&gt;right, sortedVals);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; closestNodes(TreeNode root, List&lt;Integer&gt; queries) {
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;Integer&gt; sortedVals = new ArrayList&lt;&gt;();
+
+    inorder(root, sortedVals);
+
+    for (final int query : queries) {
+      final int i = firstGreaterEqual(sortedVals, query);
+      // query is presented in the tree, so just use {query, query}.
+      if (i != sortedVals.size() &amp;&amp; sortedVals.get(i) == query)
+        ans.add(Arrays.asList(query, query));
+      // query isn&#x27;t presented in the tree, so find the cloest one if possible.
+      else
+        ans.add(Arrays.asList(i == 0 ? -1 : sortedVals.get(i - 1),
+                              i == sortedVals.size() ? -1 : sortedVals.get(i)));
+    }
+
+    return ans;
+  }
+
+  // Walks the BST to collect the sorted numbers.
+  private void inorder(TreeNode root, List&lt;Integer&gt; sortedVals) {
+    if (root == null)
+      return;
+    inorder(root.left, sortedVals);
+    sortedVals.add(root.val);
+    inorder(root.right, sortedVals);
+  }
+
+  private int firstGreaterEqual(List&lt;Integer&gt; A, int target) {
+    final int i = Collections.binarySearch(A, target);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def closestNodes(self, root: TreeNode | None, queries: list[int]) -&gt; list[list[int]]:
+    sortedVals = []
+    self._inorder(root, sortedVals)
+
+    def getClosestPair(query: int) -&gt; list[int]:
+      i = bisect_left(sortedVals, query)
+      # query is presented in the tree, so just use [query, query].
+      if i != len(sortedVals) and sortedVals[i] == query:
+        return [query, query]
+      # query isn&#x27;t presented in the tree, so find the cloest one if possible.
+      return [-1 if i == 0 else sortedVals[i - 1],
+              -1 if i == len(sortedVals) else sortedVals[i]]
+
+    return [getClosestPair(query) for query in queries]
+
+  def _inorder(self, root: TreeNode | None, sortedVals: list[int]) -&gt; None:
+    &quot;&quot;&quot;Walks the BST to collect the sorted numbers.&quot;&quot;&quot;
+    if not root:
+      return
+    self._inorder(root.left, sortedVals)
+    sortedVals.append(root.val)
+    self._inorder(root.right, sortedVals)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

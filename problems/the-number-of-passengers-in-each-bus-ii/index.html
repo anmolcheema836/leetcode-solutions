@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Number of Passengers in Each Bus II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for The Number of Passengers in Each Bus II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/the-number-of-passengers-in-each-bus-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-lines-to-cover-points/" class="btn">← Previous</a>
+            <span>Problem 2153 of 3563</span>
+            <a href="/leetcode-solutions/problems/keep-multiplying-found-values-by-two/" class="btn">Next →</a>
+        </div>
+        <h1>2153. The Number of Passengers in Each Bus II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve The Number of Passengers in Each Bus II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">SQL</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-clike">WITH RECURSIVE
+  BusesNeighbors AS (
+    SELECT
+      bus_id,
+      arrival_time,
+      capacity,
+      IFNULL(LAG(arrival_time) OVER(
+        ORDER BY arrival_time), 0
+      ) AS prev_arrival_time
+    FROM Buses
+  ),
+  BusesMetadata AS (
+    SELECT
+      BusesNeighbors.bus_id,
+      BusesNeighbors.arrival_time,
+      BusesNeighbors.capacity,
+      BusesNeighbors.prev_arrival_time,
+      COUNT(Passengers.passenger_id) AS waiting,
+      ROW_NUMBER() OVER(
+        ORDER BY BusesNeighbors.arrival_time
+      ) AS `row_number`
+    FROM BusesNeighbors
+    LEFT JOIN Passengers
+      ON (
+        BusesNeighbors.prev_arrival_time &lt; Passengers.arrival_time
+        AND Passengers.arrival_time &lt;= BusesNeighbors.arrival_time)
+    GROUP BY 1, 2, 3
+  ),
+  Boarding AS (
+    SELECT
+      BusesMetadata.`row_number`,
+      BusesMetadata.bus_id,
+      LEAST(
+        BusesMetadata.capacity,
+        BusesMetadata.waiting
+      ) AS boarded,
+      GREATEST(
+        0,
+        BusesMetadata.waiting - BusesMetadata.capacity
+      ) AS not_boarded
+    FROM BusesMetadata
+    WHERE `row_number` = 1
+    UNION ALL
+    SELECT
+      BusesMetadata.`row_number`,
+      BusesMetadata.bus_id,
+      LEAST(
+        BusesMetadata.capacity,
+        Boarding.not_boarded + BusesMetadata.waiting
+      ) AS boarded,
+      GREATEST(
+        0,
+        Boarding.not_boarded + BusesMetadata.waiting - BusesMetadata.capacity
+      ) AS not_boarded
+    FROM BusesMetadata, Boarding
+    WHERE BusesMetadata.`row_number` = Boarding.`row_number` + 1
+  )
+SELECT
+  bus_id,
+  boarded AS passengers_cnt
+FROM Boarding
+ORDER BY 1;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

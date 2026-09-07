@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Students Taking Exam - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Students Taking Exam written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-students-taking-exam/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/tweet-counts-per-frequency/" class="btn">← Previous</a>
+            <span>Problem 1349 of 3563</span>
+            <a href="/leetcode-solutions/problems/students-with-invalid-departments/" class="btn">Next →</a>
+        </div>
+        <h1>1349. Maximum Students Taking Exam</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Students Taking Exam efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxStudents(vector&lt;vector&lt;char&gt;&gt;&amp; seats) {
+    return accumulate(seats.begin(), seats.end(), 0,
+                      [&amp;](int acc, const auto&amp; seat) {
+      return acc + ranges::count(seat, &#x27;.&#x27;);
+    }) - hungarian(seats);
+  }
+
+ private:
+  static constexpr int kDirs[6][2] = {{-1, -1}, {0, -1}, {1, -1},
+                                      {-1, 1},  {0, 1},  {1, 1}};
+
+  int hungarian(const vector&lt;vector&lt;char&gt;&gt;&amp; seats) {
+    const int m = seats.size();
+    const int n = seats[0].size();
+    int count = 0;
+    vector&lt;vector&lt;int&gt;&gt; seen(m, vector&lt;int&gt;(n));
+    vector&lt;vector&lt;int&gt;&gt; match(m, vector&lt;int&gt;(n, -1));
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (seats[i][j] == &#x27;.&#x27; &amp;&amp; match[i][j] == -1) {
+          const int sessionId = i * n + j;
+          seen[i][j] = sessionId;
+          count += dfs(seats, i, j, sessionId, seen, match);
+        }
+
+    return count;
+  }
+
+  int dfs(const vector&lt;vector&lt;char&gt;&gt;&amp; seats, int i, int j, int sessionId,
+          vector&lt;vector&lt;int&gt;&gt;&amp; seen, vector&lt;vector&lt;int&gt;&gt;&amp; match) {
+    const int m = seats.size();
+    const int n = seats[0].size();
+
+    for (const auto&amp; [dx, dy] : kDirs) {
+      const int x = i + dx;
+      const int y = j + dy;
+      if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+        continue;
+      if (seats[x][y] != &#x27;.&#x27; || seen[x][y] == sessionId)
+        continue;
+      seen[x][y] = sessionId;
+      if (match[x][y] == -1 || dfs(seats, match[x][y] / n, match[x][y] % n,
+                                   sessionId, seen, match)) {
+        match[x][y] = i * n + j;
+        match[i][j] = x * n + y;
+        return 1;
+      }
+    }
+
+    return 0;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxStudents(char[][] seats) {
+    int studentsCount = 0;
+
+    for (char[] seat : seats)
+      for (final char s : seat)
+        if (s == &#x27;.&#x27;)
+          ++studentsCount;
+
+    return studentsCount - hungarian(seats);
+  }
+
+  private static final int[][] DIRS = {{-1, -1}, {0, -1}, {1, -1}, {-1, 1}, {0, 1}, {1, 1}};
+
+  private int hungarian(char[][] seats) {
+    final int m = seats.length;
+    final int n = seats[0].length;
+    int count = 0;
+    int[][] seen = new int[m][n];
+    int[][] match = new int[m][n];
+    Arrays.stream(match).forEach(A -&gt; Arrays.fill(A, -1));
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        if (seats[i][j] == &#x27;.&#x27; &amp;&amp; match[i][j] == -1) {
+          final int sessionId = i * n + j;
+          seen[i][j] = sessionId;
+          if (dfs(seats, i, j, sessionId, seen, match))
+            ++count;
+        }
+
+    return count;
+  }
+
+  private boolean dfs(char[][] seats, int i, int j, int sessionId, int[][] seen, int[][] match) {
+    final int m = seats.length;
+    final int n = seats[0].length;
+
+    for (int[] dir : DIRS) {
+      final int x = i + dir[0];
+      final int y = j + dir[1];
+      if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+        continue;
+      if (seats[x][y] != &#x27;.&#x27; || seen[x][y] == sessionId)
+        continue;
+      seen[x][y] = sessionId;
+      if (match[x][y] == -1 ||
+          dfs(seats, match[x][y] / n, match[x][y] % n, sessionId, seen, match)) {
+        match[x][y] = i * n + j;
+        match[i][j] = x * n + y;
+        return true;
+      }
+    }
+
+    return false;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxStudents(self, seats: list[list[str]]) -&gt; int:
+    m = len(seats)
+    n = len(seats[0])
+    DIRS = ((-1, -1), (0, -1), (1, -1), (-1, 1), (0, 1), (1, 1))
+    seen = [[0] * n for _ in range(m)]
+    match = [[-1] * n for _ in range(m)]
+
+    def dfs(i: int, j: int, sessionId: int) -&gt; int:
+      for dx, dy in DIRS:
+        x = i + dx
+        y = j + dy
+        if x &lt; 0 or x == m or y &lt; 0 or y == n:
+          continue
+        if seats[x][y] != &#x27;.&#x27; or seen[x][y] == sessionId:
+          continue
+        seen[x][y] = sessionId
+        if match[x][y] == -1 or dfs(*divmod(match[x][y], n), sessionId):
+          match[x][y] = i * n + j
+          match[i][j] = x * n + y
+          return 1
+      return 0
+
+    def hungarian() -&gt; int:
+      count = 0
+      for i in range(m):
+        for j in range(n):
+          if seats[i][j] == &#x27;.&#x27; and match[i][j] == -1:
+            sessionId = i * n + j
+            seen[i][j] = sessionId
+            count += dfs(i, j, sessionId)
+      return count
+
+    return sum(seats[i][j] == &#x27;.&#x27;
+               for i in range(m)
+               for j in range(n)) - hungarian()</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Two Polynomials Represented as Linked Lists - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Add Two Polynomials Represented as Linked Lists written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/add-two-polynomials-represented-as-linked-lists/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/percentage-of-users-attended-a-contest/" class="btn">← Previous</a>
+            <span>Problem 1634 of 3563</span>
+            <a href="/leetcode-solutions/problems/hopper-company-queries-i/" class="btn">Next →</a>
+        </div>
+        <h1>1634. Add Two Polynomials Represented as Linked Lists</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Add Two Polynomials Represented as Linked Lists efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">/**
+ * Definition for polynomial singly-linked list.
+ * struct PolyNode {
+ *   int coefficient, power;
+ *   PolyNode *next;
+ *   PolyNode(): coefficient(0), power(0), next(nullptr) {};
+ *   PolyNode(int x, int y): coefficient(x), power(y), next(nullptr) {};
+ *   PolyNode(int x, int y, PolyNode* next): coefficient(x), power(y),
+ *                                           next(next) {};
+ * };
+ */
+
+class Solution {
+ public:
+  PolyNode* addPoly(PolyNode* poly1, PolyNode* poly2) {
+    PolyNode* dummy = new PolyNode();
+    PolyNode* curr = dummy;
+    PolyNode* p = poly1;  // poly1&#x27;s pointer
+    PolyNode* q = poly2;  // poly2&#x27;s pointer
+
+    while (p != nullptr &amp;&amp; q != nullptr) {
+      if (p-&gt;power &gt; q-&gt;power) {
+        curr-&gt;next = new PolyNode(p-&gt;coefficient, p-&gt;power);
+        curr = curr-&gt;next;
+        p = p-&gt;next;
+      } else if (p-&gt;power &lt; q-&gt;power) {
+        curr-&gt;next = new PolyNode(q-&gt;coefficient, q-&gt;power);
+        curr = curr-&gt;next;
+        q = q-&gt;next;
+      } else {  // p-&gt;power == q-&gt;power
+        const int sumCoefficient = p-&gt;coefficient + q-&gt;coefficient;
+        if (sumCoefficient != 0) {
+          curr-&gt;next = new PolyNode(sumCoefficient, p-&gt;power);
+          curr = curr-&gt;next;
+        }
+        p = p-&gt;next;
+        q = q-&gt;next;
+      }
+    }
+
+    while (p != nullptr) {
+      curr-&gt;next = new PolyNode(p-&gt;coefficient, p-&gt;power);
+      curr = curr-&gt;next;
+      p = p-&gt;next;
+    }
+
+    while (q != nullptr) {
+      curr-&gt;next = new PolyNode(q-&gt;coefficient, q-&gt;power);
+      curr = curr-&gt;next;
+      q = q-&gt;next;
+    }
+
+    return dummy-&gt;next;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">/**
+ * Definition for polynomial singly-linked list.
+ * class PolyNode {
+ *   int coefficient, power;
+ *   PolyNode next = null;
+ *   PolyNode() {}
+ *   PolyNode(int x, int y) { this.coefficient = x; this.power = y; }
+ *   PolyNode(int x, int y, PolyNode next) {
+ *     this.coefficient = x;
+ *     this.power = y;
+ *     this.next = next;
+ *   }
+ * }
+ */
+
+class Solution {
+  public PolyNode addPoly(PolyNode poly1, PolyNode poly2) {
+    PolyNode dummy = new PolyNode();
+    PolyNode curr = dummy;
+    PolyNode p = poly1; // poly1&#x27;s pointer
+    PolyNode q = poly2; // poly2&#x27;s pointer
+
+    while (p != null &amp;&amp; q != null) {
+      if (p.power &gt; q.power) {
+        curr.next = new PolyNode(p.coefficient, p.power);
+        curr = curr.next;
+        p = p.next;
+      } else if (p.power &lt; q.power) {
+        curr.next = new PolyNode(q.coefficient, q.power);
+        curr = curr.next;
+        q = q.next;
+      } else { // p.power == q.power
+        final int sumCoefficient = p.coefficient + q.coefficient;
+        if (sumCoefficient != 0) {
+          curr.next = new PolyNode(sumCoefficient, p.power);
+          curr = curr.next;
+        }
+        p = p.next;
+        q = q.next;
+      }
+    }
+
+    while (p != null) {
+      curr.next = new PolyNode(p.coefficient, p.power);
+      curr = curr.next;
+      p = p.next;
+    }
+
+    while (q != null) {
+      curr.next = new PolyNode(q.coefficient, q.power);
+      curr = curr.next;
+      q = q.next;
+    }
+
+    return dummy.next;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python"># Definition for polynomial singly-linked list.
+# class PolyNode:
+#   def __init__(self, x=0, y=0, next=None):
+#     self.coefficient = x
+#     self.power = y
+#     self.next = next
+
+class Solution:
+  def addPoly(self, poly1: &#x27;PolyNode&#x27;, poly2: &#x27;PolyNode&#x27;) -&gt; &#x27;PolyNode&#x27;:
+    dummy = PolyNode()
+    curr = dummy
+    p = poly1  # poly1&#x27;s pointer
+    q = poly2  # poly2&#x27;s pointer
+
+    while p and q:
+      if p.power &gt; q.power:
+        curr.next = PolyNode(p.coefficient, p.power)
+        curr = curr.next
+        p = p.next
+      elif p.power &lt; q.power:
+        curr.next = PolyNode(q.coefficient, q.power)
+        curr = curr.next
+        q = q.next
+      else:  # p.power == q.power
+        sumCoefficient = p.coefficient + q.coefficient
+        if sumCoefficient != 0:
+          curr.next = PolyNode(sumCoefficient, p.power)
+          curr = curr.next
+        p = p.next
+        q = q.next
+
+    while p:
+      curr.next = PolyNode(p.coefficient, p.power)
+      curr = curr.next
+      p = p.next
+
+    while q:
+      curr.next = PolyNode(q.coefficient, q.power)
+      curr = curr.next
+      q = q.next
+
+    return dummy.next</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

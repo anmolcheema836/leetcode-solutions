@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Team With No Conflicts - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Best Team With No Conflicts written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/best-team-with-no-conflicts/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/lexicographically-smallest-string-after-applying-operations/" class="btn">← Previous</a>
+            <span>Problem 1626 of 3563</span>
+            <a href="/leetcode-solutions/problems/graph-connectivity-with-threshold/" class="btn">Next →</a>
+        </div>
+        <h1>1626. Best Team With No Conflicts</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Best Team With No Conflicts efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Player {
+  int age;
+  int score;
+  Player(int age, int score) : age(age), score(score) {}
+};
+
+class Solution {
+ public:
+  int bestTeamScore(vector&lt;int&gt;&amp; scores, vector&lt;int&gt;&amp; ages) {
+    const int n = scores.size();
+    vector&lt;Player&gt; players;
+    // dp[i] := the maximum score of choosing the players[0..i] with the
+    // players[i] being selected
+    vector&lt;int&gt; dp(n);
+
+    for (int i = 0; i &lt; n; ++i)
+      players.emplace_back(ages[i], scores[i]);
+
+    ranges::sort(players, ranges::greater{}, [](const Player&amp; player) {
+      return pair&lt;int, int&gt;{player.age, player.score};
+    });
+
+    for (int i = 0; i &lt; n; ++i) {
+      // For each player, choose it first.
+      dp[i] = players[i].score;
+      // players[j].age &gt;= players[i].age since we sort in descending order.
+      // So, we only have to check that players[j].score &gt;= players[i].score.
+      for (int j = 0; j &lt; i; ++j)
+        if (players[j].score &gt;= players[i].score)
+          dp[i] = max(dp[i], dp[j] + players[i].score);
+    }
+
+    return ranges::max(dp);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int bestTeamScore(int[] scores, int[] ages) {
+    record Player(int age, int score) {}
+    final int n = scores.length;
+    Player[] players = new Player[n];
+    // dp[i] := the maximum score of choosing the players[0..i] with the
+    // players[i] being selected
+    int[] dp = new int[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      players[i] = new Player(ages[i], scores[i]);
+
+    Arrays.sort(players, Comparator.comparing(Player::age, Comparator.reverseOrder())
+                             .thenComparing(Player::score, Comparator.reverseOrder()));
+
+    for (int i = 0; i &lt; n; ++i) {
+      // For each player, choose it first.
+      dp[i] = players[i].score;
+      // players[j].age &gt;= players[i].age since we sort in descending order.
+      // So, we only have to check that players[j].score &gt;= players[i].score.
+      for (int j = 0; j &lt; i; ++j)
+        if (players[j].score &gt;= players[i].score)
+          dp[i] = Math.max(dp[i], dp[j] + players[i].score);
+    }
+
+    return Arrays.stream(dp).max().getAsInt();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Player:
+  age: int
+  score: int
+
+
+class Solution:
+  def bestTeamScore(self, scores: list[int], ages: list[int]) -&gt; int:
+    n = len(scores)
+    players = [Player(age, score) for age, score in zip(ages, scores)]
+    # dp[i] := the maximum score of choosing the players[0..i] with the
+    # players[i] being selected
+    dp = [0] * n
+
+    # Sort by age descending, then by score descending
+    players.sort(key=lambda x: (-x.age, -x.score))
+
+    for i in range(n):
+      # For each player, choose it first
+      dp[i] = players[i].score
+      # players[j].age &gt;= players[i].age since we sort in descending order.
+      # So, we only have to check that players[j].score &gt;= players[i].score.
+      for j in range(i):
+        if players[j].score &gt;= players[i].score:
+          dp[i] = max(dp[i], dp[j] + players[i].score)
+
+    return max(dp)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

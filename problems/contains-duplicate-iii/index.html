@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contains Duplicate III - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Contains Duplicate III written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/contains-duplicate-iii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/contains-duplicate-ii/" class="btn">← Previous</a>
+            <span>Problem 220 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximal-square/" class="btn">Next →</a>
+        </div>
+        <h1>220. Contains Duplicate III</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Contains Duplicate III efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool containsNearbyAlmostDuplicate(vector&lt;int&gt;&amp; nums, int indexDiff,
+                                     int valueDiff) {
+    if (nums.empty() || indexDiff &lt;= 0 || valueDiff &lt; 0)
+      return false;
+
+    const long mn = ranges::min(nums);
+    const long diff = valueDiff + 1L;  // In case that `valueDiff` equals 0.
+    // Use long because the corner case INT_MAX - (-1) will overflow.
+    unordered_map&lt;long, long&gt; bucket;
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      const long num = nums[i];
+      const long key = getKey(num, mn, diff);
+      if (bucket.contains(key))  // the current bucket
+        return true;
+      if (bucket.contains(key - 1) &amp;&amp;
+          num - bucket[key - 1] &lt; diff)  // the left adjacent bucket
+        return true;
+      if (bucket.contains(key + 1) &amp;&amp;
+          bucket[key + 1] - num &lt; diff)  // the right adjacent bucket
+        return true;
+      bucket[key] = num;
+      if (i &gt;= indexDiff)
+        bucket.erase(getKey(nums[i - indexDiff], mn, diff));
+    }
+
+    return false;
+  }
+
+ private:
+  int getKey(long num, long mn, long diff) {
+    return (num - mn) / diff;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean containsNearbyAlmostDuplicate(int[] nums, int indexDiff, int valueDiff) {
+    if (nums.length == 0 || indexDiff &lt;= 0 || valueDiff &lt; 0)
+      return false;
+
+    final long mn = Arrays.stream(nums).min().getAsInt();
+    final long diff = (long) valueDiff + 1; // In case that `valueDiff` equals 0.
+    // Use Long because of corner case Integer.MAX_VALUE - (-1) will overflow
+    HashMap&lt;Long, Long&gt; bucket = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      final long num = (long) nums[i];
+      final long key = getKey(nums[i], mn, diff);
+      if (bucket.containsKey(key)) // the current bucket
+        return true;
+      if (bucket.containsKey(key - 1) &amp;&amp;
+          num - bucket.get(key - 1) &lt; diff) // the left adjacent bucket
+        return true;
+      if (bucket.containsKey(key + 1) &amp;&amp;
+          bucket.get(key + 1) - num &lt; diff) // the right adjacent bucket
+        return true;
+      bucket.put(key, num);
+      if (i &gt;= indexDiff)
+        bucket.remove(getKey(nums[i - indexDiff], mn, diff));
+    }
+
+    return false;
+  }
+
+  private long getKey(int num, long mn, long diff) {
+    return ((long) num - mn) / diff;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def containsNearbyAlmostDuplicate(
+      self,
+      nums: list[int],
+      indexDiff: int,
+      valueDiff: int,
+  ) -&gt; bool:
+    if not nums or indexDiff &lt;= 0 or valueDiff &lt; 0:
+      return False
+
+    mn = min(nums)
+    diff = valueDiff + 1  # In case that `valueDiff` equals 0.
+    bucket = {}
+
+    def getKey(num: int) -&gt; int:
+      return (num - mn) // diff
+
+    for i, num in enumerate(nums):
+      key = getKey(num)
+      if key in bucket:  # the current bucket
+        return True
+      # the left adjacent bucket
+      if key - 1 in bucket and num - bucket[key - 1] &lt; diff:
+        return True
+      # the right adjacent bucket
+      if key + 1 in bucket and bucket[key + 1] - num &lt; diff:
+        return True
+      bucket[key] = num
+      if i &gt;= indexDiff:
+        del bucket[getKey(nums[i - indexDiff])]
+
+    return False</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

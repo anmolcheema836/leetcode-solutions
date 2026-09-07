@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Number of Frogs Croaking - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Number of Frogs Croaking written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-number-of-frogs-croaking/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/display-table-of-food-orders-in-a-restaurant/" class="btn">← Previous</a>
+            <span>Problem 1419 of 3563</span>
+            <a href="/leetcode-solutions/problems/build-array-where-you-can-find-the-maximum-exactly-k-comparisons/" class="btn">Next →</a>
+        </div>
+        <h1>1419. Minimum Number of Frogs Croaking</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Number of Frogs Croaking efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minNumberOfFrogs(string croakOfFrogs) {
+    const string kCroak = &quot;croak&quot;;
+    int ans = 0;
+    int frogs = 0;
+    vector&lt;int&gt; count(5);
+
+    for (const char c : croakOfFrogs) {
+      ++count[kCroak.find(c)];
+      for (int i = 1; i &lt; 5; ++i)
+        if (count[i] &gt; count[i - 1])
+          return -1;
+      if (c == &#x27;c&#x27;)
+        ++frogs;
+      else if (c == &#x27;k&#x27;)
+        --frogs;
+      ans = max(ans, frogs);
+    }
+
+    return frogs == 0 ? ans : -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minNumberOfFrogs(String croakOfFrogs) {
+    final String CROAK = &quot;croak&quot;;
+    int ans = 0;
+    int frogs = 0;
+    int[] count = new int[5];
+
+    for (final char c : croakOfFrogs.toCharArray()) {
+      ++count[CROAK.indexOf(c)];
+      for (int i = 1; i &lt; 5; ++i)
+        if (count[i] &gt; count[i - 1])
+          return -1;
+      if (c == &#x27;c&#x27;)
+        ++frogs;
+      else if (c == &#x27;k&#x27;)
+        --frogs;
+      ans = Math.max(ans, frogs);
+    }
+
+    return frogs == 0 ? ans : -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minNumberOfFrogs(self, croakOfFrogs: str) -&gt; int:
+    CROAK = &#x27;croak&#x27;
+    ans = 0
+    frogs = 0
+    count = [0] * 5
+
+    for c in croakOfFrogs:
+      count[CROAK.index(c)] += 1
+      if any(count[i] &gt; count[i - 1] for i in range(1, 5)):
+        return -1
+      if c == &#x27;c&#x27;:
+        frogs += 1
+      elif c == &#x27;k&#x27;:
+        frogs -= 1
+      ans = max(ans, frogs)
+
+    return ans if frogs == 0 else -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Neighbor Sum Service - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Neighbor Sum Service written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-neighbor-sum-service/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/time-taken-to-mark-all-nodes/" class="btn">← Previous</a>
+            <span>Problem 3242 of 3563</span>
+            <a href="/leetcode-solutions/problems/shortest-distance-after-road-addition-queries-i/" class="btn">Next →</a>
+        </div>
+        <h1>3242. Design Neighbor Sum Service</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Neighbor Sum Service efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class neighborSum {
+ public:
+  neighborSum(vector&lt;vector&lt;int&gt;&gt;&amp; grid)
+      : n(grid.size()), grid(grid), numToPos(n * n) {
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        numToPos[grid[i][j]] = {i, j};
+  }
+
+  int adjacentSum(int value) {
+    const auto&amp; [i, j] = numToPos[value];
+    int sum = 0;
+    for (const auto&amp; [x, y] :
+         vector&lt;pair&lt;int, int&gt;&gt;{{i - 1, j}, {i + 1, j}, {i, j - 1}, {i, j + 1}})
+      if (x &gt;= 0 &amp;&amp; x &lt; n &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; n)
+        sum += grid[x][y];
+    return sum;
+  }
+
+  int diagonalSum(int value) {
+    const auto&amp; [i, j] = numToPos[value];
+    int sum = 0;
+    for (const auto&amp; [x, y] : vector&lt;pair&lt;int, int&gt;&gt;{
+             {i - 1, j - 1}, {i - 1, j + 1}, {i + 1, j - 1}, {i + 1, j + 1}})
+      if (x &gt;= 0 &amp;&amp; x &lt; n &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; n)
+        sum += grid[x][y];
+    return sum;
+  }
+
+ private:
+  const int n;
+  vector&lt;vector&lt;int&gt;&gt; grid;
+  vector&lt;pair&lt;int, int&gt;&gt; numToPos;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class neighborSum {
+  public neighborSum(int[][] grid) {
+    this.n = grid.length;
+    this.grid = grid;
+    this.numToPos = new Pair[n * n];
+    for (int i = 0; i &lt; n; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        numToPos[grid[i][j]] = new Pair&lt;&gt;(i, j);
+  }
+
+  public int adjacentSum(int value) {
+    final int i = numToPos[value].getKey();
+    final int j = numToPos[value].getValue();
+    int sum = 0;
+    int[][] directions = {{i - 1, j}, {i + 1, j}, {i, j - 1}, {i, j + 1}};
+    for (int[] dir : directions) {
+      final int x = dir[0];
+      final int y = dir[1];
+      if (x &gt;= 0 &amp;&amp; x &lt; n &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; n)
+        sum += grid[x][y];
+    }
+    return sum;
+  }
+
+  public int diagonalSum(int value) {
+    final int i = numToPos[value].getKey();
+    final int j = numToPos[value].getValue();
+    int sum = 0;
+    int[][] directions = {{i - 1, j - 1}, {i - 1, j + 1}, {i + 1, j - 1}, {i + 1, j + 1}};
+    for (int[] dir : directions) {
+      final int x = dir[0];
+      final int y = dir[1];
+      if (x &gt;= 0 &amp;&amp; x &lt; n &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; n)
+        sum += grid[x][y];
+    }
+    return sum;
+  }
+
+  private int n;
+  private int[][] grid;
+  private Pair&lt;Integer, Integer&gt;[] numToPos;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class neighborSum:
+  def __init__(self, grid: list[list[int]]):
+    self.grid = grid
+    self.n = len(grid)
+    self.numToPos = {num: (i, j)
+                     for i, row in enumerate(grid)
+                     for j, num in enumerate(row)}
+
+  def adjacentSum(self, value: int) -&gt; int:
+    i, j = self.numToPos[value]
+    return sum(self.grid[x][y]
+               for x, y in ((i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1))
+               if 0 &lt;= x &lt; self.n and 0 &lt;= y &lt; self.n)
+
+  def diagonalSum(self, value: int) -&gt; int:
+    i, j = self.numToPos[value]
+    return sum(self.grid[x][y]
+               for x, y in ((i - 1, j - 1), (i - 1, j + 1),
+                            (i + 1, j - 1), (i + 1, j + 1))
+               if 0 &lt;= x &lt; self.n and 0 &lt;= y &lt; self.n)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

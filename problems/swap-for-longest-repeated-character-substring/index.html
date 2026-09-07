@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swap For Longest Repeated Character Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Swap For Longest Repeated Character Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/swap-for-longest-repeated-character-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-dice-rolls-with-target-sum/" class="btn">← Previous</a>
+            <span>Problem 1156 of 3563</span>
+            <a href="/leetcode-solutions/problems/online-majority-element-in-subarray/" class="btn">Next →</a>
+        </div>
+        <h1>1156. Swap For Longest Repeated Character Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Swap For Longest Repeated Character Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxRepOpt1(string text) {
+    int ans = 0;
+    vector&lt;int&gt; count(26);
+    vector&lt;pair&lt;char, int&gt;&gt; groups{{text[0], 1}};
+
+    for (const char c : text)
+      ++count[c - &#x27;a&#x27;];
+
+    for (int i = 1; i &lt; text.length(); ++i)
+      if (text[i] == text[i - 1])
+        ++groups[groups.size() - 1].second;
+      else
+        groups.emplace_back(text[i], 1);
+
+    for (const auto&amp; [c, length] : groups)
+      ans = max(ans, min(length + 1, count[c - &#x27;a&#x27;]));
+
+    for (int i = 1; i + 1 &lt; groups.size(); ++i)
+      if (groups[i - 1].first == groups[i + 1].first &amp;&amp; groups[i].second == 1)
+        ans = max(ans, min(groups[i - 1].second + groups[i + 1].second + 1,
+                           count[groups[i - 1].first - &#x27;a&#x27;]));
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxRepOpt1(String text) {
+    int ans = 0;
+    int[] count = new int[26];
+    List&lt;int[]&gt; groups = new ArrayList&lt;&gt;();
+
+    for (final char c : text.toCharArray())
+      ++count[c - &#x27;a&#x27;];
+
+    groups.add(new int[] {text.charAt(0), 1});
+
+    for (int i = 1; i &lt; text.length(); ++i)
+      if (text.charAt(i) == text.charAt(i - 1))
+        ++groups.get(groups.size() - 1)[1];
+      else
+        groups.add(new int[] {text.charAt(i), 1});
+
+    for (int[] group : groups)
+      ans = Math.max(ans, Math.min(group[1] + 1, count[group[0] - &#x27;a&#x27;]));
+
+    for (int i = 1; i + 1 &lt; groups.size(); ++i)
+      if (groups.get(i - 1)[0] == groups.get(i + 1)[0] &amp;&amp; groups.get(i)[1] == 1)
+        ans = Math.max(ans, Math.min(groups.get(i - 1)[1] + groups.get(i + 1)[1] + 1,
+                                     count[groups.get(i - 1)[0] - &#x27;a&#x27;]));
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxRepOpt1(self, text: str) -&gt; int:
+    count = collections.Counter(text)
+    groups = [[c, len(list(group))]
+              for c, group in itertools.groupby(text)]
+    ans = max(min(length + 1, count[c]) for c, length in groups)
+
+    for i in range(1, len(groups) - 1):
+      if groups[i - 1][0] == groups[i + 1][0] and groups[i][1] == 1:
+        ans = max(
+            ans,
+            min(groups[i - 1][1] + groups[i + 1][1] + 1, count
+                [groups[i - 1][0]]))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

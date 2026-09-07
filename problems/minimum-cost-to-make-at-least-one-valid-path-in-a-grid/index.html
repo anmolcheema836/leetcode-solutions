@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost to Make at Least One Valid Path in a Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost to Make at Least One Valid Path in a Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/linked-list-in-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 1368 of 3563</span>
+            <a href="/leetcode-solutions/problems/get-the-second-most-recent-activity/" class="btn">Next →</a>
+        </div>
+        <h1>1368. Minimum Cost to Make at Least One Valid Path in a Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost to Make at Least One Valid Path in a Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minCost(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    vector&lt;vector&lt;int&gt;&gt; mem(m, vector&lt;int&gt;(n, -1));
+    queue&lt;pair&lt;int, int&gt;&gt; q;
+
+    dfs(grid, 0, 0, /*cost=*/0, q, mem);
+
+    for (int cost = 1; !q.empty(); ++cost)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [i, j] = q.front();
+        q.pop();
+        for (const auto&amp; [dx, dy] : kDirs)
+          dfs(grid, i + dx, j + dy, cost, q, mem);
+      }
+
+    return mem.back().back();
+  }
+
+ private:
+  static constexpr int kDirs[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+  void dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; grid, int i, int j, int cost,
+           queue&lt;pair&lt;int, int&gt;&gt;&amp; q, vector&lt;vector&lt;int&gt;&gt;&amp; mem) {
+    if (i &lt; 0 || i == grid.size() || j &lt; 0 || j == grid[0].size())
+      return;
+    if (mem[i][j] != -1)
+      return;
+
+    mem[i][j] = cost;
+    q.emplace(i, j);
+    const auto&amp; [dx, dy] = kDirs[grid[i][j] - 1];
+    dfs(grid, i + dx, j + dy, cost, q, mem);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minCost(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    int[][] mem = new int[m][n];
+    Arrays.stream(mem).forEach(A -&gt; Arrays.fill(A, -1));
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q = new ArrayDeque&lt;&gt;();
+
+    dfs(grid, 0, 0, /*cost=*/0, q, mem);
+
+    for (int cost = 1; !q.isEmpty(); ++cost)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        Pair&lt;Integer, Integer&gt; pair = q.poll();
+        final int i = pair.getKey();
+        final int j = pair.getValue();
+        for (int[] dir : DIRS)
+          dfs(grid, i + dir[0], j + dir[1], cost, q, mem);
+      }
+
+    return mem[m - 1][n - 1];
+  }
+
+  private static final int[][] DIRS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+  private void dfs(int[][] grid, int i, int j, int cost, Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q,
+                   int[][] mem) {
+    if (i &lt; 0 || i == grid.length || j &lt; 0 || j == grid[0].length)
+      return;
+    if (mem[i][j] != -1)
+      return;
+
+    mem[i][j] = cost;
+    q.add(new Pair&lt;&gt;(i, j));
+    int[] dir = DIRS[grid[i][j] - 1];
+    dfs(grid, i + dir[0], j + dir[1], cost, q, mem);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minCost(self, grid: list[list[int]]) -&gt; int:
+    m = len(grid)
+    n = len(grid[0])
+    DIRS = ((0, 1), (0, -1), (1, 0), (-1, 0))
+    dp = [[-1] * n for _ in range(m)]
+    q = collections.deque()
+
+    def dfs(i: int, j: int, cost: int) -&gt; None:
+      if i &lt; 0 or i == m or j &lt; 0 or j == n:
+        return
+      if dp[i][j] != -1:
+        return
+      dp[i][j] = cost
+      q.append((i, j))
+      dx, dy = DIRS[grid[i][j] - 1]
+      dfs(i + dx, j + dy, cost)
+
+    dfs(0, 0, 0)
+
+    cost = 0
+    while q:
+      cost += 1
+      for _ in range(len(q)):
+        i, j = q.popleft()
+        for dx, dy in DIRS:
+          dfs(i + dx, j + dy, cost)
+
+    return dp[-1][-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

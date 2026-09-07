@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics from a Large Sample - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Statistics from a Large Sample written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/statistics-from-a-large-sample/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/shortest-common-supersequence/" class="btn">← Previous</a>
+            <span>Problem 1093 of 3563</span>
+            <a href="/leetcode-solutions/problems/car-pooling/" class="btn">Next →</a>
+        </div>
+        <h1>1093. Statistics from a Large Sample</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Statistics from a Large Sample efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;double&gt; sampleStats(vector&lt;int&gt;&amp; count) {
+    const int n = accumulate(count.begin(), count.end(), 0);
+    const double mode = ranges::max_element(count) - count.begin();
+    return {
+        getMinimum(count),
+        getMaximum(count),
+        getMean(count, n),
+        (getLeftMedian(count, n) + getRightMedian(count, n)) / 2.0,
+        mode,
+    };
+  }
+
+ private:
+  double getMinimum(const vector&lt;int&gt;&amp; count) {
+    for (int i = 0; i &lt; count.size(); ++i)
+      if (count[i])
+        return i;
+    return -1;
+  }
+
+  double getMaximum(const vector&lt;int&gt;&amp; count) {
+    for (int i = count.size() - 1; i &gt;= 0; --i)
+      if (count[i])
+        return i;
+    return -1;
+  }
+
+  double getMean(const vector&lt;int&gt;&amp; count, double n) {
+    double mean = 0;
+    for (long i = 0; i &lt; count.size(); ++i)
+      mean += (i * count[i]) / n;
+    return mean;
+  }
+
+  double getLeftMedian(const vector&lt;int&gt;&amp; count, double n) {
+    int numCount = 0;
+    for (int i = 0; i &lt; count.size(); ++i) {
+      numCount += count[i];
+      if (numCount &gt;= n / 2)
+        return i;
+    }
+    return -1;
+  }
+
+  double getRightMedian(const vector&lt;int&gt;&amp; count, double n) {
+    int numCount = 0;
+    for (int i = count.size() - 1; i &gt;= 0; --i) {
+      numCount += count[i];
+      if (numCount &gt;= n / 2)
+        return i;
+    }
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double[] sampleStats(int[] count) {
+    final int n = Arrays.stream(count).sum();
+    return new double[] {
+        getMinimum(count),                                          //
+        getMaximum(count),                                          //
+        getMean(count, n),                                          //
+        (getLeftMedian(count, n) + getRightMedian(count, n)) / 2.0, //
+        getMode(count),
+    };
+  }
+
+  private double getMinimum(int[] count) {
+    for (int i = 0; i &lt; count.length; ++i)
+      if (count[i] &gt; 0)
+        return i;
+    return -1;
+  }
+
+  private double getMaximum(int[] count) {
+    for (int i = count.length - 1; i &gt;= 0; --i)
+      if (count[i] &gt; 0)
+        return i;
+    return -1;
+  }
+
+  private double getMean(int[] count, double n) {
+    double mean = 0;
+    for (int i = 0; i &lt; count.length; ++i)
+      mean += ((long) i * (long) count[i]) / n;
+    return mean;
+  }
+
+  private double getLeftMedian(int[] count, double n) {
+    int numCount = 0;
+    for (int i = 0; i &lt; count.length; ++i) {
+      numCount += count[i];
+      if (numCount &gt;= n / 2)
+        return i;
+    }
+    return -1;
+  }
+
+  private double getRightMedian(int[] count, double n) {
+    int numCount = 0;
+    for (int i = count.length - 1; i &gt;= 0; --i) {
+      numCount += count[i];
+      if (numCount &gt;= n / 2)
+        return i;
+    }
+    return -1;
+  }
+
+  private double getMode(int[] count) {
+    int mode = -1;
+    int maxCount = 0;
+    for (int i = 0; i &lt; count.length; ++i)
+      if (count[i] &gt; maxCount) {
+        maxCount = count[i];
+        mode = i;
+      }
+    return mode;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def sampleStats(self, count: list[int]) -&gt; list[float]:
+    minimum = next((i for i, num in enumerate(count) if num), None)
+    maximum = next((i for i, num in reversed(
+        list(enumerate(count))) if num), None)
+    n = sum(count)
+    mean = sum(i * c / n for i, c in enumerate(count))
+    mode = count.index(max(count))
+
+    numCount = 0
+    leftMedian = 0
+    for i, c in enumerate(count):
+      numCount += c
+      if numCount &gt;= n / 2:
+        leftMedian = i
+        break
+
+    numCount = 0
+    rightMedian = 0
+    for i, c in reversed(list(enumerate(count))):
+      numCount += c
+      if numCount &gt;= n / 2:
+        rightMedian = i
+        break
+
+    return [minimum, maximum, mean, (leftMedian + rightMedian) / 2, mode]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

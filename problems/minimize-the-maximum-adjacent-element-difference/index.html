@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimize the Maximum Adjacent Element Difference - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimize the Maximum Adjacent Element Difference written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimize-the-maximum-adjacent-element-difference/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/zero-array-transformation-ii/" class="btn">← Previous</a>
+            <span>Problem 3357 of 3563</span>
+            <a href="/leetcode-solutions/problems/books-with-null-ratings/" class="btn">Next →</a>
+        </div>
+        <h1>3357. Minimize the Maximum Adjacent Element Difference</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimize the Maximum Adjacent Element Difference efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minDifference(vector&lt;int&gt;&amp; nums) {
+    int maxPositiveGap = 0;
+    int mn = 1&#x27;000&#x27;000&#x27;000;
+    int mx = 0;
+
+    for (int i = 1; i &lt; nums.size(); ++i)
+      if ((nums[i - 1] == -1) != (nums[i] == -1)) {
+        const int positive = max(nums[i - 1], nums[i]);
+        mn = min(mn, positive);
+        mx = max(mx, positive);
+      } else {
+        maxPositiveGap = max(maxPositiveGap, abs(nums[i - 1] - nums[i]));
+      }
+
+    int l = maxPositiveGap;
+    int r = (mx - mn + 1) / 2;
+
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      if (check(nums, m, mn + m, mx - m))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l;
+  }
+
+ private:
+  // Returns true if it&#x27;s possible have `m` as maximum absolute difference
+  // between adjacent numbers, where -1s are replaced with `x` or `y`.
+  bool check(const vector&lt;int&gt;&amp; nums, int m, int x, int y) {
+    int gapLength = 0;
+    int prev = 0;
+
+    for (const int num : nums) {
+      if (num == -1) {
+        ++gapLength;
+        continue;
+      }
+      if (prev &gt; 0 &amp;&amp; gapLength &gt; 0) {
+        if (gapLength == 1 &amp;&amp; !checkSingleGap(prev, num, m, x, y))
+          return false;
+        if (gapLength &gt; 1 &amp;&amp; !checkMultipleGaps(prev, num, m, x, y))
+          return false;
+      }
+      prev = num;
+      gapLength = 0;
+    }
+
+    // Check leading gaps.
+    if (nums[0] == -1) {
+      const int num = findFirstNumber(nums, 0, 1);
+      if (num != -1 &amp;&amp; !checkBoundaryGaps(num, m, x, y))
+        return false;
+    }
+
+    // Check trailing gaps.
+    if (nums.back() == -1) {
+      const int num = findFirstNumber(nums, nums.size() - 1, -1);
+      if (num != -1 &amp;&amp; !checkBoundaryGaps(num, m, x, y))
+        return false;
+    }
+
+    return true;
+  }
+
+  // Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+  // difference for a sequence with a single -1 between two numbers.
+  // e.g. [a, -1, b] can be filled with either x or y.
+  bool checkSingleGap(int a, int b, int m, int x, int y) {
+    const int gapWithX = max(abs(a - x), abs(b - x));  // [a, x, b]
+    const int gapWithY = max(abs(a - y), abs(b - y));  // [a, y, b]
+    return min(gapWithX, gapWithY) &lt;= m;
+  }
+
+  // Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+  // difference for a sequence with multiple -1s between two numbers.
+  // e.g. [a, -1, -1, ..., -1, b] can be filled with x and y.
+  bool checkMultipleGaps(int a, int b, int m, int x, int y) {
+    const int ax = abs(a - x);
+    const int ay = abs(a - y);
+    const int bx = abs(b - x);
+    const int by = abs(b - y);
+    const int xy = abs(x - y);
+    const int gapAllX = max(ax, bx);        // [a, x, x, ..., x, b]
+    const int gapAllY = max(ay, by);        // [a, y, y, ..., y, b]
+    const int gapXToY = max({ax, xy, by});  // [a, x, ..., y, b]
+    const int gapYToX = max({ay, xy, bx});  // [a, y, ..., x, b]
+    return min({gapAllX, gapAllY, gapXToY, gapYToX}) &lt;= m;
+  }
+
+  // Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+  // difference for a boundary sequence starting or ending with -1s.
+  // e.g. [a, -1, -1, ...] or [..., -1, -1, a].
+  bool checkBoundaryGaps(int a, int m, int x, int y) {
+    const int gapAllX = abs(a - x);  // [x, x, ..., x, a]
+    const int gapAllY = abs(a - y);  // [y, y, ..., y, a]
+    return min(gapAllX, gapAllY) &lt;= m;
+  }
+
+  // Returns the first positive number starting from the given index or -1
+  // if not found.
+  int findFirstNumber(const vector&lt;int&gt;&amp; nums, int start, int step) {
+    int i = start;
+    while (i &gt;= 0 &amp;&amp; i &lt; nums.size() &amp;&amp; nums[i] == -1)
+      i += step;
+    return i &gt;= 0 &amp;&amp; i &lt; nums.size() ? nums[i] : -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minDifference(int[] nums) {
+    int maxPositiveGap = 0;
+    int mn = 1_000_000_000;
+    int mx = 0;
+
+    for (int i = 1; i &lt; nums.length; ++i) {
+      if ((nums[i - 1] == -1) != (nums[i] == -1)) {
+        final int positive = Math.max(nums[i - 1], nums[i]);
+        mn = Math.min(mn, positive);
+        mx = Math.max(mx, positive);
+      } else {
+        maxPositiveGap = Math.max(maxPositiveGap, Math.abs(nums[i - 1] - nums[i]));
+      }
+    }
+
+    int l = maxPositiveGap;
+    int r = (mx - mn + 1) / 2;
+
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (check(nums, m, mn + m, mx - m))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l;
+  }
+
+  // Returns true if it&#x27;s possible have `m` as maximum absolute difference
+  // between adjacent numbers, where -1s are replaced with `x` or `y`.
+  private boolean check(int[] nums, int m, int x, int y) {
+    int gapLength = 0;
+    int prev = 0;
+
+    for (final int num : nums) {
+      if (num == -1) {
+        ++gapLength;
+        continue;
+      }
+      if (prev &gt; 0 &amp;&amp; gapLength &gt; 0) {
+        if (gapLength == 1 &amp;&amp; !checkSingleGap(prev, num, m, x, y))
+          return false;
+        if (gapLength &gt; 1 &amp;&amp; !checkMultipleGaps(prev, num, m, x, y))
+          return false;
+      }
+      prev = num;
+      gapLength = 0;
+    }
+
+    // Check leading gaps
+    if (nums[0] == -1) {
+      final int num = findFirstNumber(nums, 0, 1);
+      if (num != -1 &amp;&amp; !checkBoundaryGaps(num, m, x, y))
+        return false;
+    }
+
+    // Check trailing gaps
+    if (nums[nums.length - 1] == -1) {
+      final int num = findFirstNumber(nums, nums.length - 1, -1);
+      if (num != -1 &amp;&amp; !checkBoundaryGaps(num, m, x, y))
+        return false;
+    }
+
+    return true;
+  }
+
+  // Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+  // difference for a sequence with a single -1 between two numbers.
+  // e.g. [a, -1, b] can be filled with either x or y.
+  private boolean checkSingleGap(int a, int b, int m, int x, int y) {
+    final int gapWithX = Math.max(Math.abs(a - x), Math.abs(b - x)); // [a, x, b]
+    final int gapWithY = Math.max(Math.abs(a - y), Math.abs(b - y)); // [a, y, b]
+    return Math.min(gapWithX, gapWithY) &lt;= m;
+  }
+
+  // Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+  // difference for a sequence with multiple -1s between two numbers.
+  // e.g. [a, -1, -1, ..., -1, b] can be filled with x and y.
+  private boolean checkMultipleGaps(int a, int b, int m, int x, int y) {
+    final int ax = Math.abs(a - x);
+    final int ay = Math.abs(a - y);
+    final int bx = Math.abs(b - x);
+    final int by = Math.abs(b - y);
+    final int xy = Math.abs(x - y);
+    final int gapAllX = Math.max(ax, bx);               // [a, x, x, ..., x, b]
+    final int gapAllY = Math.max(ay, by);               // [a, y, y, ..., y, b]
+    final int gapXToY = Math.max(Math.max(ax, xy), by); // [a, x, ..., y, b]
+    final int gapYToX = Math.max(Math.max(ay, xy), bx); // [a, y, ..., x, b]
+    return Math.min(Math.min(gapAllX, gapAllY), Math.min(gapXToY, gapYToX)) &lt;= m;
+  }
+
+  // Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+  // difference for a boundary sequence starting or ending with -1s.
+  // e.g. [a, -1, -1, ...] or [..., -1, -1, a].
+  private boolean checkBoundaryGaps(int a, int m, int x, int y) {
+    final int gapAllX = Math.abs(a - x); // [x, x, ..., x, a]
+    final int gapAllY = Math.abs(a - y); // [y, y, ..., y, a]
+    return Math.min(gapAllX, gapAllY) &lt;= m;
+  }
+
+  // Returns the first positive number starting from the given index or -1
+  // if not found.
+  private int findFirstNumber(int[] nums, int start, int step) {
+    int i = start;
+    while (i &gt;= 0 &amp;&amp; i &lt; nums.length &amp;&amp; nums[i] == -1)
+      i += step;
+    return i &gt;= 0 &amp;&amp; i &lt; nums.length ? nums[i] : -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minDifference(self, nums: list[int]) -&gt; int:
+    maxPositiveGap = 0
+    mn = 1_000_000_000
+    mx = 0
+
+    for a, b in itertools.pairwise(nums):
+      if (a == -1) != (b == -1):
+        positive = max(a, b)
+        mn = min(mn, positive)
+        mx = max(mx, positive)
+      else:
+        maxPositiveGap = max(maxPositiveGap, abs(a - b))
+
+    l = maxPositiveGap
+    r = (mx - mn + 1) // 2
+    return bisect.bisect_left(
+        range(l, r), True,
+        key=lambda m: self._check(nums, m, mn + m, mx - m)) + l
+
+  def _check(self, nums: list[int], m: int, x: int, y: int) -&gt; bool:
+    &quot;&quot;&quot;
+    Returns True if it&#x27;s possible have `m` as maximum absolute difference
+    between adjacent numbers, where -1s are replaced with `x` or `y`.
+    &quot;&quot;&quot;
+    gapLength = 0
+    prev = 0
+
+    for num in nums:
+      if num == -1:
+        gapLength += 1
+        continue
+      if prev &gt; 0 and gapLength &gt; 0:
+        if gapLength == 1 and not self._checkSingleGap(prev, num, m, x, y):
+          return False
+        if gapLength &gt; 1 and not self._checkMultipleGaps(prev, num, m, x, y):
+          return False
+      prev = num
+      gapLength = 0
+
+    # Check leading gaps
+    if nums[0] == -1:
+      num = next((num for num in nums if num != -1), -1)
+      if num != -1 and not self._checkBoundaryGaps(num, m, x, y):
+        return False
+
+    # Check trailing gaps
+    if nums[-1] == -1:
+      num = next((num for num in reversed(nums) if num != -1), -1)
+      if num != -1 and not self._checkBoundaryGaps(num, m, x, y):
+        return False
+
+    return True
+
+  def _checkSingleGap(self, a: int, b: int, m: int, x: int, y: int) -&gt; bool:
+    &quot;&quot;&quot;
+    Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+    difference for a sequence with a single -1 between two numbers.
+    e.g. [a, -1, b] can be filled with either x or y.
+    &quot;&quot;&quot;
+    gapWithX = max(abs(a - x), abs(b - x))  # [a, x, b]
+    gapWithY = max(abs(a - y), abs(b - y))  # [a, y, b]
+    return min(gapWithX, gapWithY) &lt;= m
+
+  def _checkMultipleGaps(self, a: int, b: int, m: int, x: int, y: int) -&gt; bool:
+    &quot;&quot;&quot;
+    Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+    difference for a sequence with multiple -1s between two numbers.
+    e.g. [a, -1, -1, ..., -1, b] can be filled with x and y.
+    &quot;&quot;&quot;
+    ax = abs(a - x)
+    ay = abs(a - y)
+    bx = abs(b - x)
+    by = abs(b - y)
+    xy = abs(x - y)
+    gapAllX = max(ax, bx)  # [a, x, x, ..., x, b]
+    gapAllY = max(ay, by)  # [a, y, y, ..., y, b]
+    gapXToY = max(ax, xy, by)  # [a, x, ..., y, b]
+    gapYToX = max(ay, xy, bx)  # [a, y, ..., x, b]
+    return min(gapAllX, gapAllY, gapXToY, gapYToX) &lt;= m
+
+  def _checkBoundaryGaps(self, a: int, m: int, x: int, y: int) -&gt; bool:
+    &quot;&quot;&quot;
+    Returns true if it&#x27;s possible to have at most `m` as the minimized maximum
+    difference for a boundary sequence starting or ending with -1s.
+    e.g. [a, -1, -1, ...] or [..., -1, -1, a].
+    &quot;&quot;&quot;
+    gapAllX = abs(a - x)  # [x, x, ..., x, a]
+    gapAllY = abs(a - y)  # [y, y, ..., y, a]
+    return min(gapAllX, gapAllY) &lt;= m</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

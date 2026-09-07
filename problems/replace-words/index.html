@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace Words - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Replace Words written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/replace-words/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/palindromic-substrings/" class="btn">← Previous</a>
+            <span>Problem 648 of 3563</span>
+            <a href="/leetcode-solutions/problems/dota2-senate/" class="btn">Next →</a>
+        </div>
+        <h1>648. Replace Words</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Replace Words efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  const string* word = nullptr;
+  TrieNode() : children(26) {}
+};
+
+class Solution {
+ public:
+  string replaceWords(vector&lt;string&gt;&amp; dictionary, string sentence) {
+    for (const string&amp; word : dictionary)
+      insert(word);
+
+    string ans;
+    istringstream iss(sentence);
+
+    for (string s; iss &gt;&gt; s;)
+      ans += search(s) + &#x27; &#x27;;
+    ans.pop_back();
+
+    return ans;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+
+  void insert(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        node-&gt;children[i] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[i];
+    }
+    node-&gt;word = &amp;word;
+  }
+
+  string search(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (const char c : word) {
+      if (node-&gt;word)
+        return *node-&gt;word;
+      const int i = c - &#x27;a&#x27;;
+      if (node-&gt;children[i] == nullptr)
+        return word;
+      node = node-&gt;children[i];
+    }
+    return word;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  private TrieNode[] children = new TrieNode[26];
+  private String word;
+}
+
+class Solution {
+  public String replaceWords(List&lt;String&gt; dictionary, String sentence) {
+    StringBuilder sb = new StringBuilder();
+
+    for (final String word : dictionary)
+      insert(word);
+
+    final String[] words = sentence.split(&quot; &quot;);
+    for (final String word : words)
+      sb.append(&#x27; &#x27;).append(search(word));
+
+    return sb.substring(1).toString();
+  }
+
+  private TrieNode root = new TrieNode();
+
+  private void insert(final String word) {
+    TrieNode node = root;
+    for (char c : word.toCharArray()) {
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        node.children[i] = new TrieNode();
+      node = node.children[i];
+    }
+    node.word = word;
+  }
+
+  private String search(final String word) {
+    TrieNode node = root;
+    for (char c : word.toCharArray()) {
+      if (node.word != null)
+        return node.word;
+      final int i = c - &#x27;a&#x27;;
+      if (node.children[i] == null)
+        return word;
+      node = node.children[i];
+    }
+    return word;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def __init__(self):
+    self.root = {}
+
+  def insert(self, word: str) -&gt; None:
+    node = self.root
+    for c in word:
+      if c not in node:
+        node[c] = {}
+      node = node[c]
+    node[&#x27;word&#x27;] = word
+
+  def search(self, word: str) -&gt; str:
+    node = self.root
+    for c in word:
+      if &#x27;word&#x27; in node:
+        return node[&#x27;word&#x27;]
+      if c not in node:
+        return word
+      node = node[c]
+    return word
+
+  def replaceWords(self, dictionary: list[str], sentence: str) -&gt; str:
+    for word in dictionary:
+      self.insert(word)
+
+    words = sentence.split(&#x27; &#x27;)
+    return &#x27; &#x27;.join([self.search(word) for word in words])</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

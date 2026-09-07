@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Cost to Equalize Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Cost to Equalize Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-cost-to-equalize-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-length-of-anagram-concatenation/" class="btn">← Previous</a>
+            <span>Problem 3139 of 3563</span>
+            <a href="/leetcode-solutions/problems/consecutive-available-seats-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3139. Minimum Cost to Equalize Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Cost to Equalize Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minCostToEqualizeArray(vector&lt;int&gt;&amp; nums, int cost1, int cost2) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int n = nums.size();
+    const int minNum = ranges::min(nums);
+    const int maxNum = ranges::max(nums);
+    const long sum = accumulate(nums.begin(), nums.end(), 0L);
+    long ans = LONG_MAX;
+
+    if (cost1 * 2 &lt;= cost2 || n &lt; 3) {
+      const long totalGap = static_cast&lt;long&gt;(maxNum) * n - sum;
+      return (cost1 * totalGap) % kMod;
+    }
+
+    for (int target = maxNum; target &lt; 2 * maxNum; ++target) {
+      const int maxGap = target - minNum;
+      const long totalGap = static_cast&lt;long&gt;(target) * n - sum;
+      const long pairs = min(totalGap / 2, totalGap - maxGap);
+      ans = min(ans, cost1 * (totalGap - 2 * pairs) + cost2 * pairs);
+    }
+
+    return ans % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minCostToEqualizeArray(int[] nums, int cost1, int cost2) {
+    final int MOD = 1_000_000_007;
+    final int n = nums.length;
+    final int minNum = Arrays.stream(nums).min().getAsInt();
+    final int maxNum = Arrays.stream(nums).max().getAsInt();
+    final long sum = Arrays.stream(nums).asLongStream().sum();
+    long ans = Long.MAX_VALUE;
+
+    if (cost1 * 2 &lt;= cost2 || n &lt; 3) {
+      final long totalGap = 1L * maxNum * n - sum;
+      return (int) ((cost1 * totalGap) % MOD);
+    }
+
+    for (int target = maxNum; target &lt; 2 * maxNum; ++target) {
+      final int maxGap = target - minNum;
+      final long totalGap = 1L * target * n - sum;
+      final long pairs = Math.min(totalGap / 2, totalGap - maxGap);
+      ans = Math.min(ans, cost1 * (totalGap - 2 * pairs) + cost2 * pairs);
+    }
+
+    return (int) (ans % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minCostToEqualizeArray(
+      self,
+      nums: list[int],
+      cost1: int,
+      cost2: int,
+  ) -&gt; int:
+    MOD = 1_000_000_007
+    n = len(nums)
+    minNum = min(nums)
+    maxNum = max(nums)
+    summ = sum(nums)
+
+    if cost1 * 2 &lt;= cost2 or n &lt; 3:
+      totalGap = maxNum * n - summ
+      return (cost1 * totalGap) % MOD
+
+    def getMinCost(target: int) -&gt; int:
+      &quot;&quot;&quot;Returns the minimum cost to make all numbers equal to `target`.&quot;&quot;&quot;
+      maxGap = target - minNum
+      totalGap = target * n - summ
+      # Pair one shallowest number with one non-shallowest number, so the worst
+      # case is that we have `totalGap - maxGap` non-shallowest numbers to pair.
+      pairs = min(totalGap // 2, totalGap - maxGap)
+      return cost1 * (totalGap - 2 * pairs) + cost2 * pairs
+
+    return min(getMinCost(target)
+               for target in range(maxNum, 2 * maxNum)) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

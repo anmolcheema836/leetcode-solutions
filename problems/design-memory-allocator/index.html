@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Memory Allocator - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Memory Allocator written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-memory-allocator/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-square-streak-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 2502 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-number-of-points-from-grid-queries/" class="btn">Next →</a>
+        </div>
+        <h1>2502. Design Memory Allocator</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Memory Allocator efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Allocator {
+ public:
+  Allocator(int n) : memory(n), mIDToIndices(1001) {}
+
+  int allocate(int size, int mID) {
+    int consecutiveFree = 0;
+    for (int i = 0; i &lt; memory.size(); ++i) {
+      consecutiveFree = memory[i] == 0 ? consecutiveFree + 1 : 0;
+      if (consecutiveFree == size) {
+        for (int j = i - consecutiveFree + 1; j &lt;= i; ++j) {
+          memory[j] = mID;
+          mIDToIndices[mID].push_back(j);
+        }
+        return i - consecutiveFree + 1;
+      }
+    }
+    return -1;
+  }
+
+  int free(int mID) {
+    vector&lt;int&gt;&amp; indices = mIDToIndices[mID];
+    const int freedUnits = indices.size();
+    for (const int index : indices)
+      memory[index] = 0;
+    indices.clear();
+    return freedUnits;
+  }
+
+ private:
+  vector&lt;int&gt; memory;
+  vector&lt;vector&lt;int&gt;&gt; mIDToIndices;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Allocator {
+  public Allocator(int n) {
+    memory = new int[n];
+    mIDToIndices = new List[1001];
+    for (int i = 1; i &lt;= 1000; ++i)
+      mIDToIndices[i] = new ArrayList&lt;&gt;();
+  }
+
+  public int allocate(int size, int mID) {
+    int consecutiveFree = 0;
+    for (int i = 0; i &lt; memory.length; ++i) {
+      consecutiveFree = memory[i] == 0 ? consecutiveFree + 1 : 0;
+      if (consecutiveFree == size) {
+        for (int j = i - consecutiveFree + 1; j &lt;= i; ++j) {
+          memory[j] = mID;
+          mIDToIndices[mID].add(j);
+        }
+        return i - consecutiveFree + 1;
+      }
+    }
+    return -1;
+  }
+
+  public int free(int mID) {
+    List&lt;Integer&gt; indices = mIDToIndices[mID];
+    final int freedUnits = indices.size();
+    for (final int index : indices)
+      memory[index] = 0;
+    indices.clear();
+    return freedUnits;
+  }
+
+  private int[] memory;
+  private List&lt;Integer&gt;[] mIDToIndices;
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Allocator:
+  def __init__(self, n: int):
+    self.memory = [0] * n
+    self.mIDToIndices = [[] for _ in range(1001)]
+
+  def allocate(self, size: int, mID: int) -&gt; int:
+    consecutiveFree = 0
+    for i, m in enumerate(self.memory):
+      consecutiveFree = consecutiveFree + 1 if m == 0 else 0
+      if consecutiveFree == size:
+        for j in range(i - consecutiveFree + 1, i + 1):
+          self.memory[j] = mID
+          self.mIDToIndices[mID].append(j)
+        return i - consecutiveFree + 1
+    return -1
+
+  def free(self, mID: int) -&gt; int:
+    indices = self.mIDToIndices[mID]
+    freedUnits = len(indices)
+    for index in indices:
+      self.memory[index] = 0
+    indices.clear()
+    return freedUnits</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

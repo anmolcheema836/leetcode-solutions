@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimize Hamming Distance After Swap Operations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimize Hamming Distance After Swap Operations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimize-hamming-distance-after-swap-operations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/swapping-nodes-in-a-linked-list/" class="btn">← Previous</a>
+            <span>Problem 1722 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-minimum-time-to-finish-all-jobs/" class="btn">Next →</a>
+        </div>
+        <h1>1722. Minimize Hamming Distance After Swap Operations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimize Hamming Distance After Swap Operations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class UnionFind {
+ public:
+  UnionFind(int n) : id(n), rank(n) {
+    iota(id.begin(), id.end(), 0);
+  }
+
+  void unionByRank(int u, int v) {
+    const int i = find(u);
+    const int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  int find(int u) {
+    return id[u] == u ? u : id[u] = find(id[u]);
+  }
+
+ private:
+  vector&lt;int&gt; id;
+  vector&lt;int&gt; rank;
+};
+
+class Solution {
+ public:
+  int minimumHammingDistance(vector&lt;int&gt;&amp; source, vector&lt;int&gt;&amp; target,
+                             vector&lt;vector&lt;int&gt;&gt;&amp; allowedSwaps) {
+    const int n = source.size();
+    int ans = 0;
+    UnionFind uf(n);
+    vector&lt;unordered_map&lt;int, int&gt;&gt; groupIdToCount(n);
+
+    for (const vector&lt;int&gt;&amp; allowedSwap : allowedSwaps) {
+      const int a = allowedSwap[0];
+      const int b = allowedSwap[1];
+      uf.unionByRank(a, b);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      ++groupIdToCount[uf.find(i)][source[i]];
+
+    for (int i = 0; i &lt; n; ++i) {
+      const int groupId = uf.find(i);
+      unordered_map&lt;int, int&gt;&amp; count = groupIdToCount[groupId];
+      if (!count.contains(target[i]))
+        ++ans;
+      else if (--count[target[i]] == 0)
+        count.erase(target[i]);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class UnionFind {
+  public UnionFind(int n) {
+    id = new int[n];
+    rank = new int[n];
+    for (int i = 0; i &lt; n; ++i)
+      id[i] = i;
+  }
+
+  public void unionByRank(int u, int v) {
+    final int i = find(u);
+    final int j = find(v);
+    if (i == j)
+      return;
+    if (rank[i] &lt; rank[j]) {
+      id[i] = j;
+    } else if (rank[i] &gt; rank[j]) {
+      id[j] = i;
+    } else {
+      id[i] = j;
+      ++rank[j];
+    }
+  }
+
+  public int find(int u) {
+    return id[u] == u ? u : (id[u] = find(id[u]));
+  }
+
+  private int[] id;
+  private int[] rank;
+}
+
+class Solution {
+  public int minimumHammingDistance(int[] source, int[] target, int[][] allowedSwaps) {
+    final int n = source.length;
+    int ans = 0;
+    UnionFind uf = new UnionFind(n);
+    Map&lt;Integer, Integer&gt;[] groupIdToCount = new Map[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      groupIdToCount[i] = new HashMap&lt;&gt;();
+
+    for (int[] allowedSwap : allowedSwaps) {
+      final int a = allowedSwap[0];
+      final int b = allowedSwap[1];
+      uf.unionByRank(a, b);
+    }
+
+    for (int i = 0; i &lt; n; ++i)
+      groupIdToCount[uf.find(i)].merge(source[i], 1, Integer::sum);
+
+    for (int i = 0; i &lt; n; ++i) {
+      final int groupId = uf.find(i);
+      Map&lt;Integer, Integer&gt; count = groupIdToCount[groupId];
+      if (!count.containsKey(target[i]))
+        ++ans;
+      else if (count.merge(target[i], -1, Integer::sum) == 0)
+        count.remove(target[i]);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class UnionFind:
+  def __init__(self, n: int):
+    self.id = list(range(n))
+    self.rank = [0] * n
+
+  def unionByRank(self, u: int, v: int) -&gt; None:
+    i = self.find(u)
+    j = self.find(v)
+    if i == j:
+      return
+    if self.rank[i] &lt; self.rank[j]:
+      self.id[i] = j
+    elif self.rank[i] &gt; self.rank[j]:
+      self.id[j] = i
+    else:
+      self.id[i] = j
+      self.rank[j] += 1
+
+  def find(self, u: int) -&gt; int:
+    if self.id[u] != u:
+      self.id[u] = self.find(self.id[u])
+    return self.id[u]
+
+
+class Solution:
+  def minimumHammingDistance(
+      self,
+      source: list[int],
+      target: list[int],
+      allowedSwaps: list[list[int]],
+  ) -&gt; int:
+    n = len(source)
+    ans = 0
+    uf = UnionFind(n)
+    groupIdToCount = [collections.Counter() for _ in range(n)]
+
+    for a, b in allowedSwaps:
+      uf.unionByRank(a, b)
+
+    for i in range(n):
+      groupIdToCount[uf.find(i)][source[i]] += 1
+
+    for i in range(n):
+      groupId = uf.find(i)
+      count = groupIdToCount[groupId]
+      if target[i] not in count:
+        ans += 1
+      else:
+        count[target[i]] -= 1
+        if count[target[i]] == 0:
+          del count[target[i]]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Sub-Tree of N-Ary Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Move Sub-Tree of N-Ary Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/move-sub-tree-of-n-ary-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/best-position-for-a-service-centre/" class="btn">← Previous</a>
+            <span>Problem 1516 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-users-with-valid-e-mails/" class="btn">Next →</a>
+        </div>
+        <h1>1516. Move Sub-Tree of N-Ary Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Move Sub-Tree of N-Ary Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  Node* moveSubTree(Node* root, Node* p, Node* q) {
+    if (find(q-&gt;children.begin(), q-&gt;children.end(), p) != q-&gt;children.end())
+      return root;
+
+    // Create a dummy node for the case when root == p.
+    Node* dummy = new Node(0, {root});
+
+    // Get each parent of p and q.
+    Node* pParent = getParent(dummy, p);
+    Node* qParent = getParent(p, q);
+
+    // Get p&#x27;s original index in p&#x27;s parent.
+    vector&lt;Node*&gt;&amp; pSiblings = pParent-&gt;children;
+    const int pIndex =
+        find(pSiblings.begin(), pSiblings.end(), p) - pSiblings.begin();
+    pSiblings.erase(pSiblings.begin() + pIndex);
+
+    q-&gt;children.push_back(p);
+
+    // If q is in p&#x27;s subtree, qParent != nullptr.
+    if (qParent != nullptr) {
+      vector&lt;Node*&gt;&amp; qSiblings = qParent-&gt;children;
+      std::erase(qSiblings, q);
+      pSiblings.insert(pSiblings.begin() + pIndex, q);
+    }
+
+    return dummy-&gt;children[0];
+  }
+
+ private:
+  Node* getParent(Node* root, Node* target) {
+    for (Node* child : root-&gt;children) {
+      if (child == target)
+        return root;
+      Node* res = getParent(child, target);
+      if (res != nullptr)
+        return res;
+    }
+    return nullptr;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def moveSubTree(self, root: &#x27;Node&#x27;, p: &#x27;Node&#x27;, q: &#x27;Node&#x27;) -&gt; &#x27;Node&#x27;:
+    if p in q.children:
+      return root
+
+    # Create a dummy Node for the case when root == p
+    dummy = Node(None, [root])
+
+    # Get each parent of p and q
+    pParent = self._getParent(dummy, p)
+    qParent = self._getParent(p, q)
+
+    # Get p&#x27;s original index in p&#x27;s parent
+    pIndex = pParent.children.index(p)
+    pParent.children.pop(pIndex)
+
+    q.children.append(p)
+
+    # If q is in the p&#x27;s subtree, qParent != None
+    if qParent:
+      qParent.children.remove(q)
+      pParent.children.insert(pIndex, q)
+
+    return dummy.children[0]
+
+  def _getParent(self, root: &#x27;Node&#x27;, target: &#x27;Node&#x27;) -&gt; Optional[&#x27;Node&#x27;]:
+    for child in root.children:
+      if child == target:
+        return root
+      res = self._getParent(child, target)
+      if res:
+        return res
+    return None</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Sum of 3 Non-Overlapping Subarrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Sum of 3 Non-Overlapping Subarrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-sum-of-3-non-overlapping-subarrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/knight-probability-in-chessboard/" class="btn">← Previous</a>
+            <span>Problem 689 of 3563</span>
+            <a href="/leetcode-solutions/problems/employee-importance/" class="btn">Next →</a>
+        </div>
+        <h1>689. Maximum Sum of 3 Non-Overlapping Subarrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Sum of 3 Non-Overlapping Subarrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; maxSumOfThreeSubarrays(vector&lt;int&gt;&amp; nums, int k) {
+    const int n = nums.size() - k + 1;
+    // sums[i] := sum(nums[i..i + k))
+    vector&lt;int&gt; sums(n);
+    // l[i] := the index in [0..i] that has the maximum sums[i]
+    vector&lt;int&gt; l(n);
+    // r[i] := the index in [i..n) that has the maximum sums[i]
+    vector&lt;int&gt; r(n);
+
+    int sum = 0;
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      sum += nums[i];
+      if (i &gt;= k)
+        sum -= nums[i - k];
+      if (i &gt;= k - 1)
+        sums[i - k + 1] = sum;
+    }
+
+    int maxIndex = 0;
+    for (int i = 0; i &lt; n; ++i) {
+      if (sums[i] &gt; sums[maxIndex])
+        maxIndex = i;
+      l[i] = maxIndex;
+    }
+
+    maxIndex = n - 1;
+    for (int i = n - 1; i &gt;= 0; --i) {
+      if (sums[i] &gt;= sums[maxIndex])
+        maxIndex = i;
+      r[i] = maxIndex;
+    }
+
+    vector&lt;int&gt; ans{-1, -1, -1};
+
+    for (int i = k; i &lt; n - k; ++i)
+      if (ans[0] == -1 || sums[ans[0]] + sums[ans[1]] + sums[ans[2]] &lt;
+                              sums[l[i - k]] + sums[i] + sums[r[i + k]]) {
+        ans[0] = l[i - k];
+        ans[1] = i;
+        ans[2] = r[i + k];
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maxSumOfThreeSubarrays(int[] nums, int k) {
+    final int n = nums.length - k + 1;
+    // sums[i] := sum(nums[i..i + k))
+    int[] sums = new int[n];
+    // l[i] := the index in [0..i] that has the maximum sums[i]
+    int[] l = new int[n];
+    // r[i] := the index in [i..n) that has the maximum sums[i]
+    int[] r = new int[n];
+
+    int sum = 0;
+    for (int i = 0; i &lt; nums.length; ++i) {
+      sum += nums[i];
+      if (i &gt;= k)
+        sum -= nums[i - k];
+      if (i &gt;= k - 1)
+        sums[i - k + 1] = sum;
+    }
+
+    int maxIndex = 0;
+    for (int i = 0; i &lt; n; ++i) {
+      if (sums[i] &gt; sums[maxIndex])
+        maxIndex = i;
+      l[i] = maxIndex;
+    }
+
+    maxIndex = n - 1;
+    for (int i = n - 1; i &gt;= 0; --i) {
+      if (sums[i] &gt;= sums[maxIndex])
+        maxIndex = i;
+      r[i] = maxIndex;
+    }
+
+    int[] ans = {-1, -1, -1};
+
+    for (int i = k; i + k &lt; n; ++i)
+      if (ans[0] == -1 ||
+          sums[ans[0]] + sums[ans[1]] + sums[ans[2]] &lt; sums[l[i - k]] + sums[i] + sums[r[i + k]]) {
+        ans[0] = l[i - k];
+        ans[1] = i;
+        ans[2] = r[i + k];
+      }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxSumOfThreeSubarrays(self, nums: list[int], k: int) -&gt; list[int]:
+    n = len(nums) - k + 1
+    # sums[i] := sum(nums[i..i + k))
+    sums = [0] * n
+    # l[i] := the index in [0..i] that has the maximum sums[i]
+    l = [0] * n
+    # r[i] := the index in [i..n) that has the maximum sums[i]
+    r = [0] * n
+
+    summ = 0
+    for i, num in enumerate(nums):
+      summ += num
+      if i &gt;= k:
+        summ -= nums[i - k]
+      if i &gt;= k - 1:
+        sums[i - k + 1] = summ
+
+    maxIndex = 0
+    for i in range(n):
+      if sums[i] &gt; sums[maxIndex]:
+        maxIndex = i
+      l[i] = maxIndex
+
+    maxIndex = n - 1
+    for i in range(n - 1, -1, -1):
+      if sums[i] &gt;= sums[maxIndex]:
+        maxIndex = i
+      r[i] = maxIndex
+
+    ans = [-1, -1, -1]
+
+    for i in range(k, n - k):
+      if (ans[0] == -1 or
+          sums[ans[0]] + sums[ans[1]] + sums[ans[2]] &lt;
+              sums[l[i - k]] + sums[i] + sums[r[i + k]]):
+        ans[0] = l[i - k]
+        ans[1] = i
+        ans[2] = r[i + k]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

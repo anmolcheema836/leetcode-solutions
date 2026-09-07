@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make String Anti-palindrome - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Make String Anti-palindrome written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/make-string-anti-palindrome/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-trending-hashtags/" class="btn">← Previous</a>
+            <span>Problem 3088 of 3563</span>
+            <a href="/leetcode-solutions/problems/find-bursty-behavior/" class="btn">Next →</a>
+        </div>
+        <h1>3088. Make String Anti-palindrome</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Make String Anti-palindrome efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string makeAntiPalindrome(string s) {
+    const int n = s.length();
+    int i = n / 2;
+    ranges::sort(s);
+    if (s[i] != s[n - 1 - i])
+      return s;
+
+    int j = getFirstDiffIndexInSecondHalf(s);
+    while (s[i] == s[n - 1 - i]) {
+      if (j == n)
+        return &quot;-1&quot;;
+      swap(s[i++], s[j++]);
+    }
+
+    return s;
+  }
+
+ private:
+  // Returns the first index in s[n / 2..n) that is different from the first
+  // letter of the second half, s[n / 2].
+  int getFirstDiffIndexInSecondHalf(const string&amp; s) {
+    const int n = s.size();
+    const char firstLetter = s[n / 2];
+    int firstDiffIndex = n / 2;
+    while (firstDiffIndex &lt; n &amp;&amp; s[firstDiffIndex] == firstLetter)
+      ++firstDiffIndex;
+    return firstDiffIndex;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String makeAntiPalindrome(String s) {
+    final int n = s.length();
+    int i = n / 2;
+    char[] chars = s.toCharArray();
+    Arrays.sort(chars);
+    if (chars[i] != chars[n - 1 - i])
+      return new String(chars);
+
+    int j = getFirstDiffIndexInSecondHalf(chars);
+    while (chars[i] == chars[n - 1 - i]) {
+      if (j == n)
+        return &quot;-1&quot;;
+      final char temp = chars[i];
+      chars[i] = chars[j];
+      chars[j] = temp;
+      ++i;
+      ++j;
+    }
+
+    return new String(chars);
+  }
+
+  // Returns the first index in chars[n / 2..n) that is different from the first
+  // letter of the second half, chars[n / 2].
+  private int getFirstDiffIndexInSecondHalf(char[] chars) {
+    final int n = chars.length;
+    final char firstLetter = chars[n / 2];
+    int firstDiffIndex = n / 2;
+    while (firstDiffIndex &lt; n &amp;&amp; chars[firstDiffIndex] == firstLetter)
+      ++firstDiffIndex;
+    return firstDiffIndex;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def makeAntiPalindrome(self, s: str) -&gt; str:
+    n = len(s)
+    i = n // 2
+    chars = sorted(list(s))
+    if chars[i] != chars[n - 1 - i]:
+      return &#x27;&#x27;.join(chars)
+
+    j = self._getFirstDiffIndexInSecondHalf(chars)
+    while chars[i] == chars[n - 1 - i]:
+      if j == n:
+        return &#x27;-1&#x27;
+      chars[i], chars[j] = chars[j], chars[i]
+      i += 1
+      j += 1
+
+    return &#x27;&#x27;.join(chars)
+
+  def _getFirstDiffIndexInSecondHalf(self, chars: list[str]) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the first index in chars[n / 2..n) that is different from the first
+    letter of the second half, chars[n / 2].
+    &quot;&quot;&quot;
+    n = len(chars)
+    firstLetter = chars[n // 2]
+    firstDiffIndex = n // 2
+    while firstDiffIndex &lt; n and chars[firstDiffIndex] == firstLetter:
+      firstDiffIndex += 1
+    return firstDiffIndex</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

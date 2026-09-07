@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Zero Request Servers - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Zero Request Servers written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-zero-request-servers/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/decremental-string-concatenation/" class="btn">← Previous</a>
+            <span>Problem 2747 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-beautiful-pairs/" class="btn">Next →</a>
+        </div>
+        <h1>2747. Count Zero Request Servers</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Zero Request Servers efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct IndexedQuery {
+  int queryIndex;
+  int query;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; countServers(int n, vector&lt;vector&lt;int&gt;&gt;&amp; logs, int x,
+                           vector&lt;int&gt;&amp; queries) {
+    vector&lt;int&gt; ans(queries.size());
+    vector&lt;int&gt; count(n + 1);
+
+    ranges::sort(logs, ranges::less{},
+                 [](const vector&lt;int&gt;&amp; log) { return log[1]; });
+
+    int i = 0;
+    int j = 0;
+    int servers = 0;
+
+    // For each query, we care about logs[i..j].
+    for (const auto&amp; [queryIndex, query] : getIndexedQueries(queries)) {
+      for (; j &lt; logs.size() &amp;&amp; logs[j][1] &lt;= query; ++j)
+        if (++count[logs[j][0]] == 1)
+          ++servers;
+      for (; i &lt; logs.size() &amp;&amp; logs[i][1] &lt; query - x; ++i)
+        if (--count[logs[i][0]] == 0)
+          --servers;
+      ans[queryIndex] = n - servers;
+    }
+
+    return ans;
+  }
+
+ private:
+  vector&lt;IndexedQuery&gt; getIndexedQueries(const vector&lt;int&gt;&amp; queries) {
+    vector&lt;IndexedQuery&gt; indexedQueries;
+    for (int i = 0; i &lt; queries.size(); ++i)
+      indexedQueries.push_back({i, queries[i]});
+    ranges::sort(indexedQueries,
+                 [](const IndexedQuery&amp; a, const IndexedQuery&amp; b) {
+      return a.query &lt; b.query;
+    });
+    return indexedQueries;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] countServers(int n, int[][] logs, int x, int[] queries) {
+    int[] ans = new int[queries.length];
+    int[] count = new int[n + 1];
+
+    Arrays.sort(logs, Comparator.comparingInt(log -&gt; log[1]));
+
+    int i = 0;
+    int j = 0;
+    int servers = 0;
+
+    // For each query, we care about logs[i..j].
+    for (IndexedQuery indexedQuery : getIndexedQueries(queries)) {
+      final int queryIndex = indexedQuery.queryIndex;
+      final int query = indexedQuery.query;
+      for (; j &lt; logs.length &amp;&amp; logs[j][1] &lt;= query; ++j)
+        if (++count[logs[j][0]] == 1)
+          ++servers;
+      for (; i &lt; logs.length &amp;&amp; logs[i][1] &lt; query - x; ++i)
+        if (--count[logs[i][0]] == 0)
+          --servers;
+      ans[queryIndex] = n - servers;
+    }
+
+    return ans;
+  }
+
+  private record IndexedQuery(int queryIndex, int query){};
+
+  private IndexedQuery[] getIndexedQueries(int[] queries) {
+    IndexedQuery[] indexedQueries = new IndexedQuery[queries.length];
+    for (int i = 0; i &lt; queries.length; ++i)
+      indexedQueries[i] = new IndexedQuery(i, queries[i]);
+    Arrays.sort(indexedQueries, Comparator.comparingInt(IndexedQuery::query));
+    return indexedQueries;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class IndexedQuery:
+  queryIndex: int
+  query: int
+
+  def __iter__(self):
+    yield self.queryIndex
+    yield self.query
+
+
+class Solution:
+  def countServers(
+      self,
+      n: int,
+      logs: list[list[int]],
+      x: int,
+      queries: list[int],
+  ) -&gt; list[int]:
+    ans = [0] * len(queries)
+    count = [0] * (n + 1)
+
+    logs.sort(key=lambda x: x[1])
+
+    i = 0
+    j = 0
+    servers = 0
+
+    # For each query, we care about logs[i..j].
+    for queryIndex, query in sorted([IndexedQuery(i, query)
+                                     for i, query in enumerate(queries)],
+                                    key=lambda x: x.query):
+      while j &lt; len(logs) and logs[j][1] &lt;= query:
+        count[logs[j][0]] += 1
+        if count[logs[j][0]] == 1:
+          servers += 1
+        j += 1
+      while i &lt; len(logs) and logs[i][1] &lt; query - x:
+        count[logs[i][0]] -= 1
+        if count[logs[i][0]] == 0:
+          servers -= 1
+        i += 1
+      ans[queryIndex] = n - servers
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

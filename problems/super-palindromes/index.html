@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Palindromes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Super Palindromes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/super-palindromes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/sort-array-by-parity/" class="btn">← Previous</a>
+            <span>Problem 906 of 3563</span>
+            <a href="/leetcode-solutions/problems/sum-of-subarray-minimums/" class="btn">Next →</a>
+        </div>
+        <h1>906. Super Palindromes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Super Palindromes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int superpalindromesInRange(string left, string right) {
+    int ans = 0;
+    const long l = stoll(left);
+    const long r = stoll(right);
+
+    for (long i = sqrt(l); i * i &lt;= r;) {
+      const long palindrome = nextPalindrome(i);
+      const long squared = palindrome * palindrome;
+      if (squared &lt;= r &amp;&amp; isPalindrome(squared))
+        ++ans;
+      i = palindrome + 1;
+    }
+
+    return ans;
+  }
+
+ private:
+  long nextPalindrome(int num) {
+    const string s = to_string(num);
+    const int n = s.length();
+    string half = s.substr(0, (n + 1) / 2);
+    string reversedHalf = reversed(half.substr(0, n / 2));
+    const long candidate = stoll(half + reversedHalf);
+    if (candidate &gt;= num)
+      return candidate;
+    half = to_string(stoll(half) + 1);
+    reversedHalf = reversed(half.substr(0, n / 2));
+    return stoll(half + reversedHalf);
+  }
+
+  string reversed(const string&amp; s) {
+    return {s.rbegin(), s.rend()};
+  }
+
+  bool isPalindrome(long num) {
+    const string s = to_string(num);
+    int l = 0;
+    int r = s.length() - 1;
+    while (l &lt; r)
+      if (s[l++] != s[r--])
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int superpalindromesInRange(String left, String right) {
+    int ans = 0;
+    Long l = Long.valueOf(left);
+    Long r = Long.valueOf(right);
+
+    for (long i = (long) Math.sqrt(l); i * i &lt;= r;) {
+      long palindrome = nextPalindrome(i);
+      long squared = palindrome * palindrome;
+      if (squared &lt;= r &amp;&amp; isPalindrome(squared))
+        ++ans;
+      i = palindrome + 1;
+    }
+
+    return ans;
+  }
+
+  private long nextPalindrome(long num) {
+    final String s = String.valueOf(num);
+    final int n = s.length();
+
+    String half = s.substring(0, (n + 1) / 2);
+    String reversedHalf = new StringBuilder(half.substring(0, n / 2)).reverse().toString();
+    final long candidate = Long.valueOf(half + reversedHalf);
+    if (candidate &gt;= num)
+      return candidate;
+
+    half = String.valueOf(Long.valueOf(half) + 1);
+    reversedHalf = new StringBuilder(half.substring(0, n / 2)).reverse().toString();
+    return Long.valueOf(half + reversedHalf);
+  }
+
+  private boolean isPalindrome(long num) {
+    final String s = String.valueOf(num);
+    int l = 0;
+    int r = s.length() - 1;
+
+    while (l &lt; r)
+      if (s.charAt(l++) != s.charAt(r--))
+        return false;
+
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def superpalindromesInRange(self, left: str, right: str) -&gt; int:
+    def nextPalindrome(num: int) -&gt; int:
+      s = str(num)
+      n = len(s)
+
+      half = s[0:(n + 1) // 2]
+      reversedHalf = half[:n // 2][::-1]
+      candidate = int(half + reversedHalf)
+      if candidate &gt;= num:
+        return candidate
+
+      half = str(int(half) + 1)
+      reversedHalf = half[:n // 2][::-1]
+      return int(half + reversedHalf)
+
+    def isPalindrome(num: int) -&gt; bool:
+      s = str(num)
+      l = 0
+      r = len(s) - 1
+
+      while l &lt; r:
+        if s[l] != s[r]:
+          return False
+        l += 1
+        r -= 1
+
+      return True
+
+    ans = 0
+    l = int(left)
+    r = int(right)
+    i = math.isqrt(l)
+
+    while i * i &lt;= r:
+      palindrome = nextPalindrome(i)
+      squared = palindrome**2
+      if squared &lt;= r and isPalindrome(squared):
+        ans += 1
+      i = palindrome + 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Array Transformation II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Zero Array Transformation II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/zero-array-transformation-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/zero-array-transformation-i/" class="btn">← Previous</a>
+            <span>Problem 3356 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimize-the-maximum-adjacent-element-difference/" class="btn">Next →</a>
+        </div>
+        <h1>3356. Zero Array Transformation II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Zero Array Transformation II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minZeroArray(vector&lt;int&gt;&amp; nums, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    vector&lt;int&gt; line(nums.size() + 1);
+    int decrement = 0;
+    int k = 0;
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      while (decrement + line[i] &lt; nums[i]) {
+        if (k == queries.size())
+          return -1;
+        const int l = queries[k][0];
+        const int r = queries[k][1];
+        const int val = queries[k][2];
+        ++k;
+        if (r &lt; i)
+          continue;
+        line[max(l, i)] += val;
+        line[r + 1] -= val;
+      }
+      decrement += line[i];
+    }
+
+    return k;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minZeroArray(int[] nums, int[][] queries) {
+    int[] line = new int[nums.length + 1];
+    int decrement = 0;
+    int k = 0;
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      while (decrement + line[i] &lt; nums[i]) {
+        if (k == queries.length)
+          return -1;
+        final int l = queries[k][0];
+        final int r = queries[k][1];
+        final int val = queries[k][2];
+        ++k;
+        if (r &lt; i)
+          continue;
+        line[Math.max(l, i)] += val;
+        line[r + 1] -= val;
+      }
+      decrement += line[i];
+    }
+
+    return k;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minZeroArray(self, nums: list[int], queries: list[list[int]]) -&gt; int:
+    line = [0] * (len(nums) + 1)
+    decrement = 0
+    k = 0
+
+    for i, num in enumerate(nums):
+      while decrement + line[i] &lt; num:
+        if k == len(queries):
+          return -1
+        l, r, val = queries[k]
+        k += 1
+        if r &lt; i:
+          continue
+        line[max(l, i)] += val
+        line[r + 1] -= val
+      decrement += line[i]
+
+    return k</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

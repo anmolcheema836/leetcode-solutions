@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Profit from Valid Topological Order in DAG - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Profit from Valid Topological Order in DAG written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-profit-from-valid-topological-order-in-dag/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-cells-in-overlapping-horizontal-and-vertical-substrings/" class="btn">← Previous</a>
+            <span>Problem 3530 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-covered-buildings/" class="btn">Next →</a>
+        </div>
+        <h1>3530. Maximum Profit from Valid Topological Order in DAG</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Profit from Valid Topological Order in DAG efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxProfit(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges, vector&lt;int&gt;&amp; score) {
+    const int maxMask = 1 &lt;&lt; n;
+    // need[i] := the bitmask representing all nodes that must be placed before
+    // node i
+    vector&lt;int&gt; need(n);
+    // dp[mask] := the maximum profit achievable by placing the set of nodes
+    // represented by `mask`
+    vector&lt;int&gt; dp(maxMask, -1);
+    dp[0] = 0;
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      need[v] |= 1 &lt;&lt; u;
+    }
+
+    // Iterate over all subsets of nodes (represented by bitmask `mask`)
+    for (unsigned mask = 0; mask &lt; maxMask; ++mask) {
+      if (dp[mask] == -1)
+        continue;
+      // Determine the position of the next node to be placed (1-based).
+      const int pos = popcount(mask) + 1;
+      // Try to place each node `i` that hasn&#x27;t been placed yet.
+      for (int i = 0; i &lt; n; ++i) {
+        if (mask &gt;&gt; i &amp; 1)
+          continue;
+        // Check if all dependencies of node `i` are already placed.
+        if ((mask &amp; need[i]) == need[i]) {
+          const int newMask = mask | 1 &lt;&lt; i;  // Mark node `i` as placed.
+          dp[newMask] = max(dp[newMask], dp[mask] + score[i] * pos);
+        }
+      }
+    }
+
+    return dp.back();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxProfit(int n, int[][] edges, int[] score) {
+    final int maxMask = 1 &lt;&lt; n;
+    // need[i] := the bitmask representing all nodes that must be placed before node i
+    int[] need = new int[n];
+    // dp[mask] := the maximum profit achievable by placing the set of nodes represented by `mask`
+    int[] dp = new int[maxMask];
+    Arrays.fill(dp, -1);
+    dp[0] = 0;
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      need[v] |= 1 &lt;&lt; u;
+    }
+
+    // Iterate over all subsets of nodes (represented by bitmask `mask`)
+    for (int mask = 0; mask &lt; maxMask; ++mask) {
+      if (dp[mask] == -1)
+        continue;
+      // Determine the position of the next node to be placed (1-based).
+      int pos = Integer.bitCount(mask) + 1;
+      // Try to place each node `i` that hasn&#x27;t been placed yet.
+      for (int i = 0; i &lt; n; ++i) {
+        if ((mask &gt;&gt; i &amp; 1) == 1)
+          continue;
+        // Check if all dependencies of node `i` are already placed.
+        if ((mask &amp; need[i]) == need[i]) {
+          final int newMask = mask | 1 &lt;&lt; i; // Mark node `i` as placed.
+          dp[newMask] = Math.max(dp[newMask], dp[mask] + score[i] * pos);
+        }
+      }
+    }
+
+    return dp[maxMask - 1];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxProfit(self, n: int, edges: list[list[int]], score: list[int]) -&gt; int:
+    # need[i] := the bitmask representing all nodes that must be placed before
+    # node i
+    need = [0] * n
+    # dp[mask] := the maximum profit achievable by placing the set of nodes
+    # represented by `mask`
+    dp = [-1] * (1 &lt;&lt; n)
+    dp[0] = 0
+
+    for u, v in edges:
+      need[v] |= 1 &lt;&lt; u
+
+    # Iterate over all subsets of nodes (represented by bitmask `mask`)
+    for mask in range(1 &lt;&lt; n):
+      if dp[mask] == -1:
+        continue
+      # Determine the position of the next node to be placed (1-based).
+      pos = mask.bit_count() + 1
+      # Try to place each node `i` that hasn&#x27;t been placed yet.
+      for i in range(n):
+        if mask &gt;&gt; i &amp; 1:
+          continue
+        # Check if all dependencies of node `i` are already placed.
+        if (mask &amp; need[i]) == need[i]:
+          newMask = mask | 1 &lt;&lt; i  # Mark node `i` as placed.
+          dp[newMask] = max(dp[newMask], dp[mask] + score[i] * pos)
+
+    return dp[-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

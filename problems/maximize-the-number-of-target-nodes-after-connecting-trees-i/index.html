@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize the Number of Target Nodes After Connecting Trees I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize the Number of Target Nodes After Connecting Trees I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-the-number-of-target-nodes-after-connecting-trees-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/identify-the-largest-outlier-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 3372 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-the-number-of-target-nodes-after-connecting-trees-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3372. Maximize the Number of Target Nodes After Connecting Trees I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize the Number of Target Nodes After Connecting Trees I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; maxTargetNodes(vector&lt;vector&lt;int&gt;&gt;&amp; edges1,
+                             vector&lt;vector&lt;int&gt;&gt;&amp; edges2, int k) {
+    vector&lt;int&gt; ans;
+    const vector&lt;vector&lt;int&gt;&gt; graph1 = buildGraph(edges1);
+    const vector&lt;vector&lt;int&gt;&gt; graph2 = buildGraph(edges2);
+    int maxReachableInGraph2 = 0;
+
+    if (k &gt; 0)
+      for (int i = 0; i &lt; edges2.size() + 1; ++i)
+        maxReachableInGraph2 =
+            max(maxReachableInGraph2, dfs(graph2, i, -1, k - 1));
+
+    for (int i = 0; i &lt; edges1.size() + 1; ++i)
+      ans.push_back(maxReachableInGraph2 + dfs(graph1, i, -1, k));
+
+    return ans;
+  }
+
+ private:
+  // Returns the number of nodes that can be reached from u with k steps.
+  int dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; graph, int u, int prev, int k) {
+    if (k == 0)
+      return 1;
+    int res = 0;
+    for (const int v : graph[u])
+      if (v != prev)
+        res += dfs(graph, v, u, k - 1);
+    return 1 + res;
+  }
+
+  vector&lt;vector&lt;int&gt;&gt; buildGraph(const vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;vector&lt;int&gt;&gt; graph(edges.size() + 1);
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].push_back(v);
+      graph[v].push_back(u);
+    }
+    return graph;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] maxTargetNodes(int[][] edges1, int[][] edges2, int k) {
+    int[] ans = new int[edges1.length + 1];
+    List&lt;Integer&gt;[] graph1 = buildGraph(edges1);
+    List&lt;Integer&gt;[] graph2 = buildGraph(edges2);
+    int maxReachableInGraph2 = 0;
+
+    if (k &gt; 0)
+      for (int i = 0; i &lt; edges2.length + 1; ++i)
+        maxReachableInGraph2 = Math.max(maxReachableInGraph2, dfs(graph2, i, -1, k - 1));
+
+    for (int i = 0; i &lt; edges1.length + 1; ++i)
+      ans[i] = maxReachableInGraph2 + dfs(graph1, i, -1, k);
+
+    return ans;
+  }
+
+  // Returns the number of nodes that can be reached from u with k steps.
+  private int dfs(List&lt;Integer&gt;[] graph, int u, int prev, int k) {
+    if (k == 0)
+      return 1;
+    int res = 0;
+    for (final int v : graph[u])
+      if (v != prev)
+        res += dfs(graph, v, u, k - 1);
+    return 1 + res;
+  }
+
+  private List&lt;Integer&gt;[] buildGraph(int[][] edges) {
+    List&lt;Integer&gt;[] graph = new ArrayList[edges.length + 1];
+    for (int i = 0; i &lt; edges.length + 1; ++i)
+      graph[i] = new ArrayList&lt;&gt;();
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      graph[u].add(v);
+      graph[v].add(u);
+    }
+    return graph;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxTargetNodes(
+      self,
+      edges1: list[list[int]],
+      edges2: list[list[int]],
+      k: int
+  ) -&gt; list[int]:
+    graph1 = self._buildGraph(edges1)
+    graph2 = self._buildGraph(edges2)
+    maxReachableInGraph2 = 0
+
+    if k &gt; 0:
+      for i in range(len(edges2) + 1):
+        maxReachableInGraph2 = max(maxReachableInGraph2,
+                                   self._dfs(graph2, i, -1, k - 1))
+
+    return [maxReachableInGraph2 + self._dfs(graph1, i, -1, k)
+            for i in range(len(edges1) + 1)]
+
+  def _dfs(self, graph: list[list[int]], u: int, prev: int, k: int) -&gt; int:
+    &quot;&quot;&quot;Returns the number of nodes that can be reached from u with k steps.&quot;&quot;&quot;
+    if k == 0:
+      return 1
+    res = 0
+    for v in graph[u]:
+      if v != prev:
+        res += self._dfs(graph, v, u, k - 1)
+    return 1 + res
+
+  def _buildGraph(self, edges: list[list[int]]) -&gt; list[list[int]]:
+    graph = [[] for _ in range(len(edges) + 1)]
+    for u, v in edges:
+      graph[u].append(v)
+      graph[v].append(u)
+    return graph</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator IV - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Basic Calculator IV written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/basic-calculator-iv/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/max-chunks-to-make-sorted/" class="btn">← Previous</a>
+            <span>Problem 770 of 3563</span>
+            <a href="/leetcode-solutions/problems/jewels-and-stones/" class="btn">Next →</a>
+        </div>
+        <h1>770. Basic Calculator IV</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Basic Calculator IV efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Poly {
+  friend Poly operator+(const Poly&amp; lhs, const Poly&amp; rhs) {
+    Poly res(lhs);
+    for (const auto&amp; [term, coef] : rhs.terms)
+      res.terms[term] += coef;
+    return res;
+  }
+
+  friend Poly operator-(const Poly&amp; lhs, const Poly&amp; rhs) {
+    Poly res(lhs);
+    for (const auto&amp; [term, coef] : rhs.terms)
+      res.terms[term] -= coef;
+    return res;
+  }
+
+  friend Poly operator*(const Poly&amp; lhs, const Poly&amp; rhs) {
+    Poly res;
+    for (const auto&amp; [a, aCoef] : lhs.terms)
+      for (const auto&amp; [b, bCoef] : rhs.terms)
+        res.terms[merge(a, b)] += aCoef * bCoef;
+    return res;
+  }
+
+  // Friend ostream&amp; operator&lt;&lt;(ostream&amp; os, const Poly&amp; poly) {
+  //   os &lt;&lt; &quot;{&quot;;
+  //   for (const auto&amp; [term, coef] : poly.terms)
+  //     os &lt;&lt; term &lt;&lt; &quot;: &quot; &lt;&lt; coef &lt;&lt; &quot;, &quot;;
+  //   os &lt;&lt; &quot;}&quot;;
+  //   return os;
+  // }
+
+ public:
+  vector&lt;string&gt; toList() {
+    vector&lt;string&gt; res;
+    vector&lt;string&gt; keys;
+    for (const auto&amp; [term, _] : terms)
+      keys.push_back(term);
+    ranges::sort(keys, [&amp;](const string&amp; a, const string&amp; b) {
+      // the minimum degree is the last
+      if (a == &quot;1&quot;)
+        return false;
+      if (b == &quot;1&quot;)
+        return true;
+      const vector&lt;string&gt; as = split(a, &#x27;*&#x27;);
+      const vector&lt;string&gt; bs = split(b, &#x27;*&#x27;);
+      // the maximum degree is the first
+      // Break ties by their lexicographic orders.
+      return as.size() == bs.size() ? a &lt; b : as.size() &gt; bs.size();
+    });
+    auto concat = [&amp;](const string&amp; term) -&gt; string {
+      if (term == &quot;1&quot;)
+        return to_string(terms[term]);
+      return to_string(terms[term]) + &#x27;*&#x27; + term;
+    };
+    for (const string&amp; key : keys)
+      if (terms[key])
+        res.push_back(concat(key));
+    return res;
+  }
+
+  Poly() = default;
+  Poly(const string&amp; term, int coef) {
+    terms[term] = coef;
+  }
+
+ private:
+  unordered_map&lt;string, int&gt; terms;
+
+  // e.g. merge(&quot;a*b&quot;, &quot;a*c&quot;) -&gt; &quot;a*a*b*c&quot;
+  static string merge(const string&amp; a, const string&amp; b) {
+    if (a == &quot;1&quot;)
+      return b;
+    if (b == &quot;1&quot;)
+      return a;
+    string res;
+    vector&lt;string&gt; A = split(a, &#x27;*&#x27;);
+    vector&lt;string&gt; B = split(b, &#x27;*&#x27;);
+    int i = 0;  // A&#x27;s index
+    int j = 0;  // B&#x27;s index
+    while (i &lt; A.size() &amp;&amp; j &lt; B.size())
+      if (A[i] &lt; B[j])
+        res += &#x27;*&#x27; + A[i++];
+      else
+        res += &#x27;*&#x27; + B[j++];
+    while (i &lt; A.size())
+      res += &#x27;*&#x27; + A[i++];
+    while (j &lt; B.size())
+      res += &#x27;*&#x27; + B[j++];
+    return res.substr(1);
+  }
+
+  static vector&lt;string&gt; split(const string&amp; token, char c) {
+    vector&lt;string&gt; vars;
+    istringstream iss(token);
+    for (string var; getline(iss, var, c);)
+      vars.push_back(var);
+    return vars;
+  }
+};
+
+class Solution {
+ public:
+  vector&lt;string&gt; basicCalculatorIV(string expression, vector&lt;string&gt;&amp; evalvars,
+                                   vector&lt;int&gt;&amp; evalints) {
+    vector&lt;string&gt; tokens = getTokens(expression);
+    unordered_map&lt;string, int&gt; evalMap;
+
+    for (int i = 0; i &lt; evalvars.size(); ++i)
+      evalMap[evalvars[i]] = evalints[i];
+
+    for (string&amp; token : tokens)
+      if (const auto it = evalMap.find(token); it != evalMap.cend())
+        token = to_string(it-&gt;second);
+
+    const vector&lt;string&gt;&amp; postfix = infixToPostfix(tokens);
+    return evaluate(postfix).toList();
+  }
+
+ private:
+  vector&lt;string&gt; getTokens(const string&amp; s) {
+    vector&lt;string&gt; tokens;
+    int i = 0;
+    for (int j = 0; j &lt; s.length(); ++j)
+      if (s[j] == &#x27; &#x27;) {
+        if (i &lt; j)
+          tokens.push_back(s.substr(i, j - i));
+        i = j + 1;
+      } else if (string(&quot;()+-*&quot;).find(s[j]) != string::npos) {
+        if (i &lt; j)
+          tokens.push_back(s.substr(i, j - i));
+        tokens.push_back(s.substr(j, 1));
+        i = j + 1;
+      }
+    if (i &lt; s.length())
+      tokens.push_back(s.substr(i));
+    return tokens;
+  }
+
+  bool isOperator(const string&amp; token) {
+    return token == &quot;+&quot; || token == &quot;-&quot; || token == &quot;*&quot;;
+  }
+
+  vector&lt;string&gt; infixToPostfix(const vector&lt;string&gt;&amp; tokens) {
+    vector&lt;string&gt; postfix;
+    stack&lt;string&gt; ops;
+
+    auto precedes = [](const string&amp; prevOp, const string&amp; currOp) -&gt; bool {
+      if (prevOp == &quot;(&quot;)
+        return false;
+      return prevOp == &quot;*&quot; || currOp == &quot;+&quot; || currOp == &quot;-&quot;;
+    };
+
+    for (const string&amp; token : tokens)
+      if (token == &quot;(&quot;) {
+        ops.push(token);
+      } else if (token == &quot;)&quot;) {
+        while (ops.top() != &quot;(&quot;)
+          postfix.push_back(ops.top()), ops.pop();
+        ops.pop();
+      } else if (isOperator(token)) {
+        while (!ops.empty() &amp;&amp; precedes(ops.top(), token))
+          postfix.push_back(ops.top()), ops.pop();
+        ops.push(token);
+      } else {  // isOperand(token)
+        postfix.push_back(token);
+      }
+
+    while (!ops.empty())
+      postfix.push_back(ops.top()), ops.pop();
+
+    return postfix;
+  }
+
+  Poly evaluate(const vector&lt;string&gt;&amp; postfix) {
+    vector&lt;Poly&gt; polys;
+    for (const string&amp; token : postfix)
+      if (isOperator(token)) {
+        const Poly b = polys.back();
+        polys.pop_back();
+        const Poly a = polys.back();
+        polys.pop_back();
+        if (token == &quot;+&quot;)
+          polys.push_back(a + b);
+        else if (token == &quot;-&quot;)
+          polys.push_back(a - b);
+        else  // token == &quot;*&quot;
+          polys.push_back(a * b);
+      } else if (token[0] == &#x27;-&#x27; ||
+                 ranges::all_of(token, [](char c) { return isdigit(c); })) {
+        polys.push_back(Poly(&quot;1&quot;, stoi(token)));
+      } else {
+        polys.push_back(Poly(token, 1));
+      }
+    return polys[0];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Poly {
+  public Poly add(Poly o) {
+    for (final String term : o.terms.keySet())
+      terms.merge(term, o.terms.get(term), Integer::sum);
+    return this;
+  }
+
+  public Poly minus(Poly o) {
+    for (final String term : o.terms.keySet())
+      terms.merge(term, -o.terms.get(term), Integer::sum);
+    return this;
+  }
+
+  public Poly mult(Poly o) {
+    Poly res = new Poly();
+    for (final String a : terms.keySet())
+      for (final String b : o.terms.keySet())
+        res.terms.merge(merge(a, b), terms.get(a) * o.terms.get(b), Integer::sum);
+    return res;
+  }
+
+  // @Override
+  // Public String toString() {
+  //   StringBuilder sb = new StringBuilder();
+  //   sb.append(&quot;{&quot;);
+  //   for (final String term : terms.keySet())
+  //     sb.append(term).append(&quot;: &quot;).append(terms.get(term)).append(&quot;, &quot;);
+  //   sb.append(&quot;}&quot;);
+  //   return sb.toString();
+  // }
+
+  public List&lt;String&gt; toList() {
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    List&lt;String&gt; keys = new ArrayList&lt;&gt;(terms.keySet());
+    Collections.sort(keys, new Comparator&lt;String&gt;() {
+      @Override
+      public int compare(final String a, final String b) {
+        // the minimum degree is the last
+        if (a.equals(&quot;1&quot;))
+          return 1;
+        if (b.equals(&quot;1&quot;))
+          return -1;
+        String[] as = a.split(&quot;\\*&quot;);
+        String[] bs = b.split(&quot;\\*&quot;);
+        // the maximum degree is the first
+        // Break ties by their lexicographic orders.
+        return as.length == bs.length ? a.compareTo(b) : bs.length - as.length;
+      }
+    });
+    for (final String key : keys)
+      if (terms.get(key) != 0)
+        res.add(concat(key));
+    return res;
+  }
+
+  public Poly() {}
+  public Poly(final String term, int coef) {
+    terms.put(term, coef);
+  }
+
+  private Map&lt;String, Integer&gt; terms = new HashMap&lt;&gt;();
+
+  // e.g. merge(&quot;a*b&quot;, &quot;a*c&quot;) -&gt; &quot;a*a*b*c&quot;
+  private static String merge(final String a, final String b) {
+    if (a.equals(&quot;1&quot;))
+      return b;
+    if (b.equals(&quot;1&quot;))
+      return a;
+    StringBuilder sb = new StringBuilder();
+    String[] A = a.split(&quot;\\*&quot;);
+    String[] B = b.split(&quot;\\*&quot;);
+    int i = 0; // A&#x27;s index
+    int j = 0; // B&#x27;s index
+    while (i &lt; A.length &amp;&amp; j &lt; B.length)
+      if (A[i].compareTo(B[j]) &lt; 0)
+        sb.append(&quot;*&quot;).append(A[i++]);
+      else
+        sb.append(&quot;*&quot;).append(B[j++]);
+    while (i &lt; A.length)
+      sb.append(&quot;*&quot;).append(A[i++]);
+    while (j &lt; B.length)
+      sb.append(&quot;*&quot;).append(B[j++]);
+    return sb.substring(1).toString();
+  }
+
+  private String concat(final String term) {
+    if (term.equals(&quot;1&quot;))
+      return String.valueOf(terms.get(term));
+    return new StringBuilder().append(terms.get(term)).append(&#x27;*&#x27;).append(term).toString();
+  }
+}
+
+class Solution {
+  public List&lt;String&gt; basicCalculatorIV(String expression, String[] evalvars, int[] evalints) {
+    List&lt;String&gt; tokens = getTokens(expression);
+    Map&lt;String, Integer&gt; evalMap = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; evalvars.length; ++i)
+      evalMap.put(evalvars[i], evalints[i]);
+
+    for (int i = 0; i &lt; tokens.size(); ++i)
+      if (evalMap.containsKey(tokens.get(i)))
+        tokens.set(i, String.valueOf(evalMap.get(tokens.get(i))));
+
+    List&lt;String&gt; postfix = infixToPostfix(tokens);
+    return evaluate(postfix).toList();
+  }
+
+  private List&lt;String&gt; getTokens(final String s) {
+    List&lt;String&gt; tokens = new ArrayList&lt;&gt;();
+    int i = 0;
+    for (int j = 0; j &lt; s.length(); ++j)
+      if (s.charAt(j) == &#x27; &#x27;) {
+        if (i &lt; j)
+          tokens.add(s.substring(i, j));
+        i = j + 1;
+      } else if (&quot;()+-*&quot;.contains(s.substring(j, j + 1))) {
+        if (i &lt; j)
+          tokens.add(s.substring(i, j));
+        tokens.add(s.substring(j, j + 1));
+        i = j + 1;
+      }
+    if (i &lt; s.length())
+      tokens.add(s.substring(i));
+    return tokens;
+  }
+
+  private boolean isOperator(final String token) {
+    return token.equals(&quot;+&quot;) || token.equals(&quot;-&quot;) || token.equals(&quot;*&quot;);
+  }
+
+  private boolean precedes(final String prevOp, final String currOp) {
+    if (prevOp.equals(&quot;(&quot;))
+      return false;
+    return prevOp.equals(&quot;*&quot;) || currOp.equals(&quot;+&quot;) || currOp.equals(&quot;-&quot;);
+  }
+
+  private List&lt;String&gt; infixToPostfix(List&lt;String&gt; tokens) {
+    List&lt;String&gt; postfix = new ArrayList&lt;&gt;();
+    Deque&lt;String&gt; ops = new ArrayDeque&lt;&gt;();
+
+    for (final String token : tokens)
+      if (token.equals(&quot;(&quot;)) {
+        ops.push(token);
+      } else if (token.equals(&quot;)&quot;)) {
+        while (!ops.peek().equals(&quot;(&quot;))
+          postfix.add(ops.pop());
+        ops.pop();
+      } else if (isOperator(token)) {
+        while (!ops.isEmpty() &amp;&amp; precedes(ops.peek(), token))
+          postfix.add(ops.pop());
+        ops.push(token);
+      } else { // isOperand(token)
+        postfix.add(token);
+      }
+
+    while (!ops.isEmpty())
+      postfix.add(ops.pop());
+
+    return postfix;
+  }
+
+  private Poly evaluate(List&lt;String&gt; postfix) {
+    LinkedList&lt;Poly&gt; polys = new LinkedList&lt;&gt;();
+    for (final String token : postfix)
+      if (isOperator(token)) {
+        final Poly b = polys.removeLast();
+        final Poly a = polys.removeLast();
+        if (token.equals(&quot;+&quot;))
+          polys.add(a.add(b));
+        else if (token.equals(&quot;-&quot;))
+          polys.add(a.minus(b));
+        else // token == &quot;*&quot;
+          polys.add(a.mult(b));
+      } else if (token.charAt(0) == &#x27;-&#x27; || token.chars().allMatch(c -&gt; Character.isDigit(c))) {
+        polys.add(new Poly(&quot;1&quot;, Integer.parseInt(token)));
+      } else {
+        polys.add(new Poly(token, 1));
+      }
+    return polys.getFirst();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Poly:
+  def __init__(self, term: str = None, coef: int = None):
+    if term and coef:
+      self.terms = collections.Counter({term: coef})
+    else:
+      self.terms = collections.Counter()
+
+  def __add__(self, other):
+    for term, coef in other.terms.items():
+      self.terms[term] += coef
+    return self
+
+  def __sub__(self, other):
+    for term, coef in other.terms.items():
+      self.terms[term] -= coef
+    return self
+
+  def __mul__(self, other):
+    res = Poly()
+    for a, aCoef in self.terms.items():
+      for b, bCoef in other.terms.items():
+        res.terms[self._merge(a, b)] += aCoef * bCoef
+    return res
+
+  # Def __str__(self):
+  #   res = []
+  #   for term, coef in self.terms.items():
+  #     res.append(term + &#x27;: &#x27; + str(coef))
+  #   return &#x27;{&#x27; + &#x27;, &#x27;.join(res) + &#x27;}&#x27;
+
+  def toList(self) -&gt; list[str]:
+    for term in list(self.terms.keys()):
+      if not self.terms[term]:
+        del self.terms[term]
+
+    def cmp(term: str) -&gt; tuple:
+      # the minimum degree is the last
+      if term == &#x27;1&#x27;:
+        return (0,)
+      var = term.split(&#x27;*&#x27;)
+      # the maximum degree is the first
+      # Break ties by their lexicographic orders.
+      return (-len(var), term)
+
+    def concat(term: str) -&gt; str:
+      if term == &#x27;1&#x27;:
+        return str(self.terms[term])
+      return str(self.terms[term]) + &#x27;*&#x27; + term
+
+    terms = list(self.terms.keys())
+    terms.sort(key=cmp)
+    return [concat(term) for term in terms]
+
+  def _merge(self, a: str, b: str) -&gt; str:
+    if a == &#x27;1&#x27;:
+      return b
+    if b == &#x27;1&#x27;:
+      return a
+    res = []
+    A = a.split(&#x27;*&#x27;)
+    B = b.split(&#x27;*&#x27;)
+    i = 0  # A&#x27;s index
+    j = 0  # B&#x27;s index
+    while i &lt; len(A) and j &lt; len(B):
+      if A[i] &lt; B[j]:
+        res.append(A[i])
+        i += 1
+      else:
+        res.append(B[j])
+        j += 1
+    return &#x27;*&#x27;.join(res + A[i:] + B[j:])
+
+
+class Solution:
+  def basicCalculatorIV(
+      self,
+      expression: str,
+      evalvars: list[str],
+      evalints: list[int],
+  ) -&gt; list[str]:
+    tokens = list(self._getTokens(expression))
+    evalMap = {a: b for a, b in zip(evalvars, evalints)}
+
+    for i, token in enumerate(tokens):
+      if token in evalMap:
+        tokens[i] = str(evalMap[token])
+
+    postfix = self._infixToPostfix(tokens)
+    return self._evaluate(postfix).toList()
+
+  def _getTokens(self, s: str) -&gt; Iterator[str]:
+    i = 0
+    for j, c in enumerate(s):
+      if c == &#x27; &#x27;:
+        if i &lt; j:
+          yield s[i:j]
+        i = j + 1
+      elif c in &#x27;()+-*&#x27;:
+        if i &lt; j:
+          yield s[i:j]
+        yield c
+        i = j + 1
+    if i &lt; len(s):
+      yield s[i:]
+
+  def _infixToPostfix(self, tokens: list[str]) -&gt; list[str]:
+    postfix = []
+    ops = []
+
+    def precedes(prevOp: str, currOp: str) -&gt; bool:
+      if prevOp == &#x27;(&#x27;:
+        return False
+      return prevOp == &#x27;*&#x27; or currOp in &#x27;+-&#x27;
+
+    for token in tokens:
+      if token == &#x27;(&#x27;:
+        ops.append(token)
+      elif token == &#x27;)&#x27;:
+        while ops[-1] != &#x27;(&#x27;:
+          postfix.append(ops.pop())
+        ops.pop()
+      elif token in &#x27;+-*&#x27;:  # isOperator(token)
+        while ops and precedes(ops[-1], token):
+          postfix.append(ops.pop())
+        ops.append(token)
+      else:  # isOperand(token)
+        postfix.append(token)
+    return postfix + ops[::-1]
+
+  def _evaluate(self, postfix: list[str]) -&gt; Poly:
+    polys: list[Poly] = []
+    for token in postfix:
+      if token in &#x27;+-*&#x27;:
+        b = polys.pop()
+        a = polys.pop()
+        if token == &#x27;+&#x27;:
+          polys.append(a + b)
+        elif token == &#x27;-&#x27;:
+          polys.append(a - b)
+        else:  # token == &#x27;*&#x27;
+          polys.append(a * b)
+      elif token.lstrip(&#x27;-&#x27;).isnumeric():
+        polys.append(Poly(&quot;1&quot;, int(token)))
+      else:
+        polys.append(Poly(token, 1))
+    return polys[0]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count of Substrings Containing Every Vowel and K Consonants I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count of Substrings Containing Every Vowel and K Consonants I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-of-substrings-containing-every-vowel-and-k-consonants-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-k-th-character-in-string-game-i/" class="btn">← Previous</a>
+            <span>Problem 3305 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-of-substrings-containing-every-vowel-and-k-consonants-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3305. Count of Substrings Containing Every Vowel and K Consonants I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count of Substrings Containing Every Vowel and K Consonants I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countOfSubstrings(string word, int k) {
+    return substringsWithAtMost(word, k) - substringsWithAtMost(word, k - 1);
+  }
+
+ private:
+  // Return the number of substrings containing every vowel with at most k
+  // consonants.
+  int substringsWithAtMost(const string&amp; word, int k) {
+    if (k == -1)
+      return 0;
+
+    int res = 0;
+    int vowels = 0;
+    int uniqueVowels = 0;
+    unordered_map&lt;char, int&gt; vowelLastSeen;
+
+    for (int l = 0, r = 0; r &lt; word.length(); ++r) {
+      if (isVowel(word[r])) {
+        ++vowels;
+        if (const auto it = vowelLastSeen.find(word[r]);
+            it == vowelLastSeen.end() || it-&gt;second &lt; l)
+          ++uniqueVowels;
+        vowelLastSeen[word[r]] = r;
+      }
+      while (r - l + 1 - vowels &gt; k) {
+        if (isVowel(word[l])) {
+          --vowels;
+          if (vowelLastSeen[word[l]] == l)
+            --uniqueVowels;
+        }
+        ++l;
+      }
+      if (uniqueVowels == 5)
+        // Add substrings containing every vowel with at most k consonants to
+        // the answer. They are
+        // word[l..r], word[l + 1..r], ..., word[min(vowelLastSeen[vowel])..r]
+        res += min({vowelLastSeen[&#x27;a&#x27;], vowelLastSeen[&#x27;e&#x27;], vowelLastSeen[&#x27;i&#x27;],
+                    vowelLastSeen[&#x27;o&#x27;], vowelLastSeen[&#x27;u&#x27;]}) -
+               l + 1;
+    }
+
+    return res;
+  }
+
+  bool isVowel(char c) {
+    static constexpr string_view kVowels = &quot;aeiou&quot;;
+    return kVowels.find(c) != string_view::npos;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countOfSubstrings(String word, int k) {
+    return substringsWithAtMost(word, k) - substringsWithAtMost(word, k - 1);
+  }
+
+  // Return the number of substrings containing every vowel with at most k
+  // consonants.
+  private int substringsWithAtMost(String word, int k) {
+    if (k == -1)
+      return 0;
+
+    int res = 0;
+    int vowels = 0;
+    int uniqueVowels = 0;
+    Map&lt;Character, Integer&gt; vowelLastSeen = new HashMap&lt;&gt;();
+
+    for (int l = 0, r = 0; r &lt; word.length(); ++r) {
+      if (isVowel(word.charAt(r))) {
+        ++vowels;
+        if (!vowelLastSeen.containsKey(word.charAt(r)) || vowelLastSeen.get(word.charAt(r)) &lt; l)
+          ++uniqueVowels;
+        vowelLastSeen.put(word.charAt(r), r);
+      }
+      while (r - l + 1 - vowels &gt; k) {
+        if (isVowel(word.charAt(l))) {
+          --vowels;
+          if (vowelLastSeen.get(word.charAt(l)) == l)
+            --uniqueVowels;
+        }
+        ++l;
+      }
+      if (uniqueVowels == 5) {
+        // Add substrings containing every vowel with at most k consonants to
+        // the answer. They are
+        // word[l..r], word[l + 1..r], ..., word[min(vowelLastSeen[vowel])..r]
+        final int minVowelLastSeen = Arrays.asList(&#x27;a&#x27;, &#x27;e&#x27;, &#x27;i&#x27;, &#x27;o&#x27;, &#x27;u&#x27;)
+                                         .stream()
+                                         .mapToInt(vowel -&gt; vowelLastSeen.get(vowel))
+                                         .min()
+                                         .getAsInt();
+        res += minVowelLastSeen - l + 1;
+      }
+    }
+
+    return res;
+  }
+
+  private boolean isVowel(char c) {
+    return &quot;aeiou&quot;.indexOf(c) != -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countOfSubstrings(self, word: str, k: int) -&gt; int:
+    VOWELS = &#x27;aeiou&#x27;
+
+    def substringsWithAtMost(k: int) -&gt; int:
+      &quot;&quot;&quot;
+      Return the number of substrings containing every vowel with at most k
+      consonants.
+      &quot;&quot;&quot;
+      if k == -1:
+        return 0
+
+      res = 0
+      vowels = 0
+      uniqueVowels = 0
+      vowelLastSeen = {}
+
+      l = 0
+      for r, c in enumerate(word):
+        if c in VOWELS:
+          vowels += 1
+          if c not in vowelLastSeen or vowelLastSeen[c] &lt; l:
+            uniqueVowels += 1
+          vowelLastSeen[c] = r
+        while r - l + 1 - vowels &gt; k:
+          if word[l] in VOWELS:
+            vowels -= 1
+            if vowelLastSeen[word[l]] == l:
+              uniqueVowels -= 1
+          l += 1
+        if uniqueVowels == 5:
+          # Add substrings containing every vowel with at most k consonants to
+          # the answer. They are
+          # word[l..r], word[l + 1..r], ..., word[min(vowelLastSeen[vowel])..r]
+          res += min(vowelLastSeen[vowel] for vowel in VOWELS) - l + 1
+
+      return res
+
+    return substringsWithAtMost(k) - substringsWithAtMost(k - 1)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

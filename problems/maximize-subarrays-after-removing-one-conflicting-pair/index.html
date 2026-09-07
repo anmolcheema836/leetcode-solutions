@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Subarrays After Removing One Conflicting Pair - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximize Subarrays After Removing One Conflicting Pair written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximize-subarrays-after-removing-one-conflicting-pair/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/fruits-into-baskets-iii/" class="btn">← Previous</a>
+            <span>Problem 3480 of 3563</span>
+            <a href="/leetcode-solutions/problems/apply-substitutions/" class="btn">Next →</a>
+        </div>
+        <h1>3480. Maximize Subarrays After Removing One Conflicting Pair</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximize Subarrays After Removing One Conflicting Pair efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long maxSubarrays(int n, vector&lt;vector&lt;int&gt;&gt;&amp; conflictingPairs) {
+    long validSubarrays = 0;
+    int maxLeft = 0;
+    int secondMaxLeft = 0;
+    // gains[i] := the number of additional valid subarrays we can gain if the
+    // restriction at index `i` is removed
+    vector&lt;long&gt; gains(n + 1);
+    // conflicts[r] := left endpoints that conflict with subarrays ending in r
+    vector&lt;vector&lt;int&gt;&gt; conflicts(n + 1);
+
+    for (const vector&lt;int&gt;&amp; pair : conflictingPairs) {
+      const int a = pair[0];
+      const int b = pair[1];
+      conflicts[max(a, b)].push_back(min(a, b));
+    }
+
+    for (int right = 1; right &lt;= n; ++right) {
+      for (const int left : conflicts[right]) {
+        if (left &gt; maxLeft) {
+          secondMaxLeft = maxLeft;
+          maxLeft = left;
+        } else if (left &gt; secondMaxLeft) {
+          secondMaxLeft = left;
+        }
+      }
+      // Subarrays [maxLeft + 1..right],
+      //           [maxLeft + 2..right],
+      //           ...
+      //           [right..right] are valid.
+      validSubarrays += right - maxLeft;
+      // If we remove `maxLeft` (the most restrictive conflict), we gain
+      // `maxLeft - secondMaxLeft` new subarrays:
+      // [secondMaxLeft + 1..right],
+      // [secondMaxLeft + 2..right],
+      // ...
+      // [maxLeft..right].
+      gains[maxLeft] += maxLeft - secondMaxLeft;
+    }
+
+    return validSubarrays + ranges::max(gains);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long maxSubarrays(int n, int[][] conflictingPairs) {
+    long validSubarrays = 0;
+    int maxLeft = 0;
+    int secondMaxLeft = 0;
+    // gains[i] := the number of additional valid subarrays we can gain if the
+    // restriction at index `i` is removed
+    long[] gains = new long[n + 1];
+    // conflicts[r] := left endpoints that conflict with subarrays ending in r
+    List&lt;Integer&gt;[] conflicts = new List[n + 1];
+
+    for (int i = 0; i &lt;= n; ++i)
+      conflicts[i] = new ArrayList&lt;&gt;();
+
+    for (int[] pair : conflictingPairs) {
+      final int a = pair[0];
+      final int b = pair[1];
+      conflicts[Math.max(a, b)].add(Math.min(a, b));
+    }
+
+    for (int right = 1; right &lt;= n; ++right) {
+      for (int left : conflicts[right]) {
+        if (left &gt; maxLeft) {
+          secondMaxLeft = maxLeft;
+          maxLeft = left;
+        } else if (left &gt; secondMaxLeft) {
+          secondMaxLeft = left;
+        }
+      }
+      // Subarrays [maxLeft + 1..right],
+      //           [maxLeft + 2..right],
+      //           ...
+      //           [right..right] are valid.
+      validSubarrays += right - maxLeft;
+      // If we remove `maxLeft` (the most restrictive conflict), we gain
+      // `maxLeft - secondMaxLeft` new subarrays:
+      // [secondMaxLeft + 1..right],
+      // [secondMaxLeft + 2..right],
+      // ...
+      // [maxLeft..right].
+      gains[maxLeft] += maxLeft - secondMaxLeft;
+    }
+
+    return validSubarrays + Arrays.stream(gains).max().getAsLong();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxSubarrays(self, n: int, conflictingPairs: list[list[int]]) -&gt; int:
+    validSubarrays = 0
+    maxLeft = 0
+    secondMaxLeft = 0
+    # gains[i] := the number of additional valid subarrays we can gain if the
+    # restriction at index `i` is removed
+    gains = [0] * (n + 1)
+    # conflicts[r] := left endpoints that conflict with subarrays ending in r
+    conflicts = [[] for _ in range(n + 1)]
+
+    for a, b in conflictingPairs:
+      conflicts[max(a, b)].append(min(a, b))
+
+    for right in range(1, n + 1):
+      for left in conflicts[right]:
+        if left &gt; maxLeft:
+          secondMaxLeft = maxLeft
+          maxLeft = left
+        elif left &gt; secondMaxLeft:
+          secondMaxLeft = left
+      # Subarrays [maxLeft + 1..right],
+      #           [maxLeft + 2..right],
+      #           ...
+      #           [right..right] are valid.
+      validSubarrays += right - maxLeft
+      # If we remove `maxLeft` (the most restrictive conflict), we gain
+      # `maxLeft - secondMaxLeft` new subarrays:
+      # [secondMaxLeft + 1..right],
+      # [secondMaxLeft + 2..right],
+      # ...
+      # [maxLeft..right].
+      gains[maxLeft] += maxLeft - secondMaxLeft
+
+    return validSubarrays + max(gains)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confusing Number II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Confusing Number II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/confusing-number-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/brace-expansion/" class="btn">← Previous</a>
+            <span>Problem 1088 of 3563</span>
+            <a href="/leetcode-solutions/problems/duplicate-zeros/" class="btn">Next →</a>
+        </div>
+        <h1>1088. Confusing Number II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Confusing Number II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int confusingNumberII(int n) {
+    return dfs(n, 0, 0, 1);
+  }
+
+ private:
+  vector&lt;pair&lt;int, int&gt;&gt; digitToRotated{{0, 0}, {1, 1}, {6, 9}, {8, 8}, {9, 6}};
+
+  int dfs(int n, long num, long rotatedNum, long unit) {
+    int ans = num != rotatedNum;
+    // Add one more digit
+    for (const auto&amp; [digit, rotated] : digitToRotated) {
+      if (digit == 0 &amp;&amp; num == 0)
+        continue;
+      const long nextNum = num * 10 + digit;
+      if (nextNum &gt; n)
+        break;
+      ans += dfs(n, nextNum, rotated * unit + rotatedNum, unit * 10);
+    }
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int confusingNumberII(int n) {
+    return dfs(n, 0, 0, 1);
+  }
+
+  private int[][] digitToRotated = {{0, 0}, {1, 1}, {6, 9}, {8, 8}, {9, 6}};
+
+  int dfs(int n, long num, long rotatedNum, long unit) {
+    int ans = num == rotatedNum ? 0 : 1;
+    // Add one more digit
+    for (int[] pair : digitToRotated) {
+      final int digit = pair[0];
+      final int rotated = pair[1];
+      if (digit == 0 &amp;&amp; num == 0)
+        continue;
+      final long nextNum = num * 10 + digit;
+      if (nextNum &gt; n)
+        break;
+      ans += dfs(n, nextNum, rotated * unit + rotatedNum, unit * 10);
+    }
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def confusingNumberII(self, n: int) -&gt; int:
+    digitToRotated = [(0, 0), (1, 1), (6, 9), (8, 8), (9, 6)]
+
+    def dfs(num: int, rotatedNum: int, unit: int) -&gt; int:
+      ans = 0 if num == rotatedNum else 1
+      # Add one more digit
+      for digit, rotated in digitToRotated:
+        if digit == 0 and num == 0:
+          continue
+        nextNum = num * 10 + digit
+        if nextNum &gt; n:
+          break
+        ans += dfs(nextNum, rotated * unit + rotatedNum, unit * 10)
+      return ans
+
+    return dfs(0, 0, 1)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

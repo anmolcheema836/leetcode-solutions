@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Common Suffix Queries - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Common Suffix Queries written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-common-suffix-queries/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/most-frequent-ids/" class="btn">← Previous</a>
+            <span>Problem 3093 of 3563</span>
+            <a href="/leetcode-solutions/problems/guess-the-number-using-bitwise-questions-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3093. Longest Common Suffix Queries</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Common Suffix Queries efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  TrieNode() : children(26) {}
+  int length = INT_MAX;
+  int index = -1;
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; stringIndices(vector&lt;string&gt;&amp; wordsContainer,
+                            vector&lt;string&gt;&amp; wordsQuery) {
+    vector&lt;int&gt; ans;
+    int minIndex = 0;
+
+    for (int i = 0; i &lt; wordsContainer.size(); ++i) {
+      insert(wordsContainer[i], i);
+      if (wordsContainer[i].length() &lt; wordsContainer[minIndex].length())
+        minIndex = i;
+    }
+
+    for (const string&amp; query : wordsQuery) {
+      const int index = search(query);
+      ans.push_back(index == -1 ? minIndex : index);
+    }
+
+    return ans;
+  }
+
+ private:
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+
+  void insert(const string&amp; word, int index) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = word.length() - 1; i &gt;= 0; --i) {
+      const int index = word[i] - &#x27;a&#x27;;
+      if (node-&gt;children[index] == nullptr)
+        node-&gt;children[index] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[index];
+      if (node-&gt;length &gt; word.length()) {
+        node-&gt;length = word.length();
+        node-&gt;index = index;
+      }
+    }
+  }
+
+  int search(const string&amp; word) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = word.length() - 1; i &gt;= 0; --i) {
+      const int index = word[i] - &#x27;a&#x27;;
+      if (node-&gt;children[index] == nullptr)
+        return node-&gt;index;
+      node = node-&gt;children[index];
+    }
+    return node-&gt;index;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[26];
+  public boolean isWord = false;
+  public int length = Integer.MAX_VALUE;
+  public int index = -1;
+}
+
+class Solution {
+  public int[] stringIndices(String[] wordsContainer, String[] wordsQuery) {
+    int[] ans = new int[wordsQuery.length];
+    int minIndex = 0;
+
+    for (int i = 0; i &lt; wordsContainer.length; ++i) {
+      insert(wordsContainer[i], i);
+      if (wordsContainer[i].length() &lt; wordsContainer[minIndex].length())
+        minIndex = i;
+    }
+
+    for (int i = 0; i &lt; wordsQuery.length; ++i) {
+      final int index = search(wordsQuery[i]);
+      ans[i] = index == -1 ? minIndex : index;
+    }
+
+    return ans;
+  }
+
+  private TrieNode root = new TrieNode();
+
+  private void insert(final String word, int index) {
+    TrieNode node = root;
+    for (int i = word.length() - 1; i &gt;= 0; --i) {
+      final int index = word.charAt(i) - &#x27;a&#x27;;
+      if (node.children[index] == null)
+        node.children[index] = new TrieNode();
+      node = node.children[index];
+      if (node.length &gt; word.length()) {
+        node.length = word.length();
+        node.index = index;
+      }
+    }
+  }
+
+  private int search(final String word) {
+    TrieNode node = root;
+    for (int i = word.length() - 1; i &gt;= 0; --i) {
+      final int index = word.charAt(i) - &#x27;a&#x27;;
+      if (node.children[index] == null)
+        return node.index;
+      node = node.children[index];
+    }
+    return node.index;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: dict[str, TrieNode] = {}
+    self.isWord = False
+    self.length = math.inf
+    self.index = -1
+
+
+class Solution:
+  def stringIndices(
+      self,
+      wordsContainer: list[str],
+      wordsQuery: list[str],
+  ) -&gt; list[int]:
+    ans = []
+    root = TrieNode()
+    minIndex = min(enumerate(wordsContainer), key=lambda x: len(x[1]))[0]
+
+    def insert(word: str, index: int) -&gt; None:
+      node = root
+      for c in reversed(word):
+        node = node.children.setdefault(c, TrieNode())
+        if node.length &gt; len(word):
+          node.length = len(word)
+          node.index = index
+
+    def search(word: str) -&gt; int:
+      node = root
+      for c in reversed(word):
+        if c not in node.children:
+          return node.index
+        node = node.children[c]
+      return node.index
+
+    for i, word in enumerate(wordsContainer):
+      insert(word, i)
+
+    for query in wordsQuery:
+      index = search(query)
+      ans.append(minIndex if index == -1 else index)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

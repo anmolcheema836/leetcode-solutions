@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Number of Subsequences With Equal GCD - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Number of Subsequences With Equal GCD written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-number-of-subsequences-with-equal-gcd/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/total-characters-in-string-after-transformations-i/" class="btn">← Previous</a>
+            <span>Problem 3336 of 3563</span>
+            <a href="/leetcode-solutions/problems/total-characters-in-string-after-transformations-ii/" class="btn">Next →</a>
+        </div>
+        <h1>3336. Find the Number of Subsequences With Equal GCD</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Number of Subsequences With Equal GCD efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int subsequencePairCount(vector&lt;int&gt;&amp; nums) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int n = nums.size();
+    const int maxNum = ranges::max(nums);
+    // dp[x][y] := the number of disjoint pairs `seq1` and `seq2` of
+    // nums so far, where GCD(seq1) == x and GCD(seq2) == y
+    vector&lt;vector&lt;int&gt;&gt; dp(maxNum + 1, vector&lt;int&gt;(maxNum + 1));
+    dp[0][0] = 1;
+
+    for (const int num : nums) {
+      vector&lt;vector&lt;int&gt;&gt; newDp(maxNum + 1, vector&lt;int&gt;(maxNum + 1));
+      for (int x = 0; x &lt;= maxNum; ++x)
+        for (int y = 0; y &lt;= maxNum; ++y) {
+          // 1. Skip `num`.
+          newDp[x][y] += dp[x][y];
+          newDp[x][y] %= kMod;
+          // 2. Pick `num` in the first subsequence.
+          const int newX = gcd(x, num);
+          newDp[newX][y] += dp[x][y];
+          newDp[newX][y] %= kMod;
+          // 3. Pick `num` in the second subsequence.
+          const int newY = gcd(y, num);
+          newDp[x][newY] += dp[x][y];
+          newDp[x][newY] %= kMod;
+        }
+      dp = std::move(newDp);
+    }
+
+    int ans = 0;
+    for (int g = 1; g &lt;= maxNum; ++g) {
+      ans += dp[g][g];
+      ans %= kMod;
+    }
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int subsequencePairCount(int[] nums) {
+    final int MOD = 1_000_000_007;
+    final int n = nums.length;
+    final int maxNum = Arrays.stream(nums).max().getAsInt();
+    // dp[x][y] := number of disjoint pairs `seq1` and `seq2` of
+    // nums so far, where GCD(seq1) == x and GCD(seq2) == y
+    int[][] dp = new int[maxNum + 1][maxNum + 1];
+    dp[0][0] = 1;
+
+    for (final int num : nums) {
+      int[][] newDp = new int[maxNum + 1][maxNum + 1];
+      for (int x = 0; x &lt;= maxNum; ++x)
+        for (int y = 0; y &lt;= maxNum; ++y) {
+          // 1. Skip `num`.
+          newDp[x][y] += dp[x][y];
+          newDp[x][y] %= MOD;
+          // 2. Pick `num` in the first subsequence.
+          final int newX = gcd(x, num);
+          newDp[newX][y] += dp[x][y];
+          newDp[newX][y] %= MOD;
+          // 3. Pick `num` in the second subsequence.
+          final int newY = gcd(y, num);
+          newDp[x][newY] += dp[x][y];
+          newDp[x][newY] %= MOD;
+        }
+      dp = newDp;
+    }
+
+    int ans = 0;
+    for (int g = 1; g &lt;= maxNum; ++g) {
+      ans += dp[g][g];
+      ans %= MOD;
+    }
+    return ans;
+  }
+
+  private int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def subsequencePairCount(self, nums: list[int]) -&gt; int:
+    MOD = 1_000_000_007
+    maxNum = max(nums)
+    # dp[x][y] := number of disjoint pairs `seq1` and `seq2` of
+    # nums so far, where GCD(seq1) == x and GCD(seq2) == y
+    dp = [[0] * (maxNum + 1) for _ in range(maxNum + 1)]
+    dp[0][0] = 1
+
+    for num in nums:
+      newDp = [[0] * (maxNum + 1) for _ in range(maxNum + 1)]
+      for x in range(maxNum + 1):
+        for y in range(maxNum + 1):
+          # 1. Skip `num`.
+          newDp[x][y] += dp[x][y]
+          newDp[x][y] %= MOD
+          # 2. Pick `num` in the first subsequence.
+          newX = math.gcd(x, num)
+          newDp[newX][y] += dp[x][y]
+          newDp[newX][y] %= MOD
+          # 3. Pick `num` in the second subsequence.
+          newY = math.gcd(y, num)
+          newDp[x][newY] += dp[x][y]
+          newDp[x][newY] %= MOD
+      dp = newDp
+
+    return sum(dp[g][g]
+               for g in range(1, maxNum + 1)) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

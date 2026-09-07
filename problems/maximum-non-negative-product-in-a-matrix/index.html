@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Non Negative Product in a Matrix - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Non Negative Product in a Matrix written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-non-negative-product-in-a-matrix/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/split-a-string-into-the-max-number-of-unique-substrings/" class="btn">← Previous</a>
+            <span>Problem 1594 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-cost-to-connect-two-groups-of-points/" class="btn">Next →</a>
+        </div>
+        <h1>1594. Maximum Non Negative Product in a Matrix</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Non Negative Product in a Matrix efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxProductPath(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    const int m = grid.size();
+    const int n = grid[0].size();
+    // dpMin[i][j] := the minimum product from (0, 0) to (i, j)
+    // dpMax[i][j] := the maximum product from (0, 0) to (i, j)
+    vector&lt;vector&lt;long&gt;&gt; dpMin(m, vector&lt;long&gt;(n));
+    vector&lt;vector&lt;long&gt;&gt; dpMax(m, vector&lt;long&gt;(n));
+
+    dpMin[0][0] = dpMax[0][0] = grid[0][0];
+
+    for (int i = 1; i &lt; m; ++i)
+      dpMin[i][0] = dpMax[i][0] = dpMin[i - 1][0] * grid[i][0];
+
+    for (int j = 1; j &lt; n; ++j)
+      dpMin[0][j] = dpMax[0][j] = dpMin[0][j - 1] * grid[0][j];
+
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 1; j &lt; n; ++j)
+        if (grid[i][j] &lt; 0) {
+          dpMin[i][j] = max(dpMax[i - 1][j], dpMax[i][j - 1]) * grid[i][j];
+          dpMax[i][j] = min(dpMin[i - 1][j], dpMin[i][j - 1]) * grid[i][j];
+        } else {
+          dpMin[i][j] = min(dpMin[i - 1][j], dpMin[i][j - 1]) * grid[i][j];
+          dpMax[i][j] = max(dpMax[i - 1][j], dpMax[i][j - 1]) * grid[i][j];
+        }
+
+    const long mx = max(dpMin.back().back(), dpMax.back().back());
+    return mx &lt; 0 ? -1 : mx % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxProductPath(int[][] grid) {
+    final int MOD = 1_000_000_007;
+    final int m = grid.length;
+    final int n = grid[0].length;
+    // dpMin[i][j] := the minimum product from (0, 0) to (i, j)
+    // dpMax[i][j] := the maximum product from (0, 0) to (i, j)
+    long[][] dpMin = new long[m][n];
+    long[][] dpMax = new long[m][n];
+
+    dpMin[0][0] = dpMax[0][0] = grid[0][0];
+
+    for (int i = 1; i &lt; m; ++i)
+      dpMin[i][0] = dpMax[i][0] = dpMin[i - 1][0] * grid[i][0];
+
+    for (int j = 1; j &lt; n; ++j)
+      dpMin[0][j] = dpMax[0][j] = dpMin[0][j - 1] * grid[0][j];
+
+    for (int i = 1; i &lt; m; ++i)
+      for (int j = 1; j &lt; n; ++j)
+        if (grid[i][j] &lt; 0) {
+          dpMin[i][j] = Math.max(dpMax[i - 1][j], dpMax[i][j - 1]) * grid[i][j];
+          dpMax[i][j] = Math.min(dpMin[i - 1][j], dpMin[i][j - 1]) * grid[i][j];
+        } else {
+          dpMin[i][j] = Math.min(dpMin[i - 1][j], dpMin[i][j - 1]) * grid[i][j];
+          dpMax[i][j] = Math.max(dpMax[i - 1][j], dpMax[i][j - 1]) * grid[i][j];
+        }
+
+    final long mx = Math.max(dpMin[m - 1][n - 1], dpMax[m - 1][n - 1]);
+    return mx &lt; 0 ? -1 : (int) (mx % MOD);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Palindromic Number - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Largest Palindromic Number written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/largest-palindromic-number/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-hours-of-training-to-win-a-competition/" class="btn">← Previous</a>
+            <span>Problem 2384 of 3563</span>
+            <a href="/leetcode-solutions/problems/amount-of-time-for-binary-tree-to-be-infected/" class="btn">Next →</a>
+        </div>
+        <h1>2384. Largest Palindromic Number</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Largest Palindromic Number efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string largestPalindromic(string num) {
+    unordered_map&lt;char, int&gt; count;
+
+    for (const char c : num)
+      ++count[c];
+
+    const string firstHalf = getFirstHalf(count);
+    const string mid = getMid(count);
+    const string ans = firstHalf + mid + reversed(firstHalf);
+    return ans.empty() ? &quot;0&quot; : ans;
+  }
+
+ private:
+  string getFirstHalf(const unordered_map&lt;char, int&gt;&amp; count) {
+    string firstHalf;
+    for (char c = &#x27;9&#x27;; c &gt;= &#x27;0&#x27;; --c) {
+      const auto it = count.find(c);
+      if (it == count.cend())
+        continue;
+      const int freq = it-&gt;second;
+      firstHalf += string(freq / 2, c);
+    }
+    const int index = firstHalf.find_first_not_of(&#x27;0&#x27;);
+    return index == string::npos ? &quot;&quot; : firstHalf.substr(index);
+  }
+
+  string getMid(const unordered_map&lt;char, int&gt;&amp; count) {
+    for (char c = &#x27;9&#x27;; c &gt;= &#x27;0&#x27;; --c) {
+      const auto it = count.find(c);
+      if (it == count.cend())
+        continue;
+      const int freq = it-&gt;second;
+      if (freq % 2 == 1)
+        return string(1, c);
+    }
+    return &quot;&quot;;
+  }
+
+  string reversed(const string&amp; s) {
+    return {s.rbegin(), s.rend()};
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String largestPalindromic(String num) {
+    Map&lt;Character, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final char c : num.toCharArray())
+      count.merge(c, 1, Integer::sum);
+
+    final String firstHalf = getFirstHalf(count);
+    final String mid = getMid(count);
+    final String ans = firstHalf + mid + reversed(firstHalf);
+    return ans.isEmpty() ? &quot;0&quot; : ans;
+  }
+
+  private String getFirstHalf(Map&lt;Character, Integer&gt; count) {
+    StringBuilder sb = new StringBuilder();
+    for (char c = &#x27;9&#x27;; c &gt;= &#x27;0&#x27;; --c) {
+      final int freq = count.getOrDefault(c, 0);
+      sb.append(String.valueOf(c).repeat(freq / 2));
+    }
+    final int index = firstNotZeroIndex(sb);
+    return index == -1 ? &quot;&quot; : sb.substring(index);
+  }
+
+  private int firstNotZeroIndex(StringBuilder sb) {
+    for (int i = 0; i &lt; sb.length(); ++i)
+      if (sb.charAt(i) != &#x27;0&#x27;)
+        return i;
+    return -1;
+  }
+
+  private String getMid(Map&lt;Character, Integer&gt; count) {
+    StringBuilder sb = new StringBuilder();
+    for (char c = &#x27;9&#x27;; c &gt;= &#x27;0&#x27;; --c) {
+      final int freq = count.getOrDefault(c, 0);
+      if (freq % 2 == 1)
+        return String.valueOf(c);
+    }
+    return &quot;&quot;;
+  }
+
+  private String reversed(final String s) {
+    return new StringBuilder(s).reverse().toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestPalindromic(self, num: str) -&gt; str:
+    count = collections.Counter(num)
+    firstHalf = &#x27;&#x27;.join(count[i] // 2 * i for i in &#x27;9876543210&#x27;).lstrip(&#x27;0&#x27;)
+    mid = self._getMid(count)
+    return (firstHalf + mid + firstHalf[::-1]) or &#x27;0&#x27;
+
+  def _getMid(self, count: dict[str, int]) -&gt; str:
+    for c in &#x27;9876543210&#x27;:
+      if count[c] &amp; 1:
+        return c
+    return &#x27;&#x27;</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

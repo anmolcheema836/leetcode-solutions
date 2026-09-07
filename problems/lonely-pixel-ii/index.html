@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lonely Pixel II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Lonely Pixel II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/lonely-pixel-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/k-diff-pairs-in-an-array/" class="btn">← Previous</a>
+            <span>Problem 533 of 3563</span>
+            <a href="/leetcode-solutions/problems/game-play-analysis-iii/" class="btn">Next →</a>
+        </div>
+        <h1>533. Lonely Pixel II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Lonely Pixel II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findBlackPixel(vector&lt;vector&lt;char&gt;&gt;&amp; picture, int target) {
+    const int m = picture.size();
+    const int n = picture[0].size();
+    int ans = 0;
+    vector&lt;int&gt; rows(m);
+    vector&lt;int&gt; cols(n);
+    vector&lt;string&gt; rowStrings(m);
+    unordered_map&lt;string, int&gt; countRowStrings;
+
+    for (int i = 0; i &lt; m; ++i) {
+      string s;
+      for (int j = 0; j &lt; n; ++j) {
+        if (picture[i][j] == &#x27;B&#x27;) {
+          ++rows[i];
+          ++cols[j];
+        }
+        s += picture[i][j];
+      }
+      rowStrings[i] = s;
+      ++countRowStrings[s];
+    }
+
+    for (int i = 0; i &lt; m; ++i)
+      if (rows[i] == target &amp;&amp; countRowStrings[rowStrings[i]] == target)
+        for (int j = 0; j &lt; n; ++j)
+          if (picture[i][j] == &#x27;B&#x27; &amp;&amp; cols[j] == target)
+            ++ans;
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findBlackPixel(char[][] picture, int target) {
+    final int m = picture.length;
+    final int n = picture[0].length;
+    int ans = 0;
+    int[] rows = new int[m];
+    int[] cols = new int[n];
+    String[] rowStrings = new String[m];
+    Map&lt;String, Integer&gt; countRowStrings = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; m; ++i) {
+      StringBuilder sb = new StringBuilder();
+      for (int j = 0; j &lt; n; ++j) {
+        if (picture[i][j] == &#x27;B&#x27;) {
+          ++rows[i];
+          ++cols[j];
+        }
+        sb.append(picture[i][j]);
+      }
+      rowStrings[i] = sb.toString();
+      countRowStrings.merge(rowStrings[i], 1, Integer::sum);
+    }
+
+    for (int i = 0; i &lt; m; ++i)
+      if (rows[i] == target &amp;&amp; countRowStrings.get(rowStrings[i]) == target)
+        for (int j = 0; j &lt; n; ++j)
+          if (picture[i][j] == &#x27;B&#x27; &amp;&amp; cols[j] == target)
+            ++ans;
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findBlackPixel(self, picture: list[list[str]], target: int) -&gt; int:
+    m = len(picture)
+    n = len(picture[0])
+    ans = 0
+    rows = [row.count(&#x27;B&#x27;) for row in picture]
+    cols = [col.count(&#x27;B&#x27;) for col in zip(*picture)]
+    rowStrings = [&#x27;&#x27;.join(row) for row in picture]
+    countRowStrings = collections.Counter(rowStrings)
+
+    for i, (row, stringRow) in enumerate(zip(rows, rowStrings)):
+      if row == target and countRowStrings[stringRow] == target:
+        for j, col in enumerate(cols):
+          if picture[i][j] == &#x27;B&#x27; and col == target:
+            ans += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

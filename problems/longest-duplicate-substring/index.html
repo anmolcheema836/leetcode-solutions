@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Duplicate Substring - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Longest Duplicate Substring written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/longest-duplicate-substring/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/partition-array-for-maximum-sum/" class="btn">← Previous</a>
+            <span>Problem 1044 of 3563</span>
+            <a href="/leetcode-solutions/problems/customers-who-bought-all-products/" class="btn">Next →</a>
+        </div>
+        <h1>1044. Longest Duplicate Substring</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Longest Duplicate Substring efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string longestDupSubstring(string s) {
+    const int n = s.length();
+    vector&lt;int&gt; pows(n, 1);
+    int bestStart = -1;
+    int l = 1;
+    int r = n;
+
+    for (int i = 1; i &lt; n; ++i)
+      pows[i] = pows[i - 1] * kBase % kHash;
+
+    while (l &lt; r) {
+      const int m = (l + r) / 2;
+      const int start = getStart(s, m, pows);
+      if (start == -1) {
+        r = m;
+      } else {
+        bestStart = start;
+        l = m + 1;
+      }
+    }
+
+    if (bestStart == -1)
+      return &quot;&quot;;
+    if (getStart(s, l, pows) == -1)
+      return s.substr(bestStart, l - 1);
+    return s.substr(bestStart, l);
+  }
+
+ private:
+  static constexpr long kBase = 26;
+  static constexpr int kHash = 1&#x27;000&#x27;000&#x27;007;
+
+  static constexpr int val(char c) {
+    return c - &#x27;a&#x27;;
+  }
+
+  // k := the length of the substring to be hashed
+  int getStart(const string&amp; s, int k, const vector&lt;int&gt;&amp; pows) {
+    unordered_map&lt;int, vector&lt;int&gt;&gt; hashToStarts;
+    long h = 0;
+
+    // Compute the hash value of s[:k].
+    for (int i = 0; i &lt; k; ++i)
+      h = (h * kBase % kHash + val(s[i])) % kHash;
+    hashToStarts[h].push_back(0);
+
+    // Compute the rolling hash by Rabin Karp.
+    for (int i = k; i &lt; s.length(); ++i) {
+      const int startIndex = i - k + 1;
+      h = ((h - static_cast&lt;long&gt;(pows[k - 1]) * val(s[i - k])) % kHash +
+           kHash) %
+          kHash;
+      h = (h * kBase + val(s[i])) % kHash;
+      if (const auto it = hashToStarts.find(h); it != hashToStarts.cend()) {
+        const string currSub = s.substr(startIndex, k);
+        for (const int start : it-&gt;second)
+          if (s.substr(start, k) == currSub)
+            return startIndex;
+      }
+      hashToStarts[h].push_back(startIndex);
+    }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String longestDupSubstring(String s) {
+    final int n = s.length();
+    int[] pows = new int[n];
+    int bestStart = -1;
+    int l = 1;
+    int r = n;
+
+    pows[0] = 1;
+    for (int i = 1; i &lt; n; ++i)
+      pows[i] = (int) (pows[i - 1] * BASE % HASH);
+
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      final int start = getStart(s, m, pows);
+      if (start == -1) {
+        r = m;
+      } else {
+        bestStart = start;
+        l = m + 1;
+      }
+    }
+
+    if (bestStart == -1)
+      return &quot;&quot;;
+    if (getStart(s, l, pows) == -1)
+      return s.substring(bestStart, bestStart + l - 1);
+    return s.substring(bestStart, bestStart + l);
+  }
+
+  private static final long BASE = 26;
+  private static final long HASH = 1_000_000_007;
+
+  private static int val(char c) {
+    return c - &#x27;a&#x27;;
+  }
+
+  // k := the length of the substring to be hashed
+  private int getStart(final String s, int k, int[] pows) {
+    Map&lt;Long, List&lt;Integer&gt;&gt; hashToStarts = new HashMap&lt;&gt;();
+    long h = 0;
+
+    // Compute the hash value of s[:k].
+    for (int i = 0; i &lt; k; ++i)
+      h = (h * BASE % HASH + val(s.charAt(i))) % HASH;
+    hashToStarts.put(h, new ArrayList&lt;&gt;());
+    hashToStarts.get(h).add(0);
+
+    // Compute the rolling hash by Rabin Karp.
+    for (int i = k; i &lt; s.length(); ++i) {
+      final int startIndex = i - k + 1;
+      h = ((h - (long) (pows[k - 1]) * val(s.charAt(i - k))) % HASH + HASH) % HASH;
+      h = (h * BASE + val(s.charAt(i))) % HASH;
+      if (hashToStarts.containsKey(h)) {
+        final String currSub = s.substring(startIndex, startIndex + k);
+        for (final int start : hashToStarts.get(h))
+          if (s.substring(start, start + k).equals(currSub))
+            return startIndex;
+      }
+      hashToStarts.put(h, new ArrayList&lt;&gt;());
+      hashToStarts.get(h).add(startIndex);
+    }
+
+    return -1;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def longestDupSubstring(self, s: str) -&gt; str:
+    BASE = 26
+    HASH = 1_000_000_007
+    bestStart = -1
+    l = 1
+    r = len(s)
+
+    def val(c: str) -&gt; int:
+      return ord(c) - ord(&#x27;a&#x27;)
+
+    # k := the length of the substring to be hashed
+    def getStart(k: int) -&gt; int | None:
+      maxPow = pow(BASE, k - 1, HASH)
+      hashToStart = collections.defaultdict(list)
+      h = 0
+
+      # Compute the hash value of s[:k].
+      for i in range(k):
+        h = (h * BASE + val(s[i])) % HASH
+      hashToStart[h].append(0)
+
+      # Compute the rolling hash by Rabin Karp.
+      for i in range(k, len(s)):
+        startIndex = i - k + 1
+        h = (h - maxPow * val(s[i - k])) % HASH
+        h = (h * BASE + val(s[i])) % HASH
+        if h in hashToStart:
+          currSub = s[startIndex:startIndex + k]
+          for start in hashToStart[h]:
+            if s[start:start + k] == currSub:
+              return startIndex
+        hashToStart[h].append(startIndex)
+
+    while l &lt; r:
+      m = (l + r) // 2
+      start: int | None = getStart(m)
+      if start:
+        bestStart = start
+        l = m + 1
+      else:
+        r = m
+
+    if bestStart == -1:
+      return &#x27;&#x27;
+    if getStart(l):
+      return s[bestStart:bestStart + l]
+    return s[bestStart:bestStart + l - 1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

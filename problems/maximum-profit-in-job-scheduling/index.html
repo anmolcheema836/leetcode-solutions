@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Profit in Job Scheduling - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Profit in Job Scheduling written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-profit-in-job-scheduling/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/replace-the-substring-for-balanced-string/" class="btn">← Previous</a>
+            <span>Problem 1235 of 3563</span>
+            <a href="/leetcode-solutions/problems/web-crawler/" class="btn">Next →</a>
+        </div>
+        <h1>1235. Maximum Profit in Job Scheduling</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Profit in Job Scheduling efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Job {
+  int startTime;
+  int endTime;
+  int profit;
+};
+
+class Solution {
+ public:
+  int jobScheduling(vector&lt;int&gt;&amp; startTime, vector&lt;int&gt;&amp; endTime,
+                    vector&lt;int&gt;&amp; profit) {
+    vector&lt;Job&gt; jobs;
+
+    for (int i = 0; i &lt; startTime.size(); ++i)
+      jobs.emplace_back(startTime[i], endTime[i], profit[i]);
+
+    ranges::sort(jobs, ranges::less{},
+                 [](const Job&amp; job) { return job.startTime; });
+
+    return getMaxProfit(jobs);
+  }
+
+ private:
+  int getMaxProfit(const vector&lt;Job&gt;&amp; jobs) {
+    int maxProfit = 0;
+    auto compare = [](const Job&amp; a, const Job&amp; b) {
+      return a.endTime &gt; b.endTime;
+    };
+    priority_queue&lt;Job, vector&lt;Job&gt;, decltype(compare)&gt; minHeap(compare);
+
+    for (const auto&amp; [s, e, p] : jobs) {
+      while (!minHeap.empty() &amp;&amp; s &gt;= minHeap.top().endTime)
+        maxProfit = max(maxProfit, minHeap.top().profit), minHeap.pop();
+      minHeap.emplace(s, e, p + maxProfit);
+    }
+
+    while (!minHeap.empty())
+      maxProfit = max(maxProfit, minHeap.top().profit), minHeap.pop();
+
+    return maxProfit;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
+    final int n = startTime.length;
+    Job[] jobs = new Job[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      jobs[i] = new Job(startTime[i], endTime[i], profit[i]);
+
+    Arrays.sort(jobs, Comparator.comparingInt(Job::startTime));
+
+    // Will use binary search to find the first available startTime
+    for (int i = 0; i &lt; n; ++i)
+      startTime[i] = jobs[i].startTime;
+
+    return getMaxProfit(jobs);
+  }
+
+  private record Job(int startTime, int endTime, int profit) {}
+
+  private int getMaxProfit(Job[] jobs) {
+    int maxProfit = 0;
+    Queue&lt;Job&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(Job::endTime));
+
+    for (Job job : jobs) {
+      while (!minHeap.isEmpty() &amp;&amp; job.startTime &gt;= minHeap.peek().endTime)
+        maxProfit = Math.max(maxProfit, minHeap.poll().profit);
+      minHeap.offer(new Job(job.startTime, job.endTime, job.profit + maxProfit));
+    }
+
+    while (!minHeap.isEmpty())
+      maxProfit = Math.max(maxProfit, minHeap.poll().profit);
+
+    return maxProfit;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def jobScheduling(
+      self,
+      startTime: list[int],
+      endTime: list[int],
+      profit: list[int],
+  ) -&gt; int:
+    maxProfit = 0
+    jobs = sorted([(s, e, p) for s, e, p in zip(startTime, endTime, profit)])
+    minHeap = []  # (endTime, profit)
+
+    # Will use binary search to find the first available startTime
+    for i in range(len(startTime)):
+      startTime[i] = jobs[i][0]
+
+    for s, e, p in jobs:
+      while minHeap and s &gt;= minHeap[0][0]:
+        maxProfit = max(maxProfit, heapq.heappop(minHeap)[1])
+      heapq.heappush(minHeap, (e, p + maxProfit))
+
+    return max(maxProfit, max(p for _, p in minHeap))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

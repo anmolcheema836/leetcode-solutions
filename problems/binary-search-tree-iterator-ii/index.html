@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Search Tree Iterator II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Binary Search Tree Iterator II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/binary-search-tree-iterator-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/check-if-string-is-transformable-with-substring-sort-operations/" class="btn">← Previous</a>
+            <span>Problem 1586 of 3563</span>
+            <a href="/leetcode-solutions/problems/bank-account-summary-ii/" class="btn">Next →</a>
+        </div>
+        <h1>1586. Binary Search Tree Iterator II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Binary Search Tree Iterator II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class BSTIterator {
+ public:
+  BSTIterator(TreeNode* root) {
+    pushLeftsUntilNull(root);
+  }
+
+  bool hasNext() {
+    return !nexts.empty();
+  }
+
+  int next() {
+    auto [root, fromNext] = nexts.top();
+    nexts.pop();
+    if (fromNext)
+      pushLeftsUntilNull(root-&gt;right);
+    prevsAndCurr.push(root);
+    return root-&gt;val;
+  }
+
+  bool hasPrev() {
+    return prevsAndCurr.size() &gt; 1;
+  }
+
+  int prev() {
+    nexts.push({prevsAndCurr.top(), /*fromNext=*/false});
+    prevsAndCurr.pop();
+    return prevsAndCurr.top()-&gt;val;
+  }
+
+ private:
+  stack&lt;TreeNode*&gt; prevsAndCurr;
+  stack&lt;pair&lt;TreeNode*, /*fromNext=*/bool&gt;&gt; nexts;
+
+  void pushLeftsUntilNull(TreeNode* root) {
+    while (root != nullptr) {
+      nexts.push({root, /*fromtNext=*/true});
+      root = root-&gt;left;
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class BSTIterator {
+  public BSTIterator(TreeNode root) {
+    pushLeftsUntilNull(root);
+  }
+
+  public boolean hasNext() {
+    return !nexts.isEmpty();
+  }
+
+  public int next() {
+    Pair&lt;TreeNode, Boolean&gt; pair = nexts.pop();
+    TreeNode root = pair.getKey();
+    boolean fromNext = pair.getValue();
+    if (fromNext)
+      pushLeftsUntilNull(root.right);
+    prevsAndCurr.push(root);
+    return root.val;
+  }
+
+  public boolean hasPrev() {
+    return prevsAndCurr.size() &gt; 1;
+  }
+
+  public int prev() {
+    nexts.push(new Pair&lt;&gt;(prevsAndCurr.pop(), /*fromNext=*/false));
+    return prevsAndCurr.peek().val;
+  }
+
+  private void pushLeftsUntilNull(TreeNode root) {
+    while (root != null) {
+      nexts.push(new Pair&lt;&gt;(root, /*fromNext=*/true));
+      root = root.left;
+    }
+  }
+
+  private Deque&lt;TreeNode&gt; prevsAndCurr = new ArrayDeque&lt;&gt;();
+  private Deque&lt;Pair&lt;TreeNode, /*fromNext=*/Boolean&gt;&gt; nexts = new ArrayDeque&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class BSTIterator:
+  def __init__(self, root: TreeNode | None):
+    self.prevsAndCurr = []
+    self.nexts = []
+    self._pushLeftsUntilNull(root)
+
+  def hasNext(self) -&gt; bool:
+    return len(self.nexts) &gt; 0
+
+  def next(self) -&gt; int:
+    root, fromNext = self.nexts.pop()
+    if fromNext:
+      self._pushLeftsUntilNull(root.right)
+    self.prevsAndCurr.append(root)
+    return root.val
+
+  def hasPrev(self) -&gt; bool:
+    return len(self.prevsAndCurr) &gt; 1
+
+  def prev(self) -&gt; int:
+    self.nexts.append((self.prevsAndCurr.pop(), False))
+    return self.prevsAndCurr[-1].val
+
+  def _pushLeftsUntilNull(self, root):
+    while root:
+      self.nexts.append((root, True))
+      root = root.left</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Beautiful Substrings II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Beautiful Substrings II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-beautiful-substrings-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/make-lexicographically-smallest-array-by-swapping-elements/" class="btn">← Previous</a>
+            <span>Problem 2949 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-divisible-substrings/" class="btn">Next →</a>
+        </div>
+        <h1>2949. Count Beautiful Substrings II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Beautiful Substrings II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Same as 2947. Count Beautiful Substrings I
+  int beautifulSubstrings(string s, int k) {
+    const int root = getRoot(k);
+    int ans = 0;
+    int vowels = 0;
+    int vowelsMinusConsonants = 0;
+    // {(vowels, vowelsMinusConsonants): count}
+    unordered_map&lt;pair&lt;int, int&gt;, int, PairHash&gt; prefixCount{{{0, 0}, 1}};
+
+    for (const char c : s) {
+      if (isVowel(c)) {
+        vowels = (vowels + 1) % root;
+        ++vowelsMinusConsonants;
+      } else {
+        --vowelsMinusConsonants;
+      }
+      const pair&lt;int, int&gt; prefix{vowels, vowelsMinusConsonants};
+      ans += prefixCount[prefix]++;
+    }
+
+    return ans;
+  }
+
+ private:
+  bool isVowel(char c) {
+    static constexpr string_view kVowels = &quot;aeiouAEIOU&quot;;
+    return kVowels.find(c) != string_view::npos;
+  }
+
+  int getRoot(int k) {
+    for (int i = 1; i &lt;= k; ++i)
+      if (i * i % k == 0)
+        return i;
+    throw;
+  }
+
+  struct PairHash {
+    size_t operator()(const pair&lt;int, int&gt;&amp; p) const {
+      return p.first ^ p.second;
+    }
+  };
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Same as 2947. Count Beautiful Substrings I
+  public int beautifulSubstrings(String s, int k) {
+    final int root = getRoot(k);
+    int ans = 0;
+    int vowels = 0;
+    int vowelsMinusConsonants = 0;
+    // {(vowels, vowelsMinusConsonants): count}
+    Map&lt;Pair&lt;Integer, Integer&gt;, Integer&gt; prefixCount = new HashMap&lt;&gt;();
+    prefixCount.put(new Pair&lt;&gt;(0, 0), 1);
+
+    for (final char c : s.toCharArray()) {
+      if (isVowel(c)) {
+        vowels = (vowels + 1) % root;
+        ++vowelsMinusConsonants;
+      } else {
+        --vowelsMinusConsonants;
+      }
+      Pair&lt;Integer, Integer&gt; prefix = new Pair&lt;&gt;(vowels, vowelsMinusConsonants);
+      ans += prefixCount.getOrDefault(prefix, 0);
+      prefixCount.merge(prefix, 1, Integer::sum);
+    }
+
+    return ans;
+  }
+
+  private boolean isVowel(char c) {
+    return &quot;aeiou&quot;.indexOf(c) != -1;
+  }
+
+  private int getRoot(int k) {
+    for (int i = 1; i &lt;= k; ++i)
+      if (i * i % k == 0)
+        return i;
+    throw new IllegalArgumentException();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Same as 2947. Count Beautiful Substrings I
+  def beautifulSubstrings(self, s: str, k: int) -&gt; int:
+    VOWELS = &#x27;aeiou&#x27;
+    root = self._getRoot(k)
+    ans = 0
+    vowels = 0
+    vowelsMinusConsonants = 0
+    # {(vowels, vowelsMinusConsonants): count}
+    prefixCount = collections.Counter({(0, 0): 1})
+
+    for c in s:
+      if c in VOWELS:
+        vowelsMinusConsonants += 1
+        vowels = (vowels + 1) % root
+      else:
+        vowelsMinusConsonants -= 1
+      ans += prefixCount[(vowels, vowelsMinusConsonants)]
+      prefixCount[(vowels, vowelsMinusConsonants)] += 1
+
+    return ans
+
+  def _getRoot(self, k: int) -&gt; int:
+    for i in range(1, k + 1):
+      if i * i % k == 0:
+        return i</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

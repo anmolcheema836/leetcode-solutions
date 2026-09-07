@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Bikes II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Campus Bikes II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/campus-bikes-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/index-pairs-of-a-string/" class="btn">← Previous</a>
+            <span>Problem 1066 of 3563</span>
+            <a href="/leetcode-solutions/problems/digit-count-in-range/" class="btn">Next →</a>
+        </div>
+        <h1>1066. Campus Bikes II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Campus Bikes II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int assignBikes(vector&lt;vector&lt;int&gt;&gt;&amp; workers, vector&lt;vector&lt;int&gt;&gt;&amp; bikes) {
+    vector&lt;int&gt; mem(1 &lt;&lt; bikes.size(), INT_MAX);
+    return assignBikes(workers, bikes, 0, 0, mem);
+  }
+
+ private:
+  // Returns the minimum Manhattan distances to assign bikes to
+  // workers[workerIndex..n), where `used` is the bitmask of the used bikes.
+  int assignBikes(const vector&lt;vector&lt;int&gt;&gt;&amp; workers,
+                  const vector&lt;vector&lt;int&gt;&gt;&amp; bikes, int workerIndex, int used,
+                  vector&lt;int&gt;&amp; mem) {
+    if (workerIndex == workers.size())
+      return 0;
+    if (mem[used] != INT_MAX)
+      return mem[used];
+
+    for (int bikeIndex = 0; bikeIndex &lt; bikes.size(); ++bikeIndex)
+      if ((used &gt;&gt; bikeIndex &amp; 1) == 0)
+        mem[used] =
+            min(mem[used], dist(workers[workerIndex], bikes[bikeIndex]) +
+                               assignBikes(workers, bikes, workerIndex + 1,
+                                           used | 1 &lt;&lt; bikeIndex, mem));
+
+    return mem[used];
+  }
+
+  int dist(const vector&lt;int&gt;&amp; p1, const vector&lt;int&gt;&amp; p2) {
+    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int assignBikes(int[][] workers, int[][] bikes) {
+    int[] mem = new int[1 &lt;&lt; bikes.length];
+    Arrays.fill(mem, Integer.MAX_VALUE);
+    return assignBikes(workers, bikes, 0, 0, mem);
+  }
+
+  // Returns the minimum Manhattan distances to assign bikes to
+  // workers[workerIndex..n), where `used` is the bitmask of the used bikes.
+  private int assignBikes(int[][] workers, int[][] bikes, int workerIndex, int used, int[] mem) {
+    if (workerIndex == workers.length)
+      return 0;
+    if (mem[used] != Integer.MAX_VALUE)
+      return mem[used];
+
+    for (int bikeIndex = 0; bikeIndex &lt; bikes.length; bikeIndex++)
+      if ((used &gt;&gt; bikeIndex &amp; 1) == 0)
+        mem[used] = Math.min(mem[used], dist(workers[workerIndex], bikes[bikeIndex]) +
+                                            assignBikes(workers, bikes, workerIndex + 1,
+                                                        used | (1 &lt;&lt; bikeIndex), mem));
+
+    return mem[used];
+  }
+
+  private int dist(int[] p1, int[] p2) {
+    return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def assignBikes(
+      self,
+      workers: list[list[int]],
+      bikes: list[list[int]],
+  ) -&gt; int:
+    def dist(p1: list[int], p2: list[int]) -&gt; int:
+      return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+
+    @functools.lru_cache(None)
+    def dp(workerIndex: int, used: int) -&gt; int:
+      &quot;&quot;&quot;
+      Returns the minimum Manhattan distances to assign bikes to
+      workers[workerIndex..n), where `used` is the bitmask of the used bikes.
+      &quot;&quot;&quot;
+      if workerIndex == len(workers):
+        return 0
+      return min(
+          (dist(workers[workerIndex],
+                bike) + dp(workerIndex + 1, used | 1 &lt;&lt; i) for i,
+           bike in enumerate(bikes) if not used &gt;&gt; i &amp; 1),
+          default=math.inf)
+
+    return dp(0, 0)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

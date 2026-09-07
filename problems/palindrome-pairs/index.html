@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Pairs - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Palindrome Pairs written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/palindrome-pairs/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/self-crossing/" class="btn">← Previous</a>
+            <span>Problem 336 of 3563</span>
+            <a href="/leetcode-solutions/problems/house-robber-iii/" class="btn">Next →</a>
+        </div>
+        <h1>336. Palindrome Pairs</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Palindrome Pairs efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; palindromePairs(vector&lt;string&gt;&amp; words) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    unordered_map&lt;string, int&gt; map;  // {reversed word: its index}
+
+    for (int i = 0; i &lt; words.size(); ++i) {
+      string word = words[i];
+      ranges::reverse(word);
+      map[word] = i;
+    }
+
+    for (int i = 0; i &lt; words.size(); ++i) {
+      const string&amp; word = words[i];
+      // a special case to prevent duplicate calculation
+      if (const auto it = map.find(&quot;&quot;);
+          it != map.cend() &amp;&amp; it-&gt;second != i &amp;&amp; isPalindrome(word))
+        ans.push_back({i, it-&gt;second});
+      for (int j = 1; j &lt;= word.length(); ++j) {
+        const string&amp; l = word.substr(0, j);
+        const string&amp; r = word.substr(j);
+        if (const auto it = map.find(l);
+            it != map.cend() &amp;&amp; it-&gt;second != i &amp;&amp; isPalindrome(r))
+          ans.push_back({i, it-&gt;second});
+        if (const auto it = map.find(r);
+            it != map.cend() &amp;&amp; it-&gt;second != i &amp;&amp; isPalindrome(l))
+          ans.push_back({it-&gt;second, i});
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  bool isPalindrome(const string&amp; word) {
+    int l = 0;
+    int r = word.length() - 1;
+    while (l &lt; r)
+      if (word[l++] != word[r--])
+        return false;
+    return true;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; palindromePairs(String[] words) {
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;(); // {reversed word: its index}
+
+    for (int i = 0; i &lt; words.length; ++i)
+      map.put(new StringBuilder(words[i]).reverse().toString(), i);
+
+    for (int i = 0; i &lt; words.length; ++i) {
+      final String word = words[i];
+      // a special case to prevent duplicate calculation
+      if (map.containsKey(&quot;&quot;) &amp;&amp; map.get(&quot;&quot;) != i &amp;&amp; isPalindrome(word))
+        ans.add(Arrays.asList(i, map.get(&quot;&quot;)));
+      for (int j = 1; j &lt;= word.length(); ++j) {
+        final String l = word.substring(0, j);
+        final String r = word.substring(j);
+        if (map.containsKey(l) &amp;&amp; map.get(l) != i &amp;&amp; isPalindrome(r))
+          ans.add(Arrays.asList(i, map.get(l)));
+        if (map.containsKey(r) &amp;&amp; map.get(r) != i &amp;&amp; isPalindrome(l))
+          ans.add(Arrays.asList(map.get(r), i));
+      }
+    }
+
+    return ans;
+  }
+
+  private boolean isPalindrome(final String word) {
+    int l = 0;
+    int r = word.length() - 1;
+    while (l &lt; r)
+      if (word.charAt(l++) != word.charAt(r--))
+        return false;
+    return true;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def palindromePairs(self, words: list[str]) -&gt; list[list[int]]:
+    ans = []
+    dict = {word[::-1]: i for i, word in enumerate(words)}
+
+    for i, word in enumerate(words):
+      if &quot;&quot; in dict and dict[&quot;&quot;] != i and word == word[::-1]:
+        ans.append([i, dict[&quot;&quot;]])
+
+      for j in range(1, len(word) + 1):
+        l = word[:j]
+        r = word[j:]
+        if l in dict and dict[l] != i and r == r[::-1]:
+          ans.append([i, dict[l]])
+        if r in dict and dict[r] != i and l == l[::-1]:
+          ans.append([dict[r], i])
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partition Array Into Two Arrays to Minimize Sum Difference - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Partition Array Into Two Arrays to Minimize Sum Difference written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/partition-array-into-two-arrays-to-minimize-sum-difference/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/stock-price-fluctuation/" class="btn">← Previous</a>
+            <span>Problem 2035 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-alternating-subarray-sum/" class="btn">Next →</a>
+        </div>
+        <h1>2035. Partition Array Into Two Arrays to Minimize Sum Difference</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Partition Array Into Two Arrays to Minimize Sum Difference efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumDifference(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size() / 2;
+    const int sum = accumulate(nums.begin(), nums.end(), 0);
+    const int goal = sum / 2;
+    const vector&lt;int&gt; lNums(nums.begin(), nums.begin() + n);
+    const vector&lt;int&gt; rNums(nums.begin() + n, nums.end());
+    int ans = INT_MAX;
+    vector&lt;vector&lt;int&gt;&gt; lSums(n + 1);
+    vector&lt;vector&lt;int&gt;&gt; rSums(n + 1);
+
+    dfs(lNums, 0, 0, 0, lSums);
+    dfs(rNums, 0, 0, 0, rSums);
+
+    for (int lCount = 0; lCount &lt;= n; ++lCount) {
+      auto&amp; l = lSums[lCount];
+      auto&amp; r = rSums[n - lCount];
+      ranges::sort(r);
+      for (const int lSum : l) {
+        const int i = firstGreaterEqual(r, goal - lSum);
+        if (i &lt; r.size()) {
+          const int sumPartOne = sum - lSum - r[i];
+          const int sumPartTwo = sum - sumPartOne;
+          ans = min(ans, abs(sumPartOne - sumPartTwo));
+        }
+        if (i &gt; 0) {
+          const int sumPartOne = sum - lSum - r[i - 1];
+          const int sumPartTwo = sum - sumPartOne;
+          ans = min(ans, abs(sumPartOne - sumPartTwo));
+        }
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  void dfs(const vector&lt;int&gt;&amp; arr, int i, int count, int path,
+           vector&lt;vector&lt;int&gt;&gt;&amp; sums) {
+    if (i == arr.size()) {
+      sums[count].push_back(path);
+      return;
+    }
+    dfs(arr, i + 1, count + 1, path + arr[i], sums);
+    dfs(arr, i + 1, count, path, sums);
+  }
+
+  int firstGreaterEqual(const vector&lt;int&gt;&amp; arr, int target) {
+    return ranges::lower_bound(arr, target) - arr.begin();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumDifference(int[] nums) {
+    final int n = nums.length / 2;
+    final int sum = Arrays.stream(nums).sum();
+    final int goal = sum / 2;
+    final int[] lNums = Arrays.copyOfRange(nums, 0, n);
+    final int[] rNums = Arrays.copyOfRange(nums, n, nums.length);
+    int ans = Integer.MAX_VALUE;
+    List&lt;Integer&gt;[] lSums = new List[n + 1];
+    List&lt;Integer&gt;[] rSums = new List[n + 1];
+
+    for (int i = 0; i &lt;= n; ++i) {
+      lSums[i] = new ArrayList&lt;&gt;();
+      rSums[i] = new ArrayList&lt;&gt;();
+    }
+
+    dfs(lNums, 0, 0, 0, lSums);
+    dfs(rNums, 0, 0, 0, rSums);
+
+    for (int lCount = 0; lCount &lt;= n; ++lCount) {
+      List&lt;Integer&gt; l = lSums[lCount];
+      List&lt;Integer&gt; r = rSums[n - lCount];
+      Collections.sort(r);
+      for (final int lSum : l) {
+        final int i = firstGreaterEqual(r, goal - lSum);
+        if (i &lt; r.size()) {
+          final int sumPartOne = sum - lSum - r.get(i);
+          final int sumPartTwo = sum - sumPartOne;
+          ans = Math.min(ans, Math.abs(sumPartOne - sumPartTwo));
+        }
+        if (i &gt; 0) {
+          final int sumPartOne = sum - lSum - r.get(i - 1);
+          final int sumPartTwo = sum - sumPartOne;
+          ans = Math.min(ans, Math.abs(sumPartOne - sumPartTwo));
+        }
+      }
+    }
+
+    return ans;
+  }
+
+  private void dfs(int[] arr, int i, int count, int path, List&lt;Integer&gt;[] sums) {
+    if (i == arr.length) {
+      sums[count].add(path);
+      return;
+    }
+    dfs(arr, i + 1, count + 1, path + arr[i], sums);
+    dfs(arr, i + 1, count, path, sums);
+  }
+
+  private int firstGreaterEqual(List&lt;Integer&gt; arr, int target) {
+    final int i = Collections.binarySearch(arr, target);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumDifference(self, nums: list[int]) -&gt; int:
+    n = len(nums) // 2
+    summ = sum(nums)
+    goal = summ // 2
+    lNums = nums[:n]
+    rNums = nums[n:]
+    ans = abs(sum(lNums) - sum(rNums))
+    lSums = [[] for _ in range(n + 1)]
+    rSums = [[] for _ in range(n + 1)]
+
+    def dfs(
+        arr: list[int],
+        i: int,
+        count: int,
+        path: int,
+        sums: list[list[int]]
+    ):
+      if i == len(arr):
+        sums[count].append(path)
+        return
+      dfs(arr, i + 1, count + 1, path + arr[i], sums)
+      dfs(arr, i + 1, count, path, sums)
+
+    dfs(lNums, 0, 0, 0, lSums)
+    dfs(rNums, 0, 0, 0, rSums)
+
+    for lCount in range(n):
+      l = lSums[lCount]
+      r = rSums[n - lCount]
+      r.sort()
+      for lSum in l:
+        i = bisect_left(r, goal - lSum)
+        if i &lt; len(r):
+          sumPartOne = summ - lSum - r[i]
+          sumPartTwo = summ - sumPartOne
+          ans = min(ans, abs(sumPartOne - sumPartTwo))
+        if i &gt; 0:
+          sumPartOne = summ - lSum - r[i - 1]
+          sumPartTwo = summ - sumPartOne
+          ans = min(ans, abs(sumPartOne - sumPartTwo))
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

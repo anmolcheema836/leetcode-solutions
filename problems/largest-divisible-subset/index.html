@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Divisible Subset - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Largest Divisible Subset written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/largest-divisible-subset/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/valid-perfect-square/" class="btn">← Previous</a>
+            <span>Problem 368 of 3563</span>
+            <a href="/leetcode-solutions/problems/plus-one-linked-list/" class="btn">Next →</a>
+        </div>
+        <h1>368. Largest Divisible Subset</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Largest Divisible Subset efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; largestDivisibleSubset(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    vector&lt;int&gt; ans;
+    // sizeEndsAt[i] := the maximum size ends in nums[i]
+    vector&lt;int&gt; sizeEndsAt(n, 1);
+    // prevIndex[i] := the best index s.t.
+    // 1. nums[i] % nums[prevIndex[i]] == 0 and
+    // 2. can increase the size of the subset
+    vector&lt;int&gt; prevIndex(n, -1);
+    int maxSize = 0;  // Max size of the subset
+    int index = -1;   // Track the best ending index
+
+    ranges::sort(nums);
+
+    // Fix the maximum ending number in the subset.
+    for (int i = 0; i &lt; n; ++i) {
+      for (int j = i - 1; j &gt;= 0; --j)
+        if (nums[i] % nums[j] == 0 &amp;&amp; sizeEndsAt[i] &lt; sizeEndsAt[j] + 1) {
+          sizeEndsAt[i] = sizeEndsAt[j] + 1;
+          prevIndex[i] = j;
+        }
+      // Find a new subset that has a bigger size.
+      if (maxSize &lt; sizeEndsAt[i]) {
+        maxSize = sizeEndsAt[i];
+        index = i;  // Update the best ending index.
+      }
+    }
+
+    // Loop from the back to the front.
+    while (index != -1) {
+      ans.push_back(nums[index]);
+      index = prevIndex[index];
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;Integer&gt; largestDivisibleSubset(int[] nums) {
+    final int n = nums.length;
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    // sizeEndsAt[i] := the maximum size ends in nums[i]
+    int[] sizeEndsAt = new int[n];
+    // prevIndex[i] := the best index s.t.
+    // 1. nums[i] % nums[prevIndex[i]] == 0 and
+    // 2. can increase the size of the subset
+    int[] prevIndex = new int[n];
+    int maxSize = 0; // Max size of the subset
+    int index = -1;  // Track the best ending index
+
+    Arrays.fill(sizeEndsAt, 1);
+    Arrays.fill(prevIndex, -1);
+    Arrays.sort(nums);
+
+    // Fix the maximum ending number in the subset.
+    for (int i = 0; i &lt; n; ++i) {
+      for (int j = i - 1; j &gt;= 0; --j)
+        if (nums[i] % nums[j] == 0 &amp;&amp; sizeEndsAt[i] &lt; sizeEndsAt[j] + 1) {
+          sizeEndsAt[i] = sizeEndsAt[j] + 1;
+          prevIndex[i] = j;
+        }
+      // Find a new subset that has a bigger size.
+      if (maxSize &lt; sizeEndsAt[i]) {
+        maxSize = sizeEndsAt[i];
+        index = i; // Update the best ending index.
+      }
+    }
+
+    // Loop from the back to the front.
+    while (index != -1) {
+      ans.add(nums[index]);
+      index = prevIndex[index];
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def largestDivisibleSubset(self, nums: list[int]) -&gt; list[int]:
+    n = len(nums)
+    ans = []
+    count = [1] * n
+    prevIndex = [-1] * n
+    maxCount = 0
+    index = -1
+
+    nums.sort()
+
+    for i, num in enumerate(nums):
+      for j in reversed(range(i)):
+        if num % nums[j] == 0 and count[i] &lt; count[j] + 1:
+          count[i] = count[j] + 1
+          prevIndex[i] = j
+      if count[i] &gt; maxCount:
+        maxCount = count[i]
+        index = i
+
+    while index != -1:
+      ans.append(nums[index])
+      index = prevIndex[index]
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

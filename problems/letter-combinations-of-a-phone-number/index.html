@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Combinations of a Phone Number - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Letter Combinations of a Phone Number written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/letter-combinations-of-a-phone-number/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/3sum-closest/" class="btn">← Previous</a>
+            <span>Problem 17 of 3563</span>
+            <a href="/leetcode-solutions/problems/4sum/" class="btn">Next →</a>
+        </div>
+        <h1>17. Letter Combinations of a Phone Number</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Letter Combinations of a Phone Number efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;string&gt; letterCombinations(string digits) {
+    if (digits.empty())
+      return {};
+
+    vector&lt;string&gt; ans{&quot;&quot;};
+    const vector&lt;string&gt; digitToLetters{&quot;&quot;,    &quot;&quot;,    &quot;abc&quot;,  &quot;def&quot;, &quot;ghi&quot;,
+                                        &quot;jkl&quot;, &quot;mno&quot;, &quot;pqrs&quot;, &quot;tuv&quot;, &quot;wxyz&quot;};
+
+    for (const char d : digits) {
+      vector&lt;string&gt; temp;
+      for (const string&amp; s : ans)
+        for (const char c : digitToLetters[d - &#x27;0&#x27;])
+          temp.push_back(s + c);
+      ans = std::move(temp);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;String&gt; letterCombinations(String digits) {
+    if (digits.isEmpty())
+      return new ArrayList&lt;&gt;();
+
+    List&lt;String&gt; ans = new ArrayList&lt;&gt;();
+    ans.add(&quot;&quot;);
+    final String[] digitToLetters = {&quot;&quot;,    &quot;&quot;,    &quot;abc&quot;,  &quot;def&quot;, &quot;ghi&quot;,
+                                     &quot;jkl&quot;, &quot;mno&quot;, &quot;pqrs&quot;, &quot;tuv&quot;, &quot;wxyz&quot;};
+
+    for (final char d : digits.toCharArray()) {
+      List&lt;String&gt; temp = new ArrayList&lt;&gt;();
+      for (final String s : ans)
+        for (final char c : digitToLetters[d - &#x27;0&#x27;].toCharArray())
+          temp.add(s + c);
+      ans = temp;
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def letterCombinations(self, digits: str) -&gt; list[str]:
+    if not digits:
+      return []
+
+    ans = [&#x27;&#x27;]
+    digitToLetters = [&#x27;&#x27;, &#x27;&#x27;, &#x27;abc&#x27;, &#x27;def&#x27;, &#x27;ghi&#x27;,
+                      &#x27;jkl&#x27;, &#x27;mno&#x27;, &#x27;pqrs&#x27;, &#x27;tuv&#x27;, &#x27;wxyz&#x27;]
+
+    for d in digits:
+      temp = []
+      for s in ans:
+        for c in digitToLetters[int(d)]:
+          temp.append(s + c)
+      ans = temp
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

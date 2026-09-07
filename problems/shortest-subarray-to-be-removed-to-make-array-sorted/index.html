@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Subarray to be Removed to Make Array Sorted - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Shortest Subarray to be Removed to Make Array Sorted written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/shortest-subarray-to-be-removed-to-make-array-sorted/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/number-of-ways-to-split-a-string/" class="btn">← Previous</a>
+            <span>Problem 1574 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-all-possible-routes/" class="btn">Next →</a>
+        </div>
+        <h1>1574. Shortest Subarray to be Removed to Make Array Sorted</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Shortest Subarray to be Removed to Make Array Sorted efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int findLengthOfShortestSubarray(vector&lt;int&gt;&amp; arr) {
+    const int n = arr.size();
+    int l = 0;
+    int r = n - 1;
+
+    // arr[0..l] is non-decreasing.
+    while (l &lt; n - 1 &amp;&amp; arr[l + 1] &gt;= arr[l])
+      ++l;
+    // arr[r..n - 1] is non-decreasing.
+    while (r &gt; 0 &amp;&amp; arr[r - 1] &lt;= arr[r])
+      --r;
+    // Remove arr[l + 1..n - 1] or arr[0..r - 1].
+    int ans = min(n - 1 - l, r);
+
+    // Since arr[0..l] and arr[r..n - 1] are non-decreasing, we place pointers
+    // at the rightmost indices, l and n - 1, and greedily shrink them toward
+    // the leftmost indices, 0 and r, respectively. By removing arr[i + 1..j],
+    // we ensure that `arr` becomes non-decreasing.
+    int i = l;
+    int j = n - 1;
+    while (i &gt;= 0 &amp;&amp; j &gt;= r &amp;&amp; j &gt; i) {
+      if (arr[i] &lt;= arr[j])
+        --j;
+      else
+        --i;
+      ans = min(ans, j - i);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int findLengthOfShortestSubarray(int[] arr) {
+    final int n = arr.length;
+    int l = 0;
+    int r = n - 1;
+
+    // arr[0..l] is non-decreasing prefix.
+    while (l &lt; n - 1 &amp;&amp; arr[l + 1] &gt;= arr[l])
+      ++l;
+    // arr[r..n - 1] is non-decreasing suffix.
+    while (r &gt; 0 &amp;&amp; arr[r - 1] &lt;= arr[r])
+      --r;
+    // Remove arr[l + 1..n - 1] or arr[0..r - 1]
+    int ans = Math.min(n - 1 - l, r);
+
+    // Since arr[0..l] and arr[r..n - 1] are non-decreasing, we place pointers
+    // at the rightmost indices, l and n - 1, and greedily shrink them toward
+    // the leftmost indices, 0 and r, respectively. By removing arr[i + 1..j],
+    // we ensure that `arr` becomes non-decreasing.
+    int i = l;
+    int j = n - 1;
+    while (i &gt;= 0 &amp;&amp; j &gt;= r &amp;&amp; j &gt; i) {
+      if (arr[i] &lt;= arr[j])
+        --j;
+      else
+        --i;
+      ans = Math.min(ans, j - i);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findLengthOfShortestSubarray(self, arr: list[int]) -&gt; int:
+    n = len(arr)
+    l = 0
+    r = n - 1
+
+    # arr[0..l] is non-decreasing.
+    while l &lt; n - 1 and arr[l + 1] &gt;= arr[l]:
+      l += 1
+    # arr[r..n - 1] is non-decreasing.
+    while r &gt; 0 and arr[r - 1] &lt;= arr[r]:
+      r -= 1
+    # Remove arr[l + 1..n - 1] or arr[0..r - 1].
+    ans = min(n - 1 - l, r)
+
+    # Since arr[0..l] and arr[r..n - 1] are non-decreasing, we place pointers
+    # at the rightmost indices, l and n - 1, and greedily shrink them toward
+    # the leftmost indices, 0 and r, respectively. By removing arr[i + 1..j],
+    # we ensure that `arr` becomes non-decreasing.
+    i = l
+    j = n - 1
+    while i &gt;= 0 and j &gt;= r and j &gt; i:
+      if arr[i] &lt;= arr[j]:
+        j -= 1
+      else:
+        i -= 1
+      ans = min(ans, j - i)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

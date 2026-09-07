@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Visited Nodes in a Directed Graph - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Visited Nodes in a Directed Graph written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-visited-nodes-in-a-directed-graph/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-size-subarray-in-infinite-array/" class="btn">← Previous</a>
+            <span>Problem 2876 of 3563</span>
+            <a href="/leetcode-solutions/problems/create-a-dataframe-from-list/" class="btn">Next →</a>
+        </div>
+        <h1>2876. Count Visited Nodes in a Directed Graph</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Visited Nodes in a Directed Graph efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; countVisitedNodes(vector&lt;int&gt;&amp; edges) {
+    const int n = edges.size();
+    vector&lt;int&gt; ans(n);
+    vector&lt;int&gt; inDegrees(n);
+    vector&lt;bool&gt; seen(n);
+    queue&lt;int&gt; q;
+    stack&lt;int&gt; stack;
+
+    for (const int v : edges)
+      ++inDegrees[v];
+
+    // Perform topological sorting.
+    for (int i = 0; i &lt; n; ++i)
+      if (inDegrees[i] == 0)
+        q.push(i);
+
+    // Push non-cyclic nodes to stack.
+    while (!q.empty()) {
+      const int u = q.front();
+      q.pop();
+      if (--inDegrees[edges[u]] == 0)
+        q.push(edges[u]);
+      stack.push(u);
+      seen[u] = true;
+    }
+
+    // Fill the length of cyclic nodes.
+    for (int i = 0; i &lt; n; ++i)
+      if (!seen[i])
+        fillCycle(edges, i, seen, ans);
+
+    // Fill the length of non-cyclic nodes.
+    while (!stack.empty()) {
+      const int u = stack.top();
+      stack.pop();
+      ans[u] = ans[edges[u]] + 1;
+    }
+
+    return ans;
+  }
+
+ private:
+  void fillCycle(const vector&lt;int&gt;&amp; edges, int start, vector&lt;bool&gt;&amp; seen,
+                 vector&lt;int&gt;&amp; ans) {
+    int cycleLength = 0;
+    for (int u = start; !seen[u]; u = edges[u]) {
+      ++cycleLength;
+      seen[u] = true;
+    }
+    ans[start] = cycleLength;
+    for (int u = edges[start]; u != start; u = edges[u])
+      ans[u] = cycleLength;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] countVisitedNodes(List&lt;Integer&gt; edges) {
+    final int n = edges.size();
+    int[] ans = new int[n];
+    int[] inDegrees = new int[n];
+    boolean[] seen = new boolean[n];
+    Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();
+    Stack&lt;Integer&gt; stack = new Stack&lt;&gt;();
+
+    for (int v : edges)
+      ++inDegrees[v];
+
+    // Perform topological sorting.
+    for (int i = 0; i &lt; n; ++i)
+      if (inDegrees[i] == 0)
+        q.add(i);
+
+    // Push non-cyclic nodes to stack.
+    while (!q.isEmpty()) {
+      final int u = q.poll();
+      if (--inDegrees[edges.get(u)] == 0)
+        q.add(edges.get(u));
+      stack.push(u);
+      seen[u] = true;
+    }
+
+    // Fill the length of cyclic nodes.
+    for (int i = 0; i &lt; n; ++i)
+      if (!seen[i])
+        fillCycle(edges, i, seen, ans);
+
+    // Fill the length of non-cyclic nodes.
+    while (!stack.isEmpty()) {
+      final int u = stack.pop();
+      ans[u] = ans[edges.get(u)] + 1;
+    }
+
+    return ans;
+  }
+
+  private void fillCycle(List&lt;Integer&gt; edges, int start, boolean[] seen, int[] ans) {
+    int cycleLength = 0;
+    for (int u = start; !seen[u]; u = edges.get(u)) {
+      ++cycleLength;
+      seen[u] = true;
+    }
+    ans[start] = cycleLength;
+    for (int u = edges.get(start); u != start; u = edges.get(u))
+      ans[u] = cycleLength;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countVisitedNodes(self, edges: list[int]) -&gt; list[int]:
+    n = len(edges)
+    ans = [0] * n
+    inDegrees = [0] * n
+    seen = [False] * n
+    stack = []
+
+    for v in edges:
+      inDegrees[v] += 1
+
+    # Perform topological sorting.
+    q = collections.deque([i for i, d in enumerate(inDegrees) if d == 0])
+
+    # Push non-cyclic nodes to stack.
+    while q:
+      u = q.popleft()
+      inDegrees[edges[u]] -= 1
+      if inDegrees[edges[u]] == 0:
+        q.append(edges[u])
+      stack.append(u)
+      seen[u] = True
+
+    # Fill the length of cyclic nodes.
+    for i in range(n):
+      if not seen[i]:
+        self._fillCycle(edges, i, seen, ans)
+
+    # Fill the length of non-cyclic nodes.
+    while stack:
+      u = stack.pop()
+      ans[u] = ans[edges[u]] + 1
+
+    return ans
+
+  def _fillCycle(
+      self,
+      edges: list[int],
+      start: int,
+      seen: list[bool],
+      ans: list[int],
+  ) -&gt; None:
+    cycleLength = 0
+    u = start
+    while not seen[u]:
+      cycleLength += 1
+      seen[u] = True
+      u = edges[u]
+    ans[start] = cycleLength
+    u = edges[start]
+    while u != start:
+      ans[u] = cycleLength
+      u = edges[u]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

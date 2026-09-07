@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Number of Coins to Place in Tree Nodes - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Number of Coins to Place in Tree Nodes written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-number-of-coins-to-place-in-tree-nodes/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/count-the-number-of-incremovable-subarrays-ii/" class="btn">← Previous</a>
+            <span>Problem 2973 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-number-game/" class="btn">Next →</a>
+        </div>
+        <h1>2973. Find Number of Coins to Place in Tree Nodes</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Number of Coins to Place in Tree Nodes efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class ChildCost {
+ public:
+  ChildCost(int cost) {
+    numNodes = 1;
+    if (cost &gt; 0)
+      maxPosCosts.push_back(cost);
+    else
+      minNegCosts.push_back(cost);
+  }
+
+  void update(ChildCost childCost) {
+    numNodes += childCost.numNodes;
+    ranges::copy(childCost.maxPosCosts, back_inserter(maxPosCosts));
+    ranges::copy(childCost.minNegCosts, back_inserter(minNegCosts));
+    ranges::sort(maxPosCosts, greater&lt;int&gt;());
+    ranges::sort(minNegCosts);
+    maxPosCosts.resize(min(static_cast&lt;int&gt;(maxPosCosts.size()), 3));
+    minNegCosts.resize(min(static_cast&lt;int&gt;(minNegCosts.size()), 2));
+  }
+
+  long maxProduct() {
+    if (numNodes &lt; 3)
+      return 1;
+    if (maxPosCosts.empty())
+      return 0;
+    long res = 0;
+    if (maxPosCosts.size() == 3)
+      res = static_cast&lt;long&gt;(maxPosCosts[0]) * maxPosCosts[1] * maxPosCosts[2];
+    if (minNegCosts.size() == 2)
+      res = max(res, static_cast&lt;long&gt;(minNegCosts[0]) * minNegCosts[1] *
+                         maxPosCosts[0]);
+    return res;
+  }
+
+ private:
+  int numNodes;
+  vector&lt;int&gt; maxPosCosts;
+  vector&lt;int&gt; minNegCosts;
+};
+
+class Solution {
+ public:
+  vector&lt;long long&gt; placedCoins(vector&lt;vector&lt;int&gt;&gt;&amp; edges, vector&lt;int&gt;&amp; cost) {
+    const int n = cost.size();
+    vector&lt;long long&gt; ans(n);
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+
+    for (const vector&lt;int&gt;&amp; edge : edges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      tree[u].push_back(v);
+      tree[v].push_back(u);
+    }
+
+    dfs(tree, 0, /*prev=*/-1, cost, ans);
+    return ans;
+  }
+
+ private:
+  ChildCost dfs(const vector&lt;vector&lt;int&gt;&gt;&amp; tree, int u, int prev,
+                const vector&lt;int&gt;&amp; cost, vector&lt;long long&gt;&amp; ans) {
+    ChildCost res(cost[u]);
+    for (const int v : tree[u])
+      if (v != prev)
+        res.update(dfs(tree, v, u, cost, ans));
+    ans[u] = res.maxProduct();
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class ChildCost {
+  public ChildCost(int cost) {
+    if (cost &gt; 0)
+      maxPosCosts.add(cost);
+    else
+      minNegCosts.add(cost);
+  }
+
+  public void update(ChildCost childCost) {
+    numNodes += childCost.numNodes;
+    maxPosCosts.addAll(childCost.maxPosCosts);
+    minNegCosts.addAll(childCost.minNegCosts);
+    maxPosCosts.sort(Comparator.reverseOrder());
+    minNegCosts.sort(Comparator.naturalOrder());
+    if (maxPosCosts.size() &gt; 3)
+      maxPosCosts = maxPosCosts.subList(0, 3);
+    if (minNegCosts.size() &gt; 2)
+      minNegCosts = minNegCosts.subList(0, 2);
+  }
+
+  public long maxProduct() {
+    if (numNodes &lt; 3)
+      return 1;
+    if (maxPosCosts.isEmpty())
+      return 0;
+    long res = 0;
+    if (maxPosCosts.size() == 3)
+      res = (long) maxPosCosts.get(0) * maxPosCosts.get(1) * maxPosCosts.get(2);
+    if (minNegCosts.size() == 2)
+      res = Math.max(res, (long) minNegCosts.get(0) * minNegCosts.get(1) * maxPosCosts.get(0));
+    return res;
+  }
+
+  private int numNodes = 1;
+  private List&lt;Integer&gt; maxPosCosts = new ArrayList&lt;&gt;();
+  private List&lt;Integer&gt; minNegCosts = new ArrayList&lt;&gt;();
+}
+
+class Solution {
+  public long[] placedCoins(int[][] edges, int[] cost) {
+    final int n = cost.length;
+    long[] ans = new long[n];
+    List&lt;Integer&gt;[] tree = new List[n];
+
+    for (int i = 0; i &lt; n; i++)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    for (int[] edge : edges) {
+      final int u = edge[0];
+      final int v = edge[1];
+      tree[u].add(v);
+      tree[v].add(u);
+    }
+
+    dfs(tree, 0, /*prev=*/-1, cost, ans);
+    return ans;
+  }
+
+  private ChildCost dfs(List&lt;Integer&gt;[] tree, int u, int prev, int[] cost, long[] ans) {
+    ChildCost res = new ChildCost(cost[u]);
+    for (final int v : tree[u])
+      if (v != prev)
+        res.update(dfs(tree, v, u, cost, ans));
+    ans[u] = res.maxProduct();
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class ChildCost:
+  def __init__(self, cost: int):
+    self.numNodes = 1
+    self.maxPosCosts = [cost] if cost &gt; 0 else []
+    self.minNegCosts = [cost] if cost &lt; 0 else []
+
+  def update(self, childCost: &#x27;ChildCost&#x27;) -&gt; None:
+    self.numNodes += childCost.numNodes
+    self.maxPosCosts.extend(childCost.maxPosCosts)
+    self.minNegCosts.extend(childCost.minNegCosts)
+    self.maxPosCosts.sort(reverse=True)
+    self.minNegCosts.sort()
+    self.maxPosCosts = self.maxPosCosts[:3]
+    self.minNegCosts = self.minNegCosts[:2]
+
+  def maxProduct(self) -&gt; int:
+    if self.numNodes &lt; 3:
+      return 1
+    if not self.maxPosCosts:
+      return 0
+    res = 0
+    if len(self.maxPosCosts) == 3:
+      res = self.maxPosCosts[0] * self.maxPosCosts[1] * self.maxPosCosts[2]
+    if len(self.minNegCosts) == 2:
+      res = max(res,
+                self.minNegCosts[0] * self.minNegCosts[1] * self.maxPosCosts[0])
+    return res
+
+
+class Solution:
+  def placedCoins(self, edges: list[list[int]], cost: list[int]) -&gt; list[int]:
+    n = len(cost)
+    ans = [0] * n
+    tree = [[] for _ in range(n)]
+
+    for u, v in edges:
+      tree[u].append(v)
+      tree[v].append(u)
+
+    def dfs(u: int, prev: int) -&gt; None:
+      res = ChildCost(cost[u])
+      for v in tree[u]:
+        if v != prev:
+          res.update(dfs(v, u))
+      ans[u] = res.maxProduct()
+      return res
+
+    dfs(0, -1)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

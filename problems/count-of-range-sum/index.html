@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count of Range Sum - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count of Range Sum written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-of-range-sum/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/power-of-three/" class="btn">← Previous</a>
+            <span>Problem 327 of 3563</span>
+            <a href="/leetcode-solutions/problems/odd-even-linked-list/" class="btn">Next →</a>
+        </div>
+        <h1>327. Count of Range Sum</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count of Range Sum efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countRangeSum(vector&lt;int&gt;&amp; nums, int lower, int upper) {
+    const int n = nums.size();
+    int ans = 0;
+    vector&lt;long&gt; prefix{0};
+
+    for (int i = 0; i &lt; n; ++i)
+      prefix.push_back(prefix.back() + nums[i]);
+
+    mergeSort(prefix, 0, n, lower, upper, ans);
+    return ans;
+  }
+
+ private:
+  void mergeSort(vector&lt;long&gt;&amp; prefix, int l, int r, int lower, int upper,
+                 int&amp; ans) {
+    if (l &gt;= r)
+      return;
+
+    const int m = (l + r) / 2;
+    mergeSort(prefix, l, m, lower, upper, ans);
+    mergeSort(prefix, m + 1, r, lower, upper, ans);
+    merge(prefix, l, m, r, lower, upper, ans);
+  }
+
+  void merge(vector&lt;long&gt;&amp; prefix, int l, int m, int r, int lower, int upper,
+             int&amp; ans) {
+    int lo = m + 1;  // the first index s.t. prefix[lo] - prefix[i] &gt;= lower
+    int hi = m + 1;  // the first index s.t. prefix[hi] - prefix[i] &gt; upper
+
+    // For each index i in range [l, m], add hi - lo to `ans`.
+    for (int i = l; i &lt;= m; ++i) {
+      while (lo &lt;= r &amp;&amp; prefix[lo] - prefix[i] &lt; lower)
+        ++lo;
+      while (hi &lt;= r &amp;&amp; prefix[hi] - prefix[i] &lt;= upper)
+        ++hi;
+      ans += hi - lo;
+    }
+
+    vector&lt;long&gt; sorted(r - l + 1);
+    int k = 0;      // sorted&#x27;s index
+    int i = l;      // left&#x27;s index
+    int j = m + 1;  // right&#x27;s index
+
+    while (i &lt;= m &amp;&amp; j &lt;= r)
+      if (prefix[i] &lt; prefix[j])
+        sorted[k++] = prefix[i++];
+      else
+        sorted[k++] = prefix[j++];
+
+    // Put the possible remaining left part into the sorted array.
+    while (i &lt;= m)
+      sorted[k++] = prefix[i++];
+
+    // Put the possible remaining right part into the sorted array.
+    while (j &lt;= r)
+      sorted[k++] = prefix[j++];
+
+    copy(sorted.begin(), sorted.end(), prefix.begin() + l);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countRangeSum(int[] nums, int lower, int upper) {
+    final int n = nums.length;
+    long[] prefix = new long[n + 1];
+
+    for (int i = 0; i &lt; n; ++i)
+      prefix[i + 1] = (long) nums[i] + prefix[i];
+
+    mergeSort(prefix, 0, n, lower, upper);
+    return ans;
+  }
+
+  private int ans = 0;
+
+  private void mergeSort(long[] prefix, int l, int r, int lower, int upper) {
+    if (l &gt;= r)
+      return;
+
+    final int m = (l + r) / 2;
+    mergeSort(prefix, l, m, lower, upper);
+    mergeSort(prefix, m + 1, r, lower, upper);
+    merge(prefix, l, m, r, lower, upper);
+  }
+
+  private void merge(long[] prefix, int l, int m, int r, int lower, int upper) {
+    int lo = m + 1; // the first index s.t. prefix[lo] - prefix[i] &gt;= lower
+    int hi = m + 1; // the first index s.t. prefix[hi] - prefix[i] &gt; upper
+
+    // For each index i in range [l, m], add hi - lo to `ans`.
+    for (int i = l; i &lt;= m; ++i) {
+      while (lo &lt;= r &amp;&amp; prefix[lo] - prefix[i] &lt; lower)
+        ++lo;
+      while (hi &lt;= r &amp;&amp; prefix[hi] - prefix[i] &lt;= upper)
+        ++hi;
+      ans += hi - lo;
+    }
+
+    long[] sorted = new long[r - l + 1];
+    int k = 0;     // sorted&#x27;s index
+    int i = l;     // left&#x27;s index
+    int j = m + 1; // right&#x27;s index
+
+    while (i &lt;= m &amp;&amp; j &lt;= r)
+      if (prefix[i] &lt; prefix[j])
+        sorted[k++] = prefix[i++];
+      else
+        sorted[k++] = prefix[j++];
+
+    // Put the possible remaining left part into the sorted array.
+    while (i &lt;= m)
+      sorted[k++] = prefix[i++];
+
+    // Put the possible remaining right part into the sorted array.
+    while (j &lt;= r)
+      sorted[k++] = prefix[j++];
+
+    System.arraycopy(sorted, 0, prefix, l, sorted.length);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countRangeSum(self, nums: list[int], lower: int, upper: int) -&gt; int:
+    n = len(nums)
+    self.ans = 0
+    prefix = list(itertools.accumulate(nums, initial=0))
+
+    self._mergeSort(prefix, 0, n, lower, upper)
+    return self.ans
+
+  def _mergeSort(
+      self,
+      prefix: list[int],
+      l: int,
+      r: int,
+      lower: int,
+      upper: int,
+  ) -&gt; None:
+    if l &gt;= r:
+      return
+
+    m = (l + r) // 2
+    self._mergeSort(prefix, l, m, lower, upper)
+    self._mergeSort(prefix, m + 1, r, lower, upper)
+    self._merge(prefix, l, m, r, lower, upper)
+
+  def _merge(
+      self,
+      prefix: list[int],
+      l: int,
+      m: int,
+      r: int,
+      lower: int,
+      upper: int,
+  ) -&gt; None:
+    lo = m + 1  # the first index s.t. prefix[lo] - prefix[i] &gt;= lower
+    hi = m + 1  # the first index s.t. prefix[hi] - prefix[i] &gt; upper
+
+    # For each index i in range [l, m], add hi - lo to `ans`.
+    for i in range(l, m + 1):
+      while lo &lt;= r and prefix[lo] - prefix[i] &lt; lower:
+        lo += 1
+      while hi &lt;= r and prefix[hi] - prefix[i] &lt;= upper:
+        hi += 1
+      self.ans += hi - lo
+
+    sorted = [0] * (r - l + 1)
+    k = 0  # sorted&#x27;s index
+    i = l  # left&#x27;s index
+    j = m + 1  # right&#x27;s index
+
+    while i &lt;= m and j &lt;= r:
+      if prefix[i] &lt; prefix[j]:
+        sorted[k] = prefix[i]
+        k += 1
+        i += 1
+      else:
+        sorted[k] = prefix[j]
+        k += 1
+        j += 1
+
+    # Put the possible remaining left part into the sorted array.
+    while i &lt;= m:
+      sorted[k] = prefix[i]
+      k += 1
+      i += 1
+
+    # Put the possible remaining right part into the sorted array.
+    while j &lt;= r:
+      sorted[k] = prefix[j]
+      k += 1
+      j += 1
+
+    prefix[l:l + len(sorted)] = sorted</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

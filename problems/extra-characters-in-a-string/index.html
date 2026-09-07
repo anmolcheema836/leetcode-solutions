@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extra Characters in a String - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Extra Characters in a String written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/extra-characters-in-a-string/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/buy-two-chocolates/" class="btn">← Previous</a>
+            <span>Problem 2707 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-strength-of-a-group/" class="btn">Next →</a>
+        </div>
+        <h1>2707. Extra Characters in a String</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Extra Characters in a String efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 139. Word Break
+  int minExtraChar(string s, vector&lt;string&gt;&amp; dictionary) {
+    const int n = s.length();
+    const unordered_set&lt;string&gt; dictionarySet{dictionary.begin(),
+                                              dictionary.end()};
+    // dp[i] := the minimum extra letters if breaking up s[0..i) optimally
+    vector&lt;int&gt; dp(n + 1, n);
+    dp[0] = 0;
+
+    for (int i = 1; i &lt;= n; ++i)
+      for (int j = 0; j &lt; i; ++j)
+        // s[j..i) is in `dictionarySet`.
+        if (dictionarySet.contains(s.substr(j, i - j)))
+          dp[i] = min(dp[i], dp[j]);
+        // s[j..i) are extra letters.
+        else
+          dp[i] = min(dp[i], dp[j] + i - j);
+
+    return dp[n];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 139. Word Break
+  public int minExtraChar(String s, String[] dictionary) {
+    final int n = s.length();
+    Set&lt;String&gt; dictionarySet = new HashSet&lt;&gt;(Arrays.asList(dictionary));
+    // dp[i] := the minimum extra letters if breaking up s[0..i) optimally
+    int[] dp = new int[n + 1];
+    Arrays.fill(dp, n);
+    dp[0] = 0;
+
+    for (int i = 1; i &lt;= n; i++)
+      for (int j = 0; j &lt; i; j++)
+        // s[j..i) is in `dictionarySet`.
+        if (dictionarySet.contains(s.substring(j, i)))
+          dp[i] = Math.min(dp[i], dp[j]);
+        // s[j..i) are extra letters.
+        else
+          dp[i] = Math.min(dp[i], dp[j] + i - j);
+
+    return dp[n];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 139. Word Break
+  def minExtraChar(self, s: str, dictionary: list[str]) -&gt; int:
+    n = len(s)
+    dictionarySet = set(dictionary)
+    # dp[i] := the minimum extra letters if breaking up s[0..i) optimally
+    dp = [0] + [n] * n
+
+    for i in range(1, n + 1):
+      for j in range(i):
+        if s[j:i] in dictionarySet:
+          dp[i] = min(dp[i], dp[j])
+        else:
+          dp[i] = min(dp[i], dp[j] + i - j)
+
+    return dp[n]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Rooms III - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Meeting Rooms III written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/meeting-rooms-iii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-nice-subarray/" class="btn">← Previous</a>
+            <span>Problem 2402 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-time-to-kill-all-monsters/" class="btn">Next →</a>
+        </div>
+        <h1>2402. Meeting Rooms III</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Meeting Rooms III efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct T {
+  long endTime;
+  int roomId;
+};
+
+class Solution {
+ public:
+  int mostBooked(int n, vector&lt;vector&lt;int&gt;&gt;&amp; meetings) {
+    vector&lt;int&gt; count(n);
+
+    ranges::sort(meetings);
+
+    auto compare = [](const T&amp; a, const T&amp; b) {
+      return a.endTime == b.endTime ? a.roomId &gt; b.roomId
+                                    : a.endTime &gt; b.endTime;
+    };
+    priority_queue&lt;T, vector&lt;T&gt;, decltype(compare)&gt; occupied(compare);
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;&gt;&gt; availableRoomIds;
+
+    for (int i = 0; i &lt; n; ++i)
+      availableRoomIds.push(i);
+
+    for (const vector&lt;int&gt;&amp; meeting : meetings) {
+      const int start = meeting[0];
+      const int end = meeting[1];
+      // Push meetings ending before this `meeting` in occupied to the
+      // `availableRoomsIds`.
+      while (!occupied.empty() &amp;&amp; occupied.top().endTime &lt;= start)
+        availableRoomIds.push(occupied.top().roomId), occupied.pop();
+      if (availableRoomIds.empty()) {
+        const auto [newStart, roomId] = occupied.top();
+        occupied.pop();
+        ++count[roomId];
+        occupied.push({newStart + (end - start), roomId});
+      } else {
+        const int roomId = availableRoomIds.top();
+        availableRoomIds.pop();
+        ++count[roomId];
+        occupied.push({end, roomId});
+      }
+    }
+
+    return ranges::max_element(count) - count.begin();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int mostBooked(int n, int[][] meetings) {
+    record T(long endTime, int roomId) {}
+    int[] count = new int[n];
+
+    Arrays.sort(meetings, Comparator.comparingInt(meeting -&gt; meeting[0]));
+
+    Queue&lt;T&gt; occupied =
+        new PriorityQueue&lt;&gt;(Comparator.comparingLong(T::endTime).thenComparingInt(T::roomId));
+    Queue&lt;Integer&gt; availableRoomIds = new PriorityQueue&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      availableRoomIds.offer(i);
+
+    for (int[] meeting : meetings) {
+      final int start = meeting[0];
+      final int end = meeting[1];
+      // Push meetings ending before this `meeting` in occupied to the
+      // `availableRoomsIds`.
+      while (!occupied.isEmpty() &amp;&amp; occupied.peek().endTime &lt;= start)
+        availableRoomIds.offer(occupied.poll().roomId);
+      if (availableRoomIds.isEmpty()) {
+        T t = occupied.poll();
+        ++count[t.roomId];
+        occupied.offer(new T(t.endTime + (end - start), t.roomId));
+      } else {
+        final int roomId = availableRoomIds.poll();
+        ++count[roomId];
+        occupied.offer(new T(end, roomId));
+      }
+    }
+
+    int maxIndex = 0;
+    for (int i = 0; i &lt; n; ++i)
+      if (count[i] &gt; count[maxIndex])
+        maxIndex = i;
+    return maxIndex;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def mostBooked(self, n: int, meetings: list[list[int]]) -&gt; int:
+    count = [0] * n
+
+    meetings.sort()
+
+    occupied = []  # (endTime, roomId)
+    availableRoomIds = [i for i in range(n)]
+    heapq.heapify(availableRoomIds)
+
+    for start, end in meetings:
+      # Push meetings ending before this `meeting` in occupied to the
+      # `availableRoomsIds`.
+      while occupied and occupied[0][0] &lt;= start:
+        heapq.heappush(availableRoomIds, heapq.heappop(occupied)[1])
+      if availableRoomIds:
+        roomId = heapq.heappop(availableRoomIds)
+        count[roomId] += 1
+        heapq.heappush(occupied, (end, roomId))
+      else:
+        newStart, roomId = heapq.heappop(occupied)
+        count[roomId] += 1
+        heapq.heappush(occupied, (newStart + (end - start), roomId))
+
+    return count.index(max(count))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

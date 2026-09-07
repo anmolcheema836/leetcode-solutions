@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Log Storage System - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Design Log Storage System written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/design-log-storage-system/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-derangement-of-an-array/" class="btn">← Previous</a>
+            <span>Problem 635 of 3563</span>
+            <a href="/leetcode-solutions/problems/exclusive-time-of-functions/" class="btn">Next →</a>
+        </div>
+        <h1>635. Design Log Storage System</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Design Log Storage System efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class LogSystem {
+ public:
+  void put(int id, string timestamp) {
+    idAndTimestamps.emplace_back(id, timestamp);
+  }
+
+  vector&lt;int&gt; retrieve(string start, string end, string granularity) {
+    vector&lt;int&gt; ans;
+    const int index = granularityToIndices.at(granularity);
+    const string s = start.substr(0, index);
+    const string e = end.substr(0, index);
+
+    for (const auto&amp; [id, timestamp] : idAndTimestamps) {
+      const string&amp; t = timestamp.substr(0, index);
+      if (s &lt;= t &amp;&amp; t &lt;= e)
+        ans.push_back(id);
+    }
+
+    return ans;
+  }
+
+ private:
+  const unordered_map&lt;string, int&gt; granularityToIndices{
+      {&quot;Year&quot;, 4},  {&quot;Month&quot;, 7},   {&quot;Day&quot;, 10},
+      {&quot;Hour&quot;, 13}, {&quot;Minute&quot;, 16}, {&quot;Second&quot;, 19}};
+  vector&lt;pair&lt;int, string&gt;&gt; idAndTimestamps;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class LogSystem {
+  public LogSystem() {
+    granularityToIndices.put(&quot;Year&quot;, 4);
+    granularityToIndices.put(&quot;Month&quot;, 7);
+    granularityToIndices.put(&quot;Day&quot;, 10);
+    granularityToIndices.put(&quot;Hour&quot;, 13);
+    granularityToIndices.put(&quot;Minute&quot;, 16);
+    granularityToIndices.put(&quot;Second&quot;, 19);
+  }
+
+  public void put(int id, String timestamp) {
+    idAndTimestamps.add(new Pair&lt;&gt;(id, timestamp));
+  }
+
+  public List&lt;Integer&gt; retrieve(String start, String end, String granularity) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    final int index = granularityToIndices.get(granularity);
+    final String s = start.substring(0, index);
+    final String e = end.substring(0, index);
+
+    for (Pair&lt;Integer, String&gt; idAndTimestamp : idAndTimestamps) {
+      final String timestamp = idAndTimestamp.getValue();
+      final String t = timestamp.substring(0, index);
+      if (t.compareTo(s) &gt;= 0 &amp;&amp; t.compareTo(e) &lt;= 0)
+        ans.add(idAndTimestamp.getKey());
+    }
+
+    return ans;
+  }
+
+  private Map&lt;String, Integer&gt; granularityToIndices = new HashMap&lt;&gt;();
+  private List&lt;Pair&lt;Integer, String&gt;&gt; idAndTimestamps = new ArrayList&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class LogSystem:
+  def __init__(self):
+    self.granularityToIndices = {&#x27;Year&#x27;: 4, &#x27;Month&#x27;: 7, &#x27;Day&#x27;: 10,
+                                 &#x27;Hour&#x27;: 13, &#x27;Minute&#x27;: 16, &#x27;Second&#x27;: 19}
+    self.idAndTimestamps = []
+
+  def put(self, id: int, timestamp: str) -&gt; None:
+    self.idAndTimestamps.append((id, timestamp))
+
+  def retrieve(self, start: str, end: str, granularity: str) -&gt; list[int]:
+    index = self.granularityToIndices[granularity]
+    s = start[:index]
+    e = end[:index]
+    return [id for id, timestamp in self.idAndTimestamps
+            if s &lt;= timestamp[:index] &lt;= e]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

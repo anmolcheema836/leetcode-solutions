@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherry Pickup - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Cherry Pickup written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/cherry-pickup/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/delete-and-earn/" class="btn">← Previous</a>
+            <span>Problem 741 of 3563</span>
+            <a href="/leetcode-solutions/problems/closest-leaf-in-a-binary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>741. Cherry Pickup</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Cherry Pickup efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int cherryPickup(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int n = grid.size();
+    // dp[x1][y1][x2] := the maximum cherries we could pick from
+    // g[0][0] -&gt; g[x1 - 1][y1 - 1] + g[0][0] -&gt; g[x2 - 1][y2 - 1],
+    // where y2 = x1 + y1 - x2 (reducing states from 4 to 3)
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(
+        n + 1, vector&lt;vector&lt;int&gt;&gt;(n + 1, vector&lt;int&gt;(n + 1, -1)));
+    dp[1][1][1] = grid[0][0];
+
+    for (int x1 = 1; x1 &lt;= n; ++x1)
+      for (int y1 = 1; y1 &lt;= n; ++y1)
+        for (int x2 = 1; x2 &lt;= n; ++x2) {
+          const int y2 = x1 + y1 - x2;
+          if (y2 &lt; 1 || y2 &gt; n)
+            continue;
+          if (grid[x1 - 1][y1 - 1] == -1 || grid[x2 - 1][y2 - 1] == -1)
+            continue;
+          const int ans = max({dp[x1 - 1][y1][x2], dp[x1 - 1][y1][x2 - 1],
+                               dp[x1][y1 - 1][x2], dp[x1][y1 - 1][x2 - 1]});
+          if (ans &lt; 0)
+            continue;
+          dp[x1][y1][x2] = ans + grid[x1 - 1][y1 - 1];
+          if (x1 != x2)
+            dp[x1][y1][x2] += grid[x2 - 1][y2 - 1];
+        }
+
+    return max(0, dp[n][n][n]);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int cherryPickup(int[][] grid) {
+    final int n = grid.length;
+    // dp[x1][y1][x2] := the maximum cherries we could pick from
+    // g[0][0] -&gt; g[x1 - 1][y1 - 1] + g[0][0] -&gt; g[x2 - 1][y2 - 1],
+    // where y2 = x1 + y1 - x2 (reducing states from 4 to 3)
+    int[][][] dp = new int[n + 1][n + 1][n + 1];
+    Arrays.stream(dp).forEach(A -&gt; Arrays.stream(A).forEach(B -&gt; Arrays.fill(B, -1)));
+    dp[1][1][1] = grid[0][0];
+
+    for (int x1 = 1; x1 &lt;= n; ++x1)
+      for (int y1 = 1; y1 &lt;= n; ++y1)
+        for (int x2 = 1; x2 &lt;= n; ++x2) {
+          final int y2 = x1 + y1 - x2;
+          if (y2 &lt; 1 || y2 &gt; n)
+            continue;
+          if (grid[x1 - 1][y1 - 1] == -1 || grid[x2 - 1][y2 - 1] == -1)
+            continue;
+          final int ans = Math.max(Math.max(dp[x1 - 1][y1][x2], dp[x1 - 1][y1][x2 - 1]),
+                                   Math.max(dp[x1][y1 - 1][x2], dp[x1][y1 - 1][x2 - 1]));
+          if (ans &lt; 0)
+            continue;
+          dp[x1][y1][x2] = ans + grid[x1 - 1][y1 - 1];
+          if (x1 != x2)
+            dp[x1][y1][x2] += grid[x2 - 1][y2 - 1];
+        }
+
+    return Math.max(0, dp[n][n][n]);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

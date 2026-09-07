@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Genetic Difference Query - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Genetic Difference Query written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-genetic-difference-query/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-of-points-with-cost/" class="btn">← Previous</a>
+            <span>Problem 1938 of 3563</span>
+            <a href="/leetcode-solutions/problems/users-that-actively-request-confirmation-messages/" class="btn">Next →</a>
+        </div>
+        <h1>1938. Maximum Genetic Difference Query</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Genetic Difference Query efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct TrieNode {
+  vector&lt;shared_ptr&lt;TrieNode&gt;&gt; children;
+  int count = 0;
+  TrieNode() : children(2) {}
+};
+
+class Trie {
+ public:
+  void update(int num, int val) {
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = kHeight; i &gt;= 0; --i) {
+      const int bit = (num &gt;&gt; i) &amp; 1;
+      if (node-&gt;children[bit] == nullptr)
+        node-&gt;children[bit] = make_shared&lt;TrieNode&gt;();
+      node = node-&gt;children[bit];
+      node-&gt;count += val;
+    }
+  }
+
+  int query(int num) {
+    int ans = 0;
+    shared_ptr&lt;TrieNode&gt; node = root;
+    for (int i = kHeight; i &gt;= 0; --i) {
+      const int bit = (num &gt;&gt; i) &amp; 1;
+      const int targetBit = bit ^ 1;
+      if (node-&gt;children[targetBit] &amp;&amp; node-&gt;children[targetBit]-&gt;count) {
+        ans += 1 &lt;&lt; i;
+        node = node-&gt;children[targetBit];
+      } else {
+        node = node-&gt;children[targetBit ^ 1];
+      }
+    }
+    return ans;
+  }
+
+ private:
+  static constexpr int kHeight = 17;
+  shared_ptr&lt;TrieNode&gt; root = make_shared&lt;TrieNode&gt;();
+};
+
+class Solution {
+ public:
+  vector&lt;int&gt; maxGeneticDifference(vector&lt;int&gt;&amp; parents,
+                                   vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    const int n = parents.size();
+    vector&lt;int&gt; ans(queries.size());
+    int rootVal = -1;
+    vector&lt;vector&lt;int&gt;&gt; tree(n);
+    // {node: (index, val)}
+    unordered_map&lt;int, vector&lt;pair&lt;int, int&gt;&gt;&gt; nodeToQueries;
+    Trie trie;
+
+    for (int i = 0; i &lt; parents.size(); ++i)
+      if (parents[i] == -1)
+        rootVal = i;
+      else
+        tree[parents[i]].push_back(i);
+
+    for (int i = 0; i &lt; queries.size(); ++i) {
+      const int node = queries[i][0];
+      const int val = queries[i][1];
+      nodeToQueries[node].emplace_back(i, val);
+    }
+
+    dfs(rootVal, trie, tree, nodeToQueries, ans);
+    return ans;
+  }
+
+ private:
+  void dfs(int node, Trie&amp; trie, const vector&lt;vector&lt;int&gt;&gt;&amp; tree,
+           const unordered_map&lt;int, vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; nodeToQueries,
+           vector&lt;int&gt;&amp; ans) {
+    trie.update(node, 1);
+
+    if (const auto it = nodeToQueries.find(node); it != nodeToQueries.cend())
+      for (const auto&amp; [i, val] : it-&gt;second)
+        ans[i] = trie.query(val);
+
+    for (const int child : tree[node])
+      dfs(child, trie, tree, nodeToQueries, ans);
+
+    trie.update(node, -1);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TrieNode {
+  public TrieNode[] children = new TrieNode[2];
+  public int count = 0;
+}
+
+class Trie {
+  public void update(int num, int val) {
+    TrieNode node = root;
+    for (int i = HEIGHT; i &gt;= 0; --i) {
+      final int bit = (num &gt;&gt; i) &amp; 1;
+      if (node.children[bit] == null)
+        node.children[bit] = new TrieNode();
+      node = node.children[bit];
+      node.count += val;
+    }
+  }
+
+  public int query(int num) {
+    int ans = 0;
+    TrieNode node = root;
+    for (int i = HEIGHT; i &gt;= 0; --i) {
+      final int bit = (num &gt;&gt; i) &amp; 1;
+      final int targetBit = bit ^ 1;
+      if (node.children[targetBit] != null &amp;&amp; node.children[targetBit].count &gt; 0) {
+        ans += 1 &lt;&lt; i;
+        node = node.children[targetBit];
+      } else {
+        node = node.children[targetBit ^ 1];
+      }
+    }
+    return ans;
+  }
+
+  private static final int HEIGHT = 17;
+  TrieNode root = new TrieNode();
+}
+
+class Solution {
+  public int[] maxGeneticDifference(int[] parents, int[][] queries) {
+    final int n = parents.length;
+    int[] ans = new int[queries.length];
+    int rootVal = -1;
+    List&lt;Integer&gt;[] tree = new List[n];
+
+    for (int i = 0; i &lt; n; ++i)
+      tree[i] = new ArrayList&lt;&gt;();
+
+    // {node: (index, val)}
+    Map&lt;Integer, List&lt;Pair&lt;Integer, Integer&gt;&gt;&gt; nodeToQueries = new HashMap&lt;&gt;();
+    Trie trie = new Trie();
+
+    for (int i = 0; i &lt; parents.length; ++i)
+      if (parents[i] == -1)
+        rootVal = i;
+      else
+        tree[parents[i]].add(i);
+
+    for (int i = 0; i &lt; queries.length; ++i) {
+      final int node = queries[i][0];
+      final int val = queries[i][1];
+      nodeToQueries.putIfAbsent(node, new ArrayList&lt;&gt;());
+      nodeToQueries.get(node).add(new Pair&lt;&gt;(i, val));
+    }
+
+    dfs(rootVal, trie, tree, nodeToQueries, ans);
+    return ans;
+  }
+
+  private void dfs(int node, Trie trie, List&lt;Integer&gt;[] tree,
+                   Map&lt;Integer, List&lt;Pair&lt;Integer, Integer&gt;&gt;&gt; nodeToQueries, int[] ans) {
+    trie.update(node, 1);
+
+    if (nodeToQueries.containsKey(node))
+      for (Pair&lt;Integer, Integer&gt; query : nodeToQueries.get(node)) {
+        final int i = query.getKey();
+        final int val = query.getValue();
+        ans[i] = trie.query(val);
+      }
+
+    for (final int child : tree[node])
+      dfs(child, trie, tree, nodeToQueries, ans);
+
+    trie.update(node, -1);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class TrieNode:
+  def __init__(self):
+    self.children: list[TrieNode | None] = [None] * 2
+    self.count = 0
+
+
+class Trie:
+  def __init__(self):
+    self.root = TrieNode()
+    self.HEIGHT = 17
+
+  def update(self, num: int, val: int) -&gt; None:
+    node = self.root
+    for i in range(self.HEIGHT, -1, -1):
+      bit = (num &gt;&gt; i) &amp; 1
+      if not node.children[bit]:
+        node.children[bit] = TrieNode()
+      node = node.children[bit]
+      node.count += val
+
+  def query(self, num: int) -&gt; int:
+    ans = 0
+    node = self.root
+    for i in range(self.HEIGHT, -1, -1):
+      bit = (num &gt;&gt; i) &amp; 1
+      targetBit = bit ^ 1
+      if node.children[targetBit] and node.children[targetBit].count &gt; 0:
+        ans += 1 &lt;&lt; i
+        node = node.children[targetBit]
+      else:
+        node = node.children[targetBit ^ 1]
+    return ans
+
+
+class Solution:
+  def maxGeneticDifference(
+      self,
+      parents: list[int],
+      queries: list[list[int]],
+  ) -&gt; list[int]:
+    n = len(parents)
+    ans = [0] * len(queries)
+    rootVal = -1
+    tree = [[] for _ in range(n)]
+    nodeToQueries = collections.defaultdict(list)  # {node: (index, val)}
+    trie = Trie()
+
+    for i, parent in enumerate(parents):
+      if parent == -1:
+        rootVal = i
+      else:
+        tree[parent].append(i)
+
+    for i, (node, val) in enumerate(queries):
+      nodeToQueries[node].append((i, val))
+
+    def dfs(node: int) -&gt; None:
+      trie.update(node, 1)
+
+      # Answer queries for node
+      for i, val in nodeToQueries[node]:
+        ans[i] = trie.query(val)
+
+      for child in tree[node]:
+        dfs(child)
+
+      trie.update(node, -1)
+
+    dfs(rootVal)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

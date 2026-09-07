@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Substrings Between Each Pair of Parentheses - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Reverse Substrings Between Each Pair of Parentheses written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/reverse-substrings-between-each-pair-of-parentheses/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-number-of-balloons/" class="btn">← Previous</a>
+            <span>Problem 1190 of 3563</span>
+            <a href="/leetcode-solutions/problems/k-concatenation-maximum-sum/" class="btn">Next →</a>
+        </div>
+        <h1>1190. Reverse Substrings Between Each Pair of Parentheses</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Reverse Substrings Between Each Pair of Parentheses efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string reverseParentheses(string s) {
+    string ans;
+    stack&lt;int&gt; stack;
+    unordered_map&lt;int, int&gt; pair;
+
+    for (int i = 0; i &lt; s.length(); ++i)
+      if (s[i] == &#x27;(&#x27;) {
+        stack.push(i);
+      } else if (s[i] == &#x27;)&#x27;) {
+        const int j = stack.top();
+        stack.pop();
+        pair[i] = j;
+        pair[j] = i;
+      }
+
+    for (int i = 0, d = 1; i &lt; s.length(); i += d)
+      if (s[i] == &#x27;(&#x27; || s[i] == &#x27;)&#x27;) {
+        i = pair[i];
+        d = -d;
+      } else {
+        ans += s[i];
+      }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String reverseParentheses(String s) {
+    StringBuilder sb = new StringBuilder();
+    Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();
+    Map&lt;Integer, Integer&gt; pair = new HashMap&lt;&gt;();
+
+    for (int i = 0; i &lt; s.length(); ++i)
+      if (s.charAt(i) == &#x27;(&#x27;) {
+        stack.push(i);
+      } else if (s.charAt(i) == &#x27;)&#x27;) {
+        final int j = stack.pop();
+        pair.put(i, j);
+        pair.put(j, i);
+      }
+
+    for (int i = 0, d = 1; i &lt; s.length(); i += d)
+      if (s.charAt(i) == &#x27;(&#x27; || s.charAt(i) == &#x27;)&#x27;) {
+        i = pair.get(i);
+        d = -d;
+      } else {
+        sb.append(s.charAt(i));
+      }
+
+    return sb.toString();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def reverseParentheses(self, s: str) -&gt; str:
+    ans = []
+    stack = []
+    pair = {}
+
+    for i, c in enumerate(s):
+      if c == &#x27;(&#x27;:
+        stack.append(i)
+      elif c == &#x27;)&#x27;:
+        j = stack.pop()
+        pair[i] = j
+        pair[j] = i
+
+    i = 0
+    d = 1
+    while i &lt; len(s):
+      if s[i] in &#x27;()&#x27;:
+        i = pair[i]
+        d = -d
+      else:
+        ans.append(s[i])
+      i += d
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

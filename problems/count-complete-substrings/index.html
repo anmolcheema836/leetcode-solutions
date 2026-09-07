@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Complete Substrings - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Count Complete Substrings written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/count-complete-substrings/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-coins-to-be-added/" class="btn">← Previous</a>
+            <span>Problem 2953 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-the-number-of-infection-sequences/" class="btn">Next →</a>
+        </div>
+        <h1>2953. Count Complete Substrings</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Count Complete Substrings efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int countCompleteSubstrings(string word, int k) {
+    const int uniqueLetters =
+        unordered_set&lt;char&gt;{word.begin(), word.end()}.size();
+    int ans = 0;
+
+    for (int windowSize = k;
+         windowSize &lt;= k * uniqueLetters &amp;&amp; windowSize &lt;= word.length();
+         windowSize += k)
+      ans += countCompleteStrings(word, k, windowSize);
+
+    return ans;
+  }
+
+ private:
+  // Returns the number of complete substrings of `windowSize` of `word`.
+  int countCompleteStrings(const string&amp; word, int k, int windowSize) {
+    int res = 0;
+    int countLetters = 0;  // the number of letters in the running substring
+    vector&lt;int&gt; count(26);
+
+    for (int i = 0; i &lt; word.length(); ++i) {
+      ++count[word[i] - &#x27;a&#x27;];
+      ++countLetters;
+      if (i &gt; 0 &amp;&amp; abs(word[i] - word[i - 1]) &gt; 2) {
+        count = vector&lt;int&gt;(26);
+        // Start a new substring starting at word[i].
+        ++count[word[i] - &#x27;a&#x27;];
+        countLetters = 1;
+      }
+      if (countLetters == windowSize + 1) {
+        --count[word[i - windowSize] - &#x27;a&#x27;];
+        --countLetters;
+      }
+      if (countLetters == windowSize)
+        res += ranges::all_of(count,
+                              [k](int freq) { return freq == 0 || freq == k; })
+                   ? 1
+                   : 0;
+    }
+
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int countCompleteSubstrings(String word, int k) {
+    final int uniqueLetters = word.chars().boxed().collect(Collectors.toSet()).size();
+    int ans = 0;
+
+    for (int windowSize = k; windowSize &lt;= k * uniqueLetters &amp;&amp; windowSize &lt;= word.length();
+         windowSize += k) {
+      ans += countCompleteStrings(word, k, windowSize);
+    }
+
+    return ans;
+  }
+
+  // Returns the number of complete substrings of `windowSize` of `word`.
+  private int countCompleteStrings(final String word, int k, int windowSize) {
+    int res = 0;
+    int countLetters = 0; // the number of letters in the running substring
+    int[] count = new int[26];
+
+    for (int i = 0; i &lt; word.length(); ++i) {
+      ++count[word.charAt(i) - &#x27;a&#x27;];
+      ++countLetters;
+      if (i &gt; 0 &amp;&amp; Math.abs(word.charAt(i) - word.charAt(i - 1)) &gt; 2) {
+        count = new int[26];
+        // Start a new substring starting at word[i].
+        ++count[word.charAt(i) - &#x27;a&#x27;];
+        countLetters = 1;
+      }
+      if (countLetters == windowSize + 1) {
+        --count[word.charAt(i - windowSize) - &#x27;a&#x27;];
+        --countLetters;
+      }
+      if (countLetters == windowSize)
+        res += Arrays.stream(count).allMatch(freq -&gt; freq == 0 || freq == k) ? 1 : 0;
+    }
+
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def countCompleteSubstrings(self, word: str, k: int) -&gt; int:
+    uniqueLetters = len(set(word))
+    return sum(self._countCompleteStrings(word, k, windowSize)
+               for windowSize in range(k, k * uniqueLetters + 1, k))
+
+  def _countCompleteStrings(self, word: str, k: int, windowSize: int) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the number of complete substrings of `windowSize` of `word`.
+    &quot;&quot;&quot;
+    res = 0
+    countLetters = 0  # the number of letters in the running substring
+    count = collections.Counter()
+
+    for i, c in enumerate(word):
+      count[c] += 1
+      countLetters += 1
+      if i &gt; 0 and abs(ord(c) - ord(word[i - 1])) &gt; 2:
+        count = collections.Counter()
+        # Start a new substring starting at word[i].
+        count[c] += 1
+        countLetters = 1
+      if countLetters == windowSize + 1:
+        count[word[i - windowSize]] -= 1
+        countLetters -= 1
+      if countLetters == windowSize:
+        res += all(freq == 0 or freq == k for freq in count.values())
+
+    return res</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

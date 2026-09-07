@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Maximal Uncovered Ranges - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Maximal Uncovered Ranges written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-maximal-uncovered-ranges/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/" class="btn">← Previous</a>
+            <span>Problem 2655 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-sum-with-exactly-k-elements/" class="btn">Next →</a>
+        </div>
+        <h1>2655. Find Maximal Uncovered Ranges</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Maximal Uncovered Ranges efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; findMaximalUncoveredRanges(int n,
+                                                 vector&lt;vector&lt;int&gt;&gt;&amp; ranges) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    int start = 0;
+
+    ranges::sort(ranges);
+
+    for (const vector&lt;int&gt;&amp; range : ranges) {
+      const int l = range[0];
+      const int r = range[1];
+      if (start &lt; l)
+        ans.push_back({start, l - 1});
+      if (start &lt;= r)
+        start = r + 1;
+    }
+
+    if (start &lt; n)
+      ans.push_back({start, n - 1});
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] findMaximalUncoveredRanges(int n, int[][] ranges) {
+    List&lt;int[]&gt; ans = new ArrayList&lt;&gt;();
+    int start = 0;
+
+    Arrays.sort(ranges, Comparator.comparingInt(range -&gt; range[0]));
+
+    for (int[] range : ranges) {
+      final int l = range[0];
+      final int r = range[1];
+      if (start &lt; l)
+        ans.add(new int[] {start, l - 1});
+      if (start &lt;= r)
+        start = r + 1;
+    }
+
+    if (start &lt; n)
+      ans.add(new int[] {start, n - 1});
+
+    return ans.stream().toArray(int[][] ::new);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findMaximalUncoveredRanges(self, n: int, ranges: list[list[int]]) -&gt; list[list[int]]:
+    ans = []
+    start = 0
+
+    for l, r in sorted(ranges):
+      if start &lt; l:
+        ans.append([start, l - 1])
+      if start &lt;= r:
+        start = r + 1
+
+    if start &lt; n:
+      ans.append([start, n - 1])
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Fleet II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Car Fleet II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/car-fleet-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/equal-sum-arrays-with-minimum-number-of-operations/" class="btn">← Previous</a>
+            <span>Problem 1776 of 3563</span>
+            <a href="/leetcode-solutions/problems/product-s-price-for-each-store/" class="btn">Next →</a>
+        </div>
+        <h1>1776. Car Fleet II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Car Fleet II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Car {
+  int pos;
+  int speed;
+  double collisionTime;
+  Car(int pos, int speed, double collisionTime)
+      : pos(pos), speed(speed), collisionTime(collisionTime) {}
+};
+
+class Solution {
+ public:
+  vector&lt;double&gt; getCollisionTimes(vector&lt;vector&lt;int&gt;&gt;&amp; cars) {
+    vector&lt;double&gt; ans(cars.size());
+    stack&lt;Car&gt; stack;
+
+    for (int i = cars.size() - 1; i &gt;= 0; --i) {
+      const int pos = cars[i][0];
+      const int speed = cars[i][1];
+      while (!stack.empty() &amp;&amp; (speed &lt;= stack.top().speed ||
+                                getCollisionTime(stack.top(), pos, speed) &gt;=
+                                    stack.top().collisionTime))
+        stack.pop();
+      if (stack.empty()) {
+        stack.emplace(pos, speed, INT_MAX);
+        ans[i] = -1;
+      } else {
+        const double collisionTime = getCollisionTime(stack.top(), pos, speed);
+        stack.emplace(pos, speed, collisionTime);
+        ans[i] = collisionTime;
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  double getCollisionTime(const Car&amp; car, int pos, int speed) {
+    return (car.pos - pos) / (double)(speed - car.speed);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double[] getCollisionTimes(int[][] cars) {
+    double[] ans = new double[cars.length];
+    Deque&lt;Car&gt; stack = new ArrayDeque&lt;&gt;();
+
+    for (int i = cars.length - 1; i &gt;= 0; --i) {
+      final int pos = cars[i][0];
+      final int speed = cars[i][1];
+      while (!stack.isEmpty() &amp;&amp;
+             (speed &lt;= stack.peek().speed ||
+              getCollisionTime(stack.peek(), pos, speed) &gt;= stack.peek().collisionTime))
+        stack.pop();
+      if (stack.isEmpty()) {
+        stack.push(new Car(pos, speed, Integer.MAX_VALUE));
+        ans[i] = -1;
+      } else {
+        final double collisionTime = getCollisionTime(stack.peek(), pos, speed);
+        stack.push(new Car(pos, speed, collisionTime));
+        ans[i] = collisionTime;
+      }
+    }
+
+    return ans;
+  }
+
+  private record Car(int pos, int speed, double collisionTime) {}
+
+  private double getCollisionTime(Car car, int pos, int speed) {
+    return (double) (car.pos - pos) / (speed - car.speed);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def getCollisionTimes(self, cars: list[list[int]]) -&gt; list[float]:
+    ans = []
+    stack = []  # (pos, speed, collisionTime)
+
+    def getCollisionTime(
+            car: tuple[int, int, int],
+            pos: int, speed: int) -&gt; float:
+      return (car[0] - pos) / (speed - car[1])
+
+    for pos, speed in reversed(cars):
+      while stack and (
+              speed &lt;= stack[-1][1] or getCollisionTime(stack[-1],
+                                                        pos, speed) &gt;=
+              stack[-1][2]):
+        stack.pop()
+      if stack:
+        collisionTime = getCollisionTime(stack[-1], pos, speed)
+        stack.append((pos, speed, collisionTime))
+        ans.append(collisionTime)
+      else:
+        stack.append((pos, speed, math.inf))
+        ans.append(-1)
+
+    return ans[::-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

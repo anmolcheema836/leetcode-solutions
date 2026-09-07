@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valid Arrangement of Pairs - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Valid Arrangement of Pairs written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/valid-arrangement-of-pairs/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/step-by-step-directions-from-a-binary-tree-node-to-another/" class="btn">← Previous</a>
+            <span>Problem 2097 of 3563</span>
+            <a href="/leetcode-solutions/problems/subsequence-of-size-k-with-the-largest-even-sum/" class="btn">Next →</a>
+        </div>
+        <h1>2097. Valid Arrangement of Pairs</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Valid Arrangement of Pairs efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; validArrangement(vector&lt;vector&lt;int&gt;&gt;&amp; pairs) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    unordered_map&lt;int, stack&lt;int&gt;&gt; graph;
+    unordered_map&lt;int, int&gt; outDegree;
+    unordered_map&lt;int, int&gt; inDegrees;
+
+    for (const vector&lt;int&gt;&amp; pair : pairs) {
+      const int start = pair[0];
+      const int end = pair[1];
+      graph[start].push(end);
+      ++outDegree[start];
+      ++inDegrees[end];
+    }
+
+    const int startNode = getStartNode(graph, outDegree, inDegrees, pairs);
+    euler(graph, startNode, ans);
+    ranges::reverse(ans);
+    return ans;
+  }
+
+ private:
+  int getStartNode(const unordered_map&lt;int, stack&lt;int&gt;&gt;&amp; graph,
+                   unordered_map&lt;int, int&gt;&amp; outDegree,
+                   unordered_map&lt;int, int&gt;&amp; inDegrees,
+                   const vector&lt;vector&lt;int&gt;&gt;&amp; pairs) {
+    for (const auto&amp; [u, _] : graph)
+      if (outDegree[u] - inDegrees[u] == 1)
+        return u;
+    return pairs[0][0];  // Arbitrarily choose a node.
+  }
+
+  void euler(unordered_map&lt;int, stack&lt;int&gt;&gt;&amp; graph, int u,
+             vector&lt;vector&lt;int&gt;&gt;&amp; ans) {
+    auto&amp; stack = graph[u];
+    while (!stack.empty()) {
+      const int v = stack.top();
+      stack.pop();
+      euler(graph, v, ans);
+      ans.push_back({u, v});
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] validArrangement(int[][] pairs) {
+    List&lt;int[]&gt; ans = new ArrayList&lt;&gt;();
+    Map&lt;Integer, Deque&lt;Integer&gt;&gt; graph = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; outDegree = new HashMap&lt;&gt;();
+    Map&lt;Integer, Integer&gt; inDegrees = new HashMap&lt;&gt;();
+
+    for (int[] pair : pairs) {
+      final int start = pair[0];
+      final int end = pair[1];
+      graph.putIfAbsent(start, new ArrayDeque&lt;&gt;());
+      graph.get(start).push(end);
+      outDegree.merge(start, 1, Integer::sum);
+      inDegrees.merge(end, 1, Integer::sum);
+    }
+
+    final int startNode = getStartNode(graph, outDegree, inDegrees, pairs);
+    euler(graph, startNode, ans);
+    Collections.reverse(ans);
+    return ans.stream().toArray(int[][] ::new);
+  }
+
+  private int getStartNode(Map&lt;Integer, Deque&lt;Integer&gt;&gt; graph, Map&lt;Integer, Integer&gt; outDegree,
+                           Map&lt;Integer, Integer&gt; inDegrees, int[][] pairs) {
+    for (final int u : graph.keySet())
+      if (outDegree.getOrDefault(u, 0) - inDegrees.getOrDefault(u, 0) == 1)
+        return u;
+    return pairs[0][0]; // Arbitrarily choose a node.
+  }
+
+  private void euler(Map&lt;Integer, Deque&lt;Integer&gt;&gt; graph, int u, List&lt;int[]&gt; ans) {
+    Deque&lt;Integer&gt; stack = graph.get(u);
+    while (stack != null &amp;&amp; !stack.isEmpty()) {
+      final int v = stack.pop();
+      euler(graph, v, ans);
+      ans.add(new int[] {u, v});
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def validArrangement(self, pairs: list[list[int]]) -&gt; list[list[int]]:
+    ans = []
+    graph = collections.defaultdict(list)
+    outDegree = collections.Counter()
+    inDegrees = collections.Counter()
+
+    for start, end in pairs:
+      graph[start].append(end)
+      outDegree[start] += 1
+      inDegrees[end] += 1
+
+    def getStartNode() -&gt; int:
+      for u in graph.keys():
+        if outDegree[u] - inDegrees[u] == 1:
+          return u
+      return pairs[0][0]  # Arbitrarily choose a node.
+
+    def euler(u: int) -&gt; None:
+      stack = graph[u]
+      while stack:
+        v = stack.pop()
+        euler(v)
+        ans.append([u, v])
+
+    euler(getStartNode())
+    return ans[::-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

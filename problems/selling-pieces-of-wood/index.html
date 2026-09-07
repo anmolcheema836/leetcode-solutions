@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selling Pieces of Wood - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Selling Pieces of Wood written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/selling-pieces-of-wood/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-binary-subsequence-less-than-or-equal-to-k/" class="btn">← Previous</a>
+            <span>Problem 2312 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-flips-in-binary-tree-to-get-result/" class="btn">Next →</a>
+        </div>
+        <h1>2312. Selling Pieces of Wood</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Selling Pieces of Wood efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long sellingWood(int m, int n, vector&lt;vector&lt;int&gt;&gt;&amp; prices) {
+    // dp[i][j] := the maximum money of cutting i x j piece of wood
+    vector&lt;vector&lt;long&gt;&gt; dp(m + 1, vector&lt;long&gt;(n + 1));
+
+    for (const vector&lt;int&gt;&amp; p : prices) {
+      const int h = p[0];
+      const int w = p[1];
+      const int price = p[2];
+      dp[h][w] = price;
+    }
+
+    for (int i = 1; i &lt;= m; ++i)
+      for (int j = 1; j &lt;= n; ++j) {
+        for (int h = 1; h &lt;= i / 2; ++h)
+          dp[i][j] = max(dp[i][j], dp[h][j] + dp[i - h][j]);
+        for (int w = 1; w &lt;= j / 2; ++w)
+          dp[i][j] = max(dp[i][j], dp[i][w] + dp[i][j - w]);
+      }
+
+    return dp[m][n];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long sellingWood(int m, int n, int[][] prices) {
+    // dp[i][j] := the maximum money of cutting i x j piece of wood
+    long[][] dp = new long[m + 1][n + 1];
+
+    for (int[] p : prices) {
+      final int h = p[0];
+      final int w = p[1];
+      final int price = p[2];
+      dp[h][w] = price;
+    }
+
+    for (int i = 1; i &lt;= m; ++i)
+      for (int j = 1; j &lt;= n; ++j) {
+        for (int h = 1; h &lt;= i / 2; ++h)
+          dp[i][j] = Math.max(dp[i][j], dp[h][j] + dp[i - h][j]);
+        for (int w = 1; w &lt;= j / 2; ++w)
+          dp[i][j] = Math.max(dp[i][j], dp[i][w] + dp[i][j - w]);
+      }
+
+    return dp[m][n];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def sellingWood(self, m: int, n: int, prices: list[list[int]]) -&gt; int:
+    # dp[i][j] := the maximum money of cutting i x j piece of wood
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    for h, w, price in prices:
+      dp[h][w] = price
+
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        for h in range(1, i // 2 + 1):
+          dp[i][j] = max(dp[i][j], dp[h][j] + dp[i - h][j])
+        for w in range(1, j // 2 + 1):
+          dp[i][j] = max(dp[i][j], dp[i][w] + dp[i][j - w])
+
+    return dp[m][n]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

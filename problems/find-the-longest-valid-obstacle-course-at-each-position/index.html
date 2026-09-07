@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Longest Valid Obstacle Course at Each Position - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find the Longest Valid Obstacle Course at Each Position written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-the-longest-valid-obstacle-course-at-each-position/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-swaps-to-make-the-string-balanced/" class="btn">← Previous</a>
+            <span>Problem 1964 of 3563</span>
+            <a href="/leetcode-solutions/problems/employees-with-missing-information/" class="btn">Next →</a>
+        </div>
+        <h1>1964. Find the Longest Valid Obstacle Course at Each Position</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find the Longest Valid Obstacle Course at Each Position efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 300. Longest Increasing Subsequence
+  vector&lt;int&gt; longestObstacleCourseAtEachPosition(vector&lt;int&gt;&amp; obstacles) {
+    vector&lt;int&gt; ans;
+    // tails[i] := the minimum tail of all the increasing subsequences having
+    // length i + 1
+    vector&lt;int&gt; tails;
+
+    for (const int obstacle : obstacles)
+      if (tails.empty() || obstacle &gt;= tails.back()) {
+        tails.push_back(obstacle);
+        ans.push_back(tails.size());
+      } else {
+        const int index = firstGreater(tails, obstacle);
+        tails[index] = obstacle;
+        ans.push_back(index + 1);
+      }
+
+    return ans;
+  }
+
+ private:
+  int firstGreater(const vector&lt;int&gt;&amp; arr, int target) {
+    return ranges::upper_bound(arr, target) - arr.begin();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 300. Longest Increasing Subsequence
+  public int[] longestObstacleCourseAtEachPosition(int[] obstacles) {
+    List&lt;Integer&gt; ans = new ArrayList&lt;&gt;();
+    // tails[i] := the minimum tail of all the increasing subsequences with
+    // length i + 1
+    List&lt;Integer&gt; tails = new ArrayList&lt;&gt;();
+
+    for (final int obstacle : obstacles)
+      if (tails.isEmpty() || obstacle &gt;= tails.get(tails.size() - 1)) {
+        tails.add(obstacle);
+        ans.add(tails.size());
+      } else {
+        final int index = firstGreater(tails, obstacle);
+        tails.set(index, obstacle);
+        ans.add(index + 1);
+      }
+
+    return ans.stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  private int firstGreater(List&lt;Integer&gt; arr, int target) {
+    int l = 0;
+    int r = arr.size();
+    while (l &lt; r) {
+      final int m = (l + r) / 2;
+      if (arr.get(m) &gt; target)
+        r = m;
+      else
+        l = m + 1;
+    }
+    return l;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 300. Longest Increasing Subsequence
+  def longestObstacleCourseAtEachPosition(
+      self, obstacles: list[int],
+  ) -&gt; list[int]:
+    ans = []
+    # tails[i] := the minimum tail of all the increasing subsequences having
+    # length i + 1
+    tails = []
+
+    for obstacle in obstacles:
+      if not tails or obstacle &gt;= tails[-1]:
+        tails.append(obstacle)
+        ans.append(len(tails))
+      else:
+        index = bisect.bisect_right(tails, obstacle)
+        tails[index] = obstacle
+        ans.append(index + 1)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

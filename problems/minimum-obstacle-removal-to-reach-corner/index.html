@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Obstacle Removal to Reach Corner - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Obstacle Removal to Reach Corner written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-obstacle-removal-to-reach-corner/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/steps-to-make-array-non-decreasing/" class="btn">← Previous</a>
+            <span>Problem 2290 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-profit-from-trading-stocks/" class="btn">Next →</a>
+        </div>
+        <h1>2290. Minimum Obstacle Removal to Reach Corner</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Obstacle Removal to Reach Corner efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    constexpr int kDirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    using T = tuple&lt;int, int, int&gt;;  // (d, i, j)
+    priority_queue&lt;T, vector&lt;T&gt;, greater&lt;&gt;&gt; minHeap;
+    vector&lt;vector&lt;int&gt;&gt; dist(m, vector&lt;int&gt;(n, INT_MAX));
+
+    minHeap.emplace(grid[0][0], 0, 0);
+    dist[0][0] = grid[0][0];
+
+    while (!minHeap.empty()) {
+      const auto [d, i, j] = minHeap.top();
+      minHeap.pop();
+      if (i == m - 1 &amp;&amp; j == n - 1)
+        return d;
+      for (const auto&amp; [dx, dy] : kDirs) {
+        const int x = i + dx;
+        const int y = j + dy;
+        if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+          continue;
+        const int newDist = d + grid[i][j];
+        if (newDist &lt; dist[x][y]) {
+          dist[x][y] = newDist;
+          minHeap.emplace(newDist, x, y);
+        }
+      }
+    }
+
+    return dist[m - 1][n - 1];
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimumObstacles(int[][] grid) {
+    final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    final int m = grid.length;
+    final int n = grid[0].length;
+    Queue&lt;int[]&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; a[0])) {
+      { offer(new int[] {grid[0][0], 0, 0}); } // (d, i, j)
+    };
+    int[][] dist = new int[m][n];
+    Arrays.stream(dist).forEach(A -&gt; Arrays.fill(A, Integer.MAX_VALUE));
+    dist[0][0] = grid[0][0];
+
+    while (!minHeap.isEmpty()) {
+      final int d = minHeap.peek()[0];
+      final int i = minHeap.peek()[1];
+      final int j = minHeap.poll()[2];
+      if (i == m - 1 &amp;&amp; j == n - 1)
+        return d;
+      for (int[] dir : DIRS) {
+        final int x = i + dir[0];
+        final int y = j + dir[1];
+        if (x &lt; 0 || x == m || y &lt; 0 || y == n)
+          continue;
+        final int newDist = d + grid[i][j];
+        if (newDist &lt; dist[x][y]) {
+          dist[x][y] = newDist;
+          minHeap.offer(new int[] {newDist, x, y});
+        }
+      }
+    }
+
+    return dist[m - 1][n - 1];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumObstacles(self, grid: list[list[int]]) -&gt; int:
+    DIRS = ((0, 1), (1, 0), (0, -1), (-1, 0))
+    m = len(grid)
+    n = len(grid[0])
+    minHeap = [(grid[0][0], 0, 0)]  # (d, i, j)
+    dist = [[math.inf] * n for _ in range(m)]
+    dist[0][0] = grid[0][0]
+
+    while minHeap:
+      d, i, j = heapq.heappop(minHeap)
+      if i == m - 1 and j == n - 1:
+        return d
+      for dx, dy in DIRS:
+        x = i + dx
+        y = j + dy
+        if x &lt; 0 or x == m or y &lt; 0 or y == n:
+          continue
+        newDist = d + grid[i][j]
+        if newDist &lt; dist[x][y]:
+          dist[x][y] = newDist
+          heapq.heappush(minHeap, (newDist, x, y))
+
+    return dist[m - 1][n - 1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

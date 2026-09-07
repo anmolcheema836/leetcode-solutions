@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Flips in Binary Tree to Get Result - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Flips in Binary Tree to Get Result written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-flips-in-binary-tree-to-get-result/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/selling-pieces-of-wood/" class="btn">← Previous</a>
+            <span>Problem 2313 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-first-day-of-the-maximum-recorded-degree-in-each-city/" class="btn">Next →</a>
+        </div>
+        <h1>2313. Minimum Flips in Binary Tree to Get Result</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Flips in Binary Tree to Get Result efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimumFlips(TreeNode* root, bool result) {
+    return dp(root, result);
+  }
+
+ private:
+  struct PairHash {
+    template &lt;class T1, class T2&gt;
+    std::size_t operator()(const std::pair&lt;T1, T2&gt;&amp; p) const {
+      return std::hash&lt;T1&gt;{}(p.first) ^ std::hash&lt;T2&gt;{}(p.second);
+    }
+  };
+
+  unordered_map&lt;pair&lt;TreeNode*, bool&gt;, int, PairHash&gt; mem;
+
+  // Returns the minimum flips to make the subtree become the target.
+  int dp(TreeNode* root, bool target) {
+    const pair&lt;TreeNode*, bool&gt; key{root, target};
+    if (const auto it = mem.find(key); it != mem.cend())
+      return it-&gt;second;
+    if (root-&gt;val == 0 || root-&gt;val == 1)  // the leaf
+      return root-&gt;val == target ? 0 : 1;
+    if (root-&gt;val == 5)  // NOT
+      return dp(root-&gt;left == nullptr ? root-&gt;right : root-&gt;left, !target);
+
+    vector&lt;pair&lt;int, int&gt;&gt; nextTargets;
+    if (root-&gt;val == 2)  // OR
+      nextTargets = target ? vector&lt;pair&lt;int, int&gt;&gt;{{0, 1}, {1, 0}, {1, 1}}
+                           : vector&lt;pair&lt;int, int&gt;&gt;{{0, 0}};
+    else if (root-&gt;val == 3)  // AND
+      nextTargets = target ? vector&lt;pair&lt;int, int&gt;&gt;{{1, 1}}
+                           : vector&lt;pair&lt;int, int&gt;&gt;{{0, 0}, {0, 1}, {1, 0}};
+    else  // root.val == 4 (XOR)
+      nextTargets = target ? vector&lt;pair&lt;int, int&gt;&gt;{{0, 1}, {1, 0}}
+                           : vector&lt;pair&lt;int, int&gt;&gt;{{0, 0}, {1, 1}};
+
+    int ans = INT_MAX;
+    for (const auto&amp; [leftTarget, rightTarget] : nextTargets)
+      ans = min(ans, dp(root-&gt;left, leftTarget) + dp(root-&gt;right, rightTarget));
+    return mem[key] = ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimumFlips(self, root: TreeNode | None, result: bool) -&gt; int:
+    @functools.lru_cache(None)
+    def dp(root: TreeNode | None, target: bool) -&gt; int:
+      &quot;&quot;&quot;Returns the minimum flips to make the subtree root become target.&quot;&quot;&quot;
+      if root.val in (0, 1):  # the leaf
+        return 0 if root.val == target else 1
+      if root.val == 5:  # NOT
+        return dp(root.left or root.right, not target)
+      if root.val == 2:  # OR
+        nextTargets = [(0, 1), (1, 0), (1, 1)] if target else [[0, 0]]
+      elif root.val == 3:  # AND
+        nextTargets = [(1, 1)] if target else [(0, 0), (0, 1), (1, 0)]
+      else:  # root.val == 4 XOR
+        nextTargets = [(0, 1), (1, 0)] if target else [(0, 0), (1, 1)]
+      return min(dp(root.left, leftTarget) + dp(root.right, rightTarget)
+                 for leftTarget, rightTarget in nextTargets)
+
+    return dp(root, result)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Ways to Partition an Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Ways to Partition an Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-ways-to-partition-an-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximize-the-confusion-of-an-exam/" class="btn">← Previous</a>
+            <span>Problem 2025 of 3563</span>
+            <a href="/leetcode-solutions/problems/low-quality-problems/" class="btn">Next →</a>
+        </div>
+        <h1>2025. Maximum Number of Ways to Partition an Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Ways to Partition an Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int waysToPartition(vector&lt;int&gt;&amp; nums, int k) {
+    const int n = nums.size();
+    const long sum = accumulate(nums.begin(), nums.end(), 0L);
+    long prefix = 0;
+    // count of sum(A[0..k)) - sum(A[k..n)) for k in [0..i)
+    unordered_map&lt;long, int&gt; l;
+    // count of sum(A[0..k)) - sum(A[k..n)) for k in [i..n)
+    unordered_map&lt;long, int&gt; r;
+
+    for (int pivot = 1; pivot &lt; n; ++pivot) {
+      prefix += nums[pivot - 1];
+      const long suffix = sum - prefix;
+      ++r[prefix - suffix];
+    }
+
+    int ans = r[0];
+    prefix = 0;
+
+    for (const int num : nums) {
+      ans = max(ans, l[k - num] + r[num - k]);
+      prefix += num;
+      const long suffix = sum - prefix;
+      const long diff = prefix - suffix;
+      --r[diff];
+      ++l[diff];
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int waysToPartition(int[] nums, int k) {
+    final int n = nums.length;
+    final long sum = Arrays.stream(nums).asLongStream().sum();
+    long prefix = 0;
+    // count of sum(A[0..k)) - sum(A[k..n)) for k in [0..i)
+    Map&lt;Long, Integer&gt; l = new HashMap&lt;&gt;();
+    // count of sum(A[0..k)) - sum(A[k..n)) for k in [i..n)
+    Map&lt;Long, Integer&gt; r = new HashMap&lt;&gt;();
+
+    for (int pivot = 1; pivot &lt; n; ++pivot) {
+      prefix += nums[pivot - 1];
+      final long suffix = sum - prefix;
+      r.merge(prefix - suffix, 1, Integer::sum);
+    }
+
+    int ans = r.getOrDefault(0L, 0);
+    prefix = 0;
+
+    for (final int num : nums) {
+      final long change = (long) k - num;
+      ans = Math.max(ans, l.getOrDefault(change, 0) + r.getOrDefault(-change, 0));
+      prefix += num;
+      final long suffix = sum - prefix;
+      final long diff = prefix - suffix;
+      r.merge(diff, -1, Integer::sum);
+      l.merge(diff, 1, Integer::sum);
+    }
+
+    return ans;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def waysToPartition(self, nums: list[int], k: int) -&gt; int:
+    n = len(nums)
+    summ = sum(nums)
+    prefix = 0
+    # Count of sum(A[0..k)) - sum(A[k..n)) for k in [0..i)
+    l = collections.Counter()
+    # Count of sum(A[0..k)) - sum(A[k..n)) for k in [i..n)
+    r = collections.Counter()
+
+    for pivot in range(1, n):
+      prefix += nums[pivot - 1]
+      suffix = summ - prefix
+      r[prefix - suffix] += 1
+
+    ans = r[0]
+    prefix = 0
+
+    for num in nums:
+      ans = max(ans, l[k - num] + r[num - k])
+      prefix += num
+      suffix = summ - prefix
+      diff = prefix - suffix
+      r[diff] -= 1
+      l[diff] += 1
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

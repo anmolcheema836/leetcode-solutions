@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribute Elements Into Two Arrays I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Distribute Elements Into Two Arrays I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/distribute-elements-into-two-arrays-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-maximum-sum-of-node-values/" class="btn">← Previous</a>
+            <span>Problem 3069 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-submatrices-with-top-left-element-and-sum-less-than-k/" class="btn">Next →</a>
+        </div>
+        <h1>3069. Distribute Elements Into Two Arrays I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Distribute Elements Into Two Arrays I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; resultArray(vector&lt;int&gt;&amp; nums) {
+    vector&lt;int&gt; arr1{nums[0]};
+    vector&lt;int&gt; arr2{nums[1]};
+
+    for (int i = 2; i &lt; nums.size(); i++)
+      if (arr1.back() &gt; arr2.back())
+        arr1.push_back(nums[i]);
+      else
+        arr2.push_back(nums[i]);
+
+    arr1.insert(arr1.end(), arr2.begin(), arr2.end());
+    return arr1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] resultArray(int[] nums) {
+    List&lt;Integer&gt; arr1 = new ArrayList&lt;&gt;(List.of(nums[0]));
+    List&lt;Integer&gt; arr2 = new ArrayList&lt;&gt;(List.of(nums[1]));
+
+    for (int i = 2; i &lt; nums.length; ++i)
+      if (arr1.get(arr1.size() - 1) &gt; arr2.get(arr2.size() - 1))
+        arr1.add(nums[i]);
+      else
+        arr2.add(nums[i]);
+
+    arr1.addAll(arr2);
+    return arr1.stream().mapToInt(Integer::intValue).toArray();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def resultArray(self, nums: list[int]) -&gt; list[int]:
+    arr1 = [nums[0]]
+    arr2 = [nums[1]]
+
+    for i in range(2, len(nums)):
+      if arr1[-1] &gt; arr2[-1]:
+        arr1.append(nums[i])
+      else:
+        arr2.append(nums[i])
+
+    return arr1 + arr2</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

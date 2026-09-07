@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Biggest Three Rhombus Sums in a Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Get Biggest Three Rhombus Sums in a Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/get-biggest-three-rhombus-sums-in-a-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimize-maximum-pair-sum-in-array/" class="btn">← Previous</a>
+            <span>Problem 1878 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-xor-sum-of-two-arrays/" class="btn">Next →</a>
+        </div>
+        <h1>1878. Get Biggest Three Rhombus Sums in a Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Get Biggest Three Rhombus Sums in a Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; getBiggestThree(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int m = grid.size();
+    const int n = grid[0].size();
+    set&lt;int&gt; sums;
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int sz = 0; i + sz &lt; m &amp;&amp; i - sz &gt;= 0 &amp;&amp; j + 2 * sz &lt; n; ++sz) {
+          const int sum = sz == 0 ? grid[i][j] : getSum(grid, i, j, sz);
+          sums.insert(sum);
+          if (sums.size() &gt; 3)
+            sums.erase(sums.begin());
+        }
+
+    return vector&lt;int&gt;(sums.rbegin(), sums.rend());
+  }
+
+ private:
+  // Returns the sum of the rhombus, where the top grid is (i, j) and the edge
+  // size is `sz`.
+  int getSum(const vector&lt;vector&lt;int&gt;&gt;&amp; grid, int i, int j, int sz) {
+    int x = i;
+    int y = j;
+    int sum = 0;
+
+    // Go left down.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[--x][++y];
+
+    // Go right down.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[++x][++y];
+
+    // Go right up.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[++x][--y];
+
+    // Go left up.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[--x][--y];
+
+    return sum;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] getBiggestThree(int[][] grid) {
+    final int m = grid.length;
+    final int n = grid[0].length;
+    TreeSet&lt;Integer&gt; sums = new TreeSet&lt;&gt;();
+
+    for (int i = 0; i &lt; m; ++i)
+      for (int j = 0; j &lt; n; ++j)
+        for (int sz = 0; i + sz &lt; m &amp;&amp; i - sz &gt;= 0 &amp;&amp; j + 2 * sz &lt; n; ++sz) {
+          final int sum = sz == 0 ? grid[i][j] : getSum(grid, i, j, sz);
+          sums.add(sum);
+          if (sums.size() &gt; 3)
+            sums.pollFirst();
+        }
+
+    return sums.descendingSet().stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  // Returns the sum of the rhombus, where the top grid is (i, j) and the edge
+  // size is `sz`.
+  private int getSum(int[][] grid, int i, int j, int sz) {
+    int x = i;
+    int y = j;
+    int sum = 0;
+
+    // Go left down.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[--x][++y];
+
+    // Go right down.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[++x][++y];
+
+    // Go right up.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[++x][--y];
+
+    // Go left up.
+    for (int k = 0; k &lt; sz; ++k)
+      sum += grid[--x][--y];
+
+    return sum;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedSet
+
+
+class Solution:
+  def getBiggestThree(self, grid: list[list[int]]) -&gt; list[int]:
+    m = len(grid)
+    n = len(grid[0])
+    sums = SortedSet()
+
+    for i in range(m):
+      for j in range(n):
+        sz = 0
+        while i + sz &lt; m and i - sz &gt;= 0 and j + 2 * sz &lt; n:
+          summ = grid[i][j] if sz == 0 else self._getSum(grid, i, j, sz)
+          sums.add(summ)
+          if len(sums) &gt; 3:
+            sums.pop(0)
+          sz += 1
+
+    return sums
+
+  def _getSum(self, grid: list[list[int]], i: int, j: int, sz: int) -&gt; int:
+    &quot;&quot;&quot;
+    Returns the sum of the rhombus, where the top grid is (i, j) and the edge
+    size is `sz`.
+    &quot;&quot;&quot;
+    x = i
+    y = j
+    summ = 0
+
+    # Go left down.
+    for _ in range(sz):
+      x -= 1
+      y += 1
+      summ += grid[x][y]
+
+    # Go right down.
+    for _ in range(sz):
+      x += 1
+      y += 1
+      summ += grid[x][y]
+
+    # Go right up.
+    for _ in range(sz):
+      x += 1
+      y -= 1
+      summ += grid[x][y]
+
+    # Go left up.
+    for _ in range(sz):
+      x -= 1
+      y -= 1
+      summ += grid[x][y]
+
+    return summ</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

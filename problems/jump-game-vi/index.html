@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jump Game VI - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Jump Game VI written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/jump-game-vi/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-erasure-value/" class="btn">← Previous</a>
+            <span>Problem 1696 of 3563</span>
+            <a href="/leetcode-solutions/problems/checking-existence-of-edge-length-limited-paths/" class="btn">Next →</a>
+        </div>
+        <h1>1696. Jump Game VI</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Jump Game VI efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxResult(vector&lt;int&gt;&amp; nums, int k) {
+    // Stores dp[i] within the bounds.
+    deque&lt;int&gt; maxQ{0};
+    // dp[i] := the maximum score to consider nums[0..i]
+    vector&lt;int&gt; dp(nums.size());
+    dp[0] = nums[0];
+
+    for (int i = 1; i &lt; nums.size(); ++i) {
+      // Pop the index if it&#x27;s out-of-bounds.
+      if (maxQ.front() + k &lt; i)
+        maxQ.pop_front();
+      dp[i] = dp[maxQ.front()] + nums[i];
+      // Pop indices that won&#x27;t be chosen in the future.
+      while (!maxQ.empty() &amp;&amp; dp[maxQ.back()] &lt;= dp[i])
+        maxQ.pop_back();
+      maxQ.push_back(i);
+    }
+
+    return dp.back();
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxResult(int[] nums, int k) {
+    // Stores dp[i] within the bounds.
+    Deque&lt;Integer&gt; maxQ = new ArrayDeque&lt;&gt;(List.of(0));
+    // dp[i] := the maximum score to consider nums[0..i]
+    int[] dp = new int[nums.length];
+    dp[0] = nums[0];
+
+    for (int i = 1; i &lt; nums.length; ++i) {
+      // Pop the index if it&#x27;s out-of-bounds.
+      if (maxQ.peekFirst() + k &lt; i)
+        maxQ.pollFirst();
+      dp[i] = dp[maxQ.peekFirst()] + nums[i];
+      // Pop indices that won&#x27;t be chosen in the future.
+      while (!maxQ.isEmpty() &amp;&amp; dp[maxQ.peekLast()] &lt;= dp[i])
+        maxQ.pollLast();
+      maxQ.offerLast(i);
+    }
+
+    return dp[nums.length - 1];
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def maxResult(self, nums: list[int], k: int) -&gt; int:
+    # Stores dp[i] within the bounds.
+    maxQ = collections.deque([0])
+    # dp[i] := the maximum score to consider nums[0..i]
+    dp = [0] * len(nums)
+    dp[0] = nums[0]
+
+    for i in range(1, len(nums)):
+      # Pop the index if it&#x27;s out-of-bounds.
+      if maxQ[0] + k &lt; i:
+        maxQ.popleft()
+      dp[i] = dp[maxQ[0]] + nums[i]
+      # Pop indices that won&#x27;t be chosen in the future.
+      while maxQ and dp[maxQ[-1]] &lt;= dp[i]:
+        maxQ.pop()
+      maxQ.append(i)
+
+    return dp[-1]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

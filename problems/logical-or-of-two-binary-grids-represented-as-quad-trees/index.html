@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logical OR of Two Binary Grids Represented as Quad-Trees - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Logical OR of Two Binary Grids Represented as Quad-Trees written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/logical-or-of-two-binary-grids-represented-as-quad-trees/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/reverse-words-in-a-string-iii/" class="btn">← Previous</a>
+            <span>Problem 558 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-depth-of-n-ary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>558. Logical OR of Two Binary Grids Represented as Quad-Trees</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Logical OR of Two Binary Grids Represented as Quad-Trees efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  Node* intersect(Node* quadTree1, Node* quadTree2) {
+    if (quadTree1-&gt;isLeaf)
+      return quadTree1-&gt;val ? quadTree1 : quadTree2;
+    if (quadTree2-&gt;isLeaf)
+      return quadTree2-&gt;val ? quadTree2 : quadTree1;
+
+    Node* topLeft = intersect(quadTree1-&gt;topLeft, quadTree2-&gt;topLeft);
+    Node* topRight = intersect(quadTree1-&gt;topRight, quadTree2-&gt;topRight);
+    Node* bottomLeft = intersect(quadTree1-&gt;bottomLeft, quadTree2-&gt;bottomLeft);
+    Node* bottomRight =
+        intersect(quadTree1-&gt;bottomRight, quadTree2-&gt;bottomRight);
+
+    if (topLeft-&gt;val == topRight-&gt;val &amp;&amp;        //
+        topLeft-&gt;val == bottomLeft-&gt;val &amp;&amp;      //
+        topLeft-&gt;val == bottomRight-&gt;val &amp;&amp;     //
+        topLeft-&gt;isLeaf &amp;&amp; topRight-&gt;isLeaf &amp;&amp;  //
+        bottomLeft-&gt;isLeaf &amp;&amp; bottomRight-&gt;isLeaf)
+      return new Node(topLeft-&gt;val, true);
+    return new Node(false, false, topLeft, topRight, bottomLeft, bottomRight);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public Node intersect(Node quadTree1, Node quadTree2) {
+    if (quadTree1.isLeaf)
+      return quadTree1.val ? quadTree1 : quadTree2;
+    if (quadTree2.isLeaf)
+      return quadTree2.val ? quadTree2 : quadTree1;
+
+    Node topLeft = intersect(quadTree1.topLeft, quadTree2.topLeft);
+    Node topRight = intersect(quadTree1.topRight, quadTree2.topRight);
+    Node bottomLeft = intersect(quadTree1.bottomLeft, quadTree2.bottomLeft);
+    Node bottomRight = intersect(quadTree1.bottomRight, quadTree2.bottomRight);
+
+    if (topLeft.val == topRight.val &amp;&amp;       //
+        topLeft.val == bottomLeft.val &amp;&amp;     //
+        topLeft.val == bottomRight.val &amp;&amp;    //
+        topLeft.isLeaf &amp;&amp; topRight.isLeaf &amp;&amp; //
+        bottomLeft.isLeaf &amp;&amp; bottomRight.isLeaf)
+      return new Node(topLeft.val, true);
+    return new Node(false, false, topLeft, topRight, bottomLeft, bottomRight);
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Palindrome With Fixed Length - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find Palindrome With Fixed Length written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-palindrome-with-fixed-length/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-deletions-to-make-array-beautiful/" class="btn">← Previous</a>
+            <span>Problem 2217 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-value-of-k-coins-from-piles/" class="btn">Next →</a>
+        </div>
+        <h1>2217. Find Palindrome With Fixed Length</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find Palindrome With Fixed Length efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;long long&gt; kthPalindrome(vector&lt;int&gt;&amp; queries, int intLength) {
+    const int start = pow(10, (intLength + 1) / 2 - 1);
+    const int end = pow(10, (intLength + 1) / 2);
+    const int mul = pow(10, intLength / 2);
+    vector&lt;long long&gt; ans;
+
+    for (const int query : queries)
+      if (start + query &gt; end)
+        ans.push_back(-1);
+      else
+        ans.push_back(getKthPalindrome(query, start, mul, intLength));
+
+    return ans;
+  }
+
+ private:
+  long getKthPalindrome(int query, int start, int mul, int intLength) {
+    const long prefix = start + query - 1;
+    return prefix * mul + reverse(intLength % 2 == 0 ? prefix : prefix / 10);
+  }
+
+  long reverse(int num) {
+    long res = 0;
+    while (num &gt; 0) {
+      res = res * 10 + num % 10;
+      num /= 10;
+    }
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long[] kthPalindrome(int[] queries, int intLength) {
+    final int start = (int) Math.pow(10, (intLength + 1) / 2 - 1);
+    final int end = (int) Math.pow(10, (intLength + 1) / 2);
+    final int mul = (int) Math.pow(10, intLength / 2);
+    long[] ans = new long[queries.length];
+
+    for (int i = 0; i &lt; queries.length; ++i)
+      if (start + queries[i] &gt; end)
+        ans[i] = -1;
+      else
+        ans[i] = getKthPalindrome(queries[i], start, mul, intLength);
+
+    return ans;
+  }
+
+  private long getKthPalindrome(int q, int start, int mul, int intLength) {
+    final long prefix = start + q - 1;
+    return prefix * mul + reverse(intLength % 2 == 0 ? prefix : prefix / 10);
+  }
+
+  long reverse(long num) {
+    long res = 0;
+    while (num &gt; 0) {
+      res = res * 10 + num % 10;
+      num /= 10;
+    }
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def kthPalindrome(self, queries: list[int], intLength: int) -&gt; list[int]:
+    start = pow(10, (intLength + 1) // 2 - 1)
+    end = pow(10, (intLength + 1) // 2)
+    mul = pow(10, intLength // 2)
+
+    def reverse(num: int) -&gt; int:
+      res = 0
+      while num:
+        res = res * 10 + num % 10
+        num //= 10
+      return res
+
+    def getKthPalindrome(query: int) -&gt; int:
+      prefix = start + query - 1
+      return prefix * mul + reverse(prefix
+                                    if intLength % 2 == 0 else prefix // 10)
+
+    return [-1 if start + query &gt; end else getKthPalindrome(query)
+            for query in queries]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

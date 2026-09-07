@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Median of Two Sorted Arrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Median of Two Sorted Arrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/median-of-two-sorted-arrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/longest-substring-without-repeating-characters/" class="btn">← Previous</a>
+            <span>Problem 4 of 3563</span>
+            <a href="/leetcode-solutions/problems/longest-palindromic-substring/" class="btn">Next →</a>
+        </div>
+        <h1>4. Median of Two Sorted Arrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Median of Two Sorted Arrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  double findMedianSortedArrays(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    const int n1 = nums1.size();
+    const int n2 = nums2.size();
+    if (n1 &gt; n2)
+      return findMedianSortedArrays(nums2, nums1);
+
+    int l = 0;
+    int r = n1;
+
+    while (l &lt;= r) {
+      const int partition1 = (l + r) / 2;
+      const int partition2 = (n1 + n2 + 1) / 2 - partition1;
+      const int maxLeft1 = partition1 == 0 ? INT_MIN : nums1[partition1 - 1];
+      const int maxLeft2 = partition2 == 0 ? INT_MIN : nums2[partition2 - 1];
+      const int minRight1 = partition1 == n1 ? INT_MAX : nums1[partition1];
+      const int minRight2 = partition2 == n2 ? INT_MAX : nums2[partition2];
+      if (maxLeft1 &lt;= minRight2 &amp;&amp; maxLeft2 &lt;= minRight1)
+        return (n1 + n2) % 2 == 0
+                   ? (max(maxLeft1, maxLeft2) + min(minRight1, minRight2)) * 0.5
+                   : max(maxLeft1, maxLeft2);
+      else if (maxLeft1 &gt; minRight2)
+        r = partition1 - 1;
+      else
+        l = partition1 + 1;
+    }
+
+    throw;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    final int n1 = nums1.length;
+    final int n2 = nums2.length;
+    if (n1 &gt; n2)
+      return findMedianSortedArrays(nums2, nums1);
+
+    int l = 0;
+    int r = n1;
+
+    while (l &lt;= r) {
+      final int partition1 = (l + r) / 2;
+      final int partition2 = (n1 + n2 + 1) / 2 - partition1;
+      final int maxLeft1 = partition1 == 0 ? Integer.MIN_VALUE : nums1[partition1 - 1];
+      final int maxLeft2 = partition2 == 0 ? Integer.MIN_VALUE : nums2[partition2 - 1];
+      final int minRight1 = partition1 == n1 ? Integer.MAX_VALUE : nums1[partition1];
+      final int minRight2 = partition2 == n2 ? Integer.MAX_VALUE : nums2[partition2];
+      if (maxLeft1 &lt;= minRight2 &amp;&amp; maxLeft2 &lt;= minRight1)
+        return (n1 + n2) % 2 == 0
+            ? (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) * 0.5
+            : Math.max(maxLeft1, maxLeft2);
+      else if (maxLeft1 &gt; minRight2)
+        r = partition1 - 1;
+      else
+        l = partition1 + 1;
+    }
+
+    throw new IllegalArgumentException();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def findMedianSortedArrays(self, nums1: list[int], nums2: list[int]) -&gt; float:
+    n1 = len(nums1)
+    n2 = len(nums2)
+    if n1 &gt; n2:
+      return self.findMedianSortedArrays(nums2, nums1)
+
+    l = 0
+    r = n1
+
+    while l &lt;= r:
+      partition1 = (l + r) // 2
+      partition2 = (n1 + n2 + 1) // 2 - partition1
+      maxLeft1 = -2**31 if partition1 == 0 else nums1[partition1 - 1]
+      maxLeft2 = -2**31 if partition2 == 0 else nums2[partition2 - 1]
+      minRight1 = 2**31 - 1 if partition1 == n1 else nums1[partition1]
+      minRight2 = 2**31 - 1 if partition2 == n2 else nums2[partition2]
+      if maxLeft1 &lt;= minRight2 and maxLeft2 &lt;= minRight1:
+        return (max(maxLeft1, maxLeft2) + min(minRight1, minRight2)) * 0.5 if (n1 + n2) % 2 == 0 else max(maxLeft1, maxLeft2)
+      elif maxLeft1 &gt; minRight2:
+        r = partition1 - 1
+      else:
+        l = partition1 + 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

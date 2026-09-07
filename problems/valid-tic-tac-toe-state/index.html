@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valid Tic-Tac-Toe State - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Valid Tic-Tac-Toe State written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/valid-tic-tac-toe-state/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/preimage-size-of-factorial-zeroes-function/" class="btn">← Previous</a>
+            <span>Problem 794 of 3563</span>
+            <a href="/leetcode-solutions/problems/number-of-subarrays-with-bounded-maximum/" class="btn">Next →</a>
+        </div>
+        <h1>794. Valid Tic-Tac-Toe State</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Valid Tic-Tac-Toe State efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  bool validTicTacToe(vector&lt;string&gt;&amp; board) {
+    const int countX = sum(board, &#x27;X&#x27;);
+    const int countO = sum(board, &#x27;O&#x27;);
+
+    if (countX &lt; countO || countX - countO &gt; 1)
+      return false;
+    if (isWinned(board, &#x27;X&#x27;) &amp;&amp; countX == countO ||
+        isWinned(board, &#x27;O&#x27;) &amp;&amp; countX != countO)
+      return false;
+
+    return true;
+  }
+
+ private:
+  int sum(const vector&lt;string&gt;&amp; board, char c) {
+    int ans = 0;
+
+    for (const string&amp; row : board)
+      ans += ranges::count(row, c);
+
+    return ans;
+  }
+
+  bool isWinned(const vector&lt;string&gt;&amp; board, char c) {
+    vector&lt;string&gt; rotated = rotate(board);
+
+    auto equalsToThree = [&amp;c](const string&amp; row) {
+      return ranges::count(row, c) == 3;
+    };
+
+    return ranges::any_of(board, equalsToThree) ||
+           ranges::any_of(rotated, equalsToThree) ||
+           board[0][0] == c &amp;&amp; board[1][1] == c &amp;&amp; board[2][2] == c ||
+           board[0][2] == c &amp;&amp; board[1][1] == c &amp;&amp; board[2][0] == c;
+  }
+
+  vector&lt;string&gt; rotate(const vector&lt;string&gt;&amp; board) {
+    vector&lt;string&gt; rotated(3);
+
+    for (const string&amp; row : board)
+      for (int i = 0; i &lt; 3; ++i)
+        rotated[i].push_back(row[i]);
+
+    return rotated;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public boolean validTicTacToe(String[] board) {
+    final int countX = sum(board, &#x27;X&#x27;);
+    final int countO = sum(board, &#x27;O&#x27;);
+
+    if (countX &lt; countO || countX - countO &gt; 1)
+      return false;
+    if (isWinned(board, &#x27;X&#x27;) &amp;&amp; countX == countO || //
+        isWinned(board, &#x27;O&#x27;) &amp;&amp; countX != countO)
+      return false;
+
+    return true;
+  }
+
+  private int sum(final String[] board, char c) {
+    int ans = 0;
+
+    for (final String row : board)
+      ans += row.chars().filter(i -&gt; i == c).count();
+
+    return ans;
+  }
+
+  private boolean isWinned(final String[] board, char c) {
+    String[] rotated = rotate(board);
+
+    return Arrays.stream(board).anyMatch(row -&gt; row.chars().filter(i -&gt; i == c).count() == 3) ||
+        Arrays.stream(rotated).anyMatch(row -&gt; row.chars().filter(i -&gt; i == c).count() == 3) ||
+        board[0].charAt(0) == c &amp;&amp; board[1].charAt(1) == c &amp;&amp; board[2].charAt(2) == c ||
+        board[0].charAt(2) == c &amp;&amp; board[1].charAt(1) == c &amp;&amp; board[2].charAt(0) == c;
+  }
+
+  private String[] rotate(final String[] board) {
+    String[] rotated = new String[3];
+
+    for (final String row : board)
+      for (int i = 0; i &lt; 3; ++i)
+        rotated[i] += row.charAt(i);
+
+    return rotated;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def validTicTacToe(self, board: list[str]) -&gt; bool:
+    def isWin(c: str) -&gt; bool:
+      return (any(row.count(c) == 3 for row in board) or
+              any(row.count(c) == 3 for row in list(zip(*board))) or
+              all(board[i][i] == c for i in range(3)) or
+              all(board[i][2 - i] == c for i in range(3)))
+
+    countX = sum(row.count(&#x27;X&#x27;) for row in board)
+    countO = sum(row.count(&#x27;O&#x27;) for row in board)
+
+    if countX &lt; countO or countX - countO &gt; 1:
+      return False
+    if isWin(&#x27;X&#x27;) and countX == countO or isWin(&#x27;O&#x27;) and countX != countO:
+      return False
+
+    return True</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

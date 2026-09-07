@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All O`one Data Structure - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for All O`one Data Structure written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/all-o-one-data-structure/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/encode-n-ary-tree-to-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 432 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-genetic-mutation/" class="btn">Next →</a>
+        </div>
+        <h1>432. All O`one Data Structure</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve All O`one Data Structure efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Node {
+  int count;
+  unordered_set&lt;string&gt; keys;
+};
+
+class AllOne {
+ public:
+  void inc(string key) {
+    if (const auto it = keyToIterator.find(key); it == keyToIterator.end())
+      addNewKey(key);
+    else
+      incrementExistingKey(it, key);
+  }
+
+  void dec(string key) {
+    const auto it = keyToIterator.find(key);
+    // It is guaranteed that key exists in the data structure before the
+    // decrement.
+    decrementExistingKey(it, key);
+  }
+
+  string getMaxKey() {
+    return nodeList.empty() ? &quot;&quot; : *nodeList.back().keys.begin();
+  }
+
+  string getMinKey() {
+    return nodeList.empty() ? &quot;&quot; : *nodeList.front().keys.begin();
+  }
+
+ private:
+  list&lt;Node&gt; nodeList;  // list of nodes sorted by count
+  unordered_map&lt;string, list&lt;Node&gt;::iterator&gt; keyToIterator;
+
+  // Adds a new node with count 1.
+  void addNewKey(const string&amp; key) {
+    if (nodeList.empty() || nodeList.front().count &gt; 1)
+      nodeList.push_front({1, {key}});
+    else  // nodeList.front().count == 1
+      nodeList.front().keys.insert(key);
+    keyToIterator[key] = nodeList.begin();
+  }
+
+  // Increments the count of the key by 1.
+  void incrementExistingKey(
+      unordered_map&lt;string, list&lt;Node&gt;::iterator&gt;::iterator it,
+      const string&amp; key) {
+    const auto listIt = it-&gt;second;
+
+    auto nextIt = next(listIt);
+    const int newCount = listIt-&gt;count + 1;
+    if (nextIt == nodeList.end() || nextIt-&gt;count &gt; newCount)
+      nextIt = nodeList.insert(nextIt, {newCount, {key}});
+    else  // Node with count + 1 exists.
+      nextIt-&gt;keys.insert(key);
+
+    keyToIterator[key] = nextIt;
+    remove(listIt, key);
+  }
+
+  // Decrements the count of the key by 1.
+  void decrementExistingKey(
+      unordered_map&lt;string, list&lt;Node&gt;::iterator&gt;::iterator it,
+      const string&amp; key) {
+    const auto listIt = it-&gt;second;
+    if (listIt-&gt;count == 1) {
+      keyToIterator.erase(it);
+      remove(listIt, key);
+      return;
+    }
+
+    auto prevIt = prev(listIt);
+    const int newCount = listIt-&gt;count - 1;
+    if (listIt == nodeList.begin() || prevIt-&gt;count &lt; newCount)
+      prevIt = nodeList.insert(listIt, {newCount, {key}});
+    else  // Node with count - 1 exists.
+      prevIt-&gt;keys.insert(key);
+
+    keyToIterator[key] = prevIt;
+    remove(listIt, key);
+  }
+
+  // Removes the key from the node list.
+  void remove(list&lt;Node&gt;::iterator it, const string&amp; key) {
+    it-&gt;keys.erase(key);
+    if (it-&gt;keys.empty())
+      nodeList.erase(it);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Node {
+  public int count;
+  public Set&lt;String&gt; keys = new HashSet&lt;&gt;();
+  public Node prev = null;
+  public Node next = null;
+  public Node(int count) {
+    this.count = count;
+  }
+  public Node(int count, String key) {
+    this.count = count;
+    keys.add(key);
+  }
+}
+
+class AllOne {
+  public AllOne() {
+    head.next = tail;
+    tail.prev = head;
+  }
+
+  public void inc(String key) {
+    if (keyToNode.containsKey(key))
+      incrementExistingKey(key);
+    else
+      addNewKey(key);
+  }
+
+  public void dec(String key) {
+    // It is guaranteed that key exists in the data structure before the
+    // decrement.
+    decrementExistingKey(key);
+  }
+
+  public String getMaxKey() {
+    return tail.prev == head ? &quot;&quot; : tail.prev.keys.iterator().next();
+  }
+
+  public String getMinKey() {
+    return head.next == tail ? &quot;&quot; : head.next.keys.iterator().next();
+  }
+
+  private Map&lt;String, Node&gt; keyToNode = new HashMap&lt;&gt;();
+  private Node head = new Node(0);
+  private Node tail = new Node(0);
+
+  // Adds a new node with frequency 1.
+  private void addNewKey(final String key) {
+    if (head.next.count == 1)
+      head.next.keys.add(key);
+    else
+      insertAfter(head, new Node(1, key));
+    keyToNode.put(key, head.next);
+  }
+
+  // Increments the frequency of the key by 1.
+  private void incrementExistingKey(final String key) {
+    Node node = keyToNode.get(key);
+    node.keys.remove(key);
+
+    if (node.next == tail || node.next.count &gt; node.count + 1)
+      insertAfter(node, new Node(node.count + 1));
+
+    node.next.keys.add(key);
+    keyToNode.put(key, node.next);
+
+    if (node.keys.isEmpty())
+      remove(node);
+  }
+
+  // Decrements the count of the key by 1.
+  private void decrementExistingKey(final String key) {
+    Node node = keyToNode.get(key);
+    node.keys.remove(key);
+
+    if (node.count &gt; 1) {
+      if (node.prev == head || node.prev.count != node.count - 1)
+        insertAfter(node.prev, new Node(node.count - 1));
+      node.prev.keys.add(key);
+      keyToNode.put(key, node.prev);
+    } else {
+      keyToNode.remove(key);
+    }
+
+    if (node.keys.isEmpty())
+      remove(node);
+  }
+
+  private void insertAfter(Node node, Node newNode) {
+    newNode.prev = node;
+    newNode.next = node.next;
+    node.next.prev = newNode;
+    node.next = newNode;
+  }
+
+  private void remove(Node node) {
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Node:
+  def __init__(self, count: int, key: str | None = None):
+    self.count = count
+    self.keys: set[str] = {key} if key else set()
+    self.prev: Node | None = None
+    self.next: Node | None = None
+
+  def __eq__(self, other) -&gt; bool:
+    if not isinstance(other, Node):
+      return NotImplemented
+    return self.count == other.count and self.keys == other.keys
+
+
+class AllOne:
+  def __init__(self):
+    self.keyToNode: dict[str, Node] = {}
+    self.head = Node(0)
+    self.tail = Node(0)
+    self.head.next = self.tail
+    self.tail.prev = self.head
+
+  def inc(self, key: str) -&gt; None:
+    if key in self.keyToNode:
+      self._incrementExistingKey(key)
+    else:
+      self._addNewKey(key)
+
+  def dec(self, key: str) -&gt; None:
+    # It is guaranteed that key exists in the data structure before the
+    # decrement.
+    self._decrementExistingKey(key)
+
+  def getMaxKey(self) -&gt; str:
+    return &#x27;&#x27; if self.tail.prev == self.head \
+        else next(iter(self.tail.prev.keys))
+
+  def getMinKey(self) -&gt; str:
+    return &#x27;&#x27; if self.head.next == self.tail \
+        else next(iter(self.head.next.keys))
+
+  def _addNewKey(self, key: str) -&gt; None:
+    &quot;&quot;&quot;Adds a new node with frequency 1.&quot;&quot;&quot;
+    if self.head.next.count == 1:
+      self.head.next.keys.add(key)
+    else:
+      self._insertAfter(self.head, Node(1, key))
+    self.keyToNode[key] = self.head.next
+
+  def _incrementExistingKey(self, key: str) -&gt; None:
+    &quot;&quot;&quot;Increments the frequency of the key by 1.&quot;&quot;&quot;
+    node = self.keyToNode[key]
+    node.keys.remove(key)
+    if node.next == self.tail or node.next.count &gt; node.count + 1:
+      self._insertAfter(node, Node(node.count + 1))
+    node.next.keys.add(key)
+    self.keyToNode[key] = node.next
+    if not node.keys:
+      self._remove(node)
+
+  def _decrementExistingKey(self, key: str) -&gt; None:
+    &quot;&quot;&quot;Decrements the count of the key by 1.&quot;&quot;&quot;
+    node = self.keyToNode[key]
+    node.keys.remove(key)
+    if node.count &gt; 1:
+      if node.prev == self.head or node.prev.count != node.count - 1:
+        self._insertAfter(node.prev, Node(node.count - 1))
+      node.prev.keys.add(key)
+      self.keyToNode[key] = node.prev
+    else:
+      del self.keyToNode[key]
+    if not node.keys:
+      self._remove(node)
+
+  def _insertAfter(self, node: Node, newNode: Node) -&gt; None:
+    newNode.prev = node
+    newNode.next = node.next
+    node.next.prev = newNode
+    node.next = newNode
+
+  def _remove(self, node: Node) -&gt; None:
+    node.prev.next = node.next
+    node.next.prev = node.prev</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations on Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Operations on Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/operations-on-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-all-groups-of-farmland/" class="btn">← Previous</a>
+            <span>Problem 1993 of 3563</span>
+            <a href="/leetcode-solutions/problems/the-number-of-good-subsets/" class="btn">Next →</a>
+        </div>
+        <h1>1993. Operations on Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Operations on Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">struct Node {
+  vector&lt;int&gt; children;
+  int lockedBy = -1;
+};
+
+class LockingTree {
+ public:
+  LockingTree(vector&lt;int&gt;&amp; parent) : parent(parent) {
+    nodes.resize(parent.size());
+    for (int i = 1; i &lt; parent.size(); ++i)
+      nodes[parent[i]].children.push_back(i);
+  }
+
+  bool lock(int num, int user) {
+    if (nodes[num].lockedBy != -1)
+      return false;
+    return nodes[num].lockedBy = user;
+  }
+
+  bool unlock(int num, int user) {
+    if (nodes[num].lockedBy != user)
+      return false;
+    return nodes[num].lockedBy = -1;
+  }
+
+  bool upgrade(int num, int user) {
+    if (nodes[num].lockedBy != -1)
+      return false;
+    if (!anyLockedDescendant(num))
+      return false;
+
+    // Walk up the hierarchy to ensure that there are no locked ancestors.
+    for (int i = num; i != -1; i = parent[i])
+      if (nodes[i].lockedBy != -1)
+        return false;
+
+    unlockDescendants(num);
+    return nodes[num].lockedBy = user;
+  }
+
+ private:
+  const vector&lt;int&gt; parent;
+  vector&lt;Node&gt; nodes;
+
+  bool anyLockedDescendant(int i) {
+    return nodes[i].lockedBy != -1 ||
+           ranges::any_of(nodes[i].children, [this](const int child) {
+      return anyLockedDescendant(child);
+    });
+  }
+
+  void unlockDescendants(int i) {
+    nodes[i].lockedBy = -1;
+    for (const int child : nodes[i].children)
+      unlockDescendants(child);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Node {
+  public List&lt;Integer&gt; children = new ArrayList&lt;&gt;();
+  public int lockedBy = -1;
+}
+
+class LockingTree {
+  public LockingTree(int[] parent) {
+    this.parent = parent;
+    nodes = new Node[parent.length];
+    for (int i = 0; i &lt; parent.length; ++i)
+      nodes[i] = new Node();
+    for (int i = 1; i &lt; parent.length; ++i)
+      nodes[parent[i]].children.add(i);
+  }
+
+  public boolean lock(int num, int user) {
+    if (nodes[num].lockedBy != -1)
+      return false;
+    nodes[num].lockedBy = user;
+    return true;
+  }
+
+  public boolean unlock(int num, int user) {
+    if (nodes[num].lockedBy != user)
+      return false;
+    nodes[num].lockedBy = -1;
+    return true;
+  }
+
+  public boolean upgrade(int num, int user) {
+    if (nodes[num].lockedBy != -1)
+      return false;
+    if (!anyLockedDescendant(num))
+      return false;
+
+    // Walk up the hierarchy to ensure that there are no locked ancestors.
+    for (int i = num; i != -1; i = parent[i])
+      if (nodes[i].lockedBy != -1)
+        return false;
+
+    unlockDescendants(num);
+    nodes[num].lockedBy = user;
+    return true;
+  }
+
+  private int[] parent;
+  private Node[] nodes;
+
+  private boolean anyLockedDescendant(int i) {
+    return nodes[i].lockedBy != -1 ||
+        nodes[i].children.stream().anyMatch(child -&gt; anyLockedDescendant(child));
+  }
+
+  private void unlockDescendants(int i) {
+    nodes[i].lockedBy = -1;
+    for (final int child : nodes[i].children)
+      unlockDescendants(child);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Node:
+  def __init__(self):
+    self.children: list[int] = []
+    self.lockedBy = -1
+
+
+class LockingTree:
+  def __init__(self, parent: list[int]):
+    self.parent = parent
+    self.nodes = [Node() for _ in range(len(parent))]
+    for i in range(1, len(parent)):
+      self.nodes[parent[i]].children.append(i)
+
+  def lock(self, num: int, user: int) -&gt; bool:
+    if self.nodes[num].lockedBy != -1:
+      return False
+    self.nodes[num].lockedBy = user
+    return True
+
+  def unlock(self, num: int, user: int) -&gt; bool:
+    if self.nodes[num].lockedBy != user:
+      return False
+    self.nodes[num].lockedBy = -1
+    return True
+
+  def upgrade(self, num: int, user: int) -&gt; bool:
+    if self.nodes[num].lockedBy != -1:
+      return False
+    if not self._anyLockedDescendant(num):
+      return False
+
+    # Walk up the hierarchy to ensure that there are no locked ancestors.
+    i = num
+    while i != -1:
+      if self.nodes[i].lockedBy != -1:
+        return False
+      i = self.parent[i]
+
+    self._unlockDescendants(num)
+    self.nodes[num].lockedBy = user
+    return True
+
+  def _anyLockedDescendant(self, i: int) -&gt; bool:
+    return (self.nodes[i].lockedBy != -1 or
+            any(self._anyLockedDescendant(child)
+            for child in self.nodes[i].children))
+
+  def _unlockDescendants(self, i: int) -&gt; None:
+    self.nodes[i].lockedBy = -1
+    for child in self.nodes[i].children:
+      self._unlockDescendants(child)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

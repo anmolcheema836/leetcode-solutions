@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permutations II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Permutations II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/permutations-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/permutations/" class="btn">← Previous</a>
+            <span>Problem 47 of 3563</span>
+            <a href="/leetcode-solutions/problems/rotate-image/" class="btn">Next →</a>
+        </div>
+        <h1>47. Permutations II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Permutations II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; permuteUnique(vector&lt;int&gt;&amp; nums) {
+    vector&lt;vector&lt;int&gt;&gt; ans;
+    ranges::sort(nums);
+    dfs(nums, vector&lt;bool&gt;(nums.size()), {}, ans);
+    return ans;
+  }
+
+ private:
+  void dfs(const vector&lt;int&gt;&amp; nums, vector&lt;bool&gt;&amp;&amp; used, vector&lt;int&gt;&amp;&amp; path,
+           vector&lt;vector&lt;int&gt;&gt;&amp; ans) {
+    if (path.size() == nums.size()) {
+      ans.push_back(path);
+      return;
+    }
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      if (used[i])
+        continue;
+      if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1] &amp;&amp; !used[i - 1])
+        continue;
+      used[i] = true;
+      path.push_back(nums[i]);
+      dfs(nums, std::move(used), std::move(path), ans);
+      path.pop_back();
+      used[i] = false;
+    }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;Integer&gt;&gt; permuteUnique(int[] nums) {
+    List&lt;List&lt;Integer&gt;&gt; ans = new ArrayList&lt;&gt;();
+    Arrays.sort(nums);
+    dfs(nums, new boolean[nums.length], new ArrayList&lt;&gt;(), ans);
+    return ans;
+  }
+
+  private void dfs(int[] nums, boolean[] used, List&lt;Integer&gt; path, List&lt;List&lt;Integer&gt;&gt; ans) {
+    if (path.size() == nums.length) {
+      ans.add(new ArrayList&lt;&gt;(path));
+      return;
+    }
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      if (used[i])
+        continue;
+      if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1] &amp;&amp; !used[i - 1])
+        continue;
+      used[i] = true;
+      path.add(nums[i]);
+      dfs(nums, used, path, ans);
+      path.remove(path.size() - 1);
+      used[i] = false;
+    }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def permuteUnique(self, nums: list[int]) -&gt; list[list[int]]:
+    ans = []
+    used = [False] * len(nums)
+
+    def dfs(path: list[int]) -&gt; None:
+      if len(path) == len(nums):
+        ans.append(path.copy())
+        return
+
+      for i, num in enumerate(nums):
+        if used[i]:
+          continue
+        if i &gt; 0 and nums[i] == nums[i - 1] and not used[i - 1]:
+          continue
+        used[i] = True
+        path.append(num)
+        dfs(path)
+        path.pop()
+        used[i] = False
+
+    nums.sort()
+    dfs([])
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

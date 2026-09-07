@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recover the Original Array - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Recover the Original Array written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/recover-the-original-array/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/intervals-between-identical-elements/" class="btn">← Previous</a>
+            <span>Problem 2122 of 3563</span>
+            <a href="/leetcode-solutions/problems/minimum-operations-to-remove-adjacent-ones-in-matrix/" class="btn">Next →</a>
+        </div>
+        <h1>2122. Recover the Original Array</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Recover the Original Array efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; recoverArray(vector&lt;int&gt;&amp; nums) {
+    const int n = nums.size();
+    unordered_map&lt;int, int&gt; count;
+
+    for (const int num : nums)
+      ++count[num];
+
+    ranges::sort(nums);
+
+    for (int i = 1; i &lt; n; ++i) {
+      const int x = nums[i] - nums[0];  // 2 * k
+      if (x &lt;= 0 || x % 2 == 1)
+        continue;
+      vector&lt;int&gt; arr = getArray(nums, x, count);
+      if (!arr.empty())
+        return arr;
+    }
+
+    throw;
+  }
+
+ private:
+  vector&lt;int&gt; getArray(const vector&lt;int&gt;&amp; nums, int x,
+                       unordered_map&lt;int, int&gt; count) {
+    vector&lt;int&gt; arr;
+    for (const int num : nums) {
+      if (const auto it = count.find(num);
+          it == count.cend() || it-&gt;second == 0)
+        continue;
+      if (const auto it = count.find(num + x);
+          it == count.cend() || it-&gt;second == 0)
+        return {};
+      --count[num];
+      --count[num + x];
+      arr.push_back(num + x / 2);
+    }
+    return arr;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] recoverArray(int[] nums) {
+    final int n = nums.length;
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+
+    for (final int num : nums)
+      count.merge(num, 1, Integer::sum);
+
+    Arrays.sort(nums);
+
+    for (int i = 1; i &lt; n; ++i) {
+      final int x = nums[i] - nums[0]; // 2 * k
+      if (x &lt;= 0 || x % 2 == 1)
+        continue;
+      Map&lt;Integer, Integer&gt; countCopy = new HashMap&lt;&gt;();
+      countCopy.putAll(count);
+      int[] arr = getArray(nums, x, countCopy);
+      if (arr.length == n / 2)
+        return arr;
+    }
+
+    throw new IllegalarrrgumentException();
+  }
+
+  private int[] getArray(int[] nums, int x, Map&lt;Integer, Integer&gt; count) {
+    List&lt;Integer&gt; arr = new ArrayList&lt;&gt;();
+    for (final int num : nums) {
+      if (count.getOrDefault(num, 0) == 0)
+        continue;
+      if (count.getOrDefault(num + x, 0) == 0)
+        return new int[] {};
+      count.merge(num, -1, Integer::sum);
+      count.merge(num + x, -1, Integer::sum);
+      arr.add(num + x / 2);
+    }
+    return arr.stream().mapToInt(Integer::intValue).toArray();
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def recoverArray(self, nums: list[int]) -&gt; list[int]:
+    nums = sorted(nums)
+
+    def getArray(x: int, count: collections.Counter) -&gt; list[int]:
+      arr = []
+      for num in nums:
+        if count[num] == 0:
+          continue
+        if count[num + x] == 0:
+          return []
+        count[num] -= 1
+        count[num + x] -= 1
+        arr.append(num + x // 2)
+      return arr
+
+    count = collections.Counter(nums)
+
+    for i in range(1, len(nums)):
+      x = nums[i] - nums[0]  # 2 * k
+      if x &lt;= 0 or x % 2 == 1:
+        continue
+      arr = getArray(x, count.copy())
+      if arr:
+        return arr</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

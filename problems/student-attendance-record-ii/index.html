@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Record II - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Student Attendance Record II written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/student-attendance-record-ii/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/student-attendance-record-i/" class="btn">← Previous</a>
+            <span>Problem 552 of 3563</span>
+            <a href="/leetcode-solutions/problems/optimal-division/" class="btn">Next →</a>
+        </div>
+        <h1>552. Student Attendance Record II</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Student Attendance Record II efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int checkRecord(int n) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    // dp[i][j] := the length so far with i A&#x27;s and the last letters are j L&#x27;s
+    vector&lt;vector&lt;long&gt;&gt; dp(2, vector&lt;long&gt;(3));
+    dp[0][0] = 1;
+
+    while (n-- &gt; 0) {
+      const auto prev(dp);
+
+      // Append a P.
+      dp[0][0] = (prev[0][0] + prev[0][1] + prev[0][2]) % kMod;
+
+      // Append an L.
+      dp[0][1] = prev[0][0];
+
+      // Append an L.
+      dp[0][2] = prev[0][1];
+
+      // Append an A or append a P.
+      dp[1][0] = (prev[0][0] + prev[0][1] + prev[0][2] +  //
+                  prev[1][0] + prev[1][1] + prev[1][2]) %
+                 kMod;
+
+      // Append an L.
+      dp[1][1] = prev[1][0];
+
+      // Append an L.
+      dp[1][2] = prev[1][1];
+    }
+
+    return accumulate(dp.begin(), dp.end(), 0, [](int acc, vector&lt;long&gt;&amp; row) {
+      return (acc + accumulate(row.begin(), row.end(), 0L)) % kMod;
+    });
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int checkRecord(int n) {
+    final int MOD = 1_000_000_007;
+    // dp[i][j] := the length so far with i A&#x27;s and the last letters are j L&#x27;s
+    long[][] dp = new long[2][3];
+    dp[0][0] = 1;
+
+    while (n-- &gt; 0) {
+      long[][] prev = Arrays.stream(dp)
+                          .map((long[] A) -&gt; A.clone())
+                          .toArray((int length) -&gt; new long[length][]);
+
+      // Append a P.
+      dp[0][0] = (prev[0][0] + prev[0][1] + prev[0][2]) % MOD;
+
+      // Append an L.
+      dp[0][1] = prev[0][0];
+
+      // Append an L.
+      dp[0][2] = prev[0][1];
+
+      // Append an A or append a P.
+      dp[1][0] =
+          (prev[0][0] + prev[0][1] + prev[0][2] + prev[1][0] + prev[1][1] + prev[1][2]) % MOD;
+
+      // Append an L.
+      dp[1][1] = prev[1][0];
+
+      // Append an L.
+      dp[1][2] = prev[1][1];
+    }
+
+    return (int) ((dp[0][0] + dp[0][1] + dp[0][2] + dp[1][0] + dp[1][1] + dp[1][2]) % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def checkRecord(self, n: int) -&gt; int:
+    MOD = 1_000_000_007
+    # dp[i][j] := the length so far with i A&#x27;s and the last letters are j L&#x27;s
+    dp = [[0] * 3 for _ in range(2)]
+    dp[0][0] = 1
+
+    for _ in range(n):
+      prev = [A[:] for A in dp]
+
+      # Append a P.
+      dp[0][0] = (prev[0][0] + prev[0][1] + prev[0][2]) % MOD
+
+      # Append an L.
+      dp[0][1] = prev[0][0]
+
+      # Append an L.
+      dp[0][2] = prev[0][1]
+
+      # Append an A or append a P.
+      dp[1][0] = (prev[0][0] + prev[0][1] + prev[0][2] +
+                  prev[1][0] + prev[1][1] + prev[1][2]) % MOD
+
+      # Append an L.
+      dp[1][1] = prev[1][0]
+
+      # Append an L.
+      dp[1][2] = prev[1][1]
+
+    return (sum(dp[0]) + sum(dp[1])) % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

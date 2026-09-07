@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kth Smallest Instructions - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Kth Smallest Instructions written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/kth-smallest-instructions/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/furthest-building-you-can-reach/" class="btn">← Previous</a>
+            <span>Problem 1643 of 3563</span>
+            <a href="/leetcode-solutions/problems/lowest-common-ancestor-of-a-binary-tree-ii/" class="btn">Next →</a>
+        </div>
+        <h1>1643. Kth Smallest Instructions</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Kth Smallest Instructions efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  string kthSmallestPath(vector&lt;int&gt;&amp; destination, int k) {
+    string ans;
+    int v = destination[0];
+    int h = destination[1];
+    const int totalSteps = v + h;
+    const vector&lt;vector&lt;int&gt;&gt; comb = getComb(totalSteps - 1, v);
+
+    for (int i = 0; i &lt; totalSteps; ++i) {
+      // If &#x27;H&#x27; is picked, we can reach ranks [1, availableRank].
+      const int availableRank = comb[h + v - 1][v];
+      if (availableRank &gt;= k) {  // Should pick &#x27;H&#x27;.
+        ans += &#x27;H&#x27;;
+        --h;
+      } else {  // Should pick &#x27;V&#x27;.
+        k -= availableRank;
+        ans += &#x27;V&#x27;;
+        --v;
+      }
+    }
+
+    return ans;
+  }
+
+ private:
+  // C(n, k) = C(n - 1, k) + C(n - 1, k - 1)
+  vector&lt;vector&lt;int&gt;&gt; getComb(int n, int k) {
+    vector&lt;vector&lt;int&gt;&gt; comb(n + 1, vector&lt;int&gt;(k + 1));
+    for (int i = 0; i &lt;= n; ++i)
+      comb[i][0] = 1;
+    for (int i = 1; i &lt;= n; ++i)
+      for (int j = 1; j &lt;= k; ++j)
+        comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1];
+    return comb;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public String kthSmallestPath(int[] destination, int k) {
+    StringBuilder sb = new StringBuilder();
+    int v = destination[0];
+    int h = destination[1];
+    final int totalSteps = v + h;
+    final int[][] comb = getComb(totalSteps - 1, v);
+
+    for (int i = 0; i &lt; totalSteps; ++i) {
+      // If &#x27;H&#x27; is picked, we can reach ranks [1, availableRank].
+      final int availableRank = comb[h + v - 1][v];
+      if (availableRank &gt;= k) { // Should pick &#x27;H&#x27;.
+        sb.append(&#x27;H&#x27;);
+        --h;
+      } else { // Should pick &#x27;V&#x27;.
+        k -= availableRank;
+        sb.append(&#x27;V&#x27;);
+        --v;
+      }
+    }
+
+    return sb.toString();
+  }
+
+  private int[][] getComb(int n, int k) {
+    int[][] comb = new int[n + 1][k + 1];
+    for (int i = 0; i &lt;= n; ++i)
+      comb[i][0] = 1;
+    for (int i = 1; i &lt;= n; ++i)
+      for (int j = 1; j &lt;= k; ++j)
+        comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1];
+    return comb;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def kthSmallestPath(self, destination: list[int], k: int) -&gt; str:
+    ans = []
+    v, h = destination
+
+    for _ in range(h + v):
+      # If pick &#x27;H&#x27;, then we&#x27;re able to reack 1, 2, ..., availableRank.
+      availableRank = math.comb(h + v - 1, v)
+      if availableRank &gt;= k:  # Should pick &#x27;H&#x27;.
+        ans.append(&#x27;H&#x27;)
+        h -= 1
+      else:  # Should pick &#x27;V&#x27;.
+        k -= availableRank
+        ans.append(&#x27;V&#x27;)
+        v -= 1
+
+    return &#x27;&#x27;.join(ans)</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

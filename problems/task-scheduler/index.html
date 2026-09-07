@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Scheduler - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Task Scheduler written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/task-scheduler/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/not-boring-movies/" class="btn">← Previous</a>
+            <span>Problem 621 of 3563</span>
+            <a href="/leetcode-solutions/problems/design-circular-queue/" class="btn">Next →</a>
+        </div>
+        <h1>621. Task Scheduler</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Task Scheduler efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int leastInterval(vector&lt;char&gt;&amp; tasks, int n) {
+    if (n == 0)
+      return tasks.size();
+
+    vector&lt;int&gt; count(26);
+
+    for (const char task : tasks)
+      ++count[task - &#x27;A&#x27;];
+
+    const int maxFreq = ranges::max(count);
+    // Put the most frequent task in the slot first.
+    const int maxFreqTaskOccupy = (maxFreq - 1) * (n + 1);
+    // Get the number of tasks with the same frequency as `maxFreq`, we&#x27;ll
+    // append them after `maxFreqTaskOccupy`.
+    const int nMaxFreq = ranges::count(count, maxFreq);
+    // max(
+    //   the most frequent task is frequent enough to force some idle slots,
+    //   the most frequent task is not frequent enough to force idle slots
+    // )
+    return max(maxFreqTaskOccupy + nMaxFreq, static_cast&lt;int&gt;(tasks.size()));
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int leastInterval(char[] tasks, int n) {
+    int[] count = new int[26];
+
+    for (final char task : tasks)
+      ++count[task - &#x27;A&#x27;];
+
+    final int maxFreq = Arrays.stream(count).max().getAsInt();
+    // Put the most frequent task in the slot first.
+    final int maxFreqTaskOccupy = (maxFreq - 1) * (n + 1);
+    // Get the number of tasks with the same frequency as `maxFreq`, we&#x27;ll
+    // append them after `maxFreqTaskOccupy`.
+    final int nMaxFreq = (int) Arrays.stream(count).filter(c -&gt; c == maxFreq).count();
+    // max(
+    //   the most frequent task is frequent enough to force some idle slots,
+    //   the most frequent task is not frequent enough to force idle slots
+    // )
+    return Math.max(maxFreqTaskOccupy + nMaxFreq, tasks.length);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def leastInterval(self, tasks: list[str], n: int) -&gt; int:
+    count = collections.Counter(tasks)
+    maxFreq = max(count.values())
+    # Put the most frequent task in the slot first.
+    maxFreqTaskOccupy = (maxFreq - 1) * (n + 1)
+    # Get the number of tasks with same frequency as maxFreq, we&#x27;ll append them after the
+    # `maxFreqTaskOccupy`.
+    nMaxFreq = sum(value == maxFreq for value in count.values())
+    # max(
+    #   the most frequent task is frequent enough to force some idle slots,
+    #   the most frequent task is not frequent enough to force idle slots
+    # )
+    return max(maxFreqTaskOccupy + nMaxFreq, len(tasks))</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

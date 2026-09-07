@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Operations to Make Array Elements Zero - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Operations to Make Array Elements Zero written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-operations-to-make-array-elements-zero/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-minimum-amount-of-time-to-brew-potions/" class="btn">← Previous</a>
+            <span>Problem 3495 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximize-score-after-pair-deletions/" class="btn">Next →</a>
+        </div>
+        <h1>3495. Minimum Operations to Make Array Elements Zero</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Operations to Make Array Elements Zero efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  long long minOperations(vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    long ans = 0;
+    for (const vector&lt;int&gt;&amp; query : queries) {
+      const int l = query[0];
+      const int r = query[1];
+      ans += (getOperations(r) - getOperations(l - 1) + 1) / 2;
+    }
+    return ans;
+  }
+
+ private:
+  // Returns the number of operations required for [1, n].
+  long getOperations(int n) {
+    long res = 0;
+    int ops = 0;
+    for (int powerOfFour = 1; powerOfFour &lt;= n; powerOfFour *= 4) {
+      const int l = powerOfFour;
+      const int r = min(n, powerOfFour * 4 - 1);
+      res += static_cast&lt;long&gt;(r - l + 1) * ++ops;
+    }
+    return res;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public long minOperations(int[][] queries) {
+    long ans = 0;
+    for (int[] query : queries) {
+      final int l = query[0];
+      final int r = query[1];
+      ans += (getOperations(r) - getOperations(l - 1) + 1) / 2;
+    }
+    return ans;
+  }
+
+  // Returns the number of operations required for [1, n].
+  private long getOperations(int n) {
+    long res = 0;
+    int ops = 0;
+    for (int powerOfFour = 1; powerOfFour &lt;= n; powerOfFour *= 4) {
+      final int l = powerOfFour;
+      final int r = Math.min(n, powerOfFour * 4 - 1);
+      res += (long) (r - l + 1) * ++ops;
+    }
+    return res;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minOperations(self, queries: list[list[int]]) -&gt; int:
+    return sum((self._getOperations(r) - self._getOperations(l - 1) + 1) // 2
+               for l, r in queries)
+
+  def _getOperations(self, n: int) -&gt; int:
+    &quot;&quot;&quot;Returns the number of operations required for [1, n].&quot;&quot;&quot;
+    res = 0
+    ops = 0
+    powerOfFour = 1
+    while powerOfFour &lt;= n:
+      l = powerOfFour
+      r = min(n, powerOfFour * 4 - 1)
+      ops += 1
+      res += (r - l + 1) * ops
+      powerOfFour *= 4
+    return res</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

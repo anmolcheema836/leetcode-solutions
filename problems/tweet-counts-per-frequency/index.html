@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tweet Counts Per Frequency - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Tweet Counts Per Frequency written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/tweet-counts-per-frequency/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/minimum-number-of-steps-to-make-two-strings-anagram/" class="btn">← Previous</a>
+            <span>Problem 1348 of 3563</span>
+            <a href="/leetcode-solutions/problems/maximum-students-taking-exam/" class="btn">Next →</a>
+        </div>
+        <h1>1348. Tweet Counts Per Frequency</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Tweet Counts Per Frequency efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class TweetCounts {
+ public:
+  void recordTweet(string tweetName, int time) {
+    ++tweetNameToTimeCount[tweetName][time];
+  }
+
+  vector&lt;int&gt; getTweetCountsPerFrequency(string freq, string tweetName,
+                                         int startTime, int endTime) {
+    const int chunkSize = freq == &quot;minute&quot; ? 60 : freq == &quot;hour&quot; ? 3600 : 86400;
+    vector&lt;int&gt; counts((endTime - startTime) / chunkSize + 1);
+    const map&lt;int, int&gt;&amp; timeCount = tweetNameToTimeCount[tweetName];
+    const auto lo = timeCount.lower_bound(startTime);
+    const auto hi = timeCount.upper_bound(endTime);
+
+    for (auto it = lo; it != hi; ++it) {
+      const int index = (it-&gt;first - startTime) / chunkSize;
+      counts[index] += it-&gt;second;
+    }
+
+    return counts;
+  }
+
+ private:
+  unordered_map&lt;string, map&lt;int, int&gt;&gt; tweetNameToTimeCount;
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class TweetCounts {
+  public void recordTweet(String tweetName, int time) {
+    tweetNameToTimeCount.putIfAbsent(tweetName, new TreeMap&lt;&gt;());
+    tweetNameToTimeCount.get(tweetName).merge(time, 1, Integer::sum);
+  }
+
+  public List&lt;Integer&gt; getTweetCountsPerFrequency(String freq, String tweetName, int startTime,
+                                                  int endTime) {
+    final int chunkSize = freq.equals(&quot;minute&quot;) ? 60 : freq.equals(&quot;hour&quot;) ? 3600 : 86400;
+    int[] counts = new int[(endTime - startTime) / chunkSize + 1];
+    TreeMap&lt;Integer, Integer&gt; timeCount = tweetNameToTimeCount.get(tweetName);
+
+    for (Map.Entry&lt;Integer, Integer&gt; entry : timeCount.subMap(startTime, endTime + 1).entrySet()) {
+      final int index = (entry.getKey() - startTime) / chunkSize;
+      counts[index] += entry.getValue();
+    }
+
+    return Arrays.stream(counts).boxed().collect(Collectors.toList());
+  }
+
+  private Map&lt;String, TreeMap&lt;Integer, Integer&gt;&gt; tweetNameToTimeCount = new HashMap&lt;&gt;();
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class TweetCounts:
+  def __init__(self):
+    self.tweetNameToTimes = collections.defaultdict(SortedList)
+
+  def recordTweet(self, tweetName: str, time: int) -&gt; None:
+    self.tweetNameToTimes[tweetName].add(time)
+
+  def getTweetCountsPerFrequency(self, freq: str, tweetName: str,
+                                 startTime: int, endTime: int) -&gt; list[int]:
+    counts = []
+    times = self.tweetNameToTimes[tweetName]
+    chunk = 60 if freq == &#x27;minute&#x27; else 3600 if freq == &#x27;hour&#x27; else 86400
+
+    # I := startTime of each chunk
+    for i in range(startTime, endTime + 1, chunk):
+      j = min(i + chunk, endTime + 1)  # EndTime of each chunk
+      counts.append(bisect_left(times, j) - bisect_left(times, i))
+
+    return counts</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

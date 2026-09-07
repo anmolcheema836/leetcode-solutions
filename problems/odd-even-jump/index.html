@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odd Even Jump - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Odd Even Jump written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/odd-even-jump/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/subarray-sums-divisible-by-k/" class="btn">← Previous</a>
+            <span>Problem 975 of 3563</span>
+            <a href="/leetcode-solutions/problems/largest-perimeter-triangle/" class="btn">Next →</a>
+        </div>
+        <h1>975. Odd Even Jump</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Odd Even Jump efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int oddEvenJumps(vector&lt;int&gt;&amp; arr) {
+    const int n = arr.size();
+    map&lt;int, int&gt; map;  // {num: min index}
+    // inc[i] := true if can reach arr[n - 1] from i using increasing jumps
+    vector&lt;bool&gt; inc(n);
+    // dec[i] := true if can reach arr[n - 1] from i using decreasing jumps
+    vector&lt;bool&gt; dec(n);
+
+    map[arr[n - 1]] = n - 1;
+    inc.back() = true;
+    dec.back() = true;
+
+    for (int i = n - 2; i &gt;= 0; --i) {
+      const auto lo = map.lower_bound(arr[i]);  // the minimum value &gt;= arr[i]
+      const auto hi = map.upper_bound(arr[i]);  // the minimum value &gt; arr[i]
+      if (lo != map.cend())
+        inc[i] = dec[lo-&gt;second];
+      if (hi != map.cbegin())
+        dec[i] = inc[prev(hi)-&gt;second];
+      map[arr[i]] = i;
+    }
+
+    return ranges::count(inc, true);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int oddEvenJumps(int[] arr) {
+    final int n = arr.length;
+    TreeMap&lt;Integer, Integer&gt; map = new TreeMap&lt;&gt;(); // {num: min index}
+    // inc[i] := true if can reach arr[n - 1] from i using increasing jumps
+    int[] inc = new int[n];
+    // dec[i] := true if can reach arr[n - 1] from i using increasing jumps
+    int[] dec = new int[n];
+
+    map.put(arr[n - 1], n - 1);
+    inc[n - 1] = 1;
+    dec[n - 1] = 1;
+
+    for (int i = n - 2; i &gt;= 0; --i) {
+      // the minimum value &gt;= arr[i]
+      Map.Entry&lt;Integer, Integer&gt; lo = map.ceilingEntry(arr[i]);
+      // the maximum value &lt;= arr[i]
+      Map.Entry&lt;Integer, Integer&gt; hi = map.floorEntry(arr[i]);
+      if (lo != null)
+        inc[i] = dec[(int) lo.getValue()];
+      if (hi != null)
+        dec[i] = inc[(int) hi.getValue()];
+      map.put(arr[i], i);
+    }
+
+    return Arrays.stream(inc).sum();
+  }
+}</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

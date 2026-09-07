@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Moves to Reach Target with Rotations - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimum Moves to Reach Target with Rotations written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimum-moves-to-reach-target-with-rotations/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/remove-all-adjacent-duplicates-in-string-ii/" class="btn">← Previous</a>
+            <span>Problem 1210 of 3563</span>
+            <a href="/leetcode-solutions/problems/queries-quality-and-percentage/" class="btn">Next →</a>
+        </div>
+        <h1>1210. Minimum Moves to Reach Target with Rotations</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimum Moves to Reach Target with Rotations efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">enum class Pos { kHorizontal, kVertical };
+
+class Solution {
+ public:
+  int minimumMoves(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    const int n = grid.size();
+    queue&lt;tuple&lt;int, int, Pos&gt;&gt; q{{{0, 0, Pos::kHorizontal}}};
+    vector&lt;vector&lt;vector&lt;bool&gt;&gt;&gt; seen(n,
+                                      vector&lt;vector&lt;bool&gt;&gt;(n, vector&lt;bool&gt;(2)));
+    seen[0][0][static_cast&lt;int&gt;(Pos::kHorizontal)] = true;
+
+    auto canMoveRight = [&amp;](int x, int y, Pos pos) -&gt; bool {
+      if (pos == Pos::kHorizontal)
+        return y + 2 &lt; n &amp;&amp; !grid[x][y + 2];
+      return y + 1 &lt; n &amp;&amp; !grid[x][y + 1] &amp;&amp; !grid[x + 1][y + 1];
+    };
+
+    auto canMoveDown = [&amp;](int x, int y, Pos pos) -&gt; bool {
+      if (pos == Pos::kVertical)
+        return x + 2 &lt; n &amp;&amp; !grid[x + 2][y];
+      return x + 1 &lt; n &amp;&amp; !grid[x + 1][y] &amp;&amp; !grid[x + 1][y + 1];
+    };
+
+    auto canRotateClockwise = [&amp;](int x, int y, Pos pos) -&gt; bool {
+      return pos == Pos::kHorizontal &amp;&amp; x + 1 &lt; n &amp;&amp; !grid[x + 1][y + 1] &amp;&amp;
+             !grid[x + 1][y];
+    };
+
+    auto canRotateCounterclockwise = [&amp;](int x, int y, Pos pos) -&gt; bool {
+      return pos == Pos::kVertical &amp;&amp; y + 1 &lt; n &amp;&amp; !grid[x + 1][y + 1] &amp;&amp;
+             !grid[x][y + 1];
+    };
+
+    for (int step = 0; !q.empty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [x, y, pos] = q.front();
+        q.pop();
+        if (x == n - 1 &amp;&amp; y == n - 2 &amp;&amp; pos == Pos::kHorizontal)
+          return step;
+        if (canMoveRight(x, y, pos) &amp;&amp; !seen[x][y + 1][static_cast&lt;int&gt;(pos)]) {
+          q.emplace(x, y + 1, pos);
+          seen[x][y + 1][static_cast&lt;int&gt;(pos)] = true;
+        }
+        if (canMoveDown(x, y, pos) &amp;&amp; !seen[x + 1][y][static_cast&lt;int&gt;(pos)]) {
+          q.emplace(x + 1, y, pos);
+          seen[x + 1][y][static_cast&lt;int&gt;(pos)] = true;
+        }
+        const Pos newPos =
+            pos == Pos::kHorizontal ? Pos::kVertical : Pos::kHorizontal;
+        if ((canRotateClockwise(x, y, pos) ||
+             canRotateCounterclockwise(x, y, pos)) &amp;&amp;
+            !seen[x][y][static_cast&lt;int&gt;(newPos)]) {
+          q.emplace(x, y, newPos);
+          seen[x][y][static_cast&lt;int&gt;(newPos)] = true;
+        }
+      }
+
+    return -1;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">enum Pos { HORIZONTAL, VERTICAL }
+
+class Solution {
+  public int minimumMoves(int[][] grid) {
+    record T(int x, int y, Pos pos) {}
+    final int n = grid.length;
+    Queue&lt;T&gt; q = new ArrayDeque&lt;&gt;(List.of(new T(0, 0, Pos.HORIZONTAL)));
+    boolean[][][] seen = new boolean[n][n][2];
+    seen[0][0][Pos.HORIZONTAL.ordinal()] = true;
+
+    for (int step = 0; !q.isEmpty(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int x = q.peek().x;
+        final int y = q.peek().y;
+        final Pos pos = q.poll().pos;
+        if (x == n - 1 &amp;&amp; y == n - 2 &amp;&amp; pos == Pos.HORIZONTAL)
+          return step;
+        if (canMoveRight(grid, x, y, pos) &amp;&amp; !seen[x][y + 1][pos.ordinal()]) {
+          q.offer(new T(x, y + 1, pos));
+          seen[x][y + 1][pos.ordinal()] = true;
+        }
+        if (canMoveDown(grid, x, y, pos) &amp;&amp; !seen[x + 1][y][pos.ordinal()]) {
+          q.offer(new T(x + 1, y, pos));
+          seen[x + 1][y][pos.ordinal()] = true;
+        }
+        final Pos newPos = pos == Pos.HORIZONTAL ? Pos.VERTICAL : Pos.HORIZONTAL;
+        if ((canRotateClockwise(grid, x, y, pos) || canRotateCounterclockwise(grid, x, y, pos)) &amp;&amp;
+            !seen[x][y][newPos.ordinal()]) {
+          q.offer(new T(x, y, newPos));
+          seen[x][y][newPos.ordinal()] = true;
+        }
+      }
+
+    return -1;
+  }
+
+  private boolean canMoveRight(int[][] grid, int x, int y, Pos pos) {
+    if (pos == Pos.HORIZONTAL)
+      return y + 2 &lt; grid.length &amp;&amp; grid[x][y + 2] == 0;
+    return y + 1 &lt; grid.length &amp;&amp; grid[x][y + 1] == 0 &amp;&amp; grid[x + 1][y + 1] == 0;
+  }
+
+  private boolean canMoveDown(int[][] grid, int x, int y, Pos pos) {
+    if (pos == Pos.VERTICAL)
+      return x + 2 &lt; grid.length &amp;&amp; grid[x + 2][y] == 0;
+    return x + 1 &lt; grid.length &amp;&amp; grid[x + 1][y] == 0 &amp;&amp; grid[x + 1][y + 1] == 0;
+  }
+
+  private boolean canRotateClockwise(int[][] grid, int x, int y, Pos pos) {
+    return pos == Pos.HORIZONTAL &amp;&amp; x + 1 &lt; grid.length &amp;&amp; grid[x + 1][y + 1] == 0 &amp;&amp;
+        grid[x + 1][y] == 0;
+  }
+
+  private boolean canRotateCounterclockwise(int[][] grid, int x, int y, Pos pos) {
+    return pos == Pos.VERTICAL &amp;&amp; y + 1 &lt; grid.length &amp;&amp; grid[x + 1][y + 1] == 0 &amp;&amp;
+        grid[x][y + 1] == 0;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from enum import IntEnum
+
+
+class Pos(IntEnum):
+  HORIZONTAL = 0
+  VERTICAL = 1
+
+
+class Solution:
+  def minimumMoves(self, grid: list[list[int]]) -&gt; int:
+    n = len(grid)
+    ans = 0
+    # the state of (x, y, pos)
+    # pos := 0 (horizontal) / 1 (vertical)
+    q = collections.deque([(0, 0, Pos.HORIZONTAL)])
+    seen = {(0, 0, Pos.HORIZONTAL)}
+
+    def canMoveRight(x: int, y: int, pos: Pos) -&gt; bool:
+      if pos == Pos.HORIZONTAL:
+        return y + 2 &lt; n and not grid[x][y + 2]
+      return y + 1 &lt; n and not grid[x][y + 1] and not grid[x + 1][y + 1]
+
+    def canMoveDown(x: int, y: int, pos: Pos) -&gt; bool:
+      if pos == Pos.VERTICAL:
+        return x + 2 &lt; n and not grid[x + 2][y]
+      return x + 1 &lt; n and not grid[x + 1][y] and not grid[x + 1][y + 1]
+
+    def canRotateClockwise(x: int, y: int, pos: Pos) -&gt; bool:
+      return (pos == Pos.HORIZONTAL and x + 1 &lt; n and
+              not grid[x + 1][y + 1] and not grid[x + 1][y])
+
+    def canRotateCounterclockwise(x: int, y: int, pos: Pos) -&gt; bool:
+      return (pos == Pos.VERTICAL and y + 1 &lt; n and
+              not grid[x + 1][y + 1] and not grid[x][y + 1])
+
+    while q:
+      for _ in range(len(q)):
+        x, y, pos = q.popleft()
+        if x == n - 1 and y == n - 2 and pos == Pos.HORIZONTAL:
+          return ans
+        if canMoveRight(x, y, pos) and (x, y + 1, pos) not in seen:
+          q.append((x, y + 1, pos))
+          seen.add((x, y + 1, pos))
+        if canMoveDown(x, y, pos) and (x + 1, y, pos) not in seen:
+          q.append((x + 1, y, pos))
+          seen.add((x + 1, y, pos))
+        newPos = Pos.VERTICAL if pos == Pos.HORIZONTAL else Pos.HORIZONTAL
+        if ((canRotateClockwise(x, y, pos) or
+             canRotateCounterclockwise(x, y, pos)) and
+                (x, y, newPos) not in seen):
+          q.append((x, y, newPos))
+          seen.add((x, y, newPos))
+      ans += 1
+
+    return -1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

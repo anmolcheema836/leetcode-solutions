@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Point in Non-overlapping Rectangles - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Random Point in Non-overlapping Rectangles written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/random-point-in-non-overlapping-rectangles/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/next-greater-element-i/" class="btn">← Previous</a>
+            <span>Problem 497 of 3563</span>
+            <a href="/leetcode-solutions/problems/diagonal-traverse/" class="btn">Next →</a>
+        </div>
+        <h1>497. Random Point in Non-overlapping Rectangles</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Random Point in Non-overlapping Rectangles efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  Solution(vector&lt;vector&lt;int&gt;&gt;&amp; rects) : rects(std::move(rects)) {
+    for (const vector&lt;int&gt;&amp; r : this-&gt;rects)
+      areas.push_back(getArea(r));
+    partial_sum(areas.begin(), areas.end(), areas.begin());
+  }
+
+  vector&lt;int&gt; pick() {
+    const int target = rand() % areas.back();
+    const int index = ranges::upper_bound(areas, target) - areas.begin();
+    const vector&lt;int&gt;&amp; r = rects[index];
+    return {rand() % (r[2] - r[0] + 1) + r[0],
+            rand() % (r[3] - r[1] + 1) + r[1]};
+  }
+
+ private:
+  const vector&lt;vector&lt;int&gt;&gt; rects;
+  vector&lt;int&gt; areas;
+
+  int getArea(const vector&lt;int&gt;&amp; r) {
+    return (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public Solution(int[][] rects) {
+    this.rects = rects;
+    areas = new int[rects.length];
+    for (int i = 0; i &lt; rects.length; ++i)
+      areas[i] = getArea(rects[i]) + (i &gt; 0 ? areas[i - 1] : 0);
+  }
+
+  public int[] pick() {
+    final int target = rand.nextInt(areas[areas.length - 1]);
+    final int index = firstGreater(areas, target);
+    final int[] r = rects[index];
+    return new int[] {
+        rand.nextInt(r[2] - r[0] + 1) + r[0],
+        rand.nextInt(r[3] - r[1] + 1) + r[1],
+    };
+  }
+
+  private int[][] rects;
+  private int[] areas;
+  private Random rand = new Random();
+
+  private int getArea(int[] r) {
+    return (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
+  }
+
+  private int firstGreater(int[] arr, int target) {
+    final int i = Arrays.binarySearch(arr, target + 1);
+    return i &lt; 0 ? -i - 1 : i;
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def __init__(self, rects: list[list[int]]):
+    self.rects = rects
+    self.areas = list(itertools.accumulate(
+        [(x2 - x1 + 1) * (y2 - y1 + 1) for x1, y1, x2, y2 in rects]))
+
+  def pick(self) -&gt; list[int]:
+    index = bisect_right(self.areas, random.randint(0, self.areas[-1] - 1))
+    x1, y1, x2, y2 = self.rects[index]
+    return [random.randint(x1, x2), random.randint(y1, y2)]</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimize the Maximum of Two Arrays - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Minimize the Maximum of Two Arrays written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/minimize-the-maximum-of-two-arrays/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/reward-top-k-students/" class="btn">← Previous</a>
+            <span>Problem 2513 of 3563</span>
+            <a href="/leetcode-solutions/problems/count-anagrams/" class="btn">Next →</a>
+        </div>
+        <h1>2513. Minimize the Maximum of Two Arrays</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Minimize the Maximum of Two Arrays efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int minimizeSet(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2) {
+    const long divisorLcm = std::lcm(static_cast&lt;long&gt;(divisor1), divisor2);
+    long l = 0;
+    long r = INT_MAX;
+
+    while (l &lt; r) {
+      const long m = (l + r) / 2;
+      if (isPossible(m, divisorLcm, divisor1, divisor2, uniqueCnt1, uniqueCnt2))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return l;
+  }
+
+ private:
+  // Returns true if we can take uniqueCnt1 integers from [1..m] to arr1 and
+  // take uniqueCnt2 integers from [1..m] to arr2.
+  bool isPossible(long m, long divisorLcm, int divisor1, int divisor2,
+                  int uniqueCnt1, int uniqueCnt2) {
+    const long cnt1 = m - m / divisor1;
+    const long cnt2 = m - m / divisor2;
+    const long totalCnt = m - m / divisorLcm;
+    return cnt1 &gt;= uniqueCnt1 &amp;&amp; cnt2 &gt;= uniqueCnt2 &amp;&amp;
+           totalCnt &gt;= uniqueCnt1 + uniqueCnt2;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int minimizeSet(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2) {
+    final long divisorLcm = lcm(divisor1, divisor2);
+    long l = 0;
+    long r = Integer.MAX_VALUE;
+
+    while (l &lt; r) {
+      final long m = (l + r) / 2;
+      if (isPossible(m, divisorLcm, divisor1, divisor2, uniqueCnt1, uniqueCnt2))
+        r = m;
+      else
+        l = m + 1;
+    }
+
+    return (int) l;
+  }
+
+  // Returns true if we can take uniqueCnt1 integers from [1..m] to arr1 and
+  // take uniqueCnt2 integers from [1..m] to arr2.
+  private boolean isPossible(long m, long divisorLcm, int divisor1, int divisor2, int uniqueCnt1,
+                             int uniqueCnt2) {
+    final long cnt1 = m - m / divisor1;
+    final long cnt2 = m - m / divisor2;
+    final long totalCnt = m - m / divisorLcm;
+    return cnt1 &gt;= uniqueCnt1 &amp;&amp; cnt2 &gt;= uniqueCnt2 &amp;&amp; totalCnt &gt;= uniqueCnt1 + uniqueCnt2;
+  }
+
+  private long gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+
+  private long lcm(int a, int b) {
+    return a * (b / gcd(a, b));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def minimizeSet(
+      self,
+      divisor1: int,
+      divisor2: int,
+      uniqueCnt1: int,
+      uniqueCnt2: int,
+  ) -&gt; int:
+    divisorLcm = math.lcm(divisor1, divisor2)
+    l = 0
+    r = 2**31 - 1
+
+    def isPossible(m: int) -&gt; bool:
+      &quot;&quot;&quot;
+      Returns True if we can take uniqueCnt1 integers from [1..m] to arr1 and
+      take uniqueCnt2 integers from [1..m] to arr2.
+      &quot;&quot;&quot;
+      cnt1 = m - m // divisor1
+      cnt2 = m - m // divisor2
+      totalCnt = m - m // divisorLcm
+      return (cnt1 &gt;= uniqueCnt1 and
+              cnt2 &gt;= uniqueCnt2 and
+              totalCnt &gt;= uniqueCnt1 + uniqueCnt2)
+
+    while l &lt; r:
+      m = (l + r) // 2
+      if isPossible(m):
+        r = m
+      else:
+        l = m + 1
+
+    return l</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

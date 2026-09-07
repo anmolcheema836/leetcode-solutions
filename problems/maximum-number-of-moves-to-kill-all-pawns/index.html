@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Number of Moves to Kill All Pawns - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Number of Moves to Kill All Pawns written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-number-of-moves-to-kill-all-pawns/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/reach-end-of-array-with-max-score/" class="btn">← Previous</a>
+            <span>Problem 3283 of 3563</span>
+            <a href="/leetcode-solutions/problems/sum-of-consecutive-subarrays/" class="btn">Next →</a>
+        </div>
+        <h1>3283. Maximum Number of Moves to Kill All Pawns</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Number of Moves to Kill All Pawns efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  int maxMoves(int kx, int ky, vector&lt;vector&lt;int&gt;&gt;&amp; positions) {
+    const int n = positions.size();
+    positions.push_back({kx, ky});
+    unordered_map&lt;int, int&gt; hashedPositionToIndex;
+    // dist[i][j] := the minimum distance from positions[i] to positions[j]
+    vector&lt;vector&lt;int&gt;&gt; dist(n + 1, vector&lt;int&gt;(n + 1));
+
+    for (int i = 0; i &lt; positions.size(); ++i) {
+      const int x = positions[i][0];
+      const int y = positions[i][1];
+      hashedPositionToIndex[hash(x, y)] = i;
+    }
+
+    for (int sourceIndex = 0; sourceIndex &lt; n + 1; ++sourceIndex)
+      bfs(positions, sourceIndex, hashedPositionToIndex, dist);
+
+    const int maxMask = 1 &lt;&lt; (n + 1);
+    // dp[i][mask][turn] := the maximum (Alice) or the minimum (Bob) cost to
+    // kill all pawns, where i is the current pawn, mask is the set of pawns
+    // that have been killed, and turn is the current player&#x27;s turn (0 for Alice
+    // and 1 for Bob)
+    vector&lt;vector&lt;vector&lt;int&gt;&gt;&gt; dp(
+        n + 1, vector&lt;vector&lt;int&gt;&gt;(1 &lt;&lt; (n + 1), vector&lt;int&gt;(2)));
+
+    for (int i = 0; i &lt; n + 1; ++i)
+      for (int mask = 0; mask &lt; maxMask - 1; ++mask)
+        dp[i][mask] = {-kMax, kMax};
+
+    for (int mask = maxMask - 2; mask &gt;= 0; --mask)
+      for (int i = 0; i &lt; n + 1; ++i)
+        for (int turn = 0; turn &lt; 2; ++turn)
+          for (int j = 0; j &lt; n; ++j) {
+            if (mask &gt;&gt; j &amp; 1)
+              continue;
+            const int moves = dist[i][j] + dp[j][mask | 1 &lt;&lt; j][1 - turn];
+            dp[i][mask][turn] = turn == 0 ? max(dp[i][mask][turn], moves)
+                                          : min(dp[i][mask][turn], moves);
+          }
+
+    // Returns the maximum cost to kill all pawns, i.e., the original positions
+    // array without the knight (kx, ky).
+    return dp[n][1 &lt;&lt; n][0];
+  }
+
+ private:
+  static constexpr int kSize = 50;
+  static constexpr int kMax = 1&#x27;000&#x27;000;
+  static constexpr int kDirs[8][2] = {{1, 2},   {2, 1},   {2, -1}, {1, -2},
+                                      {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+
+  int hash(int x, int y) {
+    return x * kSize + y;
+  }
+
+  // Computes the distance between positions[sourceIndex] and other positions.
+  void bfs(const vector&lt;vector&lt;int&gt;&gt;&amp; positions, int sourceIndex,
+           const unordered_map&lt;int, int&gt;&amp; hashedPositionToIndex,
+           vector&lt;vector&lt;int&gt;&gt;&amp; dist) {
+    const int sx = positions[sourceIndex][0];
+    const int sy = positions[sourceIndex][1];
+    queue&lt;pair&lt;int, int&gt;&gt; q{{{sx, sy}}};
+    vector&lt;vector&lt;bool&gt;&gt; seen(kSize, vector&lt;bool&gt;(kSize));
+    seen[sx][sy] = true;
+    int seenPositions = 0;
+
+    for (int step = 0; !q.empty() &amp;&amp; seenPositions &lt; positions.size(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        const auto [i, j] = q.front();
+        q.pop();
+        if (const auto it = hashedPositionToIndex.find(hash(i, j));
+            it != end(hashedPositionToIndex)) {
+          dist[sourceIndex][it-&gt;second] = step;
+          ++seenPositions;
+        }
+        for (const auto&amp; [dx, dy] : kDirs) {
+          const int x = i + dx;
+          const int y = j + dy;
+          if (x &lt; 0 || x &gt;= kSize || y &lt; 0 || y &gt;= kSize)
+            continue;
+          if (seen[x][y])
+            continue;
+          q.emplace(x, y);
+          seen[x][y] = true;
+        }
+      }
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int maxMoves(int kx, int ky, int[][] positions) {
+    final int n = positions.length;
+    List&lt;int[]&gt; positionsList = new ArrayList&lt;&gt;(List.of(positions));
+    positionsList.add(new int[] {kx, ky});
+    Map&lt;Integer, Integer&gt; hashedPositionToIndex = new HashMap&lt;&gt;();
+    // dist[i][j] := the minimum distance from positions[i] to positions[j]
+    int[][] dist = new int[n + 1][n + 1];
+
+    for (int i = 0; i &lt; positionsList.size(); ++i) {
+      final int x = positionsList.get(i)[0];
+      final int y = positionsList.get(i)[1];
+      hashedPositionToIndex.put(hash(x, y), i);
+    }
+
+    for (int sourceIndex = 0; sourceIndex &lt; n + 1; ++sourceIndex)
+      bfs(positionsList, sourceIndex, hashedPositionToIndex, dist);
+
+    int MAX_MASK = 1 &lt;&lt; (n + 1);
+    // dp[i][mask][turn] := the maximum (Alice) or the minimum (Bob) cost to
+    // kill all pawns, where i is the current pawn, mask is the set of pawns
+    // that have been killed, and turn is the current player&#x27;s turn (0 for Alice
+    // and 1 for Bob)
+    int[][][] dp = new int[n + 1][1 &lt;&lt; (n + 1)][2];
+
+    for (int i = 0; i &lt; n + 1; ++i)
+      for (int mask = 0; mask &lt; MAX_MASK - 1; ++mask)
+        dp[i][mask] = new int[] {-MAX, MAX};
+
+    for (int mask = MAX_MASK - 2; mask &gt;= 0; --mask)
+      for (int i = 0; i &lt; n + 1; ++i)
+        for (int turn = 0; turn &lt; 2; ++turn)
+          for (int j = 0; j &lt; n; ++j) {
+            if ((mask &gt;&gt; j &amp; 1) == 1)
+              continue;
+            final int moves = dist[i][j] + dp[j][mask | 1 &lt;&lt; j][1 - turn];
+            dp[i][mask][turn] = turn == 0 ? Math.max(dp[i][mask][turn], moves) //
+                                          : Math.min(dp[i][mask][turn], moves);
+          }
+
+    // Returns the maximum cost to kill all pawns, i.e., the original positions
+    // array without the knight (kx, ky).
+    return dp[n][1 &lt;&lt; n][0];
+  }
+
+  private static final int SIZE = 50;
+  private static final int MAX = 1_000_000;
+  private static final int[][] DIRS = {{1, 2},   {2, 1},   {2, -1}, {1, -2},
+                                       {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+
+  private int hash(int x, int y) {
+    return x * SIZE + y;
+  }
+
+  // Computes the distance between positions[sourceIndex] and other positions.
+  private void bfs(List&lt;int[]&gt; positions, int sourceIndex,
+                   Map&lt;Integer, Integer&gt; hashedPositionToIndex, int[][] dist) {
+    final int sx = positions.get(sourceIndex)[0];
+    final int sy = positions.get(sourceIndex)[1];
+    Queue&lt;Pair&lt;Integer, Integer&gt;&gt; q = new ArrayDeque&lt;&gt;(List.of(new Pair&lt;&gt;(sx, sy)));
+    boolean[][] seen = new boolean[SIZE][SIZE];
+    seen[sx][sy] = true;
+    int seenPositions = 0;
+
+    for (int step = 0; !q.isEmpty() &amp;&amp; seenPositions &lt; positions.size(); ++step)
+      for (int sz = q.size(); sz &gt; 0; --sz) {
+        final int i = q.peek().getKey();
+        final int j = q.poll().getValue();
+        final int hashedPosition = hash(i, j);
+        if (hashedPositionToIndex.containsKey(hashedPosition)) {
+          dist[sourceIndex][hashedPositionToIndex.get(hashedPosition)] = step;
+          ++seenPositions;
+        }
+        for (int[] dir : DIRS) {
+          final int x = i + dir[0];
+          final int y = j + dir[1];
+          if (x &lt; 0 || x &gt;= SIZE || y &lt; 0 || y &gt;= SIZE)
+            continue;
+          if (seen[x][y])
+            continue;
+          q.offer(new Pair&lt;&gt;(x, y));
+          seen[x][y] = true;
+        }
+      }
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def __init__(self):
+    self.SIZE = 50
+    self.MAX = 1_000_000
+    self.DIRS = ((1, 2), (2, 1), (2, -1), (1, -2),
+                 (-1, -2), (-2, -1), (-2, 1), (-1, 2))
+
+  def maxMoves(self, kx: int, ky: int, positions: list[list[int]]) -&gt; int:
+    n = len(positions)
+    positions.append([kx, ky])
+    hashedPositionToIndex = {}
+    # dist[i][j] := the minimum distance from positions[i] to positions[j]
+    dist = [[0] * (n + 1) for _ in range(n + 1)]
+
+    for i, (x, y) in enumerate(positions):
+      hashedPositionToIndex[self._hash(x, y)] = i
+
+    for sourceIndex in range(n + 1):
+      self._bfs(positions, sourceIndex, hashedPositionToIndex, dist)
+
+    MAX_MASK = 1 &lt;&lt; (n + 1)
+    # dp[i][mask][turn] := the maximum (Alice) or the minimum (Bob) cost to
+    # kill all pawns, where i is the current pawn, mask is the set of pawns
+    # that have been killed, and turn is the current player&#x27;s turn (0 for Alice
+    # and 1 for Bob)
+    dp = [[[0, 0]
+          for _ in range(1 &lt;&lt; (n + 1))]
+          for _ in range(n + 1)]
+
+    for i in range(n + 1):
+      for mask in range(MAX_MASK - 1):
+        dp[i][mask] = [-self.MAX, self.MAX]
+
+    for mask in range(MAX_MASK - 2, -1, -1):
+      for i in range(n + 1):
+        for turn in range(2):
+          for j in range(n):
+            if mask &gt;&gt; j &amp; 1:
+              continue
+            moves = dist[i][j] + dp[j][mask | 1 &lt;&lt; j][1 - turn]
+            dp[i][mask][turn] = (max(dp[i][mask][turn], moves) if turn == 0 else
+                                 min(dp[i][mask][turn], moves))
+
+    # Returns the maximum cost to kill all pawns, i.e., the original positions
+    # array without the knight (kx, ky).
+    return dp[n][1 &lt;&lt; n][0]
+
+  def _hash(self, x: int, y: int) -&gt; int:
+    return x * self.SIZE + y
+
+  def _bfs(
+      self,
+      positions: list[list[int]],
+      sourceIndex: int,
+      hashedPositionToIndex: dict[int, int],
+      dist: list[list[int]]
+  ) -&gt; None:
+    &quot;&quot;&quot;
+    Computes the distance between positions[sourceIndex] and other positions.
+    &quot;&quot;&quot;
+    sx, sy = positions[sourceIndex]
+    q = collections.deque([(sx, sy)])
+    seen = {(sx, sy)}
+    seenPositions = 0
+
+    step = 0
+    while q and seenPositions &lt; len(positions):
+      for _ in range(len(q)):
+        i, j = q.popleft()
+        hashedPosition = self._hash(i, j)
+        if hashedPosition in hashedPositionToIndex:
+          dist[sourceIndex][hashedPositionToIndex[hashedPosition]] = step
+          seenPositions += 1
+        for dx, dy in self.DIRS:
+          x = i + dx
+          y = j + dy
+          if x &lt; 0 or x &gt;= self.SIZE or y &lt; 0 or y &gt;= self.SIZE:
+            continue
+          if (x, y) in seen:
+            continue
+          q.append((x, y))
+          seen.add((x, y))
+      step += 1</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

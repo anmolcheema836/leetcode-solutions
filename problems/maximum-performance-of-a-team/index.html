@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Performance of a Team - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Maximum Performance of a Team written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/maximum-performance-of-a-team/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/balance-a-binary-search-tree/" class="btn">← Previous</a>
+            <span>Problem 1383 of 3563</span>
+            <a href="/leetcode-solutions/problems/total-sales-amount-by-year/" class="btn">Next →</a>
+        </div>
+        <h1>1383. Maximum Performance of a Team</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Maximum Performance of a Team efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  // Similar to 857. Minimum Cost to Hire K Workers
+  int maxPerformance(int n, vector&lt;int&gt;&amp; speed, vector&lt;int&gt;&amp; efficiency,
+                     int k) {
+    constexpr int kMod = 1&#x27;000&#x27;000&#x27;007;
+    long ans = 0;
+    long speedSum = 0;
+    // (efficiency[i], speed[i]) sorted by efficiency[i] in descending order
+    vector&lt;pair&lt;int, int&gt;&gt; A;
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;&gt;&gt; minHeap;
+
+    for (int i = 0; i &lt; n; ++i)
+      A.emplace_back(efficiency[i], speed[i]);
+
+    ranges::sort(A, greater&lt;&gt;());
+
+    for (const auto&amp; [e, s] : A) {
+      minHeap.push(s);
+      speedSum += s;
+      if (minHeap.size() &gt; k)
+        speedSum -= minHeap.top(), minHeap.pop();
+      ans = max(ans, speedSum * e);
+    }
+
+    return ans % kMod;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  // Similar to 857. Minimum Cost to Hire K Workers
+  public int maxPerformance(int n, int[] speed, int[] efficiency, int k) {
+    final int MOD = 1_000_000_007;
+    long ans = 0;
+    long speedSum = 0;
+    // (efficiency[i], speed[i]) sorted by efficiency[i] in descending order
+    Pair&lt;Integer, Integer&gt;[] A = new Pair[n];
+    Queue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      A[i] = new Pair&lt;&gt;(efficiency[i], speed[i]);
+
+    Arrays.sort(A, Comparator.comparingInt(Pair::getKey).reversed());
+
+    for (Pair&lt;Integer, Integer&gt; a : A) {
+      final int e = a.getKey();
+      final int s = a.getValue();
+      minHeap.offer(s);
+      speedSum += s;
+      if (minHeap.size() &gt; k)
+        speedSum -= minHeap.poll();
+      ans = Math.max(ans, speedSum * e);
+    }
+
+    return (int) (ans % MOD);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  # Similar to 857. Minimum Cost to Hire K Workers
+  def maxPerformance(
+      self,
+      n: int,
+      speed: list[int],
+      efficiency: list[int],
+      k: int,
+  ) -&gt; int:
+    MOD = 1_000_000_007
+    ans = 0
+    speedSum = 0
+    # (efficiency[i], speed[i]) sorted by efficiency[i] in descending order
+    A = sorted([(e, s) for s, e in zip(speed, efficiency)], reverse=True)
+    minHeap = []
+
+    for e, s in A:
+      heapq.heappush(minHeap, s)
+      speedSum += s
+      if len(minHeap) &gt; k:
+        speedSum -= heapq.heappop(minHeap)
+      ans = max(ans, speedSum * e)
+
+    return ans % MOD</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

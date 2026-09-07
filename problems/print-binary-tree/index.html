@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Binary Tree - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Print Binary Tree written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/print-binary-tree/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-binary-tree/" class="btn">← Previous</a>
+            <span>Problem 655 of 3563</span>
+            <a href="/leetcode-solutions/problems/coin-path/" class="btn">Next →</a>
+        </div>
+        <h1>655. Print Binary Tree</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Print Binary Tree efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;string&gt;&gt; printTree(TreeNode* root) {
+    const int m = maxHeight(root);
+    const int n = pow(2, m) - 1;
+    vector&lt;vector&lt;string&gt;&gt; ans(m, vector&lt;string&gt;(n));
+    dfs(root, 0, 0, ans[0].size() - 1, ans);
+    return ans;
+  }
+
+ private:
+  int maxHeight(TreeNode* root) {
+    if (root == nullptr)
+      return 0;
+    return 1 + max(maxHeight(root-&gt;left), maxHeight(root-&gt;right));
+  }
+
+  void dfs(TreeNode* root, int row, int left, int right,
+           vector&lt;vector&lt;string&gt;&gt;&amp; ans) {
+    if (root == nullptr)
+      return;
+
+    const int mid = (left + right) / 2;
+    ans[row][mid] = to_string(root-&gt;val);
+    dfs(root-&gt;left, row + 1, left, mid - 1, ans);
+    dfs(root-&gt;right, row + 1, mid + 1, right, ans);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public List&lt;List&lt;String&gt;&gt; printTree(TreeNode root) {
+    final int m = maxHeight(root);
+    final int n = (int) Math.pow(2, m) - 1;
+    List&lt;List&lt;String&gt;&gt; ans = new ArrayList&lt;&gt;();
+    List&lt;String&gt; row = new ArrayList&lt;&gt;();
+
+    for (int i = 0; i &lt; n; ++i)
+      row.add(&quot;&quot;);
+
+    for (int i = 0; i &lt; m; ++i)
+      ans.add(new ArrayList&lt;&gt;(row));
+
+    dfs(root, 0, 0, n - 1, ans);
+    return ans;
+  }
+
+  private int maxHeight(TreeNode root) {
+    if (root == null)
+      return 0;
+    return 1 + Math.max(maxHeight(root.left), maxHeight(root.right));
+  }
+
+  private void dfs(TreeNode root, int row, int left, int right, List&lt;List&lt;String&gt;&gt; ans) {
+    if (root == null)
+      return;
+
+    final int mid = (left + right) / 2;
+    ans.get(row).set(mid, Integer.toString(root.val));
+    dfs(root.left, row + 1, left, mid - 1, ans);
+    dfs(root.right, row + 1, mid + 1, right, ans);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def printTree(self, root: TreeNode | None) -&gt; list[list[str]]:
+    def maxHeight(root: TreeNode | None) -&gt; int:
+      if not root:
+        return 0
+      return 1 + max(maxHeight(root.left), maxHeight(root.right))
+
+    def dfs(root: TreeNode | None, row: int, left: int, right: int) -&gt; None:
+      if not root:
+        return
+
+      mid = (left + right) // 2
+      ans[row][mid] = str(root.val)
+      dfs(root.left, row + 1, left, mid - 1)
+      dfs(root.right, row + 1, mid + 1, right)
+
+    m = maxHeight(root)
+    n = pow(2, m) - 1
+    ans = [[&#x27;&#x27;] * n for _ in range(m)]
+    dfs(root, 0, 0, len(ans[0]) - 1)
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find X-Sum of All K-Long Subarrays I - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Find X-Sum of All K-Long Subarrays I written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/find-x-sum-of-all-k-long-subarrays-i/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/find-the-number-of-possible-ways-for-an-event/" class="btn">← Previous</a>
+            <span>Problem 3318 of 3563</span>
+            <a href="/leetcode-solutions/problems/k-th-largest-perfect-subtree-size-in-binary-tree/" class="btn">Next →</a>
+        </div>
+        <h1>3318. Find X-Sum of All K-Long Subarrays I</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Find X-Sum of All K-Long Subarrays I efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;int&gt; findXSum(vector&lt;int&gt;&amp; nums, int k, int x) {
+    vector&lt;int&gt; ans;
+    long windowSum = 0;
+    unordered_map&lt;int, int&gt; count;
+    multiset&lt;pair&lt;int, int&gt;&gt; top;  // the top x elements
+    multiset&lt;pair&lt;int, int&gt;&gt; bot;  // the rest of the elements
+
+    // Updates the count of num by freq and the window sum accordingly.
+    auto update = [&amp;count, &amp;top, &amp;bot, &amp;windowSum](int num, int freq) -&gt; void {
+      if (count[num] &gt; 0) {  // Clean up the old count.
+        if (auto it = bot.find({count[num], num}); it != bot.end()) {
+          bot.erase(it);
+        } else {
+          it = top.find({count[num], num});
+          top.erase(it);
+          windowSum -= num * count[num];
+        }
+      }
+      count[num] += freq;
+      if (count[num] &gt; 0)
+        bot.insert({count[num], num});
+    };
+
+    for (int i = 0; i &lt; nums.size(); ++i) {
+      update(nums[i], 1);
+      if (i &gt;= k)
+        update(nums[i - k], -1);
+      // Move the bottom elements to the top if needed.
+      while (!bot.empty() &amp;&amp; top.size() &lt; x) {
+        const auto [countB, b] = *bot.rbegin();
+        bot.erase(--bot.end());
+        top.insert({countB, b});
+        windowSum += b * countB;
+      }
+      // Swap the bottom and top elements if needed.
+      while (!bot.empty() &amp;&amp; *bot.rbegin() &gt; *top.begin()) {
+        const auto [countB, b] = *bot.rbegin();
+        const auto [countT, t] = *top.begin();
+        bot.erase(--bot.end());
+        top.erase(top.begin());
+        bot.insert({countT, t});
+        top.insert({countB, b});
+        windowSum += b * countB;
+        windowSum -= t * countT;
+      }
+      if (i &gt;= k - 1)
+        ans.push_back(windowSum);
+    }
+
+    return ans;
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[] findXSum(int[] nums, int k, int x) {
+    int[] ans = new int[nums.length - k + 1];
+    Map&lt;Integer, Integer&gt; count = new HashMap&lt;&gt;();
+    TreeSet&lt;Pair&lt;Integer, Integer&gt;&gt; top =
+        new TreeSet&lt;&gt;(Comparator.comparingInt(Pair&lt;Integer, Integer&gt;::getKey)
+                          .thenComparingInt(Pair&lt;Integer, Integer&gt;::getValue));
+    TreeSet&lt;Pair&lt;Integer, Integer&gt;&gt; bot =
+        new TreeSet&lt;&gt;(Comparator.comparingInt(Pair&lt;Integer, Integer&gt;::getKey)
+                          .thenComparingInt(Pair&lt;Integer, Integer&gt;::getValue));
+
+    for (int i = 0; i &lt; nums.length; ++i) {
+      update(nums[i], 1, count, top, bot);
+      if (i &gt;= k)
+        update(nums[i - k], -1, count, top, bot);
+      // Move the bottom elements to the top if needed.
+      while (!bot.isEmpty() &amp;&amp; top.size() &lt; x) {
+        Pair&lt;Integer, Integer&gt; pair = bot.pollLast();
+        top.add(pair);
+        windowSum += pair.getValue() * pair.getKey();
+      }
+      // Swap the bottom and top elements if needed.
+      while (!bot.isEmpty() &amp;&amp; (bot.last().getKey() &gt; top.first().getKey() ||
+                                bot.last().getKey().equals(top.first().getKey()) &amp;&amp;
+                                    bot.last().getValue() &gt; top.first().getValue())) {
+        Pair&lt;Integer, Integer&gt; pairB = bot.pollLast();
+        Pair&lt;Integer, Integer&gt; pairT = top.pollFirst();
+        top.add(pairB);
+        bot.add(pairT);
+        windowSum += pairB.getValue() * pairB.getKey();
+        windowSum -= pairT.getValue() * pairT.getKey();
+      }
+      if (i &gt;= k - 1)
+        ans[i - k + 1] = windowSum;
+    }
+    return ans;
+  }
+
+  private int windowSum = 0;
+
+  // Updates the count of num by freq and the window sum accordingly.
+  private void update(int num, int freq, Map&lt;Integer, Integer&gt; count,
+                      TreeSet&lt;Pair&lt;Integer, Integer&gt;&gt; top, TreeSet&lt;Pair&lt;Integer, Integer&gt;&gt; bot) {
+    if (count.getOrDefault(num, 0) &gt; 0) { // Clean up the old count.
+      Pair&lt;Integer, Integer&gt; pair = new Pair&lt;&gt;(count.get(num), num);
+      if (bot.remove(pair)) {
+        // Do nothing.
+      } else {
+        top.remove(pair);
+        windowSum -= num * count.get(num);
+      }
+    }
+    count.merge(num, freq, Integer::sum);
+    if (count.get(num) &gt; 0)
+      bot.add(new Pair&lt;&gt;(count.get(num), num));
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">from sortedcontainers import SortedList
+
+
+class Solution:
+  def findXSum(self, nums: list[int], k: int, x: int) -&gt; list[int]:
+    ans = []
+    windowSum = 0
+    count = collections.Counter()
+    top = SortedList()
+    bot = SortedList()
+
+    def update(num: int, freq: int) -&gt; None:
+      &quot;&quot;&quot;Updates the count of num by freq and the window sum accordingly.&quot;&quot;&quot;
+      nonlocal windowSum
+      if count[num] &gt; 0:  # Clean up old values.
+        if [count[num], num] in bot:
+          bot.remove([count[num], num])
+        else:
+          top.remove([count[num], num])
+          windowSum -= num * count[num]
+      count[num] += freq
+      if count[num] &gt; 0:
+        bot.add([count[num], num])
+
+    for i, num in enumerate(nums):
+      update(num, 1)
+      if i &gt;= k:
+        update(nums[i - k], -1)
+      # Move the bottom element to the top if needed.
+      while bot and len(top) &lt; x:
+        countB, b = bot.pop()
+        top.add([countB, b])
+        windowSum += b * countB
+      # Swap the bottom and top elements if needed.
+      while bot and bot[-1] &gt; top[0]:
+        countB, b = bot.pop()
+        countT, t = top.pop(0)
+        bot.add([countT, t])
+        windowSum -= t * countT
+        top.add([countB, b])
+        windowSum += b * countB
+      if i &gt;= k - 1:
+        ans.append(windowSum)
+
+    return ans</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>

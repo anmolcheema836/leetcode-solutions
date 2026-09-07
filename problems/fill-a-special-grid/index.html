@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill a Special Grid - LeetCode Solution | C++, Java, Python</title>
+    <meta name="description" content="Optimal LeetCode solution for Fill a Special Grid written in C++, Java, and Python.">
+    <link rel="canonical" href="https://anmolcheema836.github.io/leetcode-solutions/problems/fill-a-special-grid/">
+    <meta name="base-url" content="/leetcode-solutions">
+    <link rel="stylesheet" href="/leetcode-solutions/assets/style.css">
+    <link id="prism-light" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link id="prism-dark" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" disabled />
+    
+</head>
+<body>
+    
+    <nav>
+        <a href="/leetcode-solutions/" class="logo">LeetCode Solutions</a>
+        <div class="nav-controls">
+            <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" class="portfolio-link">My Portfolio</a>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search problems...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="pagination">
+            <a href="/leetcode-solutions/problems/maximum-product-of-two-digits/" class="btn">← Previous</a>
+            <span>Problem 3537 of 3563</span>
+            <a href="/leetcode-solutions/problems/merge-operations-for-minimum-travel-time/" class="btn">Next →</a>
+        </div>
+        <h1>3537. Fill a Special Grid</h1>
+        <h2>Intuition & Approach</h2>
+        <p>To solve Fill a Special Grid efficiently, we can use standard algorithms and data structures. Explaining the logic, time complexity, and space complexity here will help you understand the solution better.</p>
+        <h2>Code Solution</h2>
+        <div class="solution-container">
+            <div class="tabs"><div class="tab active" onclick="switchTab(0)">C++</div>
+<div class="tab " onclick="switchTab(1)">Java</div>
+<div class="tab " onclick="switchTab(2)">Python</div>
+</div>
+            <div class="code-area">
+                <button id="copyBtn" class="copy-btn">Copy</button>
+                <div class="code-content active"><pre><code class="language-cpp">class Solution {
+ public:
+  vector&lt;vector&lt;int&gt;&gt; specialGrid(int n) {
+    const int sz = 1 &lt;&lt; n;
+    int count = 0;
+    vector&lt;vector&lt;int&gt;&gt; grid(sz, vector&lt;int&gt;(sz));
+    fill(grid, 0, sz, 0, sz, count);
+    return grid;
+  }
+
+  void fill(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int x1, int x2, int y1, int y2,
+            int&amp; count) {
+    if (x2 - x1 == 1) {
+      grid[x1][y1] = count++;
+      return;
+    }
+    const int midRow = (x1 + x2) / 2;
+    const int midCol = (y1 + y2) / 2;
+    fill(grid, x1, midRow, midCol, y2, count);
+    fill(grid, midRow, x2, midCol, y2, count);
+    fill(grid, midRow, x2, y1, midCol, count);
+    fill(grid, x1, midRow, y1, midCol, count);
+  }
+};</code></pre></div>
+<div class="code-content "><pre><code class="language-java">class Solution {
+  public int[][] specialGrid(int n) {
+    final int sz = 1 &lt;&lt; n;
+    int[][] grid = new int[sz][sz];
+    fill(grid, 0, sz, 0, sz);
+    return grid;
+  }
+
+  private int count = 0;
+
+  private void fill(int[][] grid, int x1, int x2, int y1, int y2) {
+    if (x2 - x1 == 1) {
+      grid[x1][y1] = count++;
+      return;
+    }
+    int midRow = (x1 + x2) / 2;
+    int midCol = (y1 + y2) / 2;
+    fill(grid, x1, midRow, midCol, y2);
+    fill(grid, midRow, x2, midCol, y2);
+    fill(grid, midRow, x2, y1, midCol);
+    fill(grid, x1, midRow, y1, midCol);
+  }
+}</code></pre></div>
+<div class="code-content "><pre><code class="language-python">class Solution:
+  def specialGrid(self, n: int) -&gt; list[list[int]]:
+    sz = 1 &lt;&lt; n
+    grid = [[0] * sz for _ in range(sz)]
+    count = 0
+
+    def fill(x1: int, x2: int, y1: int, y2: int) -&gt; None:
+      nonlocal count
+      if x2 - x1 == 1:
+        grid[x1][y1] = count
+        count += 1
+        return
+      midRow = (x1 + x2) // 2
+      midCol = (y1 + y2) // 2
+      fill(x1, midRow, midCol, y2)
+      fill(midRow, x2, midCol, y2)
+      fill(midRow, x2, y1, midCol)
+      fill(x1, midRow, y1, midCol)
+
+    fill(0, sz, 0, sz)
+    return grid</code></pre></div>
+
+            </div>
+        </div>
+        
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+        <p>Created by <a href="https://anmolcheema836.github.io/lookbook/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">Anmol Cheema</a>. Solutions sourced from <a href="https://github.com/walkccc/LeetCode" target="_blank" style="color: var(--primary); text-decoration: none;">WalkCCC</a> (MIT License).</p>
+        <p style="margin-top: 8px;">This site is not affiliated with LeetCode LLC.</p>
+    </footer>
+    
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/leetcode-solutions/assets/app.js"></script>
+</body>
+</html>
