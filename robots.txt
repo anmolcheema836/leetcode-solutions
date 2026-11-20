@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://anmolcheema836.github.io/leetcode-solutions/sitemap.xml
